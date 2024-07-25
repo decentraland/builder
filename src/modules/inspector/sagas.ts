@@ -300,8 +300,13 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
 
     const project: Project = yield select(getCurrentProject)
     if (project.thumbnail) {
-      paths.push('assets/scene/thumbnail.png')
-      paths.push('thumbnails/scene/thumbnail.png')
+      // add thumbnail if missing
+      if (!paths.includes('assets/scene/thumbnail.png')) {
+        paths.push('assets/scene/thumbnail.png')
+      }
+      if (!paths.includes('thumbnails/scene/thumbnail.png')) {
+        paths.push('thumbnails/scene/thumbnail.png')
+      }
     }
 
     const files: { name: string; isDirectory: boolean }[] = []
