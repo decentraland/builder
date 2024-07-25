@@ -81,7 +81,7 @@ export function getCollectionBaseURI() {
 
 export function isThirdPartyCollection(collection: Collection) {
   const collectionType = getCollectionType(collection)
-  return collectionType === CollectionType.THIRD_PARTY || collectionType === CollectionType.THIRD_PARTY_V2
+  return collectionType === CollectionType.THIRD_PARTY
 }
 
 export function getCollectionType(collection: Collection): CollectionType {
@@ -90,8 +90,6 @@ export function getCollectionType(collection: Collection): CollectionType {
   switch (type) {
     case URNType.COLLECTIONS_THIRDPARTY:
       return CollectionType.THIRD_PARTY
-    case URNType.COLLECTIONS_THIRDPARTY_V2:
-      return CollectionType.THIRD_PARTY_V2
     case URNType.COLLECTIONS_V2:
     case URNType.BASE_AVATARS:
       return CollectionType.STANDARD

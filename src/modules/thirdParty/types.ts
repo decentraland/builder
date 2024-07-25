@@ -1,4 +1,9 @@
-import { LinkedContractProtocol } from 'lib/urn'
+export enum LinkedContractProtocol {
+  MATIC = 'matic',
+  SEPOLIA = 'sepolia',
+  AMOY = 'amoy',
+  MAINNET = 'mainnet'
+}
 
 export type ThirdParty = {
   id: string
@@ -28,9 +33,4 @@ export type Slot = {
   sigR: string
   sigS: string
   sigV: number
-}
-
-export enum ThirdPartyVersion {
-  V1 = 1,
-  V2 = 2
 }

@@ -1259,7 +1259,7 @@ describe('when saving a collection', () => {
       return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
         .provide([
           [getContext('history'), { push: pushMock }],
-          [select(getOpenModals), { CreateThirdPartyCollectionModal: true, CreateLinkedWearablesCollectionModal: true }],
+          [select(getOpenModals), { CreateThirdPartyCollectionModal: true }],
           [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
         ])
         .dispatch(saveCollectionRequest(thirdPartyCollection))
@@ -1278,7 +1278,6 @@ describe('when saving a collection', () => {
         .put(saveCollectionSuccess({ ...thirdPartyCollection, contractAddress: remoteCollection.contractAddress }))
         .put(closeModal('CreateCollectionModal'))
         .put(closeModal('CreateThirdPartyCollectionModal'))
-        .put(closeModal('CreateLinkedWearablesCollectionModal'))
         .put(closeModal('EditCollectionURNModal'))
         .put(closeModal('EditCollectionNameModal'))
         .dispatch(saveCollectionRequest(thirdPartyCollection))

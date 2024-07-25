@@ -10,9 +10,6 @@ export type Props = ModalProps & {
   urn: URN
   isLoading: boolean
   error: string | null
-  onBuildURN: (
-    decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY> | DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2>,
-    newURNSection: string
-  ) => string
+  onBuildURN: (decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY>, newURNSection: string) => string
   onSave: (newURN: string) => void
 }

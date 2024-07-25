@@ -7,14 +7,11 @@ import { ContractData, ContractName, getContract } from 'decentraland-transactio
 import { extractThirdPartyId } from 'lib/urn'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
-import { ThirdParty, ThirdPartyVersion } from './types'
+import { ThirdParty } from './types'
 
 export function isUserManagerOfThirdParty(address: string, thirdParty: ThirdParty): boolean {
   return thirdParty.managers.map(manager => manager.toLowerCase()).includes(address.toLowerCase())
 }
-
-export const getThirdPartyVersion = (thirdParty: ThirdParty): number =>
-  thirdParty.id.split(':')[3] === 'collections-linked-wearables' ? ThirdPartyVersion.V2 : ThirdPartyVersion.V1
 
 export const getThirdPartyForCollection = (thirdParties: Record<string, ThirdParty>, collection: Collection): ThirdParty | undefined =>
   thirdParties[extractThirdPartyId(collection.urn)]

@@ -247,11 +247,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     const openModals: ModalState = yield select(getOpenModals)
     const history: History = yield getContext('history')
 
-    if (
-      openModals['CreateCollectionModal'] ||
-      openModals['CreateThirdPartyCollectionModal'] ||
-      openModals['CreateLinkedWearablesCollectionModal']
-    ) {
+    if (openModals['CreateCollectionModal'] || openModals['CreateThirdPartyCollectionModal']) {
       // Redirect to the newly created collection detail
       const { collection } = action.payload
       const detailPageLocation = isTPCollection(collection) ? locations.thirdPartyCollectionDetail : locations.collectionDetail
@@ -262,7 +258,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('CreateThirdPartyCollectionModal'))
     yield put(closeModal('EditCollectionURNModal'))
-    yield put(closeModal('CreateLinkedWearablesCollectionModal'))
     yield put(closeModal('EditCollectionNameModal'))
   }
 

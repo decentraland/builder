@@ -110,15 +110,7 @@ import {
 } from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
 import { Item, BlockchainRarity } from './types'
-import {
-  buildCatalystItemURN,
-  buildThirdPartyURN,
-  buildThirdPartyV2URN,
-  decodeURN,
-  isThirdPartyCollectionDecodedUrn,
-  isThirdPartyV2CollectionDecodedUrn,
-  URNType
-} from 'lib/urn'
+import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, isThirdPartyCollectionDecodedUrn, URNType } from 'lib/urn'
 import { CLOSE_MODAL, CloseModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type ItemPaginationData = {
@@ -517,18 +509,11 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
           if (item.collectionId === collection.id && item.urn) {
             let newItemURN: string
             const itemURN = decodeURN(item.urn)
-            if (isThirdPartyCollectionDecodedUrn(collectionURN) || isThirdPartyV2CollectionDecodedUrn(collectionURN)) {
-              if (!isThirdPartyCollectionDecodedUrn(itemURN) && !isThirdPartyV2CollectionDecodedUrn(itemURN)) {
+            if (isThirdPartyCollectionDecodedUrn(collectionURN)) {
+              if (!isThirdPartyCollectionDecodedUrn(itemURN)) {
                 throw new Error(`The item ${item.id} is not part of a third-party collection but it should be`)
               }
-              newItemURN = isThirdPartyCollectionDecodedUrn(collectionURN)
-                ? buildThirdPartyURN(collectionURN.thirdPartyName, collectionURN.thirdPartyCollectionId, itemURN.thirdPartyTokenId)
-                : buildThirdPartyV2URN(
-                    collectionURN.thirdPartyLinkedCollectionName,
-                    collectionURN.linkedCollectionNetwork,
-                    collectionURN.linkedCollectionContractAddress,
-                    itemURN.thirdPartyTokenId
-                  )
+              newItemURN = buildThirdPartyURN(collectionURN.thirdPartyName, collectionURN.thirdPartyCollectionId, itemURN.thirdPartyTokenId)
             } else if (collectionURN.type === URNType.COLLECTIONS_V2) {
               if (itemURN.type !== URNType.COLLECTIONS_V2) {
                 throw new Error(`The item ${item.id} is not part of a decentraland collection but it should be`)
