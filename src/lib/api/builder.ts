@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosError } from 'axios'
-import { Entity, Mapping, Rarity } from '@dcl/schemas'
+import { ContractAddress, ContractNetwork, Entity, Mapping, Rarity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
@@ -76,7 +76,7 @@ export type RemoteItem = {
   created_at: Date
   updated_at: Date
   utility: string | null
-  mappings: Mapping[] | null
+  mappings: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | null
   local_content_hash: string | null
   catalyst_content_hash: string | null
 }

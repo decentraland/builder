@@ -8,10 +8,22 @@
   flex-direction: column;
 }
 
-.main :global(.ui.dropdown > .text > img) {
+.mappingType :global(.ui.dropdown > .text > img) {
   margin-top: 3px;
 }
 
 .mappingType :global(.ui.dropdown .menu > .item > img) {
   margin-top: 0px;
+}
+
+.linkedContractSelect :global(.divider.text),
+.linkedContractSelect :global(.visible.menu.transition) > div {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.linkedContractSelect :global(.divider.text) img,
+.linkedContractSelect :global(.visible.menu.transition) img {
+  height: 25px;
+  width: 25px;
 }

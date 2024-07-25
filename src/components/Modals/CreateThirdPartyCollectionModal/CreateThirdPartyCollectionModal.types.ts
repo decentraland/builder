@@ -1,23 +1,20 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { OpenModalAction } from 'decentraland-dapps/dist/modules/modal'
 import { SaveCollectionRequestAction, saveCollectionRequest } from 'modules/collection/actions'
 import { ThirdParty } from 'modules/thirdParty/types'
 
 export type Props = ModalProps & {
-  address?: string
+  ownerAddress?: string
   thirdParties: ThirdParty[]
-  isLoading: boolean
+  isCreatingCollection: boolean
+  isThirdPartyV2Enabled: boolean
   error: string | null
   onSubmit: typeof saveCollectionRequest
+  onBack: () => void
 }
 
-export type State = {
-  thirdPartyId: string
-  collectionName: string
-  urnSuffix: string
-  isTypedUrnSuffix: boolean
-}
-
-export type MapStateProps = Pick<Props, 'address' | 'thirdParties' | 'error' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSubmit'>
-export type MapDispatch = Dispatch<SaveCollectionRequestAction>
+export type MapStateProps = Pick<Props, 'ownerAddress' | 'thirdParties' | 'error' | 'isCreatingCollection' | 'isThirdPartyV2Enabled'>
+export type MapDispatchProps = Pick<Props, 'onSubmit' | 'onBack'>
+export type OwnProps = Pick<Props, 'metadata' | 'onClose'>
+export type MapDispatch = Dispatch<SaveCollectionRequestAction | OpenModalAction>

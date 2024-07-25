@@ -7,7 +7,7 @@ import { DecodedURN, decodeURN, isThirdParty, URNType } from 'lib/urn'
 import { Props, State } from './EditURNModal.types'
 
 export default class EditURNModal extends React.PureComponent<Props, State> {
-  decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY> | DecodedURN<URNType.COLLECTIONS_THIRDPARTY_V2> = this.decodeURN()
+  decodedURN: DecodedURN<URNType.COLLECTIONS_THIRDPARTY> = this.decodeURN()
   analytics = getAnalytics()
 
   state: State = {
@@ -22,11 +22,7 @@ export default class EditURNModal extends React.PureComponent<Props, State> {
     const { onSave, urn: oldURN } = this.props
     const urn = this.getUpdatedURN()
     if (isThirdParty(urn)) {
-      const metric =
-        (this.decodedURN.type === URNType.COLLECTIONS_THIRDPARTY && this.decodedURN.thirdPartyCollectionId) ||
-        this.decodedURN.type === URNType.COLLECTIONS_THIRDPARTY_V2
-          ? 'Change TP Item URN'
-          : 'Change TP Collection URN'
+      const metric = this.decodedURN.thirdPartyCollectionId ? 'Change TP Item URN' : 'Change TP Collection URN'
       this.analytics.track(metric, { oldURN, newURN: urn })
     }
 
@@ -47,7 +43,7 @@ export default class EditURNModal extends React.PureComponent<Props, State> {
   decodeURN() {
     const { urn } = this.props
     const decodedURN = decodeURN(urn)
-    if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY && decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY_V2) {
+    if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
       throw new Error(`Invalid URN type ${this.decodedURN.type}`)
     }
     return decodedURN

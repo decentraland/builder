@@ -3,7 +3,7 @@ import { DeploymentPreparationData, buildEntity } from 'dcl-catalyst-client/dist
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
 import { BuilderAPI } from 'lib/api/builder'
-import { buildCatalystItemURN, decodeURN, isThirdPartyV2CollectionDecodedUrn } from 'lib/urn'
+import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType, VIDEO_PATH } from './types'
@@ -131,8 +131,6 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     throw new Error('Item does not have URN')
   }
 
-  const decodedURN = decodeURN(item.urn)
-
   // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
   const baseEntityData = {
     id: item.urn,
@@ -152,7 +150,7 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
     thumbnail: THUMBNAIL_PATH,
     metrics: item.metrics,
     content: item.contents,
-    ...(isThirdPartyV2CollectionDecodedUrn(decodedURN) && item.mappings ? { mappings: item.mappings } : {})
+    ...(item.mappings ? { mappings: item.mappings } : {})
   }
 
   return {

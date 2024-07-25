@@ -8,7 +8,7 @@ export function renderWorldContributorTab(props: Partial<Props>) {
   return renderWithProviders(
     <CreateCollectionSelectorModal
       onCreateCollection={jest.fn()}
-      onCreateLinkedWearablesCollection={jest.fn()}
+      onCreateThirdPartyCollection={jest.fn()}
       metadata={{}}
       name="aName"
       onClose={jest.fn()}
@@ -22,14 +22,14 @@ export function renderWorldContributorTab(props: Partial<Props>) {
 describe('when clicking on the create collection button', () => {
   let renderedComponent: ReturnType<typeof renderWorldContributorTab>
   let onCreateCollection: jest.Mock
-  let onCreateLinkedWearablesCollection: jest.Mock
+  let onCreateThirdPartyCollection: jest.Mock
 
   beforeEach(() => {
     onCreateCollection = jest.fn()
-    onCreateLinkedWearablesCollection = jest.fn()
+    onCreateThirdPartyCollection = jest.fn()
     renderedComponent = renderWorldContributorTab({
       onCreateCollection,
-      onCreateLinkedWearablesCollection,
+      onCreateThirdPartyCollection,
       isThirdPartyManager: true
     })
   })
@@ -52,8 +52,8 @@ describe('when clicking on the create collection button', () => {
       userEvent.click(createButton)
     })
 
-    it('should call the onCreateLinkedWearablesCollection method prop', () => {
-      expect(onCreateLinkedWearablesCollection).toHaveBeenCalled()
+    it('should call the onCreateThirdPartyCollection method prop', () => {
+      expect(onCreateThirdPartyCollection).toHaveBeenCalled()
     })
   })
 })

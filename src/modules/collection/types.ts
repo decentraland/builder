@@ -23,8 +23,7 @@ export type Collection = {
 
 export enum CollectionType {
   STANDARD = 'standard',
-  THIRD_PARTY = 'third_party',
-  THIRD_PARTY_V2 = 'third_party_v2'
+  THIRD_PARTY = 'third_party'
 }
 
 export enum RoleType {

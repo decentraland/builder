@@ -14,6 +14,6 @@ export const isValid = (addr: string) => {
   return /^0x[a-fA-F0-9]{40}$/g.test(addr)
 }
 
-export function shorten(address: string) {
-  return address ? address.slice(0, 6) + '...' + address.slice(42 - 5) : ''
+export function shorten(address: string, leftChars: number = 6, rightChars: number = 5) {
+  return address ? address.slice(0, leftChars) + '...' + address.slice(42 - rightChars) : ''
 }

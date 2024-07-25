@@ -49,7 +49,7 @@ const COLLECTIONS_LEARN_MORE_URL = `${config.get('DOCS_URL')}/creator/wearables-
 const LINKED_COLLECTIONS_LEARN_MORE_URL = `${config.get('DOCS_URL')}/creator/wearables/linked-wearables/`
 
 export const CreateCollectionSelectorModal = (props: Props) => {
-  const { onClose, onCreateCollection, onCreateLinkedWearablesCollection, name, isThirdPartyManager, isLoadingThirdParties } = props
+  const { onClose, onCreateCollection, onCreateThirdPartyCollection, name, isThirdPartyManager, isLoadingThirdParties } = props
 
   return (
     <Modal name={name} onClose={onClose} size="small">
@@ -73,7 +73,7 @@ export const CreateCollectionSelectorModal = (props: Props) => {
             image={polygonSvg}
             title={t('create_collection_selector_modal.linked_collection.title')}
             subtitle={t('create_collection_selector_modal.linked_collection.subtitle')}
-            onCreate={onCreateLinkedWearablesCollection}
+            onCreate={onCreateThirdPartyCollection}
             isLoading={isLoadingThirdParties}
             disabled={!isThirdPartyManager || isLoadingThirdParties}
             learnMoreUrl={LINKED_COLLECTIONS_LEARN_MORE_URL}

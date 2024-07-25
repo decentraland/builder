@@ -76,7 +76,7 @@ export default function CollectionsPage(props: Props) {
   }, [address, sort])
 
   const handleNewThirdPartyCollection = useCallback(() => {
-    onOpenModal('CreateLinkedWearablesCollectionModal')
+    onOpenModal('CreateThirdPartyCollectionModal')
   }, [onOpenModal, isLinkedWearablesV2Enabled])
 
   const handleNewCollection = useCallback(() => {
@@ -213,7 +213,7 @@ export default function CollectionsPage(props: Props) {
         <Field
           placeholder={t('itemdrawer.search_items')}
           className="collections-search-field"
-          input={{ icon: 'search', iconPosition: 'left', inverted: true }}
+          input={{ icon: 'search', iconPosition: 'left' }}
           onChange={handleSearchChange}
           icon={<UIIcon name="search" className="searchIcon" />}
           iconPosition="left"
@@ -236,7 +236,7 @@ export default function CollectionsPage(props: Props) {
         </Row>
       </div>
     )
-  }, [search, isThirdPartyManager, handleSearchChange, handleOpenEditor, handleNewCollection])
+  }, [search, isThirdPartyManager, isLinkedWearablesV2Enabled, handleSearchChange, handleOpenEditor, handleNewCollection])
 
   const renderViewActions = useCallback(() => {
     return (

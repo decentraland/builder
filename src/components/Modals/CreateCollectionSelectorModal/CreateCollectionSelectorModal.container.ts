@@ -15,9 +15,9 @@ const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProp
     ownProps.onClose()
     dispatch(openModal('CreateCollectionModal'))
   },
-  onCreateLinkedWearablesCollection: () => {
+  onCreateThirdPartyCollection: () => {
     ownProps.onClose()
-    dispatch(openModal('CreateLinkedWearablesCollectionModal'))
+    dispatch(openModal('CreateThirdPartyCollectionModal'))
   }
 })
 

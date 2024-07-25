@@ -1,5 +1,4 @@
 import * as React from 'react'
-import uuid from 'uuid'
 import { ethers } from 'ethers'
 import {
   BodyPartCategory,
@@ -10,7 +9,10 @@ import {
   PreviewProjection,
   WearableCategory,
   Mapping,
-  MappingType
+  MappingType,
+  Mappings,
+  ContractNetwork,
+  ContractAddress
 } from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
@@ -70,15 +72,12 @@ import {
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
 import {
-  getDefaultThirdPartyItemUrnSuffix,
+  getDefaultThirdPartyUrnSuffix,
   buildThirdPartyURN,
-  buildThirdPartyV2URN,
   DecodedURN,
   decodeURN,
   isThirdParty,
-  isThirdPartyCollectionDecodedUrn,
-  isThirdPartyV2CollectionDecodedUrn,
-  URNType
+  isThirdPartyCollectionDecodedUrn
 } from 'lib/urn'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
@@ -106,6 +105,9 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
+import { LinkedContract } from 'modules/thirdParty/types'
+
+const defaultMapping: Mapping = { type: MappingType.ANY }
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
@@ -113,8 +115,23 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   modalContainer = React.createRef<HTMLDivElement>()
   timer: ReturnType<typeof setTimeout> | undefined
 
+  getDefaultMappings(
+    contracts: LinkedContract[],
+    isThirdPartyV2Enabled: boolean
+  ): Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | undefined {
+    if (contracts.length === 0 || !isThirdPartyV2Enabled) {
+      return undefined
+    }
+
+    return {
+      [contracts[0].network]: {
+        [contracts[0].address]: [defaultMapping]
+      }
+    }
+  }
+
   getInitialState() {
-    const { metadata } = this.props
+    const { metadata, contracts, isThirdPartyV2Enabled } = this.props
 
     const state: State = {
       view: CreateItemView.IMPORT,
@@ -141,7 +158,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       state.category = item.data.category
       state.rarity = item.rarity
       state.isRepresentation = false
-      state.mapping = item.mappings && item.mappings.length > 0 ? item.mappings[0] : { type: MappingType.ANY }
+      state.mappings = item.mappings ?? this.getDefaultMappings(contracts, isThirdPartyV2Enabled)
 
       if (addRepresentation) {
         const missingBodyShape = getMissingBodyShapeType(item)
@@ -150,6 +167,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           state.isRepresentation = true
         }
       }
+    } else {
+      state.mappings = this.getDefaultMappings(contracts, isThirdPartyV2Enabled)
     }
 
     return state
@@ -261,7 +280,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       requiredPermissions,
       tags,
       blockVrmExport,
-      mapping
+      mappings
     } = this.state as StateData
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -269,13 +288,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
     let urn: string | undefined
     if (decodedCollectionUrn && isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
-      urn = buildThirdPartyURN(decodedCollectionUrn.thirdPartyName, decodedCollectionUrn.thirdPartyCollectionId, uuid.v4())
-    } else if (decodedCollectionUrn && isThirdPartyV2CollectionDecodedUrn(decodedCollectionUrn)) {
-      urn = buildThirdPartyV2URN(
-        decodedCollectionUrn.thirdPartyLinkedCollectionName,
-        decodedCollectionUrn.linkedCollectionNetwork,
-        decodedCollectionUrn.linkedCollectionContractAddress,
-        getDefaultThirdPartyItemUrnSuffix(name)
+      urn = buildThirdPartyURN(
+        decodedCollectionUrn.thirdPartyName,
+        decodedCollectionUrn.thirdPartyCollectionId,
+        getDefaultThirdPartyUrnSuffix(name)
       )
     }
 
@@ -326,7 +342,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       owner: address!,
       metrics,
       contents,
-      mappings: belongsToAThirdPartyCollection ? [mapping] : null,
+      mappings: belongsToAThirdPartyCollection && mappings ? mappings : null,
       createdAt: +new Date(),
       updatedAt: +new Date()
     }
@@ -540,19 +556,57 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     })
   }
 
-  isMappingValid = (mapping: Mapping) => {
-    switch (mapping.type) {
-      case MappingType.SINGLE:
-        return !!mapping.id
-      case MappingType.MULTIPLE:
-        return mapping.ids.length > 0
-      case MappingType.RANGE:
-        return !!mapping.from && !!mapping.to && BigInt(mapping.from) <= BigInt(mapping.to)
+  areMappingsValid = (mappings: Mappings): boolean => {
+    try {
+      const validate = Mappings.validate(mappings)
+      return !!validate
+    } catch (error) {
+      return false
     }
   }
 
-  handleMappingChange = (mapping: Mapping) => {
-    this.setState({ mapping })
+  getContract = (): LinkedContract | undefined => {
+    const { contracts } = this.props
+    const { mappings } = this.state
+    // If no mappings are selected, return the first contract
+    if (!mappings) {
+      return contracts[0]
+    }
+
+    // Get the first contract from the mappings data or the first contract from the contracts list
+    const firstNetwork = Object.keys(mappings)[0] as ContractNetwork
+    const contractsInNetwork = firstNetwork ? mappings[firstNetwork] : undefined
+    const firstContractAddress = contractsInNetwork ? Object.keys(contractsInNetwork)[0] : undefined
+    return firstContractAddress ? contracts.find(contract => contract.address === firstContractAddress) : contracts[0]
+  }
+
+  getMapping = (): Mapping => {
+    const { contracts, isThirdPartyV2Enabled } = this.props
+    const { mappings } = this.state
+    const contract = this.getContract()
+    if (!contract) {
+      return defaultMapping
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    let mapping: Mapping | undefined
+    if (mappings) {
+      mapping = mappings[contract.network]?.[contract.address][0]
+    } else {
+      mapping = this.getDefaultMappings(contracts, isThirdPartyV2Enabled)?.[contract.network]?.[contract.address][0]
+    }
+
+    return mapping ?? defaultMapping
+  }
+
+  handleMappingChange = (mapping: Mapping, contract: LinkedContract) => {
+    const mappings: Mappings = {
+      [contract.network]: {
+        [contract.address]: [mapping]
+      }
+    }
+
+    this.setState({ mappings })
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -877,14 +931,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   renderFields() {
-    const { collection } = this.props
+    const { collection, isThirdPartyV2Enabled, contracts } = this.props
     const { name, category, rarity, contents, item, type, isLoading } = this.state
-    const { mapping } = this.state
 
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
-    const belongsToAThirdPartyV2Collection = collection?.urn && isThirdParty(collection.urn, URNType.COLLECTIONS_THIRDPARTY_V2)
     const rarities = Rarity.getRarities()
     const categories: string[] = type === ItemType.WEARABLE ? getWearableCategories(contents) : getEmoteCategories()
+    const contract = this.getContract()
 
     const raritiesLink =
       'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections' +
@@ -938,9 +991,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
-        {belongsToAThirdPartyV2Collection ? (
-          <MappingEditor onChange={this.handleMappingChange} mapping={mapping ?? { type: MappingType.ANY }} />
-        ) : null}
+        {isThirdPartyV2Enabled && contract && (
+          <MappingEditor onChange={this.handleMappingChange} contract={contract} contracts={contracts} mapping={this.getMapping()} />
+        )}
       </>
     )
   }
@@ -972,10 +1025,10 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   isValid(): boolean {
-    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize, mapping } = this.state
-    const { collection } = this.props
+    const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize, mappings } =
+      this.state
+    const { collection, isThirdPartyV2Enabled, contracts } = this.props
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
-    const belongsToAThirdPartyV2Collection = collection?.urn && isThirdParty(collection.urn, URNType.COLLECTIONS_THIRDPARTY_V2)
 
     if (this.state.error) {
       this.setState({ error: undefined })
@@ -1006,7 +1059,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const isSmartWearable = isSmart({ type, contents: this.state.contents })
     const isRequirementMet = required.every(prop => prop !== undefined)
 
-    if ((belongsToAThirdPartyV2Collection && !mapping) || (belongsToAThirdPartyV2Collection && mapping && !this.isMappingValid(mapping))) {
+    if (isThirdPartyV2Enabled && ((!mappings && contracts.length > 0) || (mappings && !this.areMappingsValid(mappings)))) {
       return false
     }
 

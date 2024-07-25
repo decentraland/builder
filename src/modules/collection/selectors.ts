@@ -81,8 +81,7 @@ export const getAuthorizedCollections = createSelector<
     switch (type) {
       case CollectionType.STANDARD:
         return address && canSeeCollection(collection, address)
-      case CollectionType.THIRD_PARTY:
-      case CollectionType.THIRD_PARTY_V2: {
+      case CollectionType.THIRD_PARTY: {
         const thirdParty = getThirdPartyForCollection(thirdParties, collection)
         return address && thirdParty && isUserManagerOfThirdParty(address, thirdParty)
       }

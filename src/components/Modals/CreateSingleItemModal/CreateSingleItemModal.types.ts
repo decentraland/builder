@@ -1,10 +1,11 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { IPreviewController, Mapping, Rarity } from '@dcl/schemas'
+import { IPreviewController, Mappings, Rarity } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemType, SyncStatus } from 'modules/item/types'
+import { LinkedContract } from 'modules/thirdParty/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -20,7 +21,9 @@ export type Props = ModalProps & {
   address?: string
   metadata: CreateSingleItemModalMetadata
   error: string | null
+  isThirdPartyV2Enabled: boolean
   isLoading: boolean
+  contracts: LinkedContract[]
   collection: Collection | null
   itemStatus: SyncStatus | null
   onSave: typeof saveItemRequest
@@ -52,7 +55,7 @@ export type StateData = {
   requiredPermissions?: string[]
   tags?: string[]
   modelSize?: number
-  mapping: Mapping
+  mappings: Mappings
   blockVrmExport?: boolean
 }
 export type State = {
@@ -103,6 +106,9 @@ export type AcceptedFileProps = Pick<
   | 'blockVrmExport'
 >
 export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled' | 'contracts'
+>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

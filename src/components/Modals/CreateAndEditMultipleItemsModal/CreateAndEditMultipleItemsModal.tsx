@@ -1,6 +1,5 @@
 import * as React from 'react'
 import PQueue from 'p-queue'
-import uuid from 'uuid'
 import {
   ItemFactory,
   loadFile,
@@ -24,14 +23,12 @@ import { config } from 'config'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
 import {
-  getDefaultThirdPartyItemUrnSuffix,
   buildThirdPartyURN,
-  buildThirdPartyV2URN,
   decodedCollectionsUrnAreEqual,
   DecodedURN,
   decodeURN,
+  getDefaultThirdPartyUrnSuffix,
   isThirdPartyCollectionDecodedUrn,
-  isThirdPartyV2CollectionDecodedUrn,
   URNType
 } from 'lib/urn'
 import { convertImageIntoWearableThumbnail, dataURLToBlob, getImageType } from 'modules/media/utils'
@@ -176,15 +173,10 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       // Generate or set the correct URN for the items taking into consideration the selected collection
       const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
       // Check if the collection is a third party collection
-      if (
-        decodedCollectionUrn &&
-        (isThirdPartyCollectionDecodedUrn(decodedCollectionUrn) || isThirdPartyV2CollectionDecodedUrn(decodedCollectionUrn))
-      ) {
+      if (decodedCollectionUrn && isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
         const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
         const thirdPartyTokenId =
-          loadedFile.wearable.id &&
-          decodedUrn &&
-          (decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY || decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY_V2)
+          loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY
             ? decodedUrn.thirdPartyTokenId ?? null
             : null
 
@@ -199,16 +191,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
             buildThirdPartyURN(
               decodedCollectionUrn.thirdPartyName,
               decodedCollectionUrn.thirdPartyCollectionId,
-              thirdPartyTokenId ?? uuid.v4()
-            )
-          )
-        } else {
-          itemFactory.withUrn(
-            buildThirdPartyV2URN(
-              decodedCollectionUrn.thirdPartyLinkedCollectionName,
-              decodedCollectionUrn.linkedCollectionNetwork,
-              decodedCollectionUrn.linkedCollectionAddress,
-              getDefaultThirdPartyItemUrnSuffix(loadedFile.wearable.name)
+              thirdPartyTokenId ?? getDefaultThirdPartyUrnSuffix(loadedFile.wearable.name)
             )
           )
         }
