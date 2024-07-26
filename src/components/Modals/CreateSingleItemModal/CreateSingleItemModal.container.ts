@@ -13,7 +13,8 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Create
 import CreateSingleItemModal from './CreateSingleItemModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const collection: Collection | null = ownProps.metadata.collectionId ? getCollection(state, ownProps.metadata.collectionId) : null
+  const collectionId: string | undefined = ownProps.metadata.item?.collectionId || ownProps.metadata.item?.collectionId
+  const collection: Collection | null = collectionId ? getCollection(state, collectionId) : null
   const statusByItemId = getStatusByItemId(state)
   const itemStatus = ownProps.metadata.item ? statusByItemId[ownProps.metadata.item.id] : null
   const contracts = collection && isThirdPartyCollection(collection) ? getCollectionThirdParty(state, collection)?.contracts ?? [] : []
