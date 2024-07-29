@@ -211,11 +211,11 @@
       "learn_more": "学到更多"
     }
   },
-  "create_linked_wearable_collection_modal": {
+  "create_third_party_collection_modal": {
     "title": "新的链接可穿戴设备集合",
     "subtitle": "与 NFT 挂钩的特殊可穿戴设备",
     "third_party_field": {
-      "label": "第三方提供商"
+      "label": "公司指定"
     },
     "linked_contract_field": {
       "label": "智能合约地址",
@@ -225,21 +225,6 @@
       "label": "姓名"
     },
     "collection_id_field": {
-      "label": "Id",
-      "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母、数字和破折号 (-)"
-    }
-  },
-  "create_third_party_collection_modal": {
-    "title": "新的链接可穿戴设备系列",
-    "subtitle": "为您的新集合输入一个描述性名称",
-    "third_party": {
-      "label": "第三者"
-    },
-    "name_field": {
-      "label": "姓名",
-      "message": "集合名称不能包含“:”字符"
-    },
-    "urn_suffix_field": {
       "label": "Id",
       "message": "我们建议将收款合约地址作为 id 的一部分。只允许使用字母、数字和破折号 (-)"
     }
@@ -846,6 +831,7 @@
     "title": "下载场景并以更高的复杂程度创建."
   },
   "global": {
+    "network": "网络",
     "avatar": "头像",
     "activity": "活动",
     "approved_tx": "批准的TX",
@@ -930,7 +916,13 @@
     "role": "角色",
     "none": "没有任何",
     "emote": "表情",
-    "utility": "物品效用"
+    "utility": "物品效用",
+    "networks": {
+      "mainnet": "Ethereum Mainnet",
+      "matic": "Polygon",
+      "sepolia": "Ethereum Sepolia",
+      "amoy": "Polygon Amoy"
+    }
   },
   "roles": {
     "1": "持有者",

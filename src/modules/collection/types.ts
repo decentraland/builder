@@ -1,3 +1,4 @@
+import { ContractNetwork } from '@dcl/schemas'
 import { Item } from 'modules/item/types'
 import { ForumPostReply } from 'modules/forum/types'
 
@@ -17,6 +18,8 @@ export type Collection = {
   forumPostReply?: ForumPostReply
   lock?: number
   reviewedAt?: number
+  linkedContractAddress?: string
+  linkedContractNetwork?: ContractNetwork
   createdAt: number
   updatedAt: number
 }

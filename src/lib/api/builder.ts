@@ -98,6 +98,9 @@ export type RemoteCollection = {
   created_at: Date
   updated_at: Date
   item_count?: string
+  linked_contract_address: string | null
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  linked_contract_network: ContractNetwork | null
 }
 
 export type RemoteProject = {
@@ -407,6 +410,8 @@ function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'cre
     urn: collection.urn,
     is_published: false,
     is_approved: false,
+    linked_contract_address: collection.linkedContractAddress || null,
+    linked_contract_network: collection.linkedContractNetwork || null,
     minters: collection.minters,
     managers: collection.managers,
     forum_link: collection.forumLink || null,
@@ -428,6 +433,8 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     forumLink: remoteCollection.forum_link || undefined,
     lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
+    linkedContractAddress: remoteCollection.linked_contract_address || undefined,
+    linkedContractNetwork: remoteCollection.linked_contract_network || undefined,
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }

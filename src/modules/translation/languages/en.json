@@ -198,26 +198,26 @@
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
   "create_collection_selector_modal": {
-    "title": "New Collection",
+    "title": "Create a Collection",
     "subtitle": "Select the type of collection you want to create",
     "collection": {
-      "title": "Collections",
-      "subtitle": "Classic Decentraland Wearables that can be sold on the Marketplace"
+      "title": "Wearables or Emotes",
+      "subtitle": "Decentraland Wearables & Emotes that can be sold in the Marketplace."
     },
     "linked_collection": {
       "title": "Linked Collections",
-      "subtitle": "Special Wearables linked to NFTs"
+      "subtitle": "Special Wearables linked to NFT collections that originated outside of Decentraland."
     },
     "actions": {
       "create": "Create Collection",
       "learn_more": "Learn More"
     }
   },
-  "create_linked_wearable_collection_modal": {
+  "create_third_party_collection_modal": {
     "title": "New Linked Wearables Collection",
     "subtitle": "Special Wearables linked to NFTs.",
     "third_party_field": {
-      "label": "Third Party"
+      "label": "Company assigned"
     },
     "linked_contract_field": {
       "label": "Smart Contract Address",
@@ -225,24 +225,10 @@
     },
     "name_field": {
       "label": "Name",
+      "placeholder": "Descriptive name",
       "message": "The collection name can't contain the ':' character."
     },
     "collection_id_field": {
-      "label": "Id",
-      "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
-    }
-  },
-  "create_third_party_collection_modal": {
-    "title": "New Linked Wearables Collection",
-    "subtitle": "Enter a descriptive name for your new collection",
-    "third_party": {
-      "label": "Third Party"
-    },
-    "name_field": {
-      "label": "Name",
-      "message": "The name can be {maxLength} characters at most"
-    },
-    "urn_suffix_field": {
       "label": "Id",
       "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
     }
@@ -851,6 +837,7 @@
     "title": "Download scenes and create with a higher level of complexity."
   },
   "global": {
+    "network": "Network",
     "avatar": "Avatar",
     "activity": "Activity",
     "approved_tx": "Approved",
@@ -938,7 +925,13 @@
     "role": "Role",
     "none": "None",
     "emote": "Emote",
-    "utility": "Utility"
+    "utility": "Utility",
+    "networks": {
+      "mainnet": "Ethereum Mainnet",
+      "matic": "Polygon",
+      "sepolia": "Ethereum Sepolia",
+      "amoy": "Polygon Amoy"
+    }
   },
   "roles": {
     "1": "Owner",

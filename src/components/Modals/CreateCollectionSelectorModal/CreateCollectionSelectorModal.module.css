@@ -1,7 +1,8 @@
 .modalContent {
   display: flex;
   flex-direction: row;
-  gap: 16px;
+  gap: 15px;
+  padding: 10px;
 }
 
 .collectionSelection {
@@ -27,8 +28,8 @@
 }
 
 .collectionSelection img {
-  width: 133px;
-  height: 133px;
+  width: 227px;
+  height: 110px;
 }
 
 .collectionSelection .content {
@@ -40,6 +41,10 @@
 .collectionSelection .content .text {
   text-align: center;
   margin-top: 32px;
+}
+
+.collectionSelection .content .text p {
+  color: #cfcdd4;
 }
 
 .collectionSelection .actions {

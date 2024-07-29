@@ -2,14 +2,10 @@ import { SyntheticEvent, useCallback, useMemo } from 'react'
 import { DropdownProps, Field, InputOnChangeData, SelectField, TextAreaField, TextAreaProps } from 'decentraland-ui'
 import { MappingType, MultipleMapping } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation'
-import { LinkedContractProtocol } from 'modules/thirdParty/types'
-import { shorten } from 'lib/address'
 import allIcon from '../../icons/all.svg'
 import multipleIcon from '../../icons/multiple.svg'
 import singleIcon from '../../icons/single.svg'
 import rangeIcon from '../../icons/range.svg'
-import ethereumSvg from '../../icons/ethereum.svg'
-import polygonSvg from '../../icons/polygon.svg'
 import { Props } from './MappingEditor.types'
 import styles from './MappingEditor.module.css'
 
@@ -19,25 +15,9 @@ const mappingTypeIcons = {
   [MappingType.SINGLE]: singleIcon,
   [MappingType.RANGE]: rangeIcon
 }
-const imgSrcByNetwork = {
-  [LinkedContractProtocol.MAINNET]: ethereumSvg,
-  [LinkedContractProtocol.MATIC]: polygonSvg,
-  [LinkedContractProtocol.SEPOLIA]: ethereumSvg,
-  [LinkedContractProtocol.AMOY]: polygonSvg
-}
 
 export const MappingEditor = (props: Props) => {
-  const { mapping, error, disabled, contract, contracts, onChange } = props
-  const linkedContractsOptions = useMemo(
-    () =>
-      contracts.map((contract, index) => ({
-        value: index,
-        key: index,
-        image: imgSrcByNetwork[contract.network],
-        text: shorten(contract.address, 14, 14)
-      })),
-    [contracts, imgSrcByNetwork]
-  )
+  const { mapping, error, disabled, onChange } = props
 
   const [mappingType, mappingValue] = useMemo(() => {
     switch (mapping.type) {
@@ -68,82 +48,56 @@ export const MappingEditor = (props: Props) => {
       const mappingType = value as MappingType
       switch (mappingType) {
         case MappingType.ANY:
-          onChange({ type: mappingType }, contract)
+          onChange({ type: mappingType })
           break
         case MappingType.MULTIPLE:
-          onChange({ type: mappingType, ids: [] }, contract)
+          onChange({ type: mappingType, ids: [] })
           break
         case MappingType.SINGLE:
-          onChange({ type: mappingType, id: '' }, contract)
+          onChange({ type: mappingType, id: '' })
           break
         case MappingType.RANGE:
-          onChange({ type: mappingType, to: '', from: '' }, contract)
+          onChange({ type: mappingType, to: '', from: '' })
           break
       }
     },
-    [contract, onChange]
+    [onChange]
   )
 
-  const handleSingleMappingValueChange = useCallback(
-    (_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      onChange({ type: MappingType.SINGLE, id: data.value }, contract)
-    },
-    [contract]
-  )
+  const handleSingleMappingValueChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    onChange({ type: MappingType.SINGLE, id: data.value })
+  }, [])
 
-  const handleMultipleMappingValueChange = useCallback(
-    (_: React.ChangeEvent<HTMLTextAreaElement>, data: TextAreaProps) => {
-      const ids =
-        data.value
-          ?.toString()
-          .replaceAll(/[^0-9,\s]/g, '')
-          .split(',')
-          .map(value => value.trim()) ?? []
+  const handleMultipleMappingValueChange = useCallback((_: React.ChangeEvent<HTMLTextAreaElement>, data: TextAreaProps) => {
+    const ids =
+      data.value
+        ?.toString()
+        .replaceAll(/[^0-9,\s]/g, '')
+        .split(',')
+        .map(value => value.trim()) ?? []
 
-      onChange(
-        {
-          type: MappingType.MULTIPLE,
-          ids
-        },
-        contract
-      )
-    },
-    [contract]
-  )
+    onChange({
+      type: MappingType.MULTIPLE,
+      ids
+    })
+  }, [])
 
   const handleFromMappingValueChange = useCallback(
     (_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      onChange({ type: MappingType.RANGE, from: data.value, to: mappingValue.split(',')[1] }, contract)
+      onChange({ type: MappingType.RANGE, from: data.value, to: mappingValue.split(',')[1] })
     },
-    [mappingValue, contract]
+    [mappingValue]
   )
 
   const handleToMappingValueChange = useCallback(
     (_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      onChange({ type: MappingType.RANGE, from: mappingValue.split(',')[0], to: data.value }, contract)
+      onChange({ type: MappingType.RANGE, from: mappingValue.split(',')[0], to: data.value })
     },
-    [mappingValue, contract]
-  )
-
-  const handleLinkedContractChange = useCallback(
-    (_: SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-      onChange(mapping, contracts[value as number])
-    },
-    [mapping, contracts]
+    [mappingValue]
   )
 
   return (
     <div className={styles.main}>
-      <SelectField
-        label={t('create_linked_wearable_collection_modal.linked_contract_field.label')}
-        className={styles.linkedContractSelect}
-        disabled={linkedContractsOptions.length === 0}
-        value={contract ? contracts.indexOf(contract) : undefined}
-        options={linkedContractsOptions}
-        search={false}
-        onChange={handleLinkedContractChange}
-        message={linkedContractsOptions.length === 0 ? t('create_linked_wearable_collection_modal.linked_contract_field.message') : ''}
-      />
       <SelectField
         label={t('mapping_editor.mapping_type_label')}
         onChange={handleMappingTypeChange}
