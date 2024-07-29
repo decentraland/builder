@@ -103,7 +103,7 @@ export type AcceptedFileProps = Pick<
   | 'tags'
   | 'blockVrmExport'
 >
-export type OwnProps = Pick<Props, 'metadata' | 'name' | 'onClose'>
+export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

@@ -404,7 +404,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   modifyItem = async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
     const { itemStatus, onSave } = this.props
-    const { name, bodyShape, type, metrics, category, playMode, requiredPermissions } = this.state as StateData
+    const { name, bodyShape, type, mappings, metrics, category, playMode, requiredPermissions } = this.state as StateData
 
     let data: WearableData | EmoteDataADR74
 
@@ -432,6 +432,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       name,
       metrics,
       contents,
+      mappings,
       updatedAt: +new Date()
     }
 
