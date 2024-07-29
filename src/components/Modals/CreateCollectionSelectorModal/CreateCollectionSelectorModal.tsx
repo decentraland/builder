@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation'
 import { config } from 'config'
-import ethereumSvg from '../../../icons/ethereum.svg'
-import polygonSvg from '../../../icons/polygon.svg'
+import collectionsImage from '../../../images/collections.png'
+import linkedCollectionsImage from '../../../images/linked-collections.png'
 import { Props } from './CreateCollectionSelectorModal.types'
 import styles from './CreateCollectionSelectorModal.module.css'
 import { CREATE_BUTTON_TEST_ID, DISABLED_DATA_TEST_ID } from './constants'
@@ -52,7 +52,7 @@ export const CreateCollectionSelectorModal = (props: Props) => {
   const { onClose, onCreateCollection, onCreateThirdPartyCollection, name, isThirdPartyManager, isLoadingThirdParties } = props
 
   return (
-    <Modal name={name} onClose={onClose} size="small">
+    <Modal name={name} onClose={onClose} size="medium">
       <ModalNavigation
         title={t('create_collection_selector_modal.title')}
         subtitle={t('create_collection_selector_modal.subtitle')}
@@ -62,7 +62,7 @@ export const CreateCollectionSelectorModal = (props: Props) => {
         <div className={styles.modalContent}>
           <CollectionSelection
             // Temporary image for the collections
-            image={ethereumSvg}
+            image={collectionsImage}
             title={t('create_collection_selector_modal.collection.title')}
             subtitle={t('create_collection_selector_modal.collection.subtitle')}
             onCreate={onCreateCollection}
@@ -70,7 +70,7 @@ export const CreateCollectionSelectorModal = (props: Props) => {
           />
           <CollectionSelection
             // Temporary image for the linked wearables collections
-            image={polygonSvg}
+            image={linkedCollectionsImage}
             title={t('create_collection_selector_modal.linked_collection.title')}
             subtitle={t('create_collection_selector_modal.linked_collection.subtitle')}
             onCreate={onCreateThirdPartyCollection}

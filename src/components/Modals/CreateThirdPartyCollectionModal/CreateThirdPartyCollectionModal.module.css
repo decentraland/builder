@@ -1,0 +1,22 @@
+.contract {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.contract :global(.divider.text),
+.contract :global(.visible.menu.transition) > div {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.contract :global(.divider.text) img,
+.contract :global(.visible.menu.transition) img {
+  height: 25px;
+  width: 25px;
+}
+
+.contract :global(.dcl.select-field) {
+  min-width: unset;
+  flex-grow: 1;
+}

@@ -5,7 +5,6 @@ import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemType, SyncStatus } from 'modules/item/types'
-import { LinkedContract } from 'modules/thirdParty/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -23,7 +22,6 @@ export type Props = ModalProps & {
   error: string | null
   isThirdPartyV2Enabled: boolean
   isLoading: boolean
-  contracts: LinkedContract[]
   collection: Collection | null
   itemStatus: SyncStatus | null
   onSave: typeof saveItemRequest
@@ -106,9 +104,6 @@ export type AcceptedFileProps = Pick<
   | 'blockVrmExport'
 >
 export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
-export type MapStateProps = Pick<
-  Props,
-  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled' | 'contracts'
->
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled'>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

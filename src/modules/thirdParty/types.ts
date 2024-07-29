@@ -1,9 +1,4 @@
-export enum LinkedContractProtocol {
-  MATIC = 'matic',
-  SEPOLIA = 'sepolia',
-  AMOY = 'amoy',
-  MAINNET = 'mainnet'
-}
+import { ContractNetwork } from '@dcl/schemas'
 
 export type ThirdParty = {
   id: string
@@ -18,7 +13,7 @@ export type ThirdParty = {
 
 export type LinkedContract = {
   address: string
-  network: LinkedContractProtocol
+  network: ContractNetwork
 }
 
 export type Cheque = {
