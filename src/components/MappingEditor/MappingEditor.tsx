@@ -8,6 +8,7 @@ import singleIcon from '../../icons/single.svg'
 import rangeIcon from '../../icons/range.svg'
 import { Props } from './MappingEditor.types'
 import styles from './MappingEditor.module.css'
+import classNames from 'classnames'
 
 const mappingTypeIcons = {
   [MappingType.ANY]: allIcon,
@@ -17,7 +18,7 @@ const mappingTypeIcons = {
 }
 
 export const MappingEditor = (props: Props) => {
-  const { mapping, error, disabled, onChange } = props
+  const { mapping, error, disabled, isCompact, onChange } = props
 
   const [mappingType, mappingValue] = useMemo(() => {
     switch (mapping.type) {
@@ -97,22 +98,28 @@ export const MappingEditor = (props: Props) => {
   )
 
   return (
-    <div className={styles.main}>
-      <SelectField
-        label={t('mapping_editor.mapping_type_label')}
-        onChange={handleMappingTypeChange}
-        value={mappingType}
-        className={styles.mappingType}
-        options={mappingTypeOptions}
-      />{' '}
+    <div className={classNames(styles.main, isCompact ? styles.compact : styles.full)}>
+      <div>
+        <SelectField
+          label={isCompact ? undefined : t('mapping_editor.mapping_type_label')}
+          onChange={handleMappingTypeChange}
+          value={mappingType}
+          className={styles.mappingType}
+          options={mappingTypeOptions}
+        />{' '}
+      </div>
       <div className={styles.mappings}>
         {mappingType === MappingType.ANY ? (
-          <Field label={t('mapping_editor.mapping_value_label')} disabled value={t('mapping_editor.mapping_value_any')} />
+          <Field
+            label={isCompact ? undefined : t('mapping_editor.mapping_value_label')}
+            disabled
+            value={t('mapping_editor.mapping_value_any')}
+          />
         ) : mappingType === MappingType.SINGLE ? (
           <Field
-            label={t('mapping_editor.mapping_value_label')}
+            label={isCompact ? undefined : t('mapping_editor.mapping_value_label')}
             disabled={disabled}
-            type={mappingType === MappingType.SINGLE ? 'number' : 'text'}
+            type="number"
             value={mappingValue}
             error={!!error}
             message={error}
@@ -135,9 +142,9 @@ export const MappingEditor = (props: Props) => {
             onChange={handleMultipleMappingValueChange}
           />
         ) : mappingType === MappingType.RANGE ? (
-          <>
+          <div className={classNames(styles.range, isCompact ? styles.compact : styles.full)}>
             <Field
-              label={t('mapping_editor.mapping_value_from_label')}
+              label={isCompact ? undefined : t('mapping_editor.mapping_value_from_label')}
               disabled={disabled}
               type="number"
               placeholder={'1'}
@@ -146,7 +153,7 @@ export const MappingEditor = (props: Props) => {
               onChange={handleFromMappingValueChange}
             />
             <Field
-              label={t('mapping_editor.mapping_value_to_label')}
+              label={isCompact ? undefined : t('mapping_editor.mapping_value_to_label')}
               disabled={disabled}
               type="number"
               placeholder={'4000'}
@@ -154,7 +161,7 @@ export const MappingEditor = (props: Props) => {
               value={mappingValue.split(',')[1]}
               onChange={handleToMappingValueChange}
             />
-          </>
+          </div>
         ) : null}
       </div>
     </div>

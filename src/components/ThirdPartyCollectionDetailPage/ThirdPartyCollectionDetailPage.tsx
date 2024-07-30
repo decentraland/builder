@@ -1,7 +1,7 @@
+import { useHistory } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import {
-  Grid,
   Section,
   Row,
   Narrow,
@@ -12,7 +12,6 @@ import {
   TextFilter,
   Pagination,
   PaginationProps,
-  Checkbox,
   CheckboxProps,
   Loader,
   Dropdown,
@@ -24,6 +23,7 @@ import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
 import { locations } from 'routing/locations'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
+import { ThirdParty } from 'modules/thirdParty/types'
 import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import CollectionProvider from 'components/CollectionProvider'
@@ -31,15 +31,16 @@ import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
+import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
+import { CollectionItemV2 } from './CollectionItemV2'
 import { Props, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
-import { ThirdParty } from 'modules/thirdParty/types'
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import { CollectionItemHeader } from './CollectionItemHeader'
+import { CollectionItemHeaderV2 } from './CollectionItemHeaderV2'
 
 import './ThirdPartyCollectionDetailPage.css'
-import { useHistory } from 'react-router'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
 
@@ -51,6 +52,7 @@ export default function ThirdPartyCollectionDetailPage({
   collection,
   totalItems,
   isLoading,
+  isThirdPartyV2Enabled,
   onOpenModal,
   onFetchAvailableSlots,
   isLoadingAvailableSlots
@@ -181,6 +183,7 @@ export default function ThirdPartyCollectionDetailPage({
       const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
       const allSelectedItems = allItems.filter(item => selectedItems[item.id])
       const selectedItemsCount = allSelectedItems.length
+      const isCollectionLinked = Boolean(collection?.linkedContractAddress && collection?.linkedContractNetwork)
       const total = totalItems!
       const totalPages = Math.ceil(total / PAGE_SIZE)
 
@@ -301,36 +304,41 @@ export default function ThirdPartyCollectionDetailPage({
                 ) : null}
 
                 <div className="collection-items">
-                  <Grid columns="equal" className="grid-header secondary-text">
-                    <Grid.Row>
-                      <Grid.Column width={5} className="item-column">
-                        <Checkbox
-                          className="item-checkbox"
-                          checked={areAllSelected(paginatedItems)}
-                          onClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
-                            handleSelectPageChange(paginatedItems, data)
-                          }
-                        />
-                        &nbsp;
-                        {t('global.item')}
-                      </Grid.Column>
-                      <Grid.Column>{t('global.category')}</Grid.Column>
-                      <Grid.Column>{t('global.body_shape')}</Grid.Column>
-                      <Grid.Column>URN ID</Grid.Column>
-                      <Grid.Column width={3}> {t('collection_row.status')} </Grid.Column>
-                      <Grid.Column width={1}></Grid.Column>
-                    </Grid.Row>
-                  </Grid>
-
-                  {paginatedItems.map(item => (
-                    <CollectionItem
-                      key={item.id}
-                      collection={collection}
-                      item={item}
-                      selected={!!selectedItems[item.id]}
-                      onSelect={handleSelectItemChange}
+                  {isThirdPartyV2Enabled && isCollectionLinked ? (
+                    <CollectionItemHeaderV2
+                      areAllSelected={areAllSelected(paginatedItems)}
+                      onSelectedAllClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
+                        handleSelectPageChange(paginatedItems, data)
+                      }
                     />
-                  ))}
+                  ) : (
+                    <CollectionItemHeader
+                      areAllSelected={areAllSelected(paginatedItems)}
+                      onSelectedAllClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
+                        handleSelectPageChange(paginatedItems, data)
+                      }
+                    />
+                  )}
+
+                  {paginatedItems.map(item =>
+                    isThirdPartyV2Enabled && isCollectionLinked ? (
+                      <CollectionItemV2
+                        key={item.id}
+                        collection={collection}
+                        item={item}
+                        selected={!!selectedItems[item.id]}
+                        onSelect={handleSelectItemChange}
+                      />
+                    ) : (
+                      <CollectionItem
+                        key={item.id}
+                        collection={collection}
+                        item={item}
+                        selected={!!selectedItems[item.id]}
+                        onSelect={handleSelectItemChange}
+                      />
+                    )
+                  )}
 
                   {totalPages > 1 ? (
                     <Pagination

@@ -1,0 +1,74 @@
+.itemImage {
+  min-width: 64px;
+  max-width: 64px;
+  height: 64px;
+  padding: 5px;
+  margin-left: 18px;
+  margin-right: 24px;
+}
+
+.itemStatus {
+  margin-right: 4px;
+}
+
+.grid {
+  padding: 10px 0 !important;
+  color: var(--text);
+  border-bottom: 1px solid var(--divider);
+}
+
+.grid:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  color: var(--text);
+}
+
+.row {
+  align-items: center !important;
+  font-size: 15px;
+}
+
+.column {
+  display: flex !important;
+}
+
+.statusColumn {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.statusColumn.synced {
+  color: #34ce76;
+}
+
+.statusColumn.unsynced {
+  color: #fc9965;
+}
+
+.avatarColumn {
+  align-items: center;
+  padding-left: 10px !important;
+}
+
+.nameWrapper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.name {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.action {
+  margin-left: 5px;
+}

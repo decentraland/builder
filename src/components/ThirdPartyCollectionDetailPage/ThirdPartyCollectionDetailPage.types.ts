@@ -27,6 +27,7 @@ export type Props = {
   authorizations: Authorization[]
   isLoading: boolean
   isLoadingAvailableSlots: boolean
+  isThirdPartyV2Enabled: boolean
   onOpenModal: typeof openModal
   onFetchAvailableSlots: typeof fetchThirdPartyAvailableSlotsRequest
 }
@@ -51,6 +52,7 @@ export type MapStateProps = Pick<
   | 'currentPage'
   | 'totalItems'
   | 'items'
+  | 'isThirdPartyV2Enabled'
   | 'paginatedData'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchAvailableSlots'>

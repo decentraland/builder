@@ -1,6 +1,17 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, Rarity, WearableCategory, Entity } from '@dcl/schemas'
+import {
+  BodyPartCategory,
+  BodyShape,
+  EmoteCategory,
+  EmoteDataADR74,
+  Wearable,
+  Rarity,
+  WearableCategory,
+  Entity,
+  ContractNetwork,
+  Mapping
+} from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -712,3 +723,15 @@ export const formatExtensions = (extensions: string[]): string => {
 export const isWearable = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): item is Item<ItemType.WEARABLE> =>
   item.type === ItemType.WEARABLE
 export const isEmote = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): item is Item<ItemType.EMOTE> => item.type === ItemType.EMOTE
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export const getMapping = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): Mapping | null => {
+  if (!item.mappings) {
+    return null
+  }
+
+  const network = Object.keys(item.mappings)[0] as ContractNetwork
+  const address = item.mappings[network] ? Object.keys(item.mappings[network])[0] : null
+  const mappings = address && item.mappings[network] ? item.mappings[network][address] : null
+  return mappings ? mappings[0] ?? null : null
+}

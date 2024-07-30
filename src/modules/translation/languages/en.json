@@ -262,7 +262,7 @@
     "mapping_types": {
       "single": "Single",
       "multiple": "Multiple",
-      "any": "Any",
+      "any": "All NFTs",
       "range": "Range"
     },
     "mapping_type_label": "NFTs token link type",
