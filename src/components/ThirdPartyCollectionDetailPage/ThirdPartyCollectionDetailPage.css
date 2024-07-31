@@ -4,6 +4,10 @@
   min-width: 0;
 }
 
+.ThirdPartyCollectionDetailPage .dcl.narrow {
+  width: 1300px;
+}
+
 .ThirdPartyCollectionDetailPage .header-row {
   width: 100%;
 }

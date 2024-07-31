@@ -254,6 +254,7 @@
     "not_enough_mana": "您没有足够的MANA来申请新名称"
   },
   "mapping_editor": {
+    "to": "到",
     "mapping_types": {
       "single": "单身的",
       "multiple": "多",

@@ -355,7 +355,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
-    const { item: actionItem, contents: actionContents } = action.payload
+    const { item: actionItem, contents: actionContents, options } = action.payload
 
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
@@ -447,8 +447,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       yield call([legacyBuilder, 'saveItem'], item, contents)
-      yield saveItemRequest(item, contents)
-      yield put(saveItemSuccess(item, contents))
+      yield put(saveItemSuccess(item, contents, options))
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
@@ -481,7 +480,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const location = history.location
     const address: string = yield select(getAddress)
     const openModals: ModalState = yield select(getOpenModals)
-    const { item } = action.payload
+    const { item, options } = action.payload
     const collectionId = item.collectionId!
     const ItemModals = ['EditItemURNModal', 'EditPriceAndBeneficiaryModal', 'AddExistingItemModal']
     if (ItemModals.some(modal => openModals[modal])) {
@@ -521,7 +520,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
     }
     // Fetch the collection items again, we don't know where the item is going to be in the pagination data
-    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId) && !options?.onlySaveItem) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
     }
     if (isThirdParty(item.urn) && item.isPublished) {

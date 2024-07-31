@@ -52,7 +52,7 @@ export const CreateCollectionSelectorModal = (props: Props) => {
   const { onClose, onCreateCollection, onCreateThirdPartyCollection, name, isThirdPartyManager, isLoadingThirdParties } = props
 
   return (
-    <Modal name={name} onClose={onClose} size="medium">
+    <Modal name={name} onClose={onClose} size="large">
       <ModalNavigation
         title={t('create_collection_selector_modal.title')}
         subtitle={t('create_collection_selector_modal.subtitle')}

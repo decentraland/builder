@@ -1,20 +1,59 @@
+/* Main class */
 .main {
   display: flex;
+}
+
+.main.full {
   flex-direction: column;
 }
 
+.main.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.main.compact :global(.dcl.select-field),
+.main.compact :global(.dcl.field) {
+  min-width: unset;
+}
+
+/* Mappings class */
+
 .mappings {
   display: flex;
-  flex-direction: column;
 }
+
+.mappings.compact {
+  width: 100%;
+}
+
+.mappings.compact > div {
+  flex-grow: 1;
+}
+
+/* Input margin */
+
+.any,
+.multiple {
+  margin-top: 19px;
+}
+
+/* Mapping type class */
 
 .mappingType :global(.ui.dropdown > .text > img) {
   margin-top: 3px;
 }
 
+.mappingType.compact {
+  margin-top: 17px;
+}
+
 .mappingType :global(.ui.dropdown .menu > .item > img) {
   margin-top: 0px;
 }
+
+/* Linked contract select class */
 
 .linkedContractSelect :global(.divider.text),
 .linkedContractSelect :global(.visible.menu.transition) > div {
@@ -26,4 +65,32 @@
 .linkedContractSelect :global(.visible.menu.transition) img {
   height: 25px;
   width: 25px;
+}
+
+/* Range class */
+
+.range {
+  display: flex;
+}
+
+.range.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.range.full {
+  flex-direction: column;
+}
+
+/* To class */
+.to {
+  text-transform: uppercase;
+  color: var(--secondary-text);
+}
+
+/* Multiple */
+
+.multiple {
+  width: 100%;
 }

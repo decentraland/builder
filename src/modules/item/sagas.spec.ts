@@ -597,6 +597,20 @@ describe('when handling the save item success action', () => {
           })
       })
     })
+
+    describe('and the onlySaveItem option is set', () => {
+      it('should not fetch the new collection items paginated', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
+            [select(getOpenModals), {}],
+            [select(getAddress), mockAddress]
+          ])
+          .not.call.fn(fetchCollectionItemsRequest)
+          .dispatch(saveItemSuccess(item, {}, { onlySaveItem: true }))
+          .run({ silenceTimeout: true })
+      })
+    })
   })
 
   describe('and the location is the Collection detail page', () => {

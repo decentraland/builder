@@ -13,6 +13,7 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
 import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
 import { isThirdPartyCollection } from 'modules/collection/utils'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
 
@@ -30,6 +31,7 @@ const mapState = (state: RootState): MapStateProps => {
     paginatedData,
     wallet: getWallet(state)!,
     collection,
+    isThirdPartyV2Enabled: getIsLinkedWearablesV2Enabled(state),
     thirdParty: collection && isThirdPartyCollection(collection) ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
     isLoading:

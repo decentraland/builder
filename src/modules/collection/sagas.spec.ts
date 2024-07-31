@@ -2197,3 +2197,79 @@ describe('when publishing a collection with fiat', () => {
     })
   })
 })
+
+describe('when handling the successful save of an item', () => {
+  let item: Item
+  beforeEach(() => {
+    item = { id: 'item-id' } as Item
+  })
+
+  describe('and the item has a collection', () => {
+    beforeEach(() => {
+      item = { ...item, collectionId: 'aCollectionId' } as Item
+    })
+
+    describe('and the item is published', () => {
+      beforeEach(() => {
+        item = { ...item, isPublished: true }
+      })
+
+      it('should not put any action', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .dispatch(saveItemSuccess(item, {}))
+          .run({ silenceTimeout: true })
+          .then(({ effects }) => {
+            expect(effects.put).toBeUndefined()
+          })
+      })
+    })
+
+    describe('and the item is not published', () => {
+      beforeEach(() => {
+        item = { ...item, isPublished: false }
+      })
+
+      describe('and the onlySavedItem option is set', () => {
+        it('should not put any action', () => {
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+            .dispatch(saveItemSuccess(item, {}, { onlySaveItem: true }))
+            .run({ silenceTimeout: true })
+            .then(({ effects }) => {
+              expect(effects.put).toBeUndefined()
+            })
+        })
+      })
+
+      describe('and the onlySavedItem option is not set', () => {
+        let collection: Collection
+
+        beforeEach(() => {
+          collection = { id: item.collectionId } as Collection
+        })
+
+        it('should put a saveCollectionRequest action', () => {
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+            .provide([[select(getCollection, item.collectionId ?? ''), collection]])
+            .dispatch(saveItemSuccess(item, {}))
+            .put(saveCollectionRequest(collection))
+            .run({ silenceTimeout: true })
+        })
+      })
+    })
+  })
+
+  describe('and the item does not have a collection', () => {
+    beforeEach(() => {
+      item = { ...item, collectionId: undefined } as Item
+    })
+
+    it('should not put any action', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        .dispatch(saveItemSuccess(item, {}))
+        .run({ silenceTimeout: true })
+        .then(({ effects }) => {
+          expect(effects.put).toBeUndefined()
+        })
+    })
+  })
+})

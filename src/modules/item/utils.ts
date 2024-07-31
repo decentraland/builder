@@ -1,6 +1,18 @@
 import { constants } from 'ethers'
 import { LocalItem } from '@dcl/builder-client'
-import { BodyPartCategory, BodyShape, EmoteCategory, EmoteDataADR74, Wearable, Rarity, WearableCategory, Entity } from '@dcl/schemas'
+import {
+  BodyPartCategory,
+  BodyShape,
+  EmoteCategory,
+  EmoteDataADR74,
+  Wearable,
+  Rarity,
+  WearableCategory,
+  Entity,
+  ContractNetwork,
+  Mapping,
+  Mappings
+} from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -8,6 +20,7 @@ import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { computeHashFromContent } from 'modules/deployment/contentUtils'
+import { LinkedContract } from 'modules/thirdParty/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
@@ -712,3 +725,34 @@ export const formatExtensions = (extensions: string[]): string => {
 export const isWearable = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): item is Item<ItemType.WEARABLE> =>
   item.type === ItemType.WEARABLE
 export const isEmote = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): item is Item<ItemType.EMOTE> => item.type === ItemType.EMOTE
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export const getMapping = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): Mapping | null => {
+  if (!item.mappings) {
+    return null
+  }
+
+  const networks = Object.keys(item.mappings)
+  const network = networks[0] as ContractNetwork | undefined
+  if (!network) {
+    return null
+  }
+  const addresses = Object.keys(item.mappings[network] ?? {})
+  const address: string | undefined = addresses[0]
+  if (!address) {
+    return null
+  }
+  const mappings = item.mappings[network]?.[address] ?? []
+  if (mappings.length === 0) {
+    return null
+  }
+  return mappings[0]
+}
+
+export const buildItemMappings = (mapping: Mapping, contract: LinkedContract): Mappings => {
+  return {
+    [contract.network]: {
+      [contract.address]: [mapping]
+    }
+  }
+}
