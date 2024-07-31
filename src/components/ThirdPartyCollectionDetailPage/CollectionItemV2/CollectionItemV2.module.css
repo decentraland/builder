@@ -15,9 +15,10 @@
   padding: 10px 0 !important;
   color: var(--text);
   border-bottom: 1px solid var(--divider);
+  position: relative;
 }
 
-.grid:hover {
+.grid:not(.loading):hover {
   background-color: rgba(36, 33, 41, 0.4);
   color: var(--text);
 }
@@ -71,4 +72,20 @@
 
 .action {
   margin-left: 5px;
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 100000000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.274);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

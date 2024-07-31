@@ -10,7 +10,8 @@ import {
   WearableCategory,
   Entity,
   ContractNetwork,
-  Mapping
+  Mapping,
+  Mappings
 } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
@@ -19,6 +20,7 @@ import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { computeHashFromContent } from 'modules/deployment/contentUtils'
+import { LinkedContract } from 'modules/thirdParty/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
@@ -734,4 +736,12 @@ export const getMapping = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): Mapp
   const address = item.mappings[network] ? Object.keys(item.mappings[network])[0] : null
   const mappings = address && item.mappings[network] ? item.mappings[network][address] : null
   return mappings ? mappings[0] ?? null : null
+}
+
+export const buildItemMappings = (mapping: Mapping, contract: LinkedContract): Mappings => {
+  return {
+    [contract.network]: {
+      [contract.address]: [mapping]
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import { SyntheticEvent, useCallback, useMemo } from 'react'
+import classNames from 'classnames'
 import { DropdownProps, Field, InputOnChangeData, SelectField, TextAreaField, TextAreaProps } from 'decentraland-ui'
 import { MappingType, MultipleMapping } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation'
@@ -8,7 +9,6 @@ import singleIcon from '../../icons/single.svg'
 import rangeIcon from '../../icons/range.svg'
 import { Props } from './MappingEditor.types'
 import styles from './MappingEditor.module.css'
-import classNames from 'classnames'
 
 const mappingTypeIcons = {
   [MappingType.ANY]: allIcon,
@@ -18,7 +18,7 @@ const mappingTypeIcons = {
 }
 
 export const MappingEditor = (props: Props) => {
-  const { mapping, error, disabled, isCompact, onChange } = props
+  const { mapping, error, loading, disabled, isCompact, onChange } = props
 
   const [mappingType, mappingValue] = useMemo(() => {
     switch (mapping.type) {
@@ -65,11 +65,11 @@ export const MappingEditor = (props: Props) => {
     [onChange]
   )
 
-  const handleSingleMappingValueChange = useCallback((_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    onChange({ type: MappingType.SINGLE, id: data.value })
+  const handleSingleMappingValueChange = useCallback((_, data: InputOnChangeData) => {
+    onChange({ type: MappingType.SINGLE, id: data.value.replaceAll(',', '') })
   }, [])
 
-  const handleMultipleMappingValueChange = useCallback((_: React.ChangeEvent<HTMLTextAreaElement>, data: TextAreaProps) => {
+  const handleMultipleMappingValueChange = useCallback((_, data: TextAreaProps | InputOnChangeData) => {
     const ids =
       data.value
         ?.toString()
@@ -99,20 +99,21 @@ export const MappingEditor = (props: Props) => {
 
   return (
     <div className={classNames(styles.main, isCompact ? styles.compact : styles.full)}>
-      <div>
-        <SelectField
-          label={isCompact ? undefined : t('mapping_editor.mapping_type_label')}
-          onChange={handleMappingTypeChange}
-          value={mappingType}
-          className={styles.mappingType}
-          options={mappingTypeOptions}
-        />{' '}
-      </div>
-      <div className={styles.mappings}>
+      <SelectField
+        label={isCompact ? undefined : t('mapping_editor.mapping_type_label')}
+        onChange={handleMappingTypeChange}
+        value={mappingType}
+        disabled={disabled}
+        className={classNames(styles.mappingType, isCompact ? styles.compact : styles.full)}
+        options={mappingTypeOptions}
+      />
+      <div className={classNames(styles.mappings, isCompact ? styles.compact : styles.full)}>
         {mappingType === MappingType.ANY ? (
           <Field
             label={isCompact ? undefined : t('mapping_editor.mapping_value_label')}
+            loading={loading}
             disabled
+            className={styles.any}
             value={t('mapping_editor.mapping_value_any')}
           />
         ) : mappingType === MappingType.SINGLE ? (
@@ -121,6 +122,7 @@ export const MappingEditor = (props: Props) => {
             disabled={disabled}
             type="number"
             value={mappingValue}
+            loading={loading}
             error={!!error}
             message={error}
             placeholder={'1234567890'}
@@ -128,23 +130,42 @@ export const MappingEditor = (props: Props) => {
             onChange={handleSingleMappingValueChange}
           />
         ) : mappingType === MappingType.MULTIPLE ? (
-          <TextAreaField
-            label={t('mapping_editor.mapping_value_label')}
-            disabled={disabled}
-            info={
-              mappingValue.length === 0 && !error
-                ? t('mapping_editor.mapping_value_multiple_info')
-                : t('mapping_editor.mapping_value_multiple_amount_info', { count: (mapping as MultipleMapping).ids.length })
-            }
-            error={error}
-            placeholder={'1, 2, 3, 4'}
-            value={mappingValue}
-            onChange={handleMultipleMappingValueChange}
-          />
+          isCompact ? (
+            <Field
+              disabled={disabled}
+              loading={loading}
+              error={!!error}
+              message={
+                error ? error : t('mapping_editor.mapping_value_multiple_amount_info', { count: (mapping as MultipleMapping).ids.length })
+              }
+              placeholder="1, 2, 3, 4"
+              value={mappingValue}
+              className={styles.multiple}
+              onChange={handleMultipleMappingValueChange}
+            />
+          ) : (
+            <TextAreaField
+              label={t('mapping_editor.mapping_value_label')}
+              disabled={disabled}
+              loading={loading}
+              info={
+                mappingValue.length === 0 && !error
+                  ? t('mapping_editor.mapping_value_multiple_info')
+                  : t('mapping_editor.mapping_value_multiple_amount_info', { count: (mapping as MultipleMapping).ids.length })
+              }
+              className={styles.multiple}
+              error={error}
+              placeholder="1, 2, 3, 4"
+              value={mappingValue}
+              onChange={handleMultipleMappingValueChange}
+            />
+          )
         ) : mappingType === MappingType.RANGE ? (
           <div className={classNames(styles.range, isCompact ? styles.compact : styles.full)}>
             <Field
               label={isCompact ? undefined : t('mapping_editor.mapping_value_from_label')}
+              error={!!error}
+              message={error}
               disabled={disabled}
               type="number"
               placeholder={'1'}
@@ -152,9 +173,12 @@ export const MappingEditor = (props: Props) => {
               value={mappingValue.split(',')[0]}
               onChange={handleFromMappingValueChange}
             />
+            {isCompact ? <div className={styles.to}>{t('mapping_editor.to')}</div> : null}
             <Field
               label={isCompact ? undefined : t('mapping_editor.mapping_value_to_label')}
               disabled={disabled}
+              error={!!error}
+              message={error}
               type="number"
               placeholder={'4000'}
               maxLength={78}

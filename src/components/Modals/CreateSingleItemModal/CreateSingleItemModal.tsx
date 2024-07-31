@@ -10,7 +10,6 @@ import {
   WearableCategory,
   Mapping,
   MappingType,
-  Mappings,
   ContractNetwork,
   ContractAddress
 } from '@dcl/schemas'
@@ -67,7 +66,8 @@ import {
   getEmotePlayModes,
   getBodyShapeTypeFromContents,
   isSmart,
-  isWearable
+  isWearable,
+  buildItemMappings
 } from 'modules/item/utils'
 import { EngineType, getItemData, getModelData } from 'lib/getModelData'
 import { getExtension, toMB } from 'lib/file'
@@ -85,10 +85,12 @@ import ItemVideo from 'components/ItemVideo'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import ItemProperties from 'components/ItemProperties'
 import { Collection } from 'modules/collection/types'
+import { LinkedContract } from 'modules/thirdParty/types'
 import { calculateFileSize, calculateModelFinalSize } from 'modules/item/export'
 import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
+import { areMappingsValid } from 'modules/thirdParty/utils'
 import { Authorization } from 'lib/api/auth'
-import { MappingEditor } from 'components/MappingEditor/MappingEditor'
+import { MappingEditor } from 'components/MappingEditor'
 import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal'
 import ImportStep from './ImportStep/ImportStep'
@@ -106,7 +108,6 @@ import {
   ITEM_LOADED_CHECK_DELAY
 } from './CreateSingleItemModal.types'
 import './CreateSingleItemModal.css'
-import { LinkedContract } from 'modules/thirdParty/types'
 
 const defaultMapping: Mapping = { type: MappingType.ANY }
 export default class CreateSingleItemModal extends React.PureComponent<Props, State> {
@@ -559,15 +560,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     })
   }
 
-  areMappingsValid = (mappings: Mappings): boolean => {
-    try {
-      const validate = Mappings.validate(mappings)
-      return !!validate
-    } catch (error) {
-      return false
-    }
-  }
-
   getLinkedContract(collection: Collection | undefined | null): LinkedContract | undefined {
     if (!collection?.linkedContractAddress || !collection?.linkedContractNetwork) {
       return undefined
@@ -606,11 +598,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     }
 
     this.setState({
-      mappings: {
-        [contract.network]: {
-          [contract.address]: [mapping]
-        }
-      }
+      mappings: buildItemMappings(mapping, contract)
     })
   }
 
@@ -1063,7 +1051,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const isSmartWearable = isSmart({ type, contents: this.state.contents })
     const isRequirementMet = required.every(prop => prop !== undefined)
 
-    if (isThirdPartyV2Enabled && ((!mappings && linkedContract) || (mappings && !this.areMappingsValid(mappings)))) {
+    if (isThirdPartyV2Enabled && ((!mappings && linkedContract) || (mappings && !areMappingsValid(mappings)))) {
       return false
     }
 

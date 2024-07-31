@@ -260,6 +260,7 @@
     "not_enough_mana": "No tienes suficiente MANA para reclamar un nuevo nombre"
   },
   "mapping_editor": {
+    "to": "A",
     "mapping_types": {
       "single": "Único",
       "multiple": "Múltiple",

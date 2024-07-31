@@ -1,4 +1,4 @@
-import { ChainId, Network } from '@dcl/schemas'
+import { ChainId, Mapping, Mappings, MappingType, MultipleMapping, Network, RangeMapping, SingleMapping } from '@dcl/schemas'
 import { call } from 'redux-saga/effects'
 import { utils } from 'ethers'
 import { getChainIdByNetwork, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
@@ -65,4 +65,31 @@ export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
   })
 
   return { signature, salt }
+}
+
+export const areMappingsEqual = (a: Mapping, b: Mapping): boolean => {
+  if (a.type !== b.type) {
+    return false
+  }
+
+  switch (a.type) {
+    case MappingType.ANY:
+      return true
+    case MappingType.SINGLE:
+      return a.id === (b as SingleMapping).id
+    case MappingType.MULTIPLE:
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return a.ids.length === (b as MultipleMapping).ids.length && a.ids.every((id, index) => id === (b as MultipleMapping).ids[index])
+    case MappingType.RANGE:
+      return a.from === (b as RangeMapping).from && a.to === (b as RangeMapping).to
+  }
+}
+
+export const areMappingsValid = (mappings: Mappings): boolean => {
+  try {
+    const validate = Mappings.validate(mappings)
+    return !!validate
+  } catch (error) {
+    return false
+  }
 }

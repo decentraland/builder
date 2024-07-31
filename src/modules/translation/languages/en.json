@@ -259,6 +259,7 @@
     "not_enough_mana": "You don't have enough MANA to claim a new name"
   },
   "mapping_editor": {
+    "to": "To",
     "mapping_types": {
       "single": "Single",
       "multiple": "Multiple",
