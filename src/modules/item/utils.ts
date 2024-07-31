@@ -732,10 +732,21 @@ export const getMapping = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>): Mapp
     return null
   }
 
-  const network = Object.keys(item.mappings)[0] as ContractNetwork
-  const address = item.mappings[network] ? Object.keys(item.mappings[network])[0] : null
-  const mappings = address && item.mappings[network] ? item.mappings[network][address] : null
-  return mappings ? mappings[0] ?? null : null
+  const networks = Object.keys(item.mappings)
+  const network = networks[0] as ContractNetwork | undefined
+  if (!network) {
+    return null
+  }
+  const addresses = Object.keys(item.mappings[network] ?? {})
+  const address: string | undefined = addresses[0]
+  if (!address) {
+    return null
+  }
+  const mappings = item.mappings[network]?.[address] ?? []
+  if (mappings.length === 0) {
+    return null
+  }
+  return mappings[0]
 }
 
 export const buildItemMappings = (mapping: Mapping, contract: LinkedContract): Mappings => {
