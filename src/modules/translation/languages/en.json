@@ -1858,10 +1858,29 @@
     }
   },
   "publish_third_party_collection_modal": {
-    "title": "Publish Linked Items",
-    "publish_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\".",
-    "push_changes_description": "About to push changes to {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
-    "publish_and_push_changes_description": "About to use {slotsToUse, plural, one {# slot} other {# slots}} from {availableSlots} available slots to publish \"{collectionName}\" and changes will be pushed to {itemsWithChanges, plural, one {# item} other {# items}}."
+    "review_conditions_step": {
+      "title": "Terms & Conditions",
+      "subtitle": "Please check the boxes below to confirm that you have read the Terms & Conditions before proceeding.",
+      "review_content_policy": {
+        "first": "I confirm that the submitted item(s) are in full compliance with the <terms_of_use_link>Terms of Use</terms_of_use_link> and <content_policy_link>Content Policy</content_policy_link>, which I acknowledge and accept.",
+        "second": "I confirm that I have IP permissions to create Linked Wearables based on this external NFT collection.",
+        "third": "I acknowledge that the Decentraland DAO may refuse to approve my item(s) based on infringements to the <terms_of_use_link>Terms of Use</terms_of_use_link> and <content_policy_link>Content Policy</content_policy_link>. I also acknowledge that the publishing fee is non-refundable in case of rejection.",
+        "fourth": "I acknowledge that {slotsToUse, plural, one {# slot} other {# slots}} from the available slots will be used to publish the new items."
+      },
+      "subscription": {
+        "title": "Contact information",
+        "text": "Please enter the email that is best to contact you in relation to this collection.",
+        "checkbox_text": "Keep me in the loop! Sign me up for Decentraland's weekly newsletter to get news, product updates, and more."
+      },
+      "confirm": {
+        "publish": "Confirm and Publish",
+        "push_changes": "Confirm and Push Changes",
+        "push_changes_and_publish": "Confirm, Push Changes and Publish"
+      }
+    },
+    "publishing_step": {
+      "message": "Submitting your collection for review"
+    }
   },
   "mint_items_modal": {
     "title": "Mint Items",

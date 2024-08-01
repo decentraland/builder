@@ -1885,10 +1885,29 @@
     "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "publish_third_party_collection_modal": {
-    "title": "Publicar Items externos",
-    "publish_description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} de {availableSlots} slots disponibles para publicar \"{collectionName}\"",
-    "push_changes_description": "Está por subir cambios a {itemsWithChanges, plural, one {# item} other {# items}} for \"{collectionName}\".",
-    "publish_and_push_changes_description": "Está por usar {slotsToUse, plural, one {# slot} other {# slots}} slots de {availableSlots} disponibles para publicar \"{collectionName}\" y subir cambios a {itemsWithChanges, plural, one {# item} other {# items}}."
+    "review_conditions_step": {
+      "title": "Términos y condiciones",
+      "subtitle": "Marque las casillas a continuación para confirmar que ha leído los Términos y Condiciones antes de continuar.",
+      "review_content_policy": {
+        "first": "Confirmo que los artículos enviados cumplen plenamente con los <terms_of_use_link>Términos de uso</terms_of_use_link> y la <content_policy_link>Política de contenido</content_policy_link>, que reconozco y acepto.",
+        "second": "Confirmo que tengo permisos de IP para crear Linked Wearables basados en ésta colección NFT externa.",
+        "third": "Reconozco que la DAO de Decentraland puede negarse a aprobar mis artículos en función de infracciones a los <terms_of_use_link>Términos de uso</terms_of_use_link> y la <content_policy_link>Política de contenido</content_policy_link>. También reconozco que la tarifa de publicación no es reembolsable en caso de rechazo.",
+        "fourth": "Reconozco que {slotsToUse, plural, one {# slot} other {# slots}} de los slots disponibles se utilizarán para publicar los nuevos elementos."
+      },
+      "subscription": {
+        "title": "Información de contacto",
+        "text": "Por favor, introduzca el correo electrónico que mejor nos permita contactarle en relación a esta colección.",
+        "checkbox_text": "¡Manténganme informado! Suscríbase al boletín semanal de Decentraland para recibir noticias, actualizaciones de productos y más."
+      },
+      "confirm": {
+        "publish": "Confirmar y publicar",
+        "push_changes": "Confirmar y enviar cambios",
+        "push_changes_and_publish": "Confirmar, enviar cambios y publicar"
+      }
+    },
+    "publishing_step": {
+      "message": "Enviando su colección para revisión"
+    }
   },
   "mint_items_modal": {
     "title": "Crear Items",

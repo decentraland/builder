@@ -1,0 +1,31 @@
+.content {
+  background-color: #1d1a20 !important;
+  border-radius: 8px;
+  padding: 24px !important;
+}
+
+.checkboxContainer {
+  display: flex;
+  margin-top: 32px;
+  margin-bottom: 46px;
+}
+
+.checkboxContainer > :global(.ui.checkbox) {
+  margin-top: 3px;
+  margin-right: 14px;
+}
+
+.checkboxContainer > span {
+  text-align: justify;
+  color: var(--clear-divider);
+}
+
+.checkboxContainer > span > a {
+  color: var(--clear-divider);
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.subscriptionText {
+  color: var(--clear-divider);
+}

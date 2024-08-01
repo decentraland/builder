@@ -73,6 +73,7 @@ import {
 } from './actions'
 import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 
 export function* getContractInstance(
   contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
@@ -174,9 +175,13 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   }
 
   function* handlePublishThirdPartyItemRequest(action: PublishThirdPartyItemsRequestAction) {
-    const { thirdParty, items } = action.payload
+    const { thirdParty, items, email, subscribeToNewsletter } = action.payload
     try {
       const collectionId = getCollectionId(items)
+      if (subscribeToNewsletter) {
+        yield put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+      }
+
       const { newItems, newItemCurations }: { newItems: Item[]; newItemCurations: ItemCuration[] } = yield call(
         publishChangesToThirdPartyItems,
         thirdParty,

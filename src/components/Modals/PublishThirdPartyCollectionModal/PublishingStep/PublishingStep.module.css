@@ -1,0 +1,13 @@
+.content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 50px;
+  padding-right: 50px;
+  min-height: 400px;
+}
+
+.progressBar {
+  width: 100%;
+}

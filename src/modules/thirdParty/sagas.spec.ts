@@ -50,6 +50,7 @@ import {
   ThirdPartyError
 } from 'modules/collection/utils'
 import { updateThirdPartyActionProgress } from 'modules/ui/thirdparty/action'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
 import { Item } from 'modules/item/types'
 import { thirdPartySaga } from './sagas'
@@ -202,12 +203,15 @@ describe('when publishing third party items', () => {
   let signature: string
   let salt: string
   let qty: number
+  let email: string
+
   beforeEach(() => {
     collection = { name: 'valid collection name' } as Collection
     item = { ...mockedItem, collectionId: 'a valid collectionId' }
     signature = 'a signature'
     salt = '0xsalt'
     qty = 1
+    email = 'anEmail@provider.com'
   })
 
   describe('when the api request fails', () => {
@@ -230,7 +234,7 @@ describe('when publishing third party items', () => {
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .put(publishThirdPartyItemsFailure(errorMessage))
-        .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, [item], email))
         .run({ silenceTimeout: true })
     })
   })
@@ -260,19 +264,52 @@ describe('when publishing third party items', () => {
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             { collection, items: [mockedItemReturnedByServer], itemCurations }
+          ],
+          [
+            matchers.put(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations)),
+            undefined
           ]
         ])
         .put(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
         .put(closeModal('PublishThirdPartyCollectionModal'))
-        .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, [item], email))
         .run({ silenceTimeout: true })
     })
 
     it('should put the fetch available slots action when the push finishes successfully', () => {
       const mockedItemReturnedByServer = { ...mockedItem, id: 'a new id' }
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([[matchers.put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)), undefined]])
         .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the subscribeToNewsletter flag is set', () => {
+    let subscribeToNewsletter: boolean
+    let errorMessage: string
+
+    beforeEach(() => {
+      subscribeToNewsletter = true
+      errorMessage = 'Some Error Message'
+    })
+
+    it('should put the subscribe to newsletter action', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [select(getCollection, item.collectionId), collection],
+          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [
+            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+            throwError(new Error(errorMessage))
+          ]
+        ])
+        .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
+        .put(publishThirdPartyItemsFailure(errorMessage))
+        .dispatch(publishThirdPartyItemsRequest(thirdParty, [item], email, subscribeToNewsletter))
         .run({ silenceTimeout: true })
     })
   })

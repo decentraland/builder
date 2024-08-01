@@ -1899,10 +1899,29 @@
     "jump_in": "跳进去"
   },
   "publish_third_party_collection_modal": {
-    "title": "发布链接项目",
-    "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",
-    "push_changes_description": "即将对 \"{collectionName}\" 推送对 {itemsWithChanges, 复数，一个 {# item} 其他 {# items}} 的更改。",
-    "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。"
+    "review_conditions_step": {
+      "title": "条款和条件",
+      "subtitle": "在继续之前，请勾选下面的方框以确认您已阅读条款和条件。",
+      "review_content_policy": {
+        "first": "我确认所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
+        "second": "我确认我有 IP 权限，可以基于此外部 NFT 集合创建链接可穿戴设备。",
+        "third": "我承认, Decentraland DAO 可能会因违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准我的项目。我还承认，如果被拒绝，出版费将不予退还。",
+        "fourth": "我确认将使用可用插槽中的 {slotsToUse, 复数, 一个 {# 个插槽} 其他 {# 个插槽}} 来发布新项目。"
+      },
+      "subscription": {
+        "title": "联系信息",
+        "text": "请输入与此系列相关的、最适合与您联系的电子邮件。",
+        "checkbox_text": "让我了解最新动态！订阅 Decentraland 的每周新闻通讯，获取新闻、产品更新等。"
+      },
+      "confirm": {
+        "publish": "确认并发布",
+        "push_changes": "确认并推送更改",
+        "push_changes_and_publish": "确认、推送更改并发布"
+      }
+    },
+    "publishing_step": {
+      "message": "提交您的收藏以供审核"
+    }
   },
   "mint_items_modal": {
     "title": "薄荷项目",
