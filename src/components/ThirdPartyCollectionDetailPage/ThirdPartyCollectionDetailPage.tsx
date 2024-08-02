@@ -1,11 +1,6 @@
 import { useHistory } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import classNames from 'classnames'
 import {
-  Section,
-  Row,
-  Narrow,
-  Column,
   Header,
   Icon,
   Button,
@@ -16,9 +11,9 @@ import {
   Loader,
   Dropdown,
   DropdownProps,
-  Popup
+  InfoTooltip
 } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
 import { locations } from 'routing/locations'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
@@ -27,11 +22,10 @@ import { ThirdParty } from 'modules/thirdParty/types'
 import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import CollectionProvider from 'components/CollectionProvider'
-import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
-import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+// import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
@@ -39,10 +33,16 @@ import { CollectionItemV2 } from './CollectionItemV2'
 import { Props, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
 import { CollectionItemHeader } from './CollectionItemHeader'
 import { CollectionItemHeaderV2 } from './CollectionItemHeaderV2'
+import styles from './ThirdPartyCollectionDetailPage.module.css'
 
-import './ThirdPartyCollectionDetailPage.css'
-
-const STORAGE_KEY = 'dcl-third-party-collection-notice'
+const Info = ({ children, title, info }: { children: React.ReactNode; title: string; info?: string }) => (
+  <div className={styles.info}>
+    <div className={styles.title}>
+      {title} {info && <InfoTooltip content={info} />}
+    </div>
+    <div className={styles.content}>{children}</div>
+  </div>
+)
 
 export default function ThirdPartyCollectionDetailPage({
   currentPage,
@@ -180,7 +180,6 @@ export default function ThirdPartyCollectionDetailPage({
 
   const renderPage = useCallback(
     (thirdParty: ThirdParty, allItems: Item[], paginatedItems: Item[], onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest) => {
-      const areSlotsEmpty = thirdParty?.availableSlots && thirdParty.availableSlots <= 0
       const allSelectedItems = allItems.filter(item => selectedItems[item.id])
       const selectedItemsCount = allSelectedItems.length
       const isCollectionLinked = Boolean(collection?.linkedContractAddress && collection?.linkedContractNetwork)
@@ -194,74 +193,50 @@ export default function ThirdPartyCollectionDetailPage({
 
       return (
         <>
-          <Section>
-            <Row>
-              <Back absolute onClick={handleGoBack} />
-              <Narrow>
-                <Row>
-                  <Column className="header-column">
-                    <Row className="header-row" onClick={handleEditName}>
-                      <Header size="huge" className="name">
-                        {collection.name}
-                      </Header>
-                      <BuilderIcon name="edit" className="edit-collection-name" />
-                    </Row>
-                    <Row className="urn-container">
-                      <small className="urn">
-                        <CopyToClipboard role="button" text={collection.urn}>
-                          <Row>
-                            <Popup
-                              content={collection.urn}
-                              position="bottom center"
-                              trigger={<span className="urn-text">{collection.urn}</span>}
-                              on="hover"
-                            />
-                            <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
-                          </Row>
-                        </CopyToClipboard>
-                      </small>
-                    </Row>
-                  </Column>
-                  <Column align="right" shrink={false}>
-                    <Row className="actions">
-                      <div className={classNames('slots', { empty: areSlotsEmpty && !isLoadingAvailableSlots })}>
-                        {isLoadingAvailableSlots ? (
-                          <Loader active size="tiny" />
-                        ) : (
-                          <>
-                            {t('third_party_collection_detail_page.slots', { amount: thirdParty?.availableSlots })}
-                            {areSlotsEmpty ? <span className="buy-slots link">{t('global.buy')}</span> : null}
-                          </>
-                        )}
-                      </div>
-                      <Button secondary compact className={'add-items'} onClick={handleNewItems}>
-                        {t('third_party_collection_detail_page.new_items')}
-                      </Button>
-                      {thirdParty.availableSlots !== undefined ? (
-                        <CollectionPublishButton collection={collection} items={allSelectedItems} slots={thirdParty.availableSlots} />
-                      ) : null}
-                      <CollectionContextMenu collection={collection} items={paginatedItems} />
-                    </Row>
-                  </Column>
-                </Row>
-              </Narrow>
-            </Row>
-          </Section>
-          <Narrow>
-            <Notice storageKey={STORAGE_KEY}>
-              <T id="third_party_collection_detail_page.notice" />
-            </Notice>
-
+          <div className={styles.header}>
+            <Back absolute onClick={handleGoBack} />
+            <div className={styles.content}>
+              <div className={styles.title}>
+                <div className={styles.name}>
+                  <Header size="large" className={styles.text} onClick={handleEditName}>
+                    {collection.name}
+                  </Header>
+                  <BuilderIcon name="edit" className={styles.editCollectionName} />
+                </div>
+              </div>
+              <div className={styles.actions}>
+                <Info title="Slots" info="Slots define how many items there are available for you to publish">
+                  <div className={styles.slotsIcon} />
+                  {isLoadingAvailableSlots ? (
+                    <Loader active inline size="tiny" />
+                  ) : (
+                    <span>
+                      {thirdParty.availableSlots ?? 0} / {thirdParty.maxItems}
+                    </span>
+                  )}
+                </Info>
+                <Button inverted onClick={handleNewItems}>
+                  <Icon name="plus" />
+                  {t('third_party_collection_detail_page.new_items')}
+                </Button>
+                {thirdParty.availableSlots !== undefined ? (
+                  <CollectionPublishButton collection={collection} items={allSelectedItems} slots={thirdParty.availableSlots} />
+                ) : null}
+                <CollectionContextMenu collection={collection} items={paginatedItems} />
+              </div>
+            </div>
+          </div>
+          <div className={styles.body}>
             {paginatedItems.length ? (
               <>
-                <div className="search-container">
+                <div className={styles.searchContainer}>
                   <TextFilter
                     placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
                     value={searchText}
                     onChange={handleSearchChange}
                   />
 
-                  <div className="search-info secondary-text">
+                  <div className={styles.searchInfo}>
                     {t('third_party_collection_detail_page.search_info', {
                       page: (page - 1) * PAGE_SIZE + 1,
                       pageTotal: Math.min(total, page * PAGE_SIZE),
@@ -269,7 +244,7 @@ export default function ThirdPartyCollectionDetailPage({
                     })}
                   </div>
                   <Dropdown
-                    className="synced-status-list"
+                    className={styles.syncedStatusList}
                     direction="left"
                     value={filters.synced}
                     placeholder={t('third_party_collection_detail_page.synced_filter.all')}
@@ -287,15 +262,12 @@ export default function ThirdPartyCollectionDetailPage({
                 </div>
 
                 {selectedItemsCount > 0 ? (
-                  <div className="selection-info">
+                  <div className={styles.selectionInfo}>
                     {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
                     &nbsp;
-                    <span className="link" onClick={handleClearSelection}>
-                      {t('third_party_collection_detail_page.clear_selection')}
-                    </span>
-                    . &nbsp;
+                    <span onClick={handleClearSelection}>{t('third_party_collection_detail_page.clear_selection')}</span>. &nbsp;
                     {showSelectAllPages && totalPages > 1 ? (
-                      <span className="link" onClick={() => handleSelectAllItems(onFetchCollectionItemsPages)}>
+                      <span onClick={() => handleSelectAllItems(onFetchCollectionItemsPages)}>
                         {t('third_party_collection_detail_page.select_all', { total })}
                       </span>
                     ) : null}
@@ -303,7 +275,7 @@ export default function ThirdPartyCollectionDetailPage({
                   </div>
                 ) : null}
 
-                <div className="collection-items">
+                <div>
                   {isThirdPartyV2Enabled && isCollectionLinked ? (
                     <CollectionItemHeaderV2
                       areAllSelected={areAllSelected(paginatedItems)}
@@ -352,8 +324,8 @@ export default function ThirdPartyCollectionDetailPage({
                 </div>
               </>
             ) : (
-              <div className="empty">
-                <div className="sparkles" />
+              <div className={styles.empty}>
+                <div className={styles.sparkles} />
                 <div>
                   {t('third_party_collection_detail_page.start_adding_items')}
                   <br />
@@ -361,7 +333,7 @@ export default function ThirdPartyCollectionDetailPage({
                 </div>
               </div>
             )}
-          </Narrow>
+          </div>
         </>
       )
     },
@@ -373,7 +345,7 @@ export default function ThirdPartyCollectionDetailPage({
     <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE} fetchOptions={filters}>
       {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchCollectionItemsPages }) => (
         <LoggedInDetailPage
-          className="ThirdPartyCollectionDetailPage"
+          className={styles.main}
           hasNavigation={!hasAccess && !isLoading}
           isLoading={isLoading || isLoadingCollectionData}
         >

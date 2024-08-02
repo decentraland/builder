@@ -1,0 +1,320 @@
+/* .headerColumn {
+  flex: none;
+  width: calc(100% - 300px);
+  min-width: 0;
+}
+
+.dcl.narrow {
+  width: 1300px;
+}
+
+.headerRow {
+  width: 100%;
+}
+
+.urnContainer {
+  max-width: 100%;
+}
+
+.urn {
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 8px;
+  color: var(--secondary-text);
+  max-width: 100%;
+}
+
+.urn .urnText {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.headerRow .ui.header.name {
+  max-width: calc(100% - 40px);
+  font-size: 28px;
+  line-height: 29px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editCollectionName {
+  display: none;
+  margin-left: 16px;
+  margin-bottom: 2px;
+}
+
+.copy {
+  display: none;
+  margin-left: 5px;
+}
+
+.section .headerRow:hover .editCollectionName,
+.urn:hover .copy {
+  display: flex;
+  align-items: center;
+}
+
+.section .headerRow:hover {
+  cursor: pointer;
+}
+
+.actions > div {
+  margin-left: 16px;
+}
+
+.actions :global(.ui.button.compact) {
+  padding: 10px;
+}
+
+.Notice {
+  margin-bottom: 32px;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchContainer :global(.dcl.text-filter) {
+  flex: 1;
+}
+
+.searchContainer .search-info .select-all {
+  margin-left: 24px;
+  text-transform: uppercase;
+}
+
+.selectionInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border: 1px solid var(--secondary-text);
+  border-radius: 4px;
+}
+
+.main :global(.ui.grid.equal.width) > :global(.row) > :global(.column) {
+  padding-left: 0;
+}
+
+.main :global(.ui.grid.grid-header) > :global(.row) > :global(.column:first-child) {
+  padding-left: 10px;
+}
+
+.main :global(.ui.grid.grid-header) {
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: 10px;
+}
+
+.ui.grid.grid-header > .row > .column.item-column {
+  display: flex;
+  align-items: center;
+}
+
+.column.item-column .item-checkbox {
+  margin-right: 10px;
+}
+
+.main :global(.dcl.narrow) > .empty {
+  padding: 200px 0;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  justify-content: center;
+  color: var(--secondary-text);
+  text-align: center;
+  line-height: 22px;
+  font-size: 15px;
+}
+
+.sparkles {
+  width: 54px;
+  height: 56px;
+  background-image: url('../../images/sparkles.svg');
+  background-repeat: no-repeat;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.main :global(.ui.pagination.menu) {
+  margin-top: 32px;
+}
+
+:global(.dcl.row).actions :global(.ui.button).addItems {
+  color: var(--text);
+  padding: 12px;
+}
+
+.syncedStatusList:global(.ui.dropdown) {
+  margin-left: 25px;
+  padding-left: 7px;
+}
+
+.main > :global(.ui.container) > :global(.dcl.narrow) {
+  display: flex;
+  flex-direction: column;
+} */
+
+.slots {
+  font-weight: bold;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.slots:before {
+  content: '';
+  display: inline-block;
+  background-image: url('../../images/slots.svg');
+  width: 16px;
+  height: 16px;
+  top: 3px;
+  position: relative;
+  margin-right: 8px;
+}
+
+:global(.button).slots.empty:before {
+  background-image: url('../../images/empty-slots.svg');
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+}
+
+.searchContainer :global(.dcl.text-filter) {
+  flex: 1;
+}
+
+.searchContainer .searchInfo {
+  color: var(--secondary-text);
+}
+
+.searchContainer .searchInfo .select-all {
+  margin-left: 24px;
+  text-transform: uppercase;
+}
+
+.selectionInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border: 1px solid var(--secondary-text);
+  border-radius: 4px;
+}
+
+/* New stuff */
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding-right: 142px;
+  padding-left: 94px;
+}
+
+.header .content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #242129;
+  padding: 24px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.header .title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.header .title {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header .title .name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.editCollectionName {
+  display: none;
+}
+
+.header .title .name:hover .editCollectionName {
+  display: flex;
+}
+
+.header .title .name .text {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.header .title .size {
+  font-size: 16px;
+}
+
+.header .actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding-right: 142px;
+  padding-left: 142px;
+  margin-top: 16px;
+  gap: 16px;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.info .title {
+  display: flex;
+  flex-direction: row;
+  text-transform: uppercase;
+  color: #a09ba8;
+}
+
+.info .content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  padding: 6px;
+  background-color: #43404a;
+}
+
+.slotsIcon {
+  background-color: #5e5b67;
+  border-radius: 32px;
+  padding: 2px;
+  height: 24px;
+  width: 24px;
+  background-image: url(../../icons/slots.svg);
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
