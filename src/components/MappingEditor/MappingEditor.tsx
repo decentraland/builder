@@ -69,19 +69,32 @@ export const MappingEditor = (props: Props) => {
     onChange({ type: MappingType.SINGLE, id: data.value.replaceAll(',', '') })
   }, [])
 
-  const handleMultipleMappingValueChange = useCallback((_, data: TextAreaProps | InputOnChangeData) => {
-    const ids =
-      data.value
-        ?.toString()
-        .replaceAll(/[^0-9,\s]/g, '')
-        .split(',')
-        .map(value => value.trim()) ?? []
+  const handleMultipleMappingValueChange = useCallback(
+    (_, data: TextAreaProps | InputOnChangeData) => {
+      let value = (data.value ?? '').toString()
 
-    onChange({
-      type: MappingType.MULTIPLE,
-      ids
-    })
-  }, [])
+      // If it's removing a whitespace character, remove the last comma
+      if (mappingValue.slice(0, -1) === data.value && mappingValue.slice(-1)) {
+        value = value.slice(0, value.length - 1)
+      }
+
+      const ids =
+        value
+          .toString()
+          // Only allow numbers, commas and whitespaces
+          .replaceAll(/[^0-9,\s]/g, '')
+          // Remove whitespaces before commas
+          .replaceAll(/\s,/g, '')
+          .split(',')
+          .map(s => s.trim()) ?? []
+
+      onChange({
+        type: MappingType.MULTIPLE,
+        ids
+      })
+    },
+    [mappingValue]
+  )
 
   const handleFromMappingValueChange = useCallback(
     (_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
