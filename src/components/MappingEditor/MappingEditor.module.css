@@ -91,6 +91,6 @@
 
 /* Multiple */
 
-.multiple {
+.mappings :global(.dcl.text-area) {
   width: 100%;
 }
