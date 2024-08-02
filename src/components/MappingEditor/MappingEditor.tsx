@@ -71,7 +71,6 @@ export const MappingEditor = (props: Props) => {
 
   const handleMultipleMappingValueChange = useCallback(
     (_, data: TextAreaProps | InputOnChangeData) => {
-      console.log({ mappingValue, changedValue: data.value })
       let value = (data.value ?? '').toString()
 
       // If it's removing a whitespace character, remove the last comma
