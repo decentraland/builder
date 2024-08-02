@@ -365,7 +365,18 @@ export default function ThirdPartyCollectionDetailPage({
         </>
       )
     },
-    [collection, selectedItems, totalItems, page, handleSearchChange, handleSelectItemChange, areAllSelected, handleClearSelection, filters]
+    [
+      collection,
+      selectedItems,
+      isLoadingAvailableSlots,
+      totalItems,
+      page,
+      handleSearchChange,
+      handleSelectItemChange,
+      areAllSelected,
+      handleClearSelection,
+      filters
+    ]
   )
 
   const shouldRender = hasAccess && collection
