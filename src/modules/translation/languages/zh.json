@@ -1580,7 +1580,7 @@
     "edit_video": "编辑视频展示柜"
   },
   "third_party_collection_detail_page": {
-    "notice": "每个发布的项目占用 1 个 Slot。在 DAO 中创建提案草案以申请更多插槽",
+    "linked_to": "已链接至",
     "search_placeholder": "搜索 {count} {count, plural, one {物品} other {项目}}...",
     "search_info": "{page}-{pageTotal} 个，共 {total} 个",
     "clear_selection": "清空选项",

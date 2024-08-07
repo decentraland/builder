@@ -1594,7 +1594,7 @@
     "edit_video": "Edit video showcase"
   },
   "third_party_collection_detail_page": {
-    "notice": "Each published item takes 1 Slot. Create a draft-proposal in the DAO to ask for more slots",
+    "linked_to": "Linked to",
     "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} of {total}",
     "clear_selection": "Clear selection",

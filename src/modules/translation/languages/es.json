@@ -1601,7 +1601,7 @@
     "edit_video": "Editar video"
   },
   "third_party_collection_detail_page": {
-    "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
+    "linked_to": "Vinculado a",
     "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} de {total}",
     "clear_selection": "Limpiar selección",

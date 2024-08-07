@@ -92,7 +92,7 @@ const CollectionPublishButton = (props: Props) => {
       position="bottom center"
       trigger={
         <div className="popup-button">
-          <Button secondary disabled={true}>
+          <Button primary disabled={true}>
             {t('collection_detail_page.under_review')}
           </Button>
         </div>

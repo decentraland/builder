@@ -11,7 +11,8 @@ import {
   Loader,
   Dropdown,
   DropdownProps,
-  InfoTooltip
+  InfoTooltip,
+  Blockie
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
@@ -25,7 +26,8 @@ import CollectionProvider from 'components/CollectionProvider'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
-// import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
+import { shorten } from 'lib/address'
+import { CopyToClipboard } from 'components/CopyToClipboard'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
@@ -37,10 +39,10 @@ import styles from './ThirdPartyCollectionDetailPage.module.css'
 
 const Info = ({ children, title, info }: { children: React.ReactNode; title: string; info?: string }) => (
   <div className={styles.info}>
-    <div className={styles.title}>
+    <div className={styles.infoHeader}>
       {title} {info && <InfoTooltip content={info} />}
     </div>
-    <div className={styles.content}>{children}</div>
+    <div className={styles.infoContent}>{children}</div>
   </div>
 )
 
@@ -113,12 +115,16 @@ export default function ThirdPartyCollectionDetailPage({
     [collection, history]
   )
 
-  const handleSearchChange = useCallback((searchText: string) => {
-    if (searchText) {
-      setPage(1)
-      setSearchText(searchText)
-    }
-  }, [])
+  const handleSearchChange = useCallback(
+    (searchText: string) => {
+      if (searchText) {
+        setPage(1)
+        setFilters({ ...filters, q: searchText })
+        setSearchText(searchText)
+      }
+    },
+    [filters, setPage, setSearchText]
+  )
 
   const handleSelectItemChange = useCallback(
     (item: Item, isSelected: boolean) => {
@@ -178,6 +184,13 @@ export default function ThirdPartyCollectionDetailPage({
     [totalItems]
   )
 
+  const handleChangeStatus = useCallback(
+    (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+      setFilters({ synced: value as boolean })
+    },
+    [setFilters]
+  )
+
   const renderPage = useCallback(
     (thirdParty: ThirdParty, allItems: Item[], paginatedItems: Item[], onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest) => {
       const allSelectedItems = allItems.filter(item => selectedItems[item.id])
@@ -197,14 +210,21 @@ export default function ThirdPartyCollectionDetailPage({
             <Back absolute onClick={handleGoBack} />
             <div className={styles.content}>
               <div className={styles.title}>
-                <div className={styles.name}>
-                  <Header size="large" className={styles.text} onClick={handleEditName}>
-                    {collection.name}
-                  </Header>
-                  <BuilderIcon name="edit" className={styles.editCollectionName} />
-                </div>
+                <Blockie className={styles.thirdPartyLogo} seed={thirdParty.id} size={8} scale={8} shape="circle" />
+                <Header size="large" className={styles.name} onClick={handleEditName}>
+                  {collection.name + ' dsfsd fsd fsdf sdf sdf sd fsdf s fs sdf sdfsd fsdf sdf sd fsdf sdfdsfsd fsd fsd'}
+                </Header>
+                <BuilderIcon name="edit" className={styles.editCollectionName} />
               </div>
               <div className={styles.actions}>
+                {collection.linkedContractAddress && collection.linkedContractNetwork && (
+                  <Info title="SCA" info="Smart contract address associated">
+                    {shorten(collection.linkedContractAddress)}{' '}
+                    <CopyToClipboard className={styles.copyButton} showPopup text={collection.linkedContractAddress} role="button">
+                      <Icon name="copy outline" />
+                    </CopyToClipboard>
+                  </Info>
+                )}
                 <Info title="Slots" info="Slots define how many items there are available for you to publish">
                   <div className={styles.slotsIcon} />
                   {isLoadingAvailableSlots ? (
@@ -227,15 +247,14 @@ export default function ThirdPartyCollectionDetailPage({
             </div>
           </div>
           <div className={styles.body}>
-            {paginatedItems.length ? (
-              <>
-                <div className={styles.searchContainer}>
-                  <TextFilter
-                    placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
-                    value={searchText}
-                    onChange={handleSearchChange}
-                  />
-
+            {(collection.itemCount ?? 0) > 0 && (
+              <div className={styles.searchContainer}>
+                <TextFilter
+                  placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
+                  value={searchText}
+                  onChange={handleSearchChange}
+                />
+                {paginatedItems.length > 0 && (
                   <div className={styles.searchInfo}>
                     {t('third_party_collection_detail_page.search_info', {
                       page: (page - 1) * PAGE_SIZE + 1,
@@ -243,31 +262,33 @@ export default function ThirdPartyCollectionDetailPage({
                       total
                     })}
                   </div>
-                  <Dropdown
-                    className={styles.syncedStatusList}
-                    direction="left"
-                    value={filters.synced}
-                    placeholder={t('third_party_collection_detail_page.synced_filter.all')}
-                    defaultSelectedLabel={t('third_party_collection_detail_page.synced_filter.all')}
-                    defaultValue={filters.synced}
-                    options={[
-                      { value: undefined || '', text: t('third_party_collection_detail_page.synced_filter.all') },
-                      { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
-                      { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
-                    ]}
-                    onChange={(_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-                      setFilters({ synced: value as boolean })
-                    }}
-                  />
-                </div>
-
+                )}
+                <Dropdown
+                  className={styles.syncedStatusList}
+                  direction="left"
+                  value={filters.synced}
+                  placeholder={t('third_party_collection_detail_page.synced_filter.all')}
+                  options={[
+                    { value: undefined, text: t('third_party_collection_detail_page.synced_filter.all') },
+                    { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
+                    { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
+                  ]}
+                  onChange={handleChangeStatus}
+                />
+              </div>
+            )}
+            {paginatedItems.length ? (
+              <>
                 {selectedItemsCount > 0 ? (
                   <div className={styles.selectionInfo}>
                     {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
                     &nbsp;
-                    <span onClick={handleClearSelection}>{t('third_party_collection_detail_page.clear_selection')}</span>. &nbsp;
+                    <span className="link" onClick={handleClearSelection}>
+                      {t('third_party_collection_detail_page.clear_selection')}
+                    </span>
+                    . &nbsp;
                     {showSelectAllPages && totalPages > 1 ? (
-                      <span onClick={() => handleSelectAllItems(onFetchCollectionItemsPages)}>
+                      <span className="link" onClick={() => handleSelectAllItems(onFetchCollectionItemsPages)}>
                         {t('third_party_collection_detail_page.select_all', { total })}
                       </span>
                     ) : null}
@@ -326,18 +347,33 @@ export default function ThirdPartyCollectionDetailPage({
             ) : (
               <div className={styles.empty}>
                 <div className={styles.sparkles} />
-                <div>
-                  {t('third_party_collection_detail_page.start_adding_items')}
-                  <br />
-                  {t('third_party_collection_detail_page.cant_remove')}
-                </div>
+                {collection.itemCount === 0 ? (
+                  <>
+                    {t('third_party_collection_detail_page.start_adding_items')}
+                    <br />
+                    {t('third_party_collection_detail_page.cant_remove')}
+                  </>
+                ) : (
+                  'There are no items available with this search criteria'
+                )}
               </div>
             )}
           </div>
         </>
       )
     },
-    [collection, selectedItems, totalItems, page, handleSearchChange, handleSelectItemChange, areAllSelected, handleClearSelection, filters]
+    [
+      collection,
+      selectedItems,
+      totalItems,
+      page,
+      handleSearchChange,
+      handleSelectItemChange,
+      areAllSelected,
+      handleChangeStatus,
+      handleClearSelection,
+      filters
+    ]
   )
 
   const shouldRender = hasAccess && collection
