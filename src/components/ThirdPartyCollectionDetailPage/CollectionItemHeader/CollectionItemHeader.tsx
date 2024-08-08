@@ -1,13 +1,14 @@
 import { Checkbox, Grid } from 'decentraland-ui'
 import { Props } from './CollectionItemHeader.types'
 import { t } from 'decentraland-dapps/dist/modules/translation'
+import styles from './CollectionItemHeader.module.css'
 
 export const CollectionItemHeader = ({ areAllSelected, onSelectedAllClick }: Props) => {
   return (
-    <Grid columns="equal" className="grid-header secondary-text">
+    <Grid columns="equal" className={styles.gridHeader}>
       <Grid.Row>
-        <Grid.Column width={5} className="item-column">
-          <Checkbox className="item-checkbox" checked={areAllSelected} onClick={onSelectedAllClick} />
+        <Grid.Column width={5} className={styles.itemColumn}>
+          <Checkbox className={styles.itemCheckbox} checked={areAllSelected} onClick={onSelectedAllClick} />
           &nbsp;
           {t('global.item')}
         </Grid.Column>

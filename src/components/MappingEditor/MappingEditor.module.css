@@ -34,8 +34,8 @@
 
 /* Input margin */
 
-.any,
-.multiple {
+.compact .any,
+.compact .multiple {
   margin-top: 19px;
 }
 
@@ -81,6 +81,10 @@
 
 .range.full {
   flex-direction: column;
+}
+
+.range.compact :global(.dcl.field) {
+  flex: 1 1 auto;
 }
 
 /* To class */

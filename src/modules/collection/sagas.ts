@@ -774,8 +774,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleFetchCollectionItemsSuccess(action: FetchCollectionItemsSuccessAction) {
     const { paginationIndex: collectionId } = action.payload
     try {
-      const collection: Collection = yield select(getCollection, collectionId)
-      if (collection.isPublished) {
+      const collection: Collection | null = yield select(getCollection, collectionId)
+      if (collection?.isPublished) {
         yield finishCollectionPublishing(collection)
       }
     } catch (error) {
