@@ -83,6 +83,10 @@
   flex-direction: column;
 }
 
+.range.compact :global(.dcl.field) {
+  flex: 1 1 auto;
+}
+
 /* To class */
 .to {
   text-transform: uppercase;
