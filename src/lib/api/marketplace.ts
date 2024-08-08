@@ -9,7 +9,7 @@ const BATCH_SIZE = 1000
 
 const getSubdomainQuery = () => gql`
   query getUserNames($owner: String, $offset: Int) {
-    nfts(first: ${BATCH_SIZE}, skip: $offset, where: { owner: $owner, category: ens }) {
+    nfts(first: ${BATCH_SIZE}, skip: $offset, where: { owner_: { id: $owner }, category: ens }) {
       ens {
         subdomain
       }
@@ -18,7 +18,7 @@ const getSubdomainQuery = () => gql`
 `
 
 const getOwnerByNameQuery = () => gql`
-  query getOwners($domains: [String], $offset: Int) {
+  query getOwners($domains: [String!], $offset: Int) {
     nfts(first: ${BATCH_SIZE}, skip: $offset, where: { name_in: $domains, category: ens }) {
       owner {
         address
