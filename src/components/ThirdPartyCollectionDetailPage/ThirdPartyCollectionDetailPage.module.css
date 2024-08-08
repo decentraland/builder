@@ -22,6 +22,7 @@
 .searchContainer {
   display: flex;
   align-items: center;
+  justify-content: end;
 }
 
 .searchContainer :global(.dcl.text-filter) {
@@ -65,8 +66,7 @@
   flex-direction: row;
   background-color: #242129;
   padding: 24px;
-  overflow: hidden;
-  flex: 1 1 auto;
+  width: calc(100% - 50px);
   border-radius: 8px;
 }
 
@@ -173,12 +173,21 @@
   padding: 200px 0;
   width: 100%;
   border-radius: 8px;
-  border: 1px solid var(--divider);
   justify-content: center;
   color: var(--secondary-text);
   text-align: center;
   line-height: 22px;
   font-size: 15px;
+  background-color: #242129;
+}
+
+.empty h3 {
+  color: #cfcdd4;
+  margin-bottom: 5px;
+}
+
+.empty p {
+  color: #a09ba8;
 }
 
 .sparkles {
@@ -186,6 +195,19 @@
   height: 56px;
   background-image: url('../../images/sparkles.svg');
   background-repeat: no-repeat;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.start {
+  width: 80px;
+  height: 80px;
+  background-image: url('../../images/upload.svg');
+  background-size: 48px;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  background-color: #43404a;
   margin: auto;
   margin-bottom: 20px;
 }

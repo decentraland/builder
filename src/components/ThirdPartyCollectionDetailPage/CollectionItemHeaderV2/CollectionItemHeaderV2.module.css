@@ -16,3 +16,72 @@
 .itemCheckbox {
   margin-right: 10px;
 }
+
+.linkedTooltip {
+  display: grid;
+  width: 458px;
+  margin: 14px;
+  grid-template-columns: auto auto;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.gridItem {
+  position: relative;
+  padding: 10px;
+  display: flex;
+  align-items: start;
+}
+
+.mappingExample {
+  color: #cfcdd4;
+}
+
+.mappingType {
+  display: flex;
+  align-items: center;
+}
+
+.mappingDescription {
+  flex-direction: column;
+}
+
+.mappingIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: center;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  padding: 10px;
+  text-transform: uppercase;
+}
+
+.tooltipHeader img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.gridItem::before,
+.gridItem::after {
+  content: '';
+  position: absolute;
+  background-color: #a09ba8;
+  z-index: 1;
+}
+
+.gridItem::after {
+  width: 100vw;
+  height: 1px;
+  left: 0;
+  top: -1px;
+}
+
+.linkedToColumn > span {
+  margin-right: 6px;
+}

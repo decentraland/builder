@@ -34,8 +34,8 @@
 
 /* Input margin */
 
-.any,
-.multiple {
+.compact .any,
+.compact .multiple {
   margin-top: 19px;
 }
 

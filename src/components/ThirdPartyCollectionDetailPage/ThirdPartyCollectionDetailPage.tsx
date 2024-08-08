@@ -4,7 +4,6 @@ import {
   Header,
   Icon,
   Button,
-  TextFilter,
   Pagination,
   PaginationProps,
   CheckboxProps,
@@ -60,7 +59,6 @@ export default function ThirdPartyCollectionDetailPage({
   isLoadingAvailableSlots
 }: Props) {
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({})
-  const [searchText, setSearchText] = useState('')
   const [page, setPage] = useState(currentPage)
   const [showSelectAllPages, setShowSelectAllPages] = useState(false)
   const [shouldFetchAllPages, setShouldFetchAllPages] = useState(false)
@@ -113,17 +111,6 @@ export default function ThirdPartyCollectionDetailPage({
       history.push(locations.thirdPartyCollectionDetail(collection!.id, { page: +data.activePage! }))
     },
     [collection, history]
-  )
-
-  const handleSearchChange = useCallback(
-    (searchText: string) => {
-      if (searchText) {
-        setPage(1)
-        setFilters({ ...filters, q: searchText })
-        setSearchText(searchText)
-      }
-    },
-    [filters, setPage, setSearchText]
   )
 
   const handleSelectItemChange = useCallback(
@@ -198,6 +185,7 @@ export default function ThirdPartyCollectionDetailPage({
       const isCollectionLinked = Boolean(collection?.linkedContractAddress && collection?.linkedContractNetwork)
       const total = totalItems!
       const totalPages = Math.ceil(total / PAGE_SIZE)
+      const isCollectionEmpty = collection?.itemCount === 0
 
       if (!collection) {
         console.error('No collection defined')
@@ -212,20 +200,23 @@ export default function ThirdPartyCollectionDetailPage({
               <div className={styles.title}>
                 <Blockie className={styles.thirdPartyLogo} seed={thirdParty.id} size={8} scale={8} shape="circle" />
                 <Header size="large" className={styles.name} onClick={handleEditName}>
-                  {collection.name + ' dsfsd fsd fsdf sdf sdf sd fsdf s fs sdf sdfsd fsdf sdf sd fsdf sdfdsfsd fsd fsd'}
+                  {collection.name}
                 </Header>
                 <BuilderIcon name="edit" className={styles.editCollectionName} />
               </div>
               <div className={styles.actions}>
                 {collection.linkedContractAddress && collection.linkedContractNetwork && (
-                  <Info title="SCA" info="Smart contract address associated">
+                  <Info
+                    title={t('third_party_collection_detail_page.smart_contract_address_short')}
+                    info={t('third_party_collection_detail_page.smart_contract_address_long')}
+                  >
                     {shorten(collection.linkedContractAddress)}{' '}
                     <CopyToClipboard className={styles.copyButton} showPopup text={collection.linkedContractAddress} role="button">
                       <Icon name="copy outline" />
                     </CopyToClipboard>
                   </Info>
                 )}
-                <Info title="Slots" info="Slots define how many items there are available for you to publish">
+                <Info title={t('third_party_collection_detail_page.slots_short')} info={t('third_party_collection_detail_page.slots_long')}>
                   <div className={styles.slotsIcon} />
                   {isLoadingAvailableSlots ? (
                     <Loader active inline size="tiny" />
@@ -249,11 +240,6 @@ export default function ThirdPartyCollectionDetailPage({
           <div className={styles.body}>
             {(collection.itemCount ?? 0) > 0 && (
               <div className={styles.searchContainer}>
-                <TextFilter
-                  placeholder={t('third_party_collection_detail_page.search_placeholder', { count: total })}
-                  value={searchText}
-                  onChange={handleSearchChange}
-                />
                 {paginatedItems.length > 0 && (
                   <div className={styles.searchInfo}>
                     {t('third_party_collection_detail_page.search_info', {
@@ -346,15 +332,17 @@ export default function ThirdPartyCollectionDetailPage({
               </>
             ) : (
               <div className={styles.empty}>
-                <div className={styles.sparkles} />
-                {collection.itemCount === 0 ? (
+                <div className={isCollectionEmpty ? styles.start : styles.sparkles} />
+                {isCollectionEmpty ? (
                   <>
-                    {t('third_party_collection_detail_page.start_adding_items')}
-                    <br />
-                    {t('third_party_collection_detail_page.cant_remove')}
+                    <h3>{t('third_party_collection_detail_page.start_adding_items')}</h3>
+                    <p>{t('third_party_collection_detail_page.cant_remove')}</p>
                   </>
                 ) : (
-                  'There are no items available with this search criteria'
+                  <>
+                    <h3>{t('third_party_collection_detail_page.not_found')}</h3>
+                    <p>{t('third_party_collection_detail_page.try_again')}</p>
+                  </>
                 )}
               </div>
             )}
@@ -368,7 +356,6 @@ export default function ThirdPartyCollectionDetailPage({
       isLoadingAvailableSlots,
       totalItems,
       page,
-      handleSearchChange,
       handleSelectItemChange,
       areAllSelected,
       handleChangeStatus,

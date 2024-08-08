@@ -267,8 +267,20 @@
       "any": "Cualquiera",
       "range": "Rango"
     },
-    "mapping_type_label": "Tipo de vinculación con tokens NFT",
-    "mapping_value_label": "Vinculado a",
+    "mapping_descriptions": {
+      "single": "Un ID de TOKEN específico",
+      "multiple": "Múltiples ID de TOKEN separados por una coma",
+      "any": "Todos los ID de TOKEN de la colección NFT",
+      "range": "Un rango de ID de TOKEN"
+    },
+    "mapping_examples": {
+      "single": "p.ej. 123456",
+      "multiple": "p. ej. 123456, 123457, 123458",
+      "range": "p. ej. [1, 1000]"
+    },
+    "mapping_type_label": "Vinculado a",
+    "mapping_value_label": "Token ID",
+    "mapping_value_multiple_label": "Token IDs",
     "mapping_value_any": "Todos los token IDs",
     "mapping_value_from_label": "Desde",
     "mapping_value_to_label": "Hasta",
@@ -1575,7 +1587,10 @@
     "disabled": "Deshabilitada",
     "unassigned": "Sin asignar",
     "assign_to_me": "Asignar a mí",
-    "you": "usted"
+    "you": "usted",
+    "linking_tooltip": {
+      "title": "Vincula NFTs a Wearables"
+    }
   },
   "item_detail_page": {
     "details_info": {
@@ -1611,6 +1626,8 @@
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items una vez que estén publicados.",
+    "not_found": "No hay artículos disponibles con este criterio de búsqueda",
+    "try_again": "Prueba cambiar los filtros para encontrar lo que buscas.",
     "publish_items": "Publicar {count, plural, =0 {} one {# item} other {# items}}",
     "new_items": "Nuevos items",
     "publish": "Publicar",
@@ -1620,6 +1637,10 @@
     "cant_publish_items": "Estas tratando de publicar {count} {count, plural, one {item} other {items}}. Hay otro que se encuentran bajo revisión en este momento",
     "exceeds_available_slots": "Estas excediendo la cantidad de slots disponibles. Podrás pedir más slots a la DAO através de una propuesta",
     "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, one {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios",
+    "smart_contract_address_short": "DCA",
+    "smart_contract_address_long": "Dirección del contrato inteligente",
+    "slots_short": "Slots",
+    "slots_long": "Puntos de publicación",
     "synced_filter": {
       "all": "Todos los items",
       "synced": "Sincronizados",
@@ -1647,7 +1668,7 @@
     "add_items_title": "Se ve bien!",
     "add_items_subtitle": "Ahora puede comenzar a agregar items a su colección",
     "add_items_subtitle_extensions": "Formatos aceptados: ZIP, GLTF, GLB, PNG.",
-    "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "start_adding_items": "Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "can_mint": "Crear items le permite transferir NFTs directamente a una dirección.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",

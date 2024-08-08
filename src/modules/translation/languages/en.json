@@ -266,8 +266,20 @@
       "any": "All NFTs",
       "range": "Range"
     },
-    "mapping_type_label": "NFTs token link type",
-    "mapping_value_label": "Linked to",
+    "mapping_descriptions": {
+      "single": "One specific TOKEN ID",
+      "multiple": "Multiple TOKEN IDs separated by a comma",
+      "any": "All TOKEN IDs of the NFT collection",
+      "range": "A range of TOKEN IDs"
+    },
+    "mapping_examples": {
+      "single": "e.g. 123456",
+      "multiple": "e.g. 123456, 123457, 123458",
+      "range": "e.g. [1, 1000]"
+    },
+    "mapping_type_label": "Linked to",
+    "mapping_value_label": "Token ID",
+    "mapping_value_multiple_label": "Token IDs",
     "mapping_value_any": "Any token ID",
     "mapping_value_from_label": "From",
     "mapping_value_to_label": "To",
@@ -1568,7 +1580,10 @@
     "disabled": "Disabled",
     "unassigned": "Unassigned",
     "assign_to_me": "Assign to me",
-    "you": "you"
+    "you": "you",
+    "linking_tooltip": {
+      "title": "Link NFTs to wearables"
+    }
   },
   "item_detail_page": {
     "details_info": {
@@ -1604,6 +1619,8 @@
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
+    "not_found": "There are no items available with this search criteria",
+    "try_again": "Try changing the filters to find what you're looking for.",
     "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
     "new_items": "New Items",
     "publish": "Publish",
@@ -1613,6 +1630,10 @@
     "cant_publish_items": "You're trying to publish {count} {count, plural, one {item} other {items}}. There are others under review right now",
     "exceeds_available_slots": "You're exceeding the amount of available slots. Create a proposal in the DAO to add more slots",
     "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes",
+    "smart_contract_address_short": "SCA",
+    "smart_contract_address_long": "Smart contract address",
+    "slots_short": "Slots",
+    "slots_long": "Publishing points",
     "synced_filter": {
       "all": "All items",
       "synced": "Synced",
@@ -1640,7 +1661,7 @@
     "add_items_title": "Looking good!",
     "add_items_subtitle": "Now you can start adding items to your collection",
     "add_items_subtitle_extensions": "Accepted files are ZIP, GLTF, GLB, PNG.",
-    "start_adding_items": "Looking good! Start adding items to your new collection",
+    "start_adding_items": "Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing your collection.",
     "can_mint": "Minting allows you to transfer NFTs directly to an address.",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
