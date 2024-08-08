@@ -1,3 +1,7 @@
+.itemCheckbox {
+  margin-right: 10px;
+}
+
 .gridHeader:global(.ui.grid) {
   border-bottom: 1px solid var(--divider);
   padding-bottom: 10px;
@@ -11,8 +15,4 @@
 .gridHeader:global(.ui.grid) > :global(.row) > :global(.column).itemColumn {
   display: flex;
   align-items: center;
-}
-
-.itemCheckbox {
-  margin-right: 10px;
 }
