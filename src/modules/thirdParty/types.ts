@@ -2,9 +2,11 @@ import { ContractNetwork } from '@dcl/schemas'
 
 export type ThirdParty = {
   id: string
+  root: string
   managers: string[]
   name: string
   description: string
+  isApproved: boolean
   contracts: LinkedContract[]
   maxItems: string
   totalItems: string

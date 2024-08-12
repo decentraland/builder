@@ -1413,7 +1413,8 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合",
+    "disable_third_party": "已禁用第三方：{name}"
   },
   "transfer_page": {
     "title": "转移",
@@ -1978,6 +1979,12 @@
           "title": "禁用集合",
           "subtitle": "此集合将不再可用。将来可以再次启用它。",
           "tx_pending": "等待已禁用的交易得到确认。",
+          "action": "禁用"
+        },
+        "disable_third_party": {
+          "title": "禁用第三方",
+          "subtitle": "此第三方将不再可用。这包括此第三方下的所有集合。别担心，您稍后可以再次启用它。",
+          "tx_pending": "等待禁用第三方交易确认",
           "action": "禁用"
         }
       }

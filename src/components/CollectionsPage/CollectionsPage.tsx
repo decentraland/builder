@@ -213,7 +213,7 @@ export default function CollectionsPage(props: Props) {
         <Field
           placeholder={t('itemdrawer.search_items')}
           className="collections-search-field"
-          input={{ icon: 'search', iconPosition: 'left' }}
+          input={{ icon: 'search' }}
           onChange={handleSearchChange}
           icon={<UIIcon name="search" className="searchIcon" />}
           iconPosition="left"

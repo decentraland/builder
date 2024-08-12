@@ -19,7 +19,13 @@ import {
   DeployBatchedThirdPartyItemsFailureAction,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE,
-  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
+  DisableThirdPartySuccessAction,
+  DisableThirdPartyFailureAction,
+  DisableThirdPartyRequestAction,
+  DISABLE_THIRD_PARTY_SUCCESS,
+  DISABLE_THIRD_PARTY_REQUEST,
+  DISABLE_THIRD_PARTY_FAILURE
 } from './actions'
 import { ThirdParty } from './types'
 
@@ -50,11 +56,15 @@ type ThirdPartyReducerAction =
   | DeployBatchedThirdPartyItemsRequestAction
   | DeployBatchedThirdPartyItemsSuccessAction
   | DeployBatchedThirdPartyItemsFailureAction
+  | DisableThirdPartySuccessAction
+  | DisableThirdPartyFailureAction
+  | DisableThirdPartyRequestAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
     case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
+    case DISABLE_THIRD_PARTY_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
         ...state,
@@ -76,6 +86,20 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         },
         loading: loadingReducer(state.loading, action),
         error: null
+      }
+    }
+    case DISABLE_THIRD_PARTY_SUCCESS: {
+      const { thirdPartyId } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [thirdPartyId]: {
+            ...state.data[thirdPartyId],
+            isApproved: false
+          }
+        },
+        loading: loadingReducer(state.loading, action)
       }
     }
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_SUCCESS: {
@@ -100,6 +124,7 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
+    case DISABLE_THIRD_PARTY_FAILURE:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:
     case FETCH_THIRD_PARTIES_FAILURE: {
       return {

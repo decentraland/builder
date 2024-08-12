@@ -10,8 +10,7 @@ import {
   Loader,
   Dropdown,
   DropdownProps,
-  InfoTooltip,
-  Blockie
+  InfoTooltip
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
@@ -24,6 +23,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import CollectionProvider from 'components/CollectionProvider'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
+import { ThirdPartyImage } from 'components/ThirdPartyImage'
 import Back from 'components/Back'
 import { shorten } from 'lib/address'
 import { CopyToClipboard } from 'components/CopyToClipboard'
@@ -198,7 +198,7 @@ export default function ThirdPartyCollectionDetailPage({
             <Back absolute onClick={handleGoBack} />
             <div className={styles.content}>
               <div className={styles.title}>
-                <Blockie className={styles.thirdPartyLogo} seed={thirdParty.id} size={8} scale={8} shape="circle" />
+                <ThirdPartyImage thirdPartyId={thirdParty.id} />
                 <Header size="large" className={styles.name} onClick={handleEditName}>
                   {collection.name}
                 </Header>
