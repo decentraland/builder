@@ -223,6 +223,8 @@ describe('when getting the authorized collections', () => {
       [thirdPartyId]: {
         id: thirdPartyId,
         managers: [address],
+        root: '',
+        isApproved: true,
         contracts: [],
         name: 'aName',
         description: 'aDescription',
