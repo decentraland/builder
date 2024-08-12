@@ -211,7 +211,6 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
       }
 
       const builtItem = await itemFactory.build()
-      console.log('Building item', builtItem)
       if (!this.isCreating()) {
         const { id: _id, ...itemWithoutId } = builtItem.item
         builtItem.item = itemWithoutId as LocalItem
