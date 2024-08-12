@@ -69,3 +69,11 @@ export const getIsLinkedWearablesV2Enabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsLinkedWearablesPaymentsEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.LINKED_WEARABLES_PAYMENTS)
+  } catch (e) {
+    return false
+  }
+}

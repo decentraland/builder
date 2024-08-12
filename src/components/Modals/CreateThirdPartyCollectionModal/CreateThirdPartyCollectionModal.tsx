@@ -31,7 +31,18 @@ const imgSrcByNetwork = {
 }
 
 export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
-  const { name, thirdParties, onClose, isCreatingCollection, isThirdPartyV2Enabled, error, ownerAddress, onSubmit, onBack } = props
+  const {
+    name,
+    thirdParties,
+    onClose,
+    isCreatingCollection,
+    isLinkedWearablesV2Enabled,
+    isLinkedWearablesPaymentsEnabled,
+    error,
+    ownerAddress,
+    onSubmit,
+    onBack
+  } = props
   const [collectionName, setCollectionName] = useState('')
   const [hasCollectionIdBeenTyped, setHasCollectionIdBeenTyped] = useState(false)
   const [collectionId, setCollectionId] = useState('')
@@ -137,7 +148,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
   }, [onSubmit, collectionId, collectionName, selectedThirdParty, ownerAddress, analytics])
 
   const isSubmittable = collectionName && ownerAddress && !isCollectionNameInvalid && collectionId
-  !isCreatingCollection && (isThirdPartyV2Enabled ? selectedContract && selectedNetwork : true)
+  !isCreatingCollection && (isLinkedWearablesV2Enabled ? selectedContract && selectedNetwork : true)
   const isLoading = isCreatingCollection
 
   return (
@@ -146,7 +157,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
         title={t('create_third_party_collection_modal.title')}
         subtitle={t('create_third_party_collection_modal.subtitle')}
         onClose={isLoading ? undefined : onClose}
-        onBack={isLoading ? undefined : onBack}
+        onBack={isLoading || !isLinkedWearablesPaymentsEnabled ? undefined : onBack}
       />
       <Form onSubmit={handleSubmit} disabled={!isSubmittable}>
         <ModalContent>
@@ -157,7 +168,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
             disabled={isLoading}
             value={selectedThirdParty.id}
           />
-          {isThirdPartyV2Enabled && thirdPartyContractNetworkOptions.length > 0 && (
+          {isLinkedWearablesV2Enabled && thirdPartyContractNetworkOptions.length > 0 && (
             <div className={styles.contract}>
               <SelectField
                 label={t('global.network')}
@@ -185,7 +196,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
             message={isCollectionNameInvalid ? t('create_third_party_collection_modal.name_field.message') : ''}
             disabled={isLoading}
           />
-          {!isThirdPartyV2Enabled && (
+          {!isLinkedWearablesV2Enabled && (
             <Field
               label={t('create_third_party_collection_modal.collection_id_field.label')}
               placeholder="0x..."
