@@ -10,10 +10,14 @@ import {
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
   deployBatchedThirdPartyItemsSuccess,
   deployBatchedThirdPartyItemsFailure,
-  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE,
+  disableThirdPartyRequest,
+  disableThirdPartySuccess,
+  disableThirdPartyFailure
 } from './actions'
 import { INITIAL_STATE, thirdPartyReducer, ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
+import { ChainId } from '@dcl/schemas'
 
 describe('when an action of type FETCH_THIRD_PARTIES_REQUEST is called', () => {
   it('should add a fetchThirdPartiesRequest to the loading array', () => {
@@ -29,6 +33,8 @@ describe('when an action of type FETCH_THIRD_PARTIES_SUCCESS is called', () => {
   beforeEach(() => {
     thirdParty = {
       id: '1',
+      root: '',
+      isApproved: true,
       name: 'a third party',
       description: 'some desc',
       managers: ['0x1', '0x2'],
@@ -112,6 +118,88 @@ describe('when reducing an DEPLOY_BATCHED_THIRD_PARTY_ITEMS_FAILURE action', () 
       loading: [],
       error: 'error',
       errors
+    })
+  })
+})
+
+describe('when reducing a DISABLE_THIRD_PARTY_REQUEST action', () => {
+  let state: ThirdPartyState
+
+  beforeEach(() => {
+    state = {
+      ...INITIAL_STATE,
+      error: 'Some error',
+      errors: [new ThirdPartyDeploymentError(mockedItem)]
+    }
+  })
+
+  it('should add the action to the loading array and clear the errors', () => {
+    expect(thirdPartyReducer(state, disableThirdPartyRequest('anId'))).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [disableThirdPartyRequest('anId')],
+      error: null,
+      errors: []
+    })
+  })
+})
+
+describe('when reducing a DISABLE_THIRD_PARTY_SUCCESS action', () => {
+  let state: ThirdPartyState
+  let thirdParty: ThirdParty
+
+  beforeEach(() => {
+    thirdParty = {
+      id: 'anId',
+      root: '',
+      isApproved: true,
+      name: 'a third party',
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      contracts: [],
+      maxItems: '0',
+      totalItems: '0'
+    }
+    state = {
+      ...INITIAL_STATE,
+      loading: [disableThirdPartyRequest('anId')],
+      data: {
+        anId: thirdParty
+      }
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state and set the third party as not approved', () => {
+    expect(thirdPartyReducer(state, disableThirdPartySuccess('anId', ChainId.MATIC_MAINNET, 'aTxHash', 'thirdPartyName'))).toStrictEqual({
+      ...INITIAL_STATE,
+      data: {
+        anId: {
+          ...thirdParty,
+          isApproved: false
+        }
+      },
+      loading: []
+    })
+  })
+})
+
+describe('when reducing a DISABLE_THIRD_PARTY_FAILURE action', () => {
+  let state: ThirdPartyState
+  let error: string
+
+  beforeEach(() => {
+    error = 'anError'
+    state = {
+      ...INITIAL_STATE,
+      loading: [disableThirdPartyRequest('anId')],
+      data: {}
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state and set the error', () => {
+    expect(thirdPartyReducer(state, disableThirdPartyFailure(error))).toStrictEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error
     })
   })
 })

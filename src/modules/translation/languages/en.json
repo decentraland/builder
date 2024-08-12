@@ -1423,7 +1423,8 @@
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
     "reclaim_name": "Reclaimed the name: \"{subdomain}\".",
-    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
+    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}",
+    "disable_third_party": "Disabled third party: {name}"
   },
   "transfer_page": {
     "title": "Transfer",
@@ -1978,6 +1979,12 @@
           "title": "Disable Collection",
           "subtitle": "The collection will not be available anymore. Don't worry, you will be able to enable it again later.",
           "tx_pending": "Waiting for the disable collection transaction to confirm",
+          "action": "Disable"
+        },
+        "disable_third_party": {
+          "title": "Disable Third Party",
+          "subtitle": "This third party will not be available anymore. This include all collections under this third party. Don't worry, you'll be able to enable it again later.",
+          "tx_pending": "Waiting for the disable third party transaction to confirm",
           "action": "Disable"
         }
       }

@@ -69,10 +69,15 @@ import {
   PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
-  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  DISABLE_THIRD_PARTY_REQUEST,
+  DisableThirdPartyRequestAction,
+  disableThirdPartyFailure,
+  disableThirdPartySuccess
 } from './actions'
 import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
+import { getThirdParty } from './selectors'
 
 export function* getContractInstance(
   contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
@@ -95,6 +100,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
   yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
+  yield takeEvery(DISABLE_THIRD_PARTY_REQUEST, handleDisableThirdPartyRequest)
   yield takeEvery(actionProgressChannel, handleUpdateApprovalFlowProgress)
   yield takeEvery(
     [
@@ -338,6 +344,19 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(deployBatchedThirdPartyItemsFailure(errors))
     } else {
       yield put(deployBatchedThirdPartyItemsSuccess(collection, deployedItemsCurations))
+    }
+  }
+
+  function* handleDisableThirdPartyRequest(action: DisableThirdPartyRequestAction) {
+    const { thirdPartyId } = action.payload
+    try {
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const thirdParty: ThirdParty | null = yield select(getThirdParty, thirdPartyId)
+      const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+      const txHash: string = yield call(sendTransaction as any, thirdPartyContract, 'reviewThirdParties', [[thirdPartyId, false, []]])
+      yield put(disableThirdPartySuccess(thirdPartyId, maticChainId, txHash, thirdParty?.name ?? 'Unknown Third Party Name'))
+    } catch (error) {
+      yield put(disableThirdPartyFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

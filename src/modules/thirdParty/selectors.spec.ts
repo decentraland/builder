@@ -1,13 +1,21 @@
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, fetchThirdPartiesRequest } from './actions'
+import {
+  DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
+  DISABLE_THIRD_PARTY_SUCCESS,
+  disableThirdPartyRequest,
+  fetchThirdPartiesRequest
+} from './actions'
 import {
   isThirdPartyManager,
   getWalletThirdParties,
   getCollectionThirdParty,
   getItemThirdParty,
   isDeployingBatchedThirdPartyItems,
-  isLoadingThirdParties
+  isLoadingThirdParties,
+  getThirdParty,
+  isDisablingThirdParty,
+  hasPendingDisableThirdPartyTransaction
 } from './selectors'
 import { ThirdParty } from './types'
 
@@ -23,29 +31,35 @@ describe('Third Party selectors', () => {
     thirdParty1 = {
       id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty1',
       name: 'a third party',
+      root: '',
       description: 'some desc',
       maxItems: '0',
       totalItems: '0',
       contracts: [],
-      managers: [address, '0xa']
+      managers: [address, '0xa'],
+      isApproved: true
     }
     thirdParty2 = {
       id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2',
       name: 'a third party',
+      root: '',
       description: 'some desc',
       maxItems: '0',
       totalItems: '0',
       contracts: [],
-      managers: [address, '0xb']
+      managers: [address, '0xb'],
+      isApproved: true
     }
     thirdParty3 = {
       id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty3',
       name: 'a third party',
+      root: '',
       description: 'some desc',
       maxItems: '0',
       totalItems: '0',
       contracts: [],
-      managers: ['0xc']
+      managers: ['0xc'],
+      isApproved: true
     }
     baseState = {
       wallet: {
@@ -286,6 +300,149 @@ describe('Third Party selectors', () => {
 
       it('should return false', () => {
         expect(isLoadingThirdParties(state)).toBe(false)
+      })
+    })
+  })
+
+  describe('when getting a third party', () => {
+    describe('and the third party exists', () => {
+      let state: RootState
+
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            data: {
+              [thirdParty1.id]: thirdParty1
+            }
+          }
+        } as any
+      })
+
+      it('should return the third party', () => {
+        expect(getThirdParty(state, thirdParty1.id)).toBe(thirdParty1)
+      })
+    })
+
+    describe('and the third party does not exist', () => {
+      let state: RootState
+
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            data: {}
+          }
+        } as any
+      })
+
+      it('should return null', () => {
+        expect(getThirdParty(state, thirdParty1.id)).toBe(null)
+      })
+    })
+  })
+
+  describe('when checking if a third party is being disabled', () => {
+    let state: RootState
+
+    describe('and the disable third party request is being processed', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [disableThirdPartyRequest(thirdParty1.id)]
+          }
+        }
+      })
+
+      it('should return true', () => {
+        expect(isDisablingThirdParty(state)).toBe(true)
+      })
+    })
+
+    describe('and the disable third party request is not being processed', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: []
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isDisablingThirdParty(state)).toBe(false)
+      })
+    })
+  })
+
+  describe('when checking if a disable third party transaction is pending', () => {
+    beforeEach(() => {
+      baseState = {
+        ...baseState,
+        transaction: {
+          ...baseState.transaction,
+          data: [
+            {
+              events: [],
+              hash: '0x123',
+              nonce: 1,
+              actionType: DISABLE_THIRD_PARTY_SUCCESS,
+              payload: { thirdPartyId: thirdParty1.id },
+              status: null,
+              from: address,
+              replacedBy: null,
+              timestamp: 0,
+              url: 'url',
+              isCrossChain: false,
+              chainId: 1
+            }
+          ]
+        }
+      } as RootState
+    })
+
+    describe('and the transaction is pending', () => {
+      beforeEach(() => {
+        baseState = {
+          ...baseState,
+          transaction: {
+            ...baseState.transaction,
+            data: [
+              {
+                ...baseState.transaction.data[0],
+                status: null
+              }
+            ]
+          }
+        } as RootState
+      })
+
+      it('should return true', () => {
+        expect(hasPendingDisableThirdPartyTransaction(baseState, thirdParty1.id)).toBe(true)
+      })
+    })
+
+    describe('and the transaction is not pending', () => {
+      beforeEach(() => {
+        baseState = {
+          ...baseState,
+          transaction: {
+            ...baseState.transaction,
+            data: [
+              {
+                ...baseState.transaction.data[0],
+                status: 'confirmed'
+              }
+            ]
+          }
+        } as RootState
+      })
+
+      it('should return false', () => {
+        expect(hasPendingDisableThirdPartyTransaction(baseState, thirdParty1.id)).toBe(false)
       })
     })
   })
