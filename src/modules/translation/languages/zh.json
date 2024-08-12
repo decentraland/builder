@@ -383,6 +383,7 @@
       "saved_items_table_title": "更新项目"
     },
     "wrong_thumbnail_format": "thumbnail.png 文件未格式化为 PNG 图像。",
+    "missing_mapping": "该项缺少映射。",
     "wrong_file_extension": "文件扩展名不正确。",
     "wearable_file_not_found": "找不到wearable.json 文件。",
     "thumbnail_file_not_generated": "无法生成 thumbnail.png 文件。",
