@@ -389,6 +389,7 @@
       "saved_items_table_title": "Items actualizados"
     },
     "wrong_thumbnail_format": "El archivo thumbnail.png no tiene el formato de una imagen PNG.",
+    "missing_mapping": "El item no contiene un mapeo.",
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "wearable_file_not_found": "El archivo wearable.json no se encontró.",
     "thumbnail_file_not_generated": "El archivo thumbnail.png no pudo ser generado.",

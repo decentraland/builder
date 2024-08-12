@@ -390,6 +390,7 @@
       "saved_items_table_title": "Updated items"
     },
     "wrong_thumbnail_format": "The thumbnail.png file is not formatted as a PNG image.",
+    "missing_mapping": "The item is missing a mapping.",
     "wrong_file_extension": "File extension is not correct.",
     "wearable_file_not_found": "The wearable.json file was not found.",
     "thumbnail_file_not_generated": "The thumbnail.png file couldn't be generated.",
