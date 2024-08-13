@@ -6,7 +6,7 @@ import { getLoading } from 'modules/collection/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal'
 import { SAVE_COLLECTION_REQUEST, saveCollectionRequest } from 'modules/collection/actions'
 import { getWalletThirdParties, getError } from 'modules/thirdParty/selectors'
-import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { getIsLinkedWearablesV2Enabled, getIsLinkedWearablesPaymentsEnabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateThirdPartyCollectionModal.types'
 import { CreateThirdPartyCollectionModal } from './CreateThirdPartyCollectionModal'
 
@@ -14,7 +14,8 @@ const mapState = (state: RootState): MapStateProps => ({
   ownerAddress: getAddress(state),
   thirdParties: getWalletThirdParties(state),
   error: getError(state),
-  isThirdPartyV2Enabled: getIsLinkedWearablesV2Enabled(state),
+  isLinkedWearablesV2Enabled: getIsLinkedWearablesV2Enabled(state),
+  isLinkedWearablesPaymentsEnabled: getIsLinkedWearablesPaymentsEnabled(state),
   isCreatingCollection: isLoadingType(getLoading(state), SAVE_COLLECTION_REQUEST)
 })
 

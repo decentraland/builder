@@ -19,7 +19,7 @@ export type Props = {
   items: Item[]
   collections: Collection[]
   collectionsPaginationData: CollectionPaginationData | null
-  isLinkedWearablesV2Enabled: boolean
+  isLinkedWearablesPaymentsEnabled: boolean
   itemsPaginationData?: ItemPaginationData | null
   view: CollectionPageView
   isThirdPartyManager: boolean
@@ -49,7 +49,7 @@ export type MapStateProps = Pick<
   | 'isLoadingOrphanItem'
   | 'isCampaignEnabled'
   | 'hasUserOrphanItems'
-  | 'isLinkedWearablesV2Enabled'
+  | 'isLinkedWearablesPaymentsEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSetView' | 'onOpenModal' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'>
 export type MapDispatch = Dispatch<

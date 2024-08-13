@@ -8,13 +8,17 @@ export type Props = ModalProps & {
   ownerAddress?: string
   thirdParties: ThirdParty[]
   isCreatingCollection: boolean
-  isThirdPartyV2Enabled: boolean
+  isLinkedWearablesPaymentsEnabled: boolean
+  isLinkedWearablesV2Enabled: boolean
   error: string | null
   onSubmit: typeof saveCollectionRequest
   onBack: () => void
 }
 
-export type MapStateProps = Pick<Props, 'ownerAddress' | 'thirdParties' | 'error' | 'isCreatingCollection' | 'isThirdPartyV2Enabled'>
+export type MapStateProps = Pick<
+  Props,
+  'ownerAddress' | 'thirdParties' | 'error' | 'isCreatingCollection' | 'isLinkedWearablesPaymentsEnabled' | 'isLinkedWearablesV2Enabled'
+>
 export type MapDispatchProps = Pick<Props, 'onSubmit' | 'onBack'>
 export type OwnProps = Pick<Props, 'metadata' | 'onClose'>
 export type MapDispatch = Dispatch<SaveCollectionRequestAction | OpenModalAction>
