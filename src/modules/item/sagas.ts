@@ -446,8 +446,8 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      yield call([legacyBuilder, 'saveItem'], item, contents)
-      yield put(saveItemSuccess(item, contents, options))
+      const savedItem: Item = yield call([legacyBuilder, 'saveItem'], item, contents)
+      yield put(saveItemSuccess(savedItem, contents, options))
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
