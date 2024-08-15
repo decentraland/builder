@@ -611,9 +611,17 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       newItem.collectionId = collectionId
     }
     yield put(saveItemRequest(newItem, {}))
-    yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('MoveItemToCollectionModal'))
-    yield put(fetchItemsRequest(address))
+    const saveItemAction: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+    if (saveItemAction.success) {
+      yield put(closeModal('MoveItemToCollectionModal'))
+      yield put(fetchItemsRequest(address))
+    }
   }
 
   function* handleSetItemCollectionRequest(action: SetItemCollectionAction) {
@@ -622,18 +630,26 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const address: string = yield select(getAddress)
     const collection: Collection = yield select(getCollection, collectionId)
     yield put(saveItemRequest(newItem, {}))
-    yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('MoveItemToAnotherCollectionModal'))
-    const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
-    yield put(showToast(toast, 'bottom center'))
-    // Get the created toast id to close if the user clicks on the redirect link or changes the page
-    const {
-      payload: { id: toastId }
-    }: RenderToastAction = yield take(RENDER_TOAST)
-    yield put(fetchItemsRequest(address))
-    const location: Location = yield take(LOCATION_CHANGE)
-    if (location.pathname !== locations.collectionDetail(item.collectionId)) {
-      yield put(hideToast(toastId))
+    const saveItemAction: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+    if (saveItemAction.success) {
+      yield put(closeModal('MoveItemToAnotherCollectionModal'))
+      const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
+      yield put(showToast(toast, 'bottom center'))
+      // Get the created toast id to close if the user clicks on the redirect link or changes the page
+      const {
+        payload: { id: toastId }
+      }: RenderToastAction = yield take(RENDER_TOAST)
+      yield put(fetchItemsRequest(address))
+      const location: Location = yield take(LOCATION_CHANGE)
+      if (location.pathname !== locations.collectionDetail(item.collectionId)) {
+        yield put(hideToast(toastId))
+      }
     }
   }
 
