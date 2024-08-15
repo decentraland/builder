@@ -9,9 +9,7 @@ import {
   fetchItemsRequest,
   FetchItemsRequestAction,
   fetchOrphanItemRequest,
-  FetchOrphanItemRequestAction,
-  setCollection,
-  SetCollectionAction
+  FetchOrphanItemRequestAction
 } from 'modules/item/actions'
 
 export enum ItemEditorTabs {
@@ -38,7 +36,6 @@ export type Props = {
   wearableController: IPreviewController | null
   hasUserOrphanItems: boolean | undefined
   onSetItems: typeof setItems
-  onSetCollection: typeof setCollection
   onFetchOrphanItems: typeof fetchItemsRequest
   onFetchCollections: typeof fetchCollectionsRequest
   onSetReviewedItems: (itemIds: Item[]) => void
@@ -71,13 +68,9 @@ export type MapStateProps = Pick<
   | 'isPlayingEmote'
   | 'hasUserOrphanItems'
 >
-export type MapDispatchProps = Pick<
-  Props,
-  'onSetItems' | 'onSetCollection' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'
->
+export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'>
 export type MapDispatch = Dispatch<
   | SetItemsAction
-  | SetCollectionAction
   | FetchCollectionItemsRequestAction
   | FetchItemsRequestAction
   | FetchCollectionsRequestAction

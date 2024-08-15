@@ -792,10 +792,12 @@ export class BuilderAPI extends BaseAPI {
     return remoteResponse.map(fromRemoteItem) as Item[]
   }
 
-  saveItem = async (item: Item, contents: Record<string, Blob>) => {
-    await this.request('put', `/items/${item.id}`, { params: { item: toRemoteItem(item) } })
+  saveItem = async (item: Item, contents: Record<string, Blob>): Promise<Item> => {
+    const savedItemResponse = await this.request('put', `/items/${item.id}`, { params: { item: toRemoteItem(item) } })
+    const remoteSavedItem = fromRemoteItem(savedItemResponse)
     // This has to be done after the PUT above, otherwise it will fail when creating an item, since it wont find it in the DB and return a 404
     await this.saveItemContents(item, contents)
+    return remoteSavedItem
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {

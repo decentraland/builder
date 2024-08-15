@@ -107,8 +107,8 @@ export const getItemsByURN = createSelector<RootState, Item[], Record<string, Co
 )
 
 export const getEntityByItemId = createSelector<RootState, Entity[], Record<string, Item>, Record<string, Entity>>(
-  state => getEntities(state),
-  state => getItemsByURN(state),
+  getEntities,
+  getItemsByURN,
   (entities, itemsByURN) =>
     entities.reduce((obj, entity) => {
       const urn: string = (entity.metadata as CatalystItem).id
@@ -166,9 +166,9 @@ export const getStatusByItemId = createSelector<
   Record<string, ItemCuration>,
   Record<string, SyncStatus>
 >(
-  state => getItems(state),
-  state => getEntityByItemId(state),
-  state => getCurationsByCollectionId(state),
+  getItems,
+  getEntityByItemId,
+  getCurationsByCollectionId,
   getItemCurationsByItemId,
   (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
     const statusByItemId: Record<string, SyncStatus> = {}
