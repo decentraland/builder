@@ -278,6 +278,7 @@
       "range": "e.g. [1, 1000]"
     },
     "mapping_type_label": "Linked to",
+    "mapping_type_placeholder": "Select",
     "mapping_value_label": "Token ID",
     "mapping_value_multiple_label": "Token IDs",
     "mapping_value_any": "Any token ID",
@@ -1645,7 +1646,9 @@
       "unpublished": "Ready to publish",
       "under_review": "Under Review",
       "synced": "Synced",
-      "unsynced": "Unsynced"
+      "unsynced": "Unsynced",
+      "pending_migration": "Pending Migration",
+      "pending_mapping": "Pending Mapping "
     }
   },
   "collection_detail_page": {

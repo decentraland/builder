@@ -7,15 +7,15 @@ import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { debounce } from 'lib/debounce'
-import { SyncStatus } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { buildItemMappings, getMapping } from 'modules/item/utils'
 import { MappingEditor } from 'components/MappingEditor'
+import { SyncStatus } from 'modules/item/types'
 import { LinkedContract } from 'modules/thirdParty/types'
 import { areMappingsEqual, areMappingsValid } from 'modules/thirdParty/utils'
 import ItemImage from 'components/ItemImage'
-import { Props } from './CollectionItemV2.types'
+import { ItemStatus, Props } from './CollectionItemV2.types'
 import styles from './CollectionItemV2.module.css'
 
 export default function CollectionItemV2({
@@ -29,6 +29,15 @@ export default function CollectionItemV2({
   onOpenModal,
   onDelete
 }: Props) {
+  const itemStatus = useMemo(() => {
+    if (!item.mappings) {
+      return ItemStatus.PENDING_MAPPING
+    } else if (!item.isMappingComplete && status !== SyncStatus.UNDER_REVIEW) {
+      return ItemStatus.PENDING_MIGRATION
+    }
+    // Casts the status to ItemStatus as ItemStatus is an extension of SyncStatus
+    return status as unknown as ItemStatus
+  }, [item.mappings, item.isMappingComplete, status])
   const history = useHistory()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   const mapping = useMemo(() => getMapping(item), [item])
@@ -51,7 +60,13 @@ export default function CollectionItemV2({
   }, [localMapping, contract])
 
   useEffect(() => {
-    if (mapping && localMapping && contract && !error && !areMappingsEqual(mapping, localMapping)) {
+    if (!contract || error) {
+      return
+    }
+
+    if (!mapping && localMapping) {
+      handleSaveItem(localMapping, contract)
+    } else if (mapping && localMapping && !areMappingsEqual(mapping, localMapping)) {
       handleSaveItem(localMapping, contract)
     }
   }, [mapping, error, localMapping, contract])
@@ -95,17 +110,22 @@ export default function CollectionItemV2({
   }, [onDelete, item])
 
   const statusIcon = useMemo(() => {
-    switch (status) {
-      case SyncStatus.UNDER_REVIEW:
+    switch (itemStatus) {
+      case ItemStatus.UNDER_REVIEW:
         return <Icon name="clock outline" />
-      case SyncStatus.SYNCED:
+      case ItemStatus.SYNCED:
         return <Icon name="check circle outline" />
-      case SyncStatus.UNSYNCED:
+      case ItemStatus.UNSYNCED:
         return <Icon name="exclamation circle" />
+      // TODO correctly set the values
+      case ItemStatus.PENDING_MIGRATION:
+        return <Icon name="hourglass half" />
+      case ItemStatus.PENDING_MAPPING:
+        return <Icon name="hourglass half" />
       default:
         return null
     }
-  }, [status])
+  }, [itemStatus])
 
   return (
     <Grid className={classNames(styles.grid, loading && styles.loading)} columns="equal">
@@ -125,13 +145,11 @@ export default function CollectionItemV2({
           </div>
         </Grid.Column>
         <Grid.Column>
-          {contract && localMapping && (
-            <MappingEditor disabled={loading} mapping={localMapping} error={error} onChange={setLocalMapping} isCompact />
-          )}
+          {contract && <MappingEditor disabled={loading} mapping={localMapping} error={error} onChange={setLocalMapping} isCompact />}
         </Grid.Column>
-        <Grid.Column width={2} className={`${styles.column} ${styles.statusColumn} ${styles[status]}`}>
+        <Grid.Column width={2} className={`${styles.column} ${styles.statusColumn} ${styles[itemStatus]}`}>
           {statusIcon}
-          <div>{t(`third_party_collection_detail_page.synced_statuses.${status}`)}</div>
+          <div>{t(`third_party_collection_detail_page.synced_statuses.${itemStatus}`)}</div>
         </Grid.Column>
         <Grid.Column width={1} className={styles.column}>
           <div className={styles.itemActions}>

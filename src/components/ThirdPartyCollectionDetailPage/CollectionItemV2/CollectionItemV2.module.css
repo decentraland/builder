@@ -41,6 +41,7 @@
   color: #34ce76;
 }
 
+.statusColumn.pending_mapping,
 .statusColumn.unsynced {
   color: #fc9965;
 }
