@@ -127,6 +127,7 @@ import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
@@ -359,6 +360,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
+      const isLinkedWearablesV2Enabled: boolean = yield select(getIsLinkedWearablesV2Enabled)
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
       const rarityChanged = oldItem && oldItem.rarity !== item.rarity
       const shouldValidateCategoryChanged =
@@ -447,7 +449,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       const savedItem: Item = yield call([legacyBuilder, 'saveItem'], item, contents)
-      yield put(saveItemSuccess(savedItem, contents, options))
+      if (isLinkedWearablesV2Enabled) {
+        yield put(saveItemSuccess(savedItem, contents, options))
+      } else {
+        yield put(saveItemSuccess(item, contents, options))
+      }
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
