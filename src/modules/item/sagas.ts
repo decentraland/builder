@@ -17,15 +17,7 @@ import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import {
-  BuilderClient,
-  RemoteItem,
-  MAX_THUMBNAIL_FILE_SIZE,
-  MAX_WEARABLE_FILE_SIZE,
-  MAX_SKIN_FILE_SIZE,
-  MAX_EMOTE_FILE_SIZE,
-  MAX_SMART_WEARABLE_FILE_SIZE
-} from '@dcl/builder-client'
+import { BuilderClient, RemoteItem, MAX_THUMBNAIL_FILE_SIZE } from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,
@@ -151,7 +143,11 @@ import {
   MAX_VIDEO_FILE_SIZE,
   isSmart,
   isWearable,
-  isEmote
+  isEmote,
+  isWearableFileSizeValid,
+  isEmoteFileSizeValid,
+  isSkinFileSizeValid,
+  isSmartWearableFileSizeValid
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -431,19 +427,22 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         const isSkin = !isEmoteItem && item.data.category === WearableCategory.SKIN
         const isSmartWearable = isSmart(item)
 
-        if (isEmoteItem && finalModelSize > MAX_EMOTE_FILE_SIZE) {
+        // Use the model size + thumbnail size until there's a clear definition of how the catalyst will handle the thumbnail size calculation
+        const finalSize = finalModelSize + finalThumbnailSize
+
+        if (isEmoteItem && isEmoteFileSizeValid(finalSize)) {
           throw new ItemEmoteTooBigError()
         }
 
-        if (isSkin && finalModelSize > MAX_SKIN_FILE_SIZE) {
+        if (isSkin && isSkinFileSizeValid(finalSize)) {
           throw new ItemSkinTooBigError()
         }
 
-        if (isSmartWearable && finalModelSize + finalThumbnailSize > MAX_SMART_WEARABLE_FILE_SIZE) {
+        if (isSmartWearable && isSmartWearableFileSizeValid(finalSize)) {
           throw new ItemSmartWearableTooBigError()
         }
 
-        if (!isSkin && !isSmartWearable && !isEmoteItem && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+        if (!isSkin && !isSmartWearable && !isEmoteItem && isWearableFileSizeValid(finalSize)) {
           throw new ItemWearableTooBigError()
         }
       }
