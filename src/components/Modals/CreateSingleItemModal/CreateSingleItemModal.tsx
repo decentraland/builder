@@ -821,6 +821,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     const modelSize = await calculateModelFinalSize(
       item?.contents ?? {},
       contents ?? {},
+      type ?? ItemType.WEARABLE,
       new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => this.props.address))
     )
 
@@ -1060,7 +1061,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return false
     }
 
-    if (isRequirementMet && isEmote && finalSize && isEmoteFileSizeValid(finalSize)) {
+    if (isRequirementMet && isEmote && finalSize && !isEmoteFileSizeValid(finalSize)) {
       this.setState({
         error: t('create_single_item_modal.error.item_too_big', {
           size: `${toMB(MAX_EMOTE_FILE_SIZE)}MB`,
@@ -1070,7 +1071,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return false
     }
 
-    if (isRequirementMet && isSkin && finalSize && isSkinFileSizeValid(finalSize)) {
+    if (isRequirementMet && isSkin && finalSize && !isSkinFileSizeValid(finalSize)) {
       this.setState({
         error: t('create_single_item_modal.error.item_too_big', {
           size: `${toMB(MAX_SKIN_FILE_SIZE)}MB`,
@@ -1080,7 +1081,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return false
     }
 
-    if (isRequirementMet && !isSkin && isSmartWearable && finalSize && isSmartWearableFileSizeValid(finalSize)) {
+    if (isRequirementMet && !isSkin && isSmartWearable && finalSize && !isSmartWearableFileSizeValid(finalSize)) {
       this.setState({
         error: t('create_single_item_modal.error.item_too_big', {
           size: `${toMB(MAX_SMART_WEARABLE_FILE_SIZE)}MB`,
@@ -1090,7 +1091,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return false
     }
 
-    if (isRequirementMet && !isSkin && !isSmartWearable && finalSize && isWearableFileSizeValid(finalSize)) {
+    if (isRequirementMet && !isSkin && !isSmartWearable && finalSize && !isWearableFileSizeValid(finalSize)) {
       this.setState({
         error: t('create_single_item_modal.error.item_too_big', {
           size: `${toMB(MAX_WEARABLE_FILE_SIZE)}MB`,

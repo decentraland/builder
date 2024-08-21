@@ -403,7 +403,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         const { [THUMBNAIL_PATH]: thumbnailContent, [VIDEO_PATH]: videoContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _thumbnailContent, [VIDEO_PATH]: _videoContent, ...itemContents } = item.contents
         // This will calculate the model's final size without the thumbnail with a limit of 2MB for wearables/emotes and 8MB for skins
-        const finalModelSize: number = yield call(calculateModelFinalSize, itemContents, modelContents, legacyBuilder)
+        const finalModelSize: number = yield call(calculateModelFinalSize, itemContents, modelContents, item.type, legacyBuilder)
         let finalThumbnailSize = 0
         let finalVideoSize = 0
 
@@ -430,19 +430,19 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         // Use the model size + thumbnail size until there's a clear definition of how the catalyst will handle the thumbnail size calculation
         const finalSize = finalModelSize + finalThumbnailSize
 
-        if (isEmoteItem && isEmoteFileSizeValid(finalSize)) {
+        if (isEmoteItem && !isEmoteFileSizeValid(finalSize)) {
           throw new ItemEmoteTooBigError()
         }
 
-        if (isSkin && isSkinFileSizeValid(finalSize)) {
+        if (isSkin && !isSkinFileSizeValid(finalSize)) {
           throw new ItemSkinTooBigError()
         }
 
-        if (isSmartWearable && isSmartWearableFileSizeValid(finalSize)) {
+        if (isSmartWearable && !isSmartWearableFileSizeValid(finalSize)) {
           throw new ItemSmartWearableTooBigError()
         }
 
-        if (!isSkin && !isSmartWearable && !isEmoteItem && isWearableFileSizeValid(finalSize)) {
+        if (!isSkin && !isSmartWearable && !isEmoteItem && !isWearableFileSizeValid(finalSize)) {
           throw new ItemWearableTooBigError()
         }
       }
