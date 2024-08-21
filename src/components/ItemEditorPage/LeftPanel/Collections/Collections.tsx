@@ -17,7 +17,7 @@ export default class Collections extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { collections, isLoading, items, onSetCollection, selectedCollectionId, totalCollections } = this.props
+    const { collections, isLoading, items, selectedCollectionId, totalCollections } = this.props
     const { currentPage } = this.state
     if (collections.length === 0) return null
 
@@ -34,7 +34,6 @@ export default class Collections extends React.PureComponent<Props, State> {
               collection={collection}
               items={items}
               isSelected={collection.id === selectedCollectionId}
-              onSetCollection={onSetCollection}
             />
           ))}
           {totalPages > 1 ? (

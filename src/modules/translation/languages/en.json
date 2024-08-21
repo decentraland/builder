@@ -266,8 +266,20 @@
       "any": "All NFTs",
       "range": "Range"
     },
-    "mapping_type_label": "NFTs token link type",
-    "mapping_value_label": "Linked to",
+    "mapping_descriptions": {
+      "single": "One specific TOKEN ID",
+      "multiple": "Multiple TOKEN IDs separated by a comma",
+      "any": "All TOKEN IDs of the NFT collection",
+      "range": "A range of TOKEN IDs"
+    },
+    "mapping_examples": {
+      "single": "e.g. 123456",
+      "multiple": "e.g. 123456, 123457, 123458",
+      "range": "e.g. [1, 1000]"
+    },
+    "mapping_type_label": "Linked to",
+    "mapping_value_label": "Token ID",
+    "mapping_value_multiple_label": "Token IDs",
     "mapping_value_any": "Any token ID",
     "mapping_value_from_label": "From",
     "mapping_value_to_label": "To",
@@ -378,6 +390,7 @@
       "saved_items_table_title": "Updated items"
     },
     "wrong_thumbnail_format": "The thumbnail.png file is not formatted as a PNG image.",
+    "missing_mapping": "The item is missing a mapping.",
     "wrong_file_extension": "File extension is not correct.",
     "wearable_file_not_found": "The wearable.json file was not found.",
     "thumbnail_file_not_generated": "The thumbnail.png file couldn't be generated.",
@@ -1411,7 +1424,8 @@
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
     "reclaim_name": "Reclaimed the name: \"{subdomain}\".",
-    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
+    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}",
+    "disable_third_party": "Disabled third party: {name}"
   },
   "transfer_page": {
     "title": "Transfer",
@@ -1568,7 +1582,10 @@
     "disabled": "Disabled",
     "unassigned": "Unassigned",
     "assign_to_me": "Assign to me",
-    "you": "you"
+    "you": "you",
+    "linking_tooltip": {
+      "title": "Link NFTs to wearables"
+    }
   },
   "item_detail_page": {
     "details_info": {
@@ -1594,7 +1611,7 @@
     "edit_video": "Edit video showcase"
   },
   "third_party_collection_detail_page": {
-    "notice": "Each published item takes 1 Slot. Create a draft-proposal in the DAO to ask for more slots",
+    "linked_to": "Linked to",
     "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} of {total}",
     "clear_selection": "Clear selection",
@@ -1604,6 +1621,8 @@
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them.",
+    "not_found": "There are no items available with this search criteria",
+    "try_again": "Try changing the filters to find what you're looking for.",
     "publish_items": "Publish {count, plural, =0 {} one {# item} other {# items}}",
     "new_items": "New Items",
     "publish": "Publish",
@@ -1613,6 +1632,10 @@
     "cant_publish_items": "You're trying to publish {count} {count, plural, one {item} other {items}}. There are others under review right now",
     "exceeds_available_slots": "You're exceeding the amount of available slots. Create a proposal in the DAO to add more slots",
     "cant_publish_and_push_changes": "You're trying to publish {count} {count, plural, one {item} other {items}} and push changes at the same time. Unselect the items to publish to able to push changes",
+    "smart_contract_address_short": "SCA",
+    "smart_contract_address_long": "Smart contract address",
+    "slots_short": "Slots",
+    "slots_long": "Publishing points",
     "synced_filter": {
       "all": "All items",
       "synced": "Synced",
@@ -1640,7 +1663,7 @@
     "add_items_title": "Looking good!",
     "add_items_subtitle": "Now you can start adding items to your collection",
     "add_items_subtitle_extensions": "Accepted files are ZIP, GLTF, GLB, PNG.",
-    "start_adding_items": "Looking good! Start adding items to your new collection",
+    "start_adding_items": "Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing your collection.",
     "can_mint": "Minting allows you to transfer NFTs directly to an address.",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
@@ -1957,6 +1980,12 @@
           "title": "Disable Collection",
           "subtitle": "The collection will not be available anymore. Don't worry, you will be able to enable it again later.",
           "tx_pending": "Waiting for the disable collection transaction to confirm",
+          "action": "Disable"
+        },
+        "disable_third_party": {
+          "title": "Disable Third Party",
+          "subtitle": "This third party will not be available anymore. This include all collections under this third party. Don't worry, you'll be able to enable it again later.",
+          "tx_pending": "Waiting for the disable third party transaction to confirm",
           "action": "Disable"
         }
       }

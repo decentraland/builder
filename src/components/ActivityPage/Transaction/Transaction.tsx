@@ -35,6 +35,7 @@ import {
   RECLAIM_NAME_SUCCESS,
   CLAIM_NAME_TRANSACTION_SUBMITTED
 } from 'modules/ens/actions'
+import { DISABLE_THIRD_PARTY_SUCCESS } from 'modules/thirdParty/actions'
 import { getSaleAddress, getTotalAmountOfMintedItems } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
@@ -207,6 +208,23 @@ const Transaction = (props: Props) => {
           item={item}
           text={
             <T id="transaction.set_price_and_beneficiary" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case DISABLE_THIRD_PARTY_SUCCESS: {
+      const { thirdPartyId, thirdPartyName } = tx.payload
+      return (
+        <TransactionDetail
+          thirdPartyId={thirdPartyId}
+          text={
+            <T
+              id="transaction.disable_third_party"
+              values={{
+                name: thirdPartyName
+              }}
+            />
           }
           tx={tx}
         />

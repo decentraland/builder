@@ -35,7 +35,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
   renderPage = (collection: Collection) => {
-    const { items, itemCurations, curation, totalItems } = this.props
+    const { items, itemCurations, curation, totalItems, thirdParty } = this.props
     const { showRejectionModal, showApproveConfirmModal } = this.state
     const { chainId } = this.props
     const type = getCollectionType(collection)
@@ -71,6 +71,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
             open={true}
             collection={collection}
             curation={curation}
+            thirdParty={thirdParty}
             onClose={() => this.setShowRejectionModal(null)}
           />
         )}
@@ -87,7 +88,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
-    const { address, onInitiateApprovalFlow, onInitiateTPApprovalFlow, reviewedItems, totalItems } = this.props
+    const { address, thirdParty, onInitiateApprovalFlow, onInitiateTPApprovalFlow, reviewedItems, totalItems } = this.props
 
     const onClickMap = {
       [ButtonType.APPROVE]: () =>
@@ -97,7 +98,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           ? onInitiateTPApprovalFlow(collection)
           : onInitiateApprovalFlow(collection),
       [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
-      [ButtonType.DISABLE]: () => this.setShowRejectionModal(RejectionType.DISABLE_COLLECTION),
+      [ButtonType.DISABLE]: () =>
+        this.setShowRejectionModal(thirdParty ? RejectionType.DISABLE_THIRD_PARTY : RejectionType.DISABLE_COLLECTION),
       [ButtonType.REJECT]: () => {
         if (curation?.status === CurationStatus.PENDING) {
           this.setShowRejectionModal(RejectionType.REJECT_CURATION)
@@ -147,18 +149,20 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderTPButtons = (collection: Collection, collectionCuration: CollectionCuration | null, itemCurations: ItemCuration[] | null) => {
-    const { reviewedItems, totalItems } = this.props
-    const shouldShowApproveButton = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
+    const { reviewedItems, totalItems, thirdParty } = this.props
+    const areCurationsPending = itemCurations?.some(itemCuration => itemCuration.status === CurationStatus.PENDING)
     return (
       <>
         <Header sub>
-          {t('item_editor.top_panel.reviewed_counter', { count: reviewedItems.length, threshold: getTPThresholdToReview(totalItems!) })}
+          {areCurationsPending
+            ? t('item_editor.top_panel.reviewed_counter', { count: reviewedItems.length, threshold: getTPThresholdToReview(totalItems!) })
+            : t('item_editor.top_panel.not_enough_items_to_curate_more')}
           {reviewedItems.length >= getTPThresholdToReview(totalItems!) ? <Icon name="check circle" /> : null}
         </Header>
-        {shouldShowApproveButton ? this.renderButton(ButtonType.APPROVE, collection, collectionCuration) : null}
-        {this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
-        {/* TODO: the disable button from below is not the same as the original disable one, it will be implemented once the sagas are ready */}
-        {/* {this.renderButton(ButtonType.DISABLE, collection, collectionCuration)} */}
+        {areCurationsPending && this.renderButton(ButtonType.APPROVE, collection, collectionCuration)}
+        {areCurationsPending && this.renderButton(ButtonType.REJECT, collection, collectionCuration)}
+        {!areCurationsPending && thirdParty?.isApproved && this.renderButton(ButtonType.DISABLE, collection, null)}
+        {/* TODO: Add when enabling is possible {!areCurationsPending && !thirdParty?.isApproved && thirdParty?.root && this.renderButton(ButtonType.ENABLE, collection, null)} */}
       </>
     )
   }

@@ -38,7 +38,7 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
   }
 
   render() {
-    const { name, onClose, onBack, isLoading, error, isLinkedWearablesV2Enabled } = this.props
+    const { name, onClose, onBack, isLoading, error, isLinkedWearablesPaymentsEnabled } = this.props
     const { collectionName } = this.state
     const isDisabled = !collectionName || isLoading
 
@@ -53,7 +53,7 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
           title={t('create_collection_modal.title')}
           subtitle={t('create_collection_modal.subtitle')}
           onClose={onClose}
-          onBack={isLinkedWearablesV2Enabled ? onBack : undefined}
+          onBack={isLinkedWearablesPaymentsEnabled ? onBack : undefined}
         />
         <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
           <ModalContent>

@@ -1,8 +1,4 @@
-.dropdown {
-  border: 1px solid var(--gray);
-  border-radius: 5px;
-}
-
 .ellipsis {
   margin: auto !important;
+  color: var(--primary-text);
 }

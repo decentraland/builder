@@ -181,7 +181,6 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       isLoading: isLoadingOrphanItems,
       hasUserOrphanItems,
       onSetItems,
-      onSetCollection,
       onSetReviewedItems
     } = this.props
     const { pages } = this.state
@@ -250,7 +249,6 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       items={allItems}
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
-                      onSetCollection={onSetCollection}
                       onLoadPage={this.loadPage}
                       isLoading={isLoading}
                     />

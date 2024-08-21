@@ -127,6 +127,7 @@ import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
@@ -359,6 +360,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
+      const isLinkedWearablesV2Enabled: boolean = yield select(getIsLinkedWearablesV2Enabled)
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
       const rarityChanged = oldItem && oldItem.rarity !== item.rarity
       const shouldValidateCategoryChanged =
@@ -446,8 +448,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      yield call([legacyBuilder, 'saveItem'], item, contents)
-      yield put(saveItemSuccess(item, contents, options))
+      const savedItem: Item = yield call([legacyBuilder, 'saveItem'], item, contents)
+      if (isLinkedWearablesV2Enabled) {
+        yield put(saveItemSuccess(savedItem, contents, options))
+      } else {
+        yield put(saveItemSuccess(item, contents, options))
+      }
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
@@ -611,9 +617,17 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       newItem.collectionId = collectionId
     }
     yield put(saveItemRequest(newItem, {}))
-    yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('MoveItemToCollectionModal'))
-    yield put(fetchItemsRequest(address))
+    const saveItemAction: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+    if (saveItemAction.success) {
+      yield put(closeModal('MoveItemToCollectionModal'))
+      yield put(fetchItemsRequest(address))
+    }
   }
 
   function* handleSetItemCollectionRequest(action: SetItemCollectionAction) {
@@ -622,18 +636,26 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const address: string = yield select(getAddress)
     const collection: Collection = yield select(getCollection, collectionId)
     yield put(saveItemRequest(newItem, {}))
-    yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('MoveItemToAnotherCollectionModal'))
-    const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
-    yield put(showToast(toast, 'bottom center'))
-    // Get the created toast id to close if the user clicks on the redirect link or changes the page
-    const {
-      payload: { id: toastId }
-    }: RenderToastAction = yield take(RENDER_TOAST)
-    yield put(fetchItemsRequest(address))
-    const location: Location = yield take(LOCATION_CHANGE)
-    if (location.pathname !== locations.collectionDetail(item.collectionId)) {
-      yield put(hideToast(toastId))
+    const saveItemAction: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+    if (saveItemAction.success) {
+      yield put(closeModal('MoveItemToAnotherCollectionModal'))
+      const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
+      yield put(showToast(toast, 'bottom center'))
+      // Get the created toast id to close if the user clicks on the redirect link or changes the page
+      const {
+        payload: { id: toastId }
+      }: RenderToastAction = yield take(RENDER_TOAST)
+      yield put(fetchItemsRequest(address))
+      const location: Location = yield take(LOCATION_CHANGE)
+      if (location.pathname !== locations.collectionDetail(item.collectionId)) {
+        yield put(hideToast(toastId))
+      }
     }
   }
 

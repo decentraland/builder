@@ -16,7 +16,9 @@ const RejectionModal = ({
   open,
   type,
   isLoading,
+  thirdParty,
   hasPendingTransaction,
+  onDisableThirdParty,
   collection,
   curation,
   onReject,
@@ -29,6 +31,8 @@ const RejectionModal = ({
         return i18nBase + '.disable_collection'
       case RejectionType.REJECT_CURATION:
         return i18nBase + '.reject_curation'
+      case RejectionType.DISABLE_THIRD_PARTY:
+        return i18nBase + '.disable_third_party'
       default:
         return ''
     }
@@ -42,12 +46,18 @@ const RejectionModal = ({
       case RejectionType.REJECT_CURATION:
         onRejectCuration(curation!.collectionId)
         break
+      case RejectionType.DISABLE_THIRD_PARTY:
+        if (thirdParty) {
+          onDisableThirdParty(thirdParty.id)
+        }
+        break
       default:
     }
   }
 
-  const shouldShowVeredict =
+  const shouldShowVerdict =
     (type === RejectionType.DISABLE_COLLECTION && !collection.isApproved) ||
+    (type === RejectionType.DISABLE_THIRD_PARTY && !thirdParty?.isApproved) ||
     (type === RejectionType.REJECT_COLLECTION && !collection.isApproved) ||
     (type === RejectionType.REJECT_CURATION && curation?.status === CurationStatus.REJECTED)
 
@@ -55,8 +65,8 @@ const RejectionModal = ({
     <Modal size="tiny" className="RejectionModal" open={open}>
       {hasPendingTransaction ? (
         <PendingTransaction i18nKey={i18nKey} />
-      ) : shouldShowVeredict ? (
-        <Veredict link={collection.forumLink} onClose={onClose} />
+      ) : shouldShowVerdict ? (
+        <Verdict link={collection.forumLink} onClose={onClose} />
       ) : (
         <Confirmation i18nKey={i18nKey} isLoading={isLoading} onClose={onClose} onConfirm={handleReview} />
       )}
@@ -82,7 +92,7 @@ const PendingTransaction = ({ i18nKey }: { i18nKey: string }) => (
   </>
 )
 
-const Veredict = ({ link, onClose }: { link?: string; onClose: () => void }) => (
+const Verdict = ({ link, onClose }: { link?: string; onClose: () => void }) => (
   <>
     <Modal.Header>{t(i18nBase + '.veredict_explanation')}</Modal.Header>
     <Modal.Content>{t(i18nBase + '.go_to_forum')}</Modal.Content>
@@ -119,7 +129,9 @@ const Confirmation = ({
       <NetworkButton primary onClick={onConfirm} disabled={isLoading} loading={isLoading} network={Network.MATIC}>
         {t(`${i18nKey}.action`)}
       </NetworkButton>
-      <Button onClick={onClose}>{t('global.cancel')}</Button>
+      <Button disabled={isLoading} onClick={onClose}>
+        {t('global.cancel')}
+      </Button>
     </Modal.Actions>
   </>
 )

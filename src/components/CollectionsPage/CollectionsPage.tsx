@@ -50,7 +50,7 @@ export default function CollectionsPage(props: Props) {
     isLoadingItems,
     isLoadingCollections,
     isLoadingOrphanItem,
-    isLinkedWearablesV2Enabled,
+    isLinkedWearablesPaymentsEnabled,
     isThirdPartyManager,
     onFetchCollections,
     onFetchOrphanItem,
@@ -77,15 +77,15 @@ export default function CollectionsPage(props: Props) {
 
   const handleNewThirdPartyCollection = useCallback(() => {
     onOpenModal('CreateThirdPartyCollectionModal')
-  }, [onOpenModal, isLinkedWearablesV2Enabled])
+  }, [onOpenModal])
 
   const handleNewCollection = useCallback(() => {
-    if (isLinkedWearablesV2Enabled) {
+    if (isLinkedWearablesPaymentsEnabled) {
       onOpenModal('CreateCollectionSelectorModal')
     } else {
       onOpenModal('CreateCollectionModal')
     }
-  }, [onOpenModal, isLinkedWearablesV2Enabled])
+  }, [onOpenModal, isLinkedWearablesPaymentsEnabled])
 
   const handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     setSearch(data.value)
@@ -213,7 +213,7 @@ export default function CollectionsPage(props: Props) {
         <Field
           placeholder={t('itemdrawer.search_items')}
           className="collections-search-field"
-          input={{ icon: 'search', iconPosition: 'left' }}
+          input={{ icon: 'search' }}
           onChange={handleSearchChange}
           icon={<UIIcon name="search" className="searchIcon" />}
           iconPosition="left"
@@ -221,7 +221,7 @@ export default function CollectionsPage(props: Props) {
           isClearable
         />
         <Row className="actions" grow={false}>
-          {isThirdPartyManager && !isLinkedWearablesV2Enabled && (
+          {isThirdPartyManager && !isLinkedWearablesPaymentsEnabled && (
             <Button className="action-button" size="small" basic onClick={handleNewThirdPartyCollection}>
               {t('collections_page.new_third_party_collection')}
             </Button>
@@ -236,7 +236,7 @@ export default function CollectionsPage(props: Props) {
         </Row>
       </div>
     )
-  }, [search, isThirdPartyManager, isLinkedWearablesV2Enabled, handleSearchChange, handleOpenEditor, handleNewCollection])
+  }, [search, isThirdPartyManager, isLinkedWearablesPaymentsEnabled, handleSearchChange, handleOpenEditor, handleNewCollection])
 
   const renderViewActions = useCallback(() => {
     return (

@@ -7,12 +7,12 @@ import { getLoading, getError } from 'modules/collection/selectors'
 import { SAVE_COLLECTION_REQUEST, saveCollectionRequest } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateCollectionModal.types'
 import CreateCollectionModal from './CreateCollectionModal'
-import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { getIsLinkedWearablesPaymentsEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   address: getAddress(state),
   isLoading: isLoadingType(getLoading(state), SAVE_COLLECTION_REQUEST),
-  isLinkedWearablesV2Enabled: getIsLinkedWearablesV2Enabled(state),
+  isLinkedWearablesPaymentsEnabled: getIsLinkedWearablesPaymentsEnabled(state),
   error: getError(state)
 })
 

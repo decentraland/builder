@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react'
-import { Button, Popup } from 'decentraland-ui'
+import { Button, Icon, Popup } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -92,7 +92,7 @@ const CollectionPublishButton = (props: Props) => {
       position="bottom center"
       trigger={
         <div className="popup-button">
-          <Button secondary compact disabled={true}>
+          <Button primary disabled={true}>
             {t('collection_detail_page.under_review')}
           </Button>
         </div>
@@ -113,10 +113,10 @@ const CollectionPublishButton = (props: Props) => {
               (isTryingToPublish && (slots === 0 || !hasEnoughSlots)) || items.length === 0 || buttonAction === PublishButtonAction.NONE
             }
             primary
-            compact
             onClick={handleOnClick}
             network={Network.MATIC}
           >
+            <Icon name="upload" />
             {getTPButtonActionLabel(buttonAction)}
           </NetworkButton>
         </div>

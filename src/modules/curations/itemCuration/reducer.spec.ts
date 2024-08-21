@@ -42,6 +42,8 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_REQUEST is called', (
     thirdParty = {
       id: '1',
       name: 'a third party',
+      root: '',
+      isApproved: true,
       description: 'some desc',
       managers: ['0x1', '0x2'],
       contracts: [],
@@ -72,6 +74,8 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQU
     thirdParty = {
       id: '1',
       name: 'a third party',
+      root: '',
+      isApproved: true,
       description: 'some desc',
       managers: ['0x1', '0x2'],
       contracts: [],
@@ -99,6 +103,8 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
     thirdParty = {
       id: '1',
       name: 'a third party',
+      root: '',
+      isApproved: true,
       description: 'some desc',
       managers: ['0x1', '0x2'],
       contracts: [],
@@ -182,6 +188,8 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_FAILURE is called', (
     thirdParty = {
       id: '1',
       name: 'a third party',
+      root: '',
+      isApproved: true,
       description: 'some desc',
       managers: ['0x1', '0x2'],
       contracts: [],
@@ -208,6 +216,8 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAIL
     thirdParty = {
       id: '1',
       name: 'a third party',
+      root: '',
+      isApproved: true,
       description: 'some desc',
       managers: ['0x1', '0x2'],
       contracts: [],

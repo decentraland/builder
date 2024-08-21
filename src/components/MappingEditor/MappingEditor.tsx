@@ -158,7 +158,7 @@ export const MappingEditor = (props: Props) => {
             />
           ) : (
             <TextAreaField
-              label={t('mapping_editor.mapping_value_label')}
+              label={t('mapping_editor.mapping_value_multiple_label')}
               disabled={disabled}
               loading={loading}
               info={

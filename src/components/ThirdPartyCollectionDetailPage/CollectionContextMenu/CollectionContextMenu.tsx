@@ -60,7 +60,7 @@ const CollectionContextMenu: React.FC<Props> = props => {
       className={styles.dropdown}
       trigger={
         <Button basic>
-          <Icon className={styles.ellipsis} name="ellipsis horizontal" />
+          <Icon className={styles.ellipsis} size="large" name="ellipsis horizontal" />
         </Button>
       }
       inline

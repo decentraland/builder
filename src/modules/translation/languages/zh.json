@@ -261,8 +261,20 @@
       "any": "任何",
       "range": "音域"
     },
-    "mapping_type_label": "NFTs 代币链接类型",
-    "mapping_value_label": "已链接至",
+    "mapping_descriptions": {
+      "single": "一个特定的TOKEN ID",
+      "multiple": "多个 TOKEN ID 以逗号分隔",
+      "any": "NFT合集所有TOKEN ID",
+      "range": "一系列的 TOKEN ID"
+    },
+    "mapping_examples": {
+      "single": "例如 123456",
+      "multiple": "例如 123456、123457、123458",
+      "range": "例如 [1, 1000]"
+    },
+    "mapping_type_label": "链接到",
+    "mapping_value_label": "代币 ID",
+    "mapping_value_multiple_label": "代币 ID",
     "mapping_value_any": "任何代币 ID",
     "mapping_value_from_label": "从",
     "mapping_value_to_label": "至",
@@ -371,6 +383,7 @@
       "saved_items_table_title": "更新项目"
     },
     "wrong_thumbnail_format": "thumbnail.png 文件未格式化为 PNG 图像。",
+    "missing_mapping": "该项缺少映射。",
     "wrong_file_extension": "文件扩展名不正确。",
     "wearable_file_not_found": "找不到wearable.json 文件。",
     "thumbnail_file_not_generated": "无法生成 thumbnail.png 文件。",
@@ -1401,7 +1414,8 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合",
+    "disable_third_party": "已禁用第三方：{name}"
   },
   "transfer_page": {
     "title": "转移",
@@ -1554,7 +1568,10 @@
     "disabled": "禁用",
     "unassigned": "未分配",
     "assign_to_me": "分配给我",
-    "you": "你"
+    "you": "你",
+    "linking_tooltip": {
+      "title": "Link NFTs to wearables"
+    }
   },
   "item_detail_page": {
     "details_info": {
@@ -1580,7 +1597,7 @@
     "edit_video": "编辑视频展示柜"
   },
   "third_party_collection_detail_page": {
-    "notice": "每个发布的项目占用 1 个 Slot。在 DAO 中创建提案草案以申请更多插槽",
+    "linked_to": "已链接至",
     "search_placeholder": "搜索 {count} {count, plural, one {物品} other {项目}}...",
     "search_info": "{page}-{pageTotal} 个，共 {total} 个",
     "clear_selection": "清空选项",
@@ -1590,6 +1607,8 @@
     "slots": "{amount, plural, =0 {没有插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。",
+    "not_found": "符合此搜索条件的商品不存在",
+    "try_again": "尝试更改过滤器来找到您要查找的内容。",
     "publish_items": "发布 {count, plural, =0 {} other {# 项}}",
     "new_items": "新的可穿戴物品",
     "publish": "发布",
@@ -1599,6 +1618,10 @@
     "cant_publish_items": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}}。目前还有其他人正在审查中",
     "exceeds_available_slots": "您超出了可用插槽的数量。在 DAO 中创建提案以添加更多插槽",
     "cant_publish_and_push_changes": "您正在尝试发布 {count} {count，复数，一个 {item} 其他 {items}} 并同时推送更改。取消选择要发布的项目以推送更改",
+    "smart_contract_address_short": "SCA",
+    "smart_contract_address_long": "智能合约地址",
+    "slots_short": "插槽",
+    "slots_long": "出版点",
     "synced_filter": {
       "all": "所有项目",
       "synced": "同步的",
@@ -1626,7 +1649,7 @@
     "add_items_title": "看起来不错！",
     "add_items_subtitle": "现在您可以开始将项目添加到您的收藏中",
     "add_items_subtitle_extensions": "接受的文件是 ZIP、GLTF、GLB、PNG。",
-    "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
+    "start_adding_items": "现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
     "can_mint": "铸币允许您将 NFT 直接转移到一个地址。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
@@ -1957,6 +1980,12 @@
           "title": "禁用集合",
           "subtitle": "此集合将不再可用。将来可以再次启用它。",
           "tx_pending": "等待已禁用的交易得到确认。",
+          "action": "禁用"
+        },
+        "disable_third_party": {
+          "title": "禁用第三方",
+          "subtitle": "此第三方将不再可用。这包括此第三方下的所有集合。别担心，您稍后可以再次启用它。",
+          "tx_pending": "等待禁用第三方交易确认",
           "action": "禁用"
         }
       }
