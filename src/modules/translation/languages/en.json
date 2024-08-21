@@ -328,15 +328,15 @@
       "wrong_video_format": "The provided video is not a MP4 video",
       "thumbnail_too_big": {
         "title": "The file is too large and can't be uploaded",
-        "message": "The max file size is 2MB for thumbnails."
+        "message": "The max file size is 1MB for thumbnails."
       },
       "wearable_too_big": {
         "title": "The file is too large and can't be uploaded",
-        "message": "The max file size is 2MB for Wearables and 8MB for Skins."
+        "message": "The max file size is 3MB for Wearables and 8MB for Skins."
       },
       "emote_too_big": {
         "title": "The file is too large and can't be uploaded",
-        "message": "The max file size is 2MB for Emotes."
+        "message": "The max file size is 3MB for Emotes."
       },
       "smart_wearable_too_big": {
         "title": "The file is too large and can't be uploaded",

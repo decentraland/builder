@@ -327,19 +327,19 @@
       "wrong_video_format": "El video provisto no es un video MP4",
       "thumbnail_too_big": {
         "title": "El item es demasiado grande para cargarlo",
-        "message": "El tamaño máximo de archivo es de 2 MB para miniaturas."
+        "message": "El tamaño máximo de archivo es de 1MB para miniaturas."
       },
       "wearable_too_big": {
         "title": "El item es demasiado grande para cargarlo",
-        "message": "El tamaño máximo de archivo es de 2 MB para Wearables y de 8 MB para Skins."
+        "message": "El tamaño máximo de archivo es de 3MB para Wearables y de 8MB para Skins."
       },
       "emote_too_big": {
         "title": "El item es demasiado grande para cargarlo",
-        "message": "El tamaño máximo de archivo es de 2MB para Emotes."
+        "message": "El tamaño máximo de archivo es de 3MB para Emotes."
       },
       "smart_wearable_too_big": {
         "title": "El archivo es demasiado grande para cargarlo",
-        "message": "La suma total del tamaño de los archivos descomprimidos del archivo .zip de Smart Wearable debe ser inferior a 3 MB."
+        "message": "La suma total del tamaño de los archivos descomprimidos del archivo .zip de Smart Wearable debe ser inferior a 3MB."
       },
       "unknown_required_permissions": {
         "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} de la vestimenta interactiva no {count, plural, one {existe} other {existen}}. Por favor, corrija el archivo 'scene.json'.",
