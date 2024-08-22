@@ -170,7 +170,7 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('and file size of the wearable is larger than 2 MB', () => {
+  describe('and file size of the wearable is larger than 3 MB', () => {
     beforeEach(() => {
       item.name = 'valid name'
       item.description = 'valid description'
@@ -187,7 +187,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 3MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -211,13 +211,13 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_SKIN_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 3MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
   })
 
-  describe('and file size of the emote is larger than 2 MB', () => {
+  describe('and file size of the emote is larger than 3 MB', () => {
     beforeEach(() => {
       item = { ...item, type: ItemType.EMOTE }
     })
@@ -232,7 +232,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_EMOTE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 2MB.'))
+        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 3MB.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -379,7 +379,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithCatalystImage, contentsToSave), Promise.resolve(itemWithCatalystImage)],
             [put(saveItemSuccess(itemWithCatalystImage, contentsToSave)), undefined]
@@ -406,7 +406,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
             [put(saveItemSuccess(item, contents)), undefined]
@@ -447,7 +447,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [
               call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage),
@@ -477,7 +477,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
             [put(saveItemSuccess(item, contents)), undefined]
@@ -504,7 +504,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
             [put(saveItemSuccess(item, contents)), undefined]
@@ -564,7 +564,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve(itemWithNewHashes)],
             [put(saveItemSuccess(itemWithNewHashes, newContents)), undefined]

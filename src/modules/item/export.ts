@@ -73,6 +73,7 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
 export async function calculateModelFinalSize(
   oldContents: Record<string, string>,
   newContents: Record<string, Blob>,
+  itemType: ItemType,
   legacyBuilderClient: BuilderAPI
 ): Promise<number> {
   const newHashes = await computeHashes(newContents)
@@ -80,7 +81,10 @@ export async function calculateModelFinalSize(
   const filesToDownload: Record<string, string> = {}
   // If the file to calculate the size is a smart wearable, we don't need to download the old files
   const isSmartWearable = Object.keys(newContents).some(path => path.endsWith('.js'))
-  if (!isSmartWearable) {
+  // Download old files to calculate the final model size for wearables.
+  // Note: For Smart Wearables and Emotes, the entire content will be overwritten,
+  // so downloading the old files is unnecessary.
+  if (itemType === ItemType.WEARABLE && !isSmartWearable) {
     for (const fileName in oldContents) {
       const isModel = fileName.endsWith('.glb')
       const isVideo = fileName.endsWith('.mp4') // do not take into account the video size for the smart wearables

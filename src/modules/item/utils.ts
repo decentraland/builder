@@ -1,5 +1,11 @@
 import { constants } from 'ethers'
-import { LocalItem } from '@dcl/builder-client'
+import {
+  LocalItem,
+  MAX_EMOTE_FILE_SIZE,
+  MAX_SKIN_FILE_SIZE,
+  MAX_SMART_WEARABLE_FILE_SIZE,
+  MAX_WEARABLE_FILE_SIZE
+} from '@dcl/builder-client'
 import {
   BodyPartCategory,
   BodyShape,
@@ -755,4 +761,20 @@ export const buildItemMappings = (mapping: Mapping, contract: LinkedContract): M
       [contract.address]: [mapping]
     }
   }
+}
+
+export const isWearableFileSizeValid = (fileSize: number): boolean => {
+  return fileSize < MAX_WEARABLE_FILE_SIZE
+}
+
+export const isEmoteFileSizeValid = (fileSize: number): boolean => {
+  return fileSize < MAX_EMOTE_FILE_SIZE
+}
+
+export const isSkinFileSizeValid = (fileSize: number): boolean => {
+  return fileSize < MAX_SKIN_FILE_SIZE
+}
+
+export const isSmartWearableFileSizeValid = (fileSize: number): boolean => {
+  return fileSize < MAX_SMART_WEARABLE_FILE_SIZE
 }
