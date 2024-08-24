@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
+import classNames from 'classnames'
 import { Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation'
 import { SyncStatus } from 'modules/item/types'
+import mapIcon from '../../icons/map.svg'
+import underReviewIcon from '../../icons/under_review.svg'
 import { isThirdParty } from 'lib/urn'
 import { Props } from './ItemStatusBadge.types'
 import styles from './ItemStatusBadge.module.css'
-import mapIcon from '../../icons/map.svg'
-import underReviewIcon from '../../icons/under_review.svg'
-import classNames from 'classnames'
 
 export const ItemStatusBadge = (props: Props) => {
   const { status, item } = props
