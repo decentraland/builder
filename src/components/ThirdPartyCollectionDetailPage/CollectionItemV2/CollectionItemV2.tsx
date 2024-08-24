@@ -9,13 +9,13 @@ import { preventDefault } from 'lib/event'
 import { debounce } from 'lib/debounce'
 import { FromParam } from 'modules/location/types'
 import ConfirmDelete from 'components/ConfirmDelete'
+import { ItemStatusBadge } from 'components/ItemStatusBadge'
 import { buildItemMappings, getMapping } from 'modules/item/utils'
 import { MappingEditor } from 'components/MappingEditor'
-import { SyncStatus } from 'modules/item/types'
 import { LinkedContract } from 'modules/thirdParty/types'
 import { areMappingsEqual, areMappingsValid } from 'modules/thirdParty/utils'
 import ItemImage from 'components/ItemImage'
-import { ItemStatus, Props } from './CollectionItemV2.types'
+import { Props } from './CollectionItemV2.types'
 import styles from './CollectionItemV2.module.css'
 
 export default function CollectionItemV2({
@@ -29,15 +29,6 @@ export default function CollectionItemV2({
   onOpenModal,
   onDelete
 }: Props) {
-  const itemStatus = useMemo(() => {
-    if (!item.mappings) {
-      return ItemStatus.PENDING_MAPPING
-    } else if (!item.isMappingComplete && status !== SyncStatus.UNDER_REVIEW) {
-      return ItemStatus.PENDING_MIGRATION
-    }
-    // Casts the status to ItemStatus as ItemStatus is an extension of SyncStatus
-    return status as unknown as ItemStatus
-  }, [item.mappings, item.isMappingComplete, status])
   const history = useHistory()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   const mapping = useMemo(() => getMapping(item), [item])
@@ -109,24 +100,6 @@ export default function CollectionItemV2({
     onDelete(item)
   }, [onDelete, item])
 
-  const statusIcon = useMemo(() => {
-    switch (itemStatus) {
-      case ItemStatus.UNDER_REVIEW:
-        return <Icon name="clock outline" />
-      case ItemStatus.SYNCED:
-        return <Icon name="check circle outline" />
-      case ItemStatus.UNSYNCED:
-        return <Icon name="exclamation circle" />
-      // TODO correctly set the values
-      case ItemStatus.PENDING_MIGRATION:
-        return <Icon name="hourglass half" />
-      case ItemStatus.PENDING_MAPPING:
-        return <Icon name="hourglass half" />
-      default:
-        return null
-    }
-  }, [itemStatus])
-
   return (
     <Grid className={classNames(styles.grid, loading && styles.loading)} columns="equal">
       {loading && (
@@ -147,9 +120,8 @@ export default function CollectionItemV2({
         <Grid.Column>
           {contract && <MappingEditor disabled={loading} mapping={localMapping} error={error} onChange={setLocalMapping} isCompact />}
         </Grid.Column>
-        <Grid.Column width={2} className={`${styles.column} ${styles.statusColumn} ${styles[itemStatus]}`}>
-          {statusIcon}
-          <div>{t(`third_party_collection_detail_page.synced_statuses.${itemStatus}`)}</div>
+        <Grid.Column width={3} className={classNames(styles.column, styles.statusColumn)}>
+          <ItemStatusBadge status={status} item={item} />
         </Grid.Column>
         <Grid.Column width={1} className={styles.column}>
           <div className={styles.itemActions}>

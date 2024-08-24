@@ -62,7 +62,7 @@ export const CollectionItemHeaderV2 = ({ areAllSelected, onSelectedAllClick }: P
             <LinkingTooltipContent />
           </InfoTooltip>
         </Grid.Column>
-        <Grid.Column width={2}> {t('collection_row.status')} </Grid.Column>
+        <Grid.Column width={3}> {t('collection_row.status')} </Grid.Column>
         <Grid.Column width={1}></Grid.Column>
       </Grid.Row>
     </Grid>

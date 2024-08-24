@@ -2342,5 +2342,13 @@
     "description_dcl": "Meanwhile, Worlds from Decentraland NAMEs will have a dynamic maximum file size limit depending on a user's Decentraland holdings. <b>Each NAME, LAND, and set of 2,000 MANA tokens owned </b> will grant an additional <b>100 Mb of storage</b> on the Worlds content server to be used as you wish.",
     "start_building": "start building",
     "learn_more": "learn more"
+  },
+  "item_status": {
+    "unpublished": "Ready to publish",
+    "under_review": "Under Review",
+    "synced": "Published",
+    "unsynced": "Ready to push changes",
+    "pending_migration": "Pending Migration",
+    "pending_mapping": "Pending Mapping "
   }
 }
