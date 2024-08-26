@@ -28,6 +28,8 @@ import EventBanner from 'components/EventBanner'
 import { locations } from 'routing/locations'
 import { CollectionPageView } from 'modules/ui/collection/types'
 import { CurationSortOptions } from 'modules/curations/types'
+import { usePagination } from 'lib/pagination'
+import { CollectionType } from 'modules/collection/types'
 import ItemCard from './ItemCard'
 import ItemRow from './ItemRow'
 import CollectionCard from './CollectionCard'
@@ -59,21 +61,41 @@ export default function CollectionsPage(props: Props) {
     onSetView
   } = props
 
-  const [currentTab, setCurrentTab] = useState<TABS>(TABS.COLLECTIONS)
-  const [sort, setSort] = useState<CurationSortOptions>(CurationSortOptions.CREATED_AT_DESC)
-  const [page, setPage] = useState<number>(1)
-  const [search, setSearch] = useState<string>('')
-  const timeout = useRef<NodeJS.Timeout | null>(null)
-  const history = useHistory()
+  useEffect(() => {}, [collectionsPaginationData, itemsPaginationData])
 
+  const history = useHistory()
+  const { page, pages, goToPage, filters, changeFilter, sortBy, changeSorting } = usePagination<'search' | 'section', CurationSortOptions>({
+    pageSize: PAGE_SIZE,
+    count: collectionsPaginationData?.total
+  })
+  const currentTab = filters.section ?? TABS.STANDARD_COLLECTIONS
+  const isViewingCollections = filters.section === TABS.STANDARD_COLLECTIONS || filters.section === TABS.THIRD_PARTY_COLLECTIONS
+  const [search, setSearch] = useState<string>(filters.search ?? '')
+  const timeout = useRef<NodeJS.Timeout | null>(null)
+
+  // Fetch user orphan items
+  useEffect(() => {
+    if (hasUserOrphanItems === undefined && address) {
+      onFetchOrphanItem(address)
+    }
+  }, [address, hasUserOrphanItems])
+
+  // Fetch collections or orphan items
   useEffect(() => {
     if (address) {
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort })
-      if (hasUserOrphanItems === undefined) {
-        onFetchOrphanItem(address)
+      if (currentTab === TABS.ITEMS) {
+        onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
+      } else {
+        onFetchCollections(address, {
+          page,
+          limit: PAGE_SIZE,
+          q: filters.search ?? undefined,
+          type: currentTab === TABS.STANDARD_COLLECTIONS ? CollectionType.STANDARD : CollectionType.THIRD_PARTY,
+          sort: sortBy
+        })
       }
     }
-  }, [address, sort])
+  }, [address, page, currentTab, filters.search, sortBy, onFetchOrphanItems, onFetchCollections])
 
   const handleNewThirdPartyCollection = useCallback(() => {
     onOpenModal('CreateThirdPartyCollectionModal')
@@ -87,17 +109,20 @@ export default function CollectionsPage(props: Props) {
     }
   }, [onOpenModal, isLinkedWearablesPaymentsEnabled])
 
-  const handleSearchChange = (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    setSearch(data.value)
-    if (timeout.current) {
-      clearTimeout(timeout.current)
-      timeout.current = null
-    }
+  const handleSearchChange = useCallback(
+    (_evt: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+      setSearch(data.value)
+      if (timeout.current) {
+        clearTimeout(timeout.current)
+        timeout.current = null
+      }
 
-    timeout.current = setTimeout(() => {
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, q: data.value })
-    }, 500)
-  }
+      timeout.current = setTimeout(() => {
+        changeFilter('search', data.value)
+      }, 500)
+    },
+    [changeFilter]
+  )
 
   const handleOpenEditor = useCallback(() => {
     history.push(locations.itemEditor())
@@ -106,30 +131,24 @@ export default function CollectionsPage(props: Props) {
   const handleSortChange = useCallback(
     (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
       const sort = value as CurationSortOptions
-      setSort(sort)
-      setPage(1)
-      onFetchCollections(address, { page: 1, limit: PAGE_SIZE, sort })
+      changeSorting(sort)
     },
-    [address]
+    [changeSorting]
   )
 
   const handleTabChange = useCallback(
     (tab: TABS) => {
-      setCurrentTab(tab)
-      setPage(1)
-      const fetchFn = tab === TABS.ITEMS ? onFetchOrphanItems : onFetchCollections
-      const params = tab === TABS.ITEMS ? { page: 1, limit: PAGE_SIZE } : { page: 1, limit: PAGE_SIZE, sort }
-      if (address) {
-        fetchFn(address, params)
+      if (currentTab !== tab) {
+        changeFilter('section', tab)
       }
     },
-    [address]
+    [address, currentTab, changeFilter]
   )
 
   const renderGrid = useCallback(() => {
     return (
       <Card.Group>
-        {currentTab === TABS.COLLECTIONS ? (
+        {isViewingCollections ? (
           collections.map((collection, index) => <CollectionCard key={index} collection={collection} />)
         ) : isLoadingItems ? (
           <Loader size="large" active />
@@ -141,7 +160,7 @@ export default function CollectionsPage(props: Props) {
   }, [items, collections, isLoadingItems, currentTab])
 
   const renderList = useCallback(() => {
-    if (currentTab === TABS.COLLECTIONS) {
+    if (isViewingCollections) {
       return (
         <Section>
           <Table basic="very">
@@ -185,41 +204,30 @@ export default function CollectionsPage(props: Props) {
     )
   }, [currentTab, items, collections])
 
-  const fetchCollections = useCallback(() => {
-    onFetchCollections(address, { page, limit: PAGE_SIZE, sort })
-  }, [onFetchCollections, page, address, sort])
-
-  const fetchItems = useCallback(() => {
-    if (address) {
-      onFetchOrphanItems(address, { page, limit: PAGE_SIZE })
-    }
-  }, [onFetchOrphanItems, address, page])
-
   const handlePageChange = useCallback(
     (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
-      setPage(+props.activePage!)
-      if (currentTab === TABS.COLLECTIONS) {
-        fetchCollections()
-      } else {
-        fetchItems()
+      if (page !== props.activePage) {
+        goToPage(Number(props.activePage))
       }
     },
-    [currentTab, fetchCollections, fetchItems]
+    [page, goToPage]
   )
 
   const renderMainActions = useCallback(() => {
     return (
       <div className="collections-main-actions">
-        <Field
-          placeholder={t('itemdrawer.search_items')}
-          className="collections-search-field"
-          input={{ icon: 'search' }}
-          onChange={handleSearchChange}
-          icon={<UIIcon name="search" className="searchIcon" />}
-          iconPosition="left"
-          value={search}
-          isClearable
-        />
+        {currentTab !== TABS.ITEMS && (
+          <Field
+            placeholder={t('itemdrawer.search_items')}
+            className="collections-search-field"
+            input={{ icon: 'search' }}
+            onChange={handleSearchChange}
+            icon={<UIIcon name="search" className="searchIcon" />}
+            iconPosition="left"
+            value={search}
+            isClearable
+          />
+        )}
         <Row className="actions" grow={false}>
           {isThirdPartyManager && !isLinkedWearablesPaymentsEnabled && (
             <Button className="action-button" size="small" basic onClick={handleNewThirdPartyCollection}>
@@ -242,22 +250,23 @@ export default function CollectionsPage(props: Props) {
     return (
       <Column align="right">
         <Row className="actions">
-          {currentTab === TABS.COLLECTIONS && (
-            <Dropdown
-              direction="left"
-              value={sort}
-              options={[
-                { value: CurationSortOptions.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
-                { value: CurationSortOptions.CREATED_AT_DESC, text: t('global.order.newest') },
-                { value: CurationSortOptions.CREATED_AT_ASC, text: t('global.order.oldest') },
-                { value: CurationSortOptions.UPDATED_AT_DESC, text: t('global.order.updated_at_desc') },
-                { value: CurationSortOptions.UPDATED_AT_ASC, text: t('global.order.updated_at_asc') },
-                { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') },
-                { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') }
-              ]}
-              onChange={handleSortChange}
-            />
-          )}
+          {currentTab === TABS.STANDARD_COLLECTIONS ||
+            (TABS.THIRD_PARTY_COLLECTIONS && (
+              <Dropdown
+                direction="left"
+                value={sortBy}
+                options={[
+                  { value: CurationSortOptions.MOST_RELEVANT, text: t('curation_page.order.most_relevant') },
+                  { value: CurationSortOptions.CREATED_AT_DESC, text: t('global.order.newest') },
+                  { value: CurationSortOptions.CREATED_AT_ASC, text: t('global.order.oldest') },
+                  { value: CurationSortOptions.UPDATED_AT_DESC, text: t('global.order.updated_at_desc') },
+                  { value: CurationSortOptions.UPDATED_AT_ASC, text: t('global.order.updated_at_asc') },
+                  { value: CurationSortOptions.NAME_DESC, text: t('global.order.name_desc') },
+                  { value: CurationSortOptions.NAME_ASC, text: t('global.order.name_asc') }
+                ]}
+                onChange={handleSortChange}
+              />
+            ))}
           <Chip
             className="grid"
             icon="grid"
@@ -273,13 +282,13 @@ export default function CollectionsPage(props: Props) {
         </Row>
       </Column>
     )
-  }, [view, onSetView, sort, handleSortChange])
+  }, [view, onSetView, sortBy, handleSortChange])
 
   const renderPage = useCallback(() => {
     const totalCollections = collectionsPaginationData?.total
     const totalItems = itemsPaginationData?.total
-    const count = currentTab === TABS.COLLECTIONS ? totalCollections : totalItems
-    const totalPages = currentTab === TABS.COLLECTIONS ? collectionsPaginationData?.totalPages : itemsPaginationData?.totalPages
+    const count = currentTab === TABS.STANDARD_COLLECTIONS || TABS.THIRD_PARTY_COLLECTIONS ? totalCollections : totalItems
+    const totalPages = currentTab === TABS.STANDARD_COLLECTIONS || TABS.THIRD_PARTY_COLLECTIONS ? pages : itemsPaginationData?.totalPages
 
     if (isLoadingOrphanItem) {
       return <Loader active size="large" />
@@ -290,17 +299,26 @@ export default function CollectionsPage(props: Props) {
         <EventBanner />
         <div className="filters">
           <Container>
-            {hasUserOrphanItems && (
-              // TODO: Remove tabs when there are no users with orphan items
-              <Tabs isFullscreen>
-                <Tabs.Tab active={currentTab === TABS.COLLECTIONS} onClick={() => handleTabChange(TABS.COLLECTIONS)}>
-                  {t('collections_page.collections')}
-                </Tabs.Tab>
-                <Tabs.Tab active={currentTab !== TABS.COLLECTIONS} onClick={() => handleTabChange(TABS.ITEMS)}>
-                  {t('collections_page.single_items')}
-                </Tabs.Tab>
-              </Tabs>
-            )}
+            {hasUserOrphanItems ||
+              (isThirdPartyManager && (
+                // TODO: Remove tabs when there are no users with orphan items
+                <Tabs isFullscreen>
+                  <Tabs.Tab active={currentTab === TABS.STANDARD_COLLECTIONS} onClick={() => handleTabChange(TABS.STANDARD_COLLECTIONS)}>
+                    {t('collections_page.collections')}
+                  </Tabs.Tab>
+                  <Tabs.Tab
+                    active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
+                    onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
+                  >
+                    {t('collections_page.third_party_collections')}
+                  </Tabs.Tab>
+                  {hasUserOrphanItems && (
+                    <Tabs.Tab active={currentTab === TABS.ITEMS} onClick={() => handleTabChange(TABS.ITEMS)}>
+                      {t('collections_page.single_items')}
+                    </Tabs.Tab>
+                  )}
+                </Tabs>
+              ))}
             {renderMainActions()}
             <Row height={30}>
               <Column>
@@ -344,6 +362,7 @@ export default function CollectionsPage(props: Props) {
     )
   }, [
     page,
+    pages,
     collectionsPaginationData,
     itemsPaginationData,
     view,

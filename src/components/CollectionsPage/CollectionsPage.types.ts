@@ -10,8 +10,9 @@ import { CollectionPaginationData } from 'modules/collection/reducer'
 import { ItemPaginationData } from 'modules/item/reducer'
 
 export enum TABS {
-  COLLECTIONS,
-  ITEMS
+  STANDARD_COLLECTIONS = 'standard_collections',
+  THIRD_PARTY_COLLECTIONS = 'third_party_collections',
+  ITEMS = 'orphan_items'
 }
 
 export type Props = {

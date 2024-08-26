@@ -180,8 +180,9 @@
 
 .CollectionsPage .collections-main-actions {
   display: flex;
+  justify-content: end;
   gap: 20px;
-  margin-top: 20px;
+  min-height: 74px;
 }
 
 .CollectionsPage .collections-main-actions > :first-child {
