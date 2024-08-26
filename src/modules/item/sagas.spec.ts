@@ -28,6 +28,7 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -141,7 +142,10 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getItem, item.id), undefined]])
+        .provide([
+          [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true]
+        ])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -156,14 +160,17 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getItem, item.id), undefined]])
+        .provide([
+          [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true]
+        ])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
   })
 
-  describe('and file size of the wearable is larger than 2 MB', () => {
+  describe('and file size of the wearable is larger than 3 MB', () => {
     beforeEach(() => {
       item.name = 'valid name'
       item.description = 'valid description'
@@ -174,12 +181,13 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 3MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -197,18 +205,19 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_SKIN_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 3MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
   })
 
-  describe('and file size of the emote is larger than 2 MB', () => {
+  describe('and file size of the emote is larger than 3 MB', () => {
     beforeEach(() => {
       item = { ...item, type: ItemType.EMOTE }
     })
@@ -217,12 +226,13 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_EMOTE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 2MB.'))
+        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 3MB.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -233,6 +243,7 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
@@ -249,6 +260,7 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
@@ -289,6 +301,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(reHashOlderContents), {}],
           [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
           [matchers.call.fn(calculateFileSize), 1]
         ])
@@ -322,6 +335,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -357,6 +371,7 @@ describe('when handling the save item request action', () => {
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [select(getAddress), mockAddress],
             [
               call(generateCatalystImage, item, {
@@ -364,7 +379,7 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithCatalystImage, contentsToSave), Promise.resolve(itemWithCatalystImage)],
             [put(saveItemSuccess(itemWithCatalystImage, contentsToSave)), undefined]
@@ -390,7 +405,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
             [put(saveItemSuccess(item, contents)), undefined]
@@ -424,13 +440,14 @@ describe('when handling the save item request action', () => {
               { ...item, contents: { ...item.contents, [IMAGE_PATH]: item.contents[IMAGE_PATH] }, rarity: Rarity.COMMON }
             ],
             [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [
               call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage),
@@ -459,7 +476,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
             [put(saveItemSuccess(item, contents)), undefined]
@@ -485,7 +503,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
             [put(saveItemSuccess(item, contents)), undefined]
@@ -509,6 +528,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [call([builderAPI, 'saveItem'], item, {}), Promise.resolve(item)],
             [put(saveItemSuccess(item, {})), undefined]
           ])
@@ -543,7 +563,8 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve(itemWithNewHashes)],
             [put(saveItemSuccess(itemWithNewHashes, newContents)), undefined]
@@ -579,7 +600,8 @@ describe('when handling the save item success action', () => {
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
-            [select(getAddress), mockAddress]
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true]
           ])
           .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
           .dispatch(saveItemSuccess(item, contents))
@@ -598,7 +620,8 @@ describe('when handling the save item success action', () => {
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
-            [select(getAddress), mockAddress]
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true]
           ])
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
@@ -614,7 +637,8 @@ describe('when handling the save item success action', () => {
           .provide([
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), {}],
-            [select(getAddress), mockAddress]
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true]
           ])
           .not.call.fn(fetchCollectionItemsRequest)
           .dispatch(saveItemSuccess(item, {}, { onlySaveItem: true }))
@@ -649,7 +673,8 @@ describe('when handling the save item success action', () => {
             .provide([
               [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail(collection.id) } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
-              [select(getAddress), mockAddress]
+              [select(getAddress), mockAddress],
+              [select(getIsLinkedWearablesV2Enabled), true]
             ])
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
@@ -788,6 +813,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           [select(getItems), [item]],
           [select(getCollections), [collection]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))

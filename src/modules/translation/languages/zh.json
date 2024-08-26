@@ -322,15 +322,15 @@
       "wrong_video_format": "提供的视频不是MP4视频",
       "thumbnail_too_big": {
         "title": "文件太大，无法上传",
-        "message": "缩略图的最大文件大小为 2MB。"
+        "message": "缩略图的最大文件大小为 1MB。"
       },
       "wearable_too_big": {
         "title": "文件太大，无法上传",
-        "message": "可穿戴设备的最大文件大小为 2MB，皮肤的最大文件大小为 8MB。"
+        "message": "可穿戴设备的最大文件大小为 3MB，皮肤的最大文件大小为 8MB。"
       },
       "emote_too_big": {
         "title": "文件太大，无法上传",
-        "message": "表情的最大文件大小为 2MB。"
+        "message": "表情的最大文件大小为 3MB。"
       },
       "smart_wearable_too_big": {
         "title": "文件太大，无法上传",
