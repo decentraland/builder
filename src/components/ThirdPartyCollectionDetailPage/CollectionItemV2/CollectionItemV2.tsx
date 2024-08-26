@@ -7,9 +7,9 @@ import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { debounce } from 'lib/debounce'
-import { SyncStatus } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
 import ConfirmDelete from 'components/ConfirmDelete'
+import { ItemStatusBadge } from 'components/ItemStatusBadge'
 import { buildItemMappings, getMapping } from 'modules/item/utils'
 import { MappingEditor } from 'components/MappingEditor'
 import { LinkedContract } from 'modules/thirdParty/types'
@@ -51,7 +51,13 @@ export default function CollectionItemV2({
   }, [localMapping, contract])
 
   useEffect(() => {
-    if (mapping && localMapping && contract && !error && !areMappingsEqual(mapping, localMapping)) {
+    if (!contract || error) {
+      return
+    }
+
+    if (!mapping && localMapping) {
+      handleSaveItem(localMapping, contract)
+    } else if (mapping && localMapping && !areMappingsEqual(mapping, localMapping)) {
       handleSaveItem(localMapping, contract)
     }
   }, [mapping, error, localMapping, contract])
@@ -94,19 +100,6 @@ export default function CollectionItemV2({
     onDelete(item)
   }, [onDelete, item])
 
-  const statusIcon = useMemo(() => {
-    switch (status) {
-      case SyncStatus.UNDER_REVIEW:
-        return <Icon name="clock outline" />
-      case SyncStatus.SYNCED:
-        return <Icon name="check circle outline" />
-      case SyncStatus.UNSYNCED:
-        return <Icon name="exclamation circle" />
-      default:
-        return null
-    }
-  }, [status])
-
   return (
     <Grid className={classNames(styles.grid, loading && styles.loading)} columns="equal">
       {loading && (
@@ -125,13 +118,10 @@ export default function CollectionItemV2({
           </div>
         </Grid.Column>
         <Grid.Column>
-          {contract && localMapping && (
-            <MappingEditor disabled={loading} mapping={localMapping} error={error} onChange={setLocalMapping} isCompact />
-          )}
+          {contract && <MappingEditor disabled={loading} mapping={localMapping} error={error} onChange={setLocalMapping} isCompact />}
         </Grid.Column>
-        <Grid.Column width={2} className={`${styles.column} ${styles.statusColumn} ${styles[status]}`}>
-          {statusIcon}
-          <div>{t(`third_party_collection_detail_page.synced_statuses.${status}`)}</div>
+        <Grid.Column width={3} className={classNames(styles.column, styles.statusColumn)}>
+          <ItemStatusBadge status={status} item={item} />
         </Grid.Column>
         <Grid.Column width={1} className={styles.column}>
           <div className={styles.itemActions}>

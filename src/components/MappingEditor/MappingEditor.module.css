@@ -35,6 +35,7 @@
 /* Input margin */
 
 .compact .any,
+.compact .none,
 .compact .multiple {
   margin-top: 19px;
 }
@@ -51,6 +52,24 @@
 
 .mappingType :global(.ui.dropdown .menu > .item > img) {
   margin-top: 0px;
+}
+
+.mappingType :global(.default.text) {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mappingType :global(.default.text)::before {
+  content: ' ';
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  background-image: url(../../icons/map.svg);
+  bottom: 4px;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 }
 
 /* Linked contract select class */
