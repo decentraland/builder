@@ -2347,6 +2347,6 @@
     "synced": "Published",
     "unsynced": "Ready to push changes",
     "pending_migration": "Pending Migration",
-    "pending_mapping": "Pending Mapping "
+    "pending_mapping": "Pending Mapping"
   }
 }

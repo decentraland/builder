@@ -273,6 +273,7 @@
       "range": "例如 [1, 1000]"
     },
     "mapping_type_label": "链接到",
+    "mapping_type_placeholder": "选择",
     "mapping_value_label": "代币 ID",
     "mapping_value_multiple_label": "代币 ID",
     "mapping_value_any": "任何代币 ID",
@@ -2339,5 +2340,13 @@
     "description_dcl": "同时，来自Decentraland NAME的世界将具有动态的最大文件大小限制，具体取决于用户的Decentraland持有量。 <b>每个NAME、LAND和2,000个MANA代币的集合所拥有的</b>将在Worlds内容服务器上额外获得<b>100 Mb的存储空间</b>，可随意使用。",
     "start_building": "开始建设",
     "learn_more": "了解更多"
+  },
+  "item_status": {
+    "unpublished": "准备发布",
+    "under_review": "审查中",
+    "synced": "已发表",
+    "unsynced": "已准备好发送更改",
+    "pending_migration": "待迁移",
+    "pending_mapping": "待定映射"
   }
 }
