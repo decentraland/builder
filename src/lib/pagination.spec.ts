@@ -1,6 +1,6 @@
 import { useHistory, useLocation } from 'react-router-dom'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { PAGE_SIZE } from '../modules/vendor/api'
+import { PAGE_SIZE } from './pagination'
 import { UsePaginationResult, usePagination } from './pagination'
 
 jest.mock('react-router-dom', () => ({
