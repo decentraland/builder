@@ -61,15 +61,13 @@ export default function CollectionsPage(props: Props) {
     onSetView
   } = props
 
-  useEffect(() => {}, [collectionsPaginationData, itemsPaginationData])
-
   const history = useHistory()
   const { page, pages, goToPage, filters, changeFilter, sortBy, changeSorting } = usePagination<'search' | 'section', CurationSortOptions>({
     pageSize: PAGE_SIZE,
     count: collectionsPaginationData?.total
   })
   const currentTab = filters.section ?? TABS.STANDARD_COLLECTIONS
-  const isViewingCollections = filters.section === TABS.STANDARD_COLLECTIONS || filters.section === TABS.THIRD_PARTY_COLLECTIONS
+  const isViewingCollections = currentTab === TABS.STANDARD_COLLECTIONS || currentTab === TABS.THIRD_PARTY_COLLECTIONS
   const [search, setSearch] = useState<string>(filters.search ?? '')
   const timeout = useRef<NodeJS.Timeout | null>(null)
 
@@ -157,7 +155,7 @@ export default function CollectionsPage(props: Props) {
         )}
       </Card.Group>
     )
-  }, [items, collections, isLoadingItems, currentTab])
+  }, [items, collections, isLoadingItems, isViewingCollections, currentTab])
 
   const renderList = useCallback(() => {
     if (isViewingCollections) {
@@ -202,7 +200,7 @@ export default function CollectionsPage(props: Props) {
         </Table>
       </Section>
     )
-  }, [currentTab, items, collections])
+  }, [items, collections, isViewingCollections])
 
   const handlePageChange = useCallback(
     (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
@@ -285,10 +283,12 @@ export default function CollectionsPage(props: Props) {
   }, [view, onSetView, sortBy, handleSortChange])
 
   const renderPage = useCallback(() => {
+    console.log('Render page')
     const totalCollections = collectionsPaginationData?.total
     const totalItems = itemsPaginationData?.total
-    const count = currentTab === TABS.STANDARD_COLLECTIONS || TABS.THIRD_PARTY_COLLECTIONS ? totalCollections : totalItems
-    const totalPages = currentTab === TABS.STANDARD_COLLECTIONS || TABS.THIRD_PARTY_COLLECTIONS ? pages : itemsPaginationData?.totalPages
+    const count = currentTab === TABS.STANDARD_COLLECTIONS || currentTab === TABS.THIRD_PARTY_COLLECTIONS ? totalCollections : totalItems
+    const totalPages =
+      currentTab === TABS.STANDARD_COLLECTIONS || currentTab === TABS.THIRD_PARTY_COLLECTIONS ? pages : itemsPaginationData?.totalPages
 
     if (isLoadingOrphanItem) {
       return <Loader active size="large" />
@@ -299,30 +299,33 @@ export default function CollectionsPage(props: Props) {
         <EventBanner />
         <div className="filters">
           <Container>
-            {hasUserOrphanItems ||
-              (isThirdPartyManager && (
-                // TODO: Remove tabs when there are no users with orphan items
-                <Tabs isFullscreen>
-                  <Tabs.Tab active={currentTab === TABS.STANDARD_COLLECTIONS} onClick={() => handleTabChange(TABS.STANDARD_COLLECTIONS)}>
-                    {t('collections_page.collections')}
+            {(hasUserOrphanItems || isThirdPartyManager) && (
+              // TODO: Remove tabs when there are no users with orphan items
+              <Tabs isFullscreen>
+                <Tabs.Tab active={currentTab === TABS.STANDARD_COLLECTIONS} onClick={() => handleTabChange(TABS.STANDARD_COLLECTIONS)}>
+                  {t('collections_page.collections')}
+                </Tabs.Tab>
+                <Tabs.Tab
+                  active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
+                  onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
+                >
+                  {t('collections_page.third_party_collections')}
+                </Tabs.Tab>
+                {hasUserOrphanItems && (
+                  <Tabs.Tab active={currentTab === TABS.ITEMS} onClick={() => handleTabChange(TABS.ITEMS)}>
+                    {t('collections_page.single_items')}
                   </Tabs.Tab>
-                  <Tabs.Tab
-                    active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
-                    onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
-                  >
-                    {t('collections_page.third_party_collections')}
-                  </Tabs.Tab>
-                  {hasUserOrphanItems && (
-                    <Tabs.Tab active={currentTab === TABS.ITEMS} onClick={() => handleTabChange(TABS.ITEMS)}>
-                      {t('collections_page.single_items')}
-                    </Tabs.Tab>
-                  )}
-                </Tabs>
-              ))}
+                )}
+              </Tabs>
+            )}
             {renderMainActions()}
             <Row height={30}>
               <Column>
-                <Row>{!isLoadingItems && !!count && count > 0 && <Header sub>{t('collections_page.results', { count })}</Header>}</Row>
+                <Row>
+                  {!isLoadingItems && !isLoadingCollections && !!count && count > 0 && (
+                    <Header sub>{t('collections_page.results', { count })}</Header>
+                  )}
+                </Row>
               </Column>
               {renderViewActions()}
             </Row>
