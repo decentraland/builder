@@ -30,6 +30,7 @@ import { CollectionPageView } from 'modules/ui/collection/types'
 import { CurationSortOptions } from 'modules/curations/types'
 import { usePagination } from 'lib/pagination'
 import { CollectionType } from 'modules/collection/types'
+import collectionsIcon from 'icons/collections.svg'
 import ItemCard from './ItemCard'
 import ItemRow from './ItemRow'
 import CollectionCard from './CollectionCard'
@@ -283,7 +284,6 @@ export default function CollectionsPage(props: Props) {
   }, [view, onSetView, sortBy, handleSortChange])
 
   const renderPage = useCallback(() => {
-    console.log('Render page')
     const totalCollections = collectionsPaginationData?.total
     const totalItems = itemsPaginationData?.total
     const count = currentTab === TABS.STANDARD_COLLECTIONS || currentTab === TABS.THIRD_PARTY_COLLECTIONS ? totalCollections : totalItems
@@ -300,23 +300,26 @@ export default function CollectionsPage(props: Props) {
         <div className="filters">
           <Container>
             {(hasUserOrphanItems || isThirdPartyManager) && (
-              // TODO: Remove tabs when there are no users with orphan items
-              <Tabs isFullscreen>
-                <Tabs.Tab active={currentTab === TABS.STANDARD_COLLECTIONS} onClick={() => handleTabChange(TABS.STANDARD_COLLECTIONS)}>
-                  {t('collections_page.collections')}
-                </Tabs.Tab>
-                <Tabs.Tab
-                  active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
-                  onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
-                >
-                  {t('collections_page.third_party_collections')}
-                </Tabs.Tab>
-                {hasUserOrphanItems && (
-                  <Tabs.Tab active={currentTab === TABS.ITEMS} onClick={() => handleTabChange(TABS.ITEMS)}>
-                    {t('collections_page.single_items')}
+              <div className="action-tabs-container">
+                <img src={collectionsIcon} className="collections-icon" />
+                <Tabs isFullscreen>
+                  <Tabs.Tab active={currentTab === TABS.STANDARD_COLLECTIONS} onClick={() => handleTabChange(TABS.STANDARD_COLLECTIONS)}>
+                    {t('collections_page.collections')}
                   </Tabs.Tab>
-                )}
-              </Tabs>
+                  <Tabs.Tab
+                    active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
+                    onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
+                  >
+                    {t('collections_page.third_party_collections')}
+                  </Tabs.Tab>
+                  {hasUserOrphanItems && (
+                    // TODO: Remove tabs when there are no users with orphan items
+                    <Tabs.Tab active={currentTab === TABS.ITEMS} onClick={() => handleTabChange(TABS.ITEMS)}>
+                      {t('collections_page.single_items')}
+                    </Tabs.Tab>
+                  )}
+                </Tabs>
+              </div>
             )}
             {renderMainActions()}
             <Row height={30}>

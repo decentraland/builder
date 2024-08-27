@@ -202,3 +202,16 @@
   justify-self: end;
   flex: none;
 }
+
+.CollectionsPage .collections-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+}
+
+.CollectionsPage .action-tabs-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+}
