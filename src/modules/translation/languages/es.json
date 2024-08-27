@@ -1516,6 +1516,7 @@
     "type": "Tipo",
     "items": "Items",
     "collections": "Colecciones",
+    "third_party_collections": "Colecciones Externas",
     "collection": "Colección",
     "single_items": "Items individuales",
     "empty_description": "Aún no tienes colecciones, comienza creándo una de ellas y entra al metaverso con estilo",

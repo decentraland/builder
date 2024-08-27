@@ -1495,6 +1495,7 @@
     "type": "类型",
     "items": "模型",
     "collections": "收藏品",
+    "third_party_collections": "第三方收藏",
     "collection": "收藏",
     "single_items": "单品",
     "empty_description": "您还没有收藏。创建一个新系列，并以时尚的方式装扮虚拟宇宙！",

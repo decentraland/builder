@@ -1507,6 +1507,7 @@
     "type": "Type",
     "items": "Items",
     "collections": "Collections",
+    "third_party_collections": "Linked Wearables",
     "collection": "Collection",
     "single_items": "Single items",
     "empty_description": "You have no collections yet. Create a new collection, and dress the metaverse in style!",
