@@ -79,6 +79,7 @@ export type RemoteItem = {
   mappings: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | null
   local_content_hash: string | null
   catalyst_content_hash: string | null
+  isMappingComplete?: boolean
 }
 
 export type RemoteCollection = {
@@ -382,6 +383,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     catalystContentHash: remoteItem.catalyst_content_hash,
     metrics: remoteItem.metrics,
     mappings: remoteItem.mappings,
+    isMappingComplete: remoteItem.isMappingComplete,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)
   }

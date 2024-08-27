@@ -21,6 +21,10 @@ export const MappingEditor = (props: Props) => {
   const { mapping, error, loading, disabled, isCompact, onChange } = props
 
   const [mappingType, mappingValue] = useMemo(() => {
+    if (!mapping) {
+      return [undefined, '']
+    }
+
     switch (mapping.type) {
       case MappingType.MULTIPLE:
         return [MappingType.MULTIPLE, mapping.ids.join(', ')]
@@ -115,13 +119,16 @@ export const MappingEditor = (props: Props) => {
       <SelectField
         label={isCompact ? undefined : t('mapping_editor.mapping_type_label')}
         onChange={handleMappingTypeChange}
+        placeholder={t('mapping_editor.mapping_type_placeholder')}
         value={mappingType}
         disabled={disabled}
         className={classNames(styles.mappingType, isCompact ? styles.compact : styles.full)}
         options={mappingTypeOptions}
       />
       <div className={classNames(styles.mappings, isCompact ? styles.compact : styles.full)}>
-        {mappingType === MappingType.ANY ? (
+        {mappingType === undefined ? (
+          <Field loading={loading} className={styles.none} disabled />
+        ) : mappingType === MappingType.ANY ? (
           <Field
             label={isCompact ? undefined : t('mapping_editor.mapping_value_label')}
             loading={loading}

@@ -279,6 +279,7 @@
       "range": "p. ej. [1, 1000]"
     },
     "mapping_type_label": "Vinculado a",
+    "mapping_type_placeholder": "Seleccionar",
     "mapping_value_label": "Token ID",
     "mapping_value_multiple_label": "Token IDs",
     "mapping_value_any": "Todos los token IDs",
@@ -2358,5 +2359,13 @@
     "description_dcl": "Mientras tanto, los Mundos de los NAMEs de Decentraland tendrán un límite de tamaño máximo dinámico dependiendo de las tenencias del usuario. <b>Cada NAME, LAND y 2,000 tokens MANA poseídos</b> otorgarán un adicional de <b>100 Mb de almacenamiento</b> en el servidor de contenido de Mundos para ser utilizado como desee.",
     "start_building": "comenzar a construir",
     "learn_more": "aprende más"
+  },
+  "item_status": {
+    "unpublished": "Listos para publicar",
+    "under_review": "Bajo revisión",
+    "synced": "Published",
+    "unsynced": "Listo para enviar cambios",
+    "pending_migration": "Migración pendiente",
+    "pending_mapping": "Mapeo pendiente"
   }
 }
