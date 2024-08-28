@@ -195,7 +195,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
             itemSelected={selectedItemId}
             itemsPage={pages}
             itemsPageSize={LEFT_PANEL_PAGE_SIZE}
-            fetchOptions={{ status: isReviewing ? CurationStatus.PENDING : undefined }}
+            fetchCollectionItemsOptions={{ status: isReviewing ? CurationStatus.PENDING : undefined }}
             onChangePage={page => this.setState({ pages: [page] })}
           >
             {({ paginatedCollections, collection, paginatedItems: collectionItems, initialPage: collectionInitialPage, isLoading }) => {

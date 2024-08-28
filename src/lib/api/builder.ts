@@ -51,6 +51,17 @@ export type FetchCollectionsParams = {
   limit?: number
 }
 
+export enum ItemMappingStatus {
+  MISSING_MAPPING = 'missing_mapping',
+  UNPUBLISHED_MAPPING = 'unpublished_mapping'
+}
+
+export type FetchCollectionItemsParams = {
+  status?: CurationStatus
+  synced?: boolean
+  mappingStatus?: ItemMappingStatus
+}
+
 export type RemoteItem = {
   id: string // uuid
   name: string
