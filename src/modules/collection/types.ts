@@ -22,7 +22,7 @@ export type Collection = {
   linkedContractNetwork?: ContractNetwork
   createdAt: number
   updatedAt: number
-  isMappingComplete: boolean
+  isMappingComplete?: boolean
 }
 
 export enum CollectionType {
