@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Card, Confirm } from 'decentraland-ui'
+import { Button, Card, Confirm, Icon } from 'decentraland-ui'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
+import { isThirdParty } from 'lib/urn'
 import { locations } from 'routing/locations'
 import { getCollectionType } from 'modules/collection/utils'
 import { OptionsDropdown } from '../../OptionsDropdown'
@@ -43,6 +44,11 @@ const CollectionCard = (props: Props) => {
               {t(`collection.type.${type}`)}&nbsp;·&nbsp;
               {t('collection_card.item_count', { count: itemCount })}
             </div>
+            {!collection.isMappingComplete && isThirdParty(collection.urn) && (
+              <div className="pending-migration">
+                <Icon name="warning circle" /> {t('item_status.pending_migration')}
+              </div>
+            )}
           </Card.Content>
         </Link>
       </div>

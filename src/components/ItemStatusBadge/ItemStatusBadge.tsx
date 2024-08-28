@@ -17,7 +17,7 @@ export const ItemStatusBadge = (props: Props) => {
   const icon = useMemo(() => {
     if (isMappingMissingFromItem) {
       return <img src={mapIcon} className={styles.icon} />
-    } else if (isMappingMissingInCatalysts) {
+    } else if (isMappingMissingInCatalysts && status !== SyncStatus.UNDER_REVIEW) {
       return <Icon name="warning circle" />
     }
     switch (status) {
@@ -34,7 +34,7 @@ export const ItemStatusBadge = (props: Props) => {
   const text = useMemo(() => {
     if (isMappingMissingFromItem) {
       return t('item_status.pending_mapping')
-    } else if (isMappingMissingInCatalysts) {
+    } else if (isMappingMissingInCatalysts && status !== SyncStatus.UNDER_REVIEW) {
       return t('item_status.pending_migration')
     }
     return t(`item_status.${status}`)
@@ -43,7 +43,7 @@ export const ItemStatusBadge = (props: Props) => {
   const style = useMemo(() => {
     if (!item.mappings) {
       return 'pending_mapping'
-    } else if (isMappingMissingInCatalysts) {
+    } else if (isMappingMissingInCatalysts && status !== SyncStatus.UNDER_REVIEW) {
       return 'pending_migration'
     }
     return status

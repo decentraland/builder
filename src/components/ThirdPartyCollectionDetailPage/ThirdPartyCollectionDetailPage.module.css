@@ -56,7 +56,7 @@
   align-items: center;
   gap: 16px;
   padding-right: 142px;
-  padding-left: 94px;
+  padding-left: 90px;
   min-width: 1400px;
   width: 100%;
 }
@@ -210,4 +210,24 @@
   background-color: #43404a;
   margin: auto;
   margin-bottom: 20px;
+}
+
+.migrationBanner {
+  color: black;
+  display: flex;
+  align-items: center;
+  background-color: #ffbc5b;
+  padding: 9px 16px 9px 16px;
+  min-height: 42px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 8px;
+  margin-right: 142px;
+  margin-left: 142px;
+  margin-top: 15px;
+}
+
+.migrationBanner :global(.icon) {
+  height: 18px;
+  margin-right: 10px;
 }

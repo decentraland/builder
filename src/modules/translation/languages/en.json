@@ -1638,6 +1638,7 @@
     "smart_contract_address_long": "Smart contract address",
     "slots_short": "Slots",
     "slots_long": "Publishing points",
+    "migration_banner": "One or many items in your collection must be migrated to new version",
     "synced_filter": {
       "all": "All items",
       "synced": "Synced",
