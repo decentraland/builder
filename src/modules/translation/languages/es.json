@@ -1645,6 +1645,7 @@
     "smart_contract_address_long": "Dirección del contrato inteligente",
     "slots_short": "Slots",
     "slots_long": "Puntos de publicación",
+    "migration_banner": "Uno o múltiples items en tu colección necesitan ser migrados a la nueva versión",
     "synced_filter": {
       "all": "Todos los items",
       "synced": "Sincronizados",

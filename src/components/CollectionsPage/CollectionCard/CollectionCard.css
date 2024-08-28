@@ -49,6 +49,22 @@
   visibility: hidden;
 }
 
+.CollectionCard .pending-migration {
+  text-transform: uppercase;
+  padding: 4px 8px 4px 8px;
+  border-radius: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffbc5b;
+  background-color: rgb(255, 188, 91, 0.2);
+  margin-top: 16px;
+}
+
+.CollectionCard .pending-migration .icon {
+  height: 18px;
+}
+
 @media (max-width: 1200px) {
   .CollectionCard .content .text {
     max-width: 215px;

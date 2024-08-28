@@ -102,6 +102,7 @@ export type RemoteCollection = {
   linked_contract_address: string | null
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   linked_contract_network: ContractNetwork | null
+  is_mapping_complete: boolean
 }
 
 export type RemoteProject = {
@@ -402,7 +403,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   return item
 }
 
-function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock'> {
+function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock' | 'is_mapping_complete'> {
   return {
     id: collection.id,
     name: collection.name,
@@ -437,6 +438,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
     linkedContractAddress: remoteCollection.linked_contract_address || undefined,
     linkedContractNetwork: remoteCollection.linked_contract_network || undefined,
+    isMappingComplete: remoteCollection.is_mapping_complete,
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }
