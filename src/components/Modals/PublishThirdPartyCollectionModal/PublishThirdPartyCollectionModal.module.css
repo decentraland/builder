@@ -1,0 +1,14 @@
+.loading.visible {
+  visibility: visible;
+}
+
+.loading.hidden {
+  visibility: hidden;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}

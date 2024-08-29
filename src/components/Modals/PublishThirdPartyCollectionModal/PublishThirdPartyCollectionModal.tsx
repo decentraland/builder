@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { ModalNavigation, Button, Progress } from 'decentraland-ui'
+import { ModalNavigation, Button, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getItemsToPublish, getItemsWithChanges } from 'modules/item/utils'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
-import { getTPButtonActionLabel } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton'
 import { Props } from './PublishThirdPartyCollectionModal.types'
+import styles from './PublishThirdPartyCollectionModal.module.css'
+import classNames from 'classnames'
 
 export default class PublishThirdPartyCollectionModal extends React.PureComponent<Props> {
   handleSubmit = () => {
@@ -33,6 +34,11 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
         onPublish(thirdParty, items)
         break
     }
+  }
+
+  getSubmittedItemsCount = () => {
+    const { items, itemsStatus, itemCurations } = this.props
+    return getItemsToPublish(items, itemsStatus).length + getItemsWithChanges(items, itemsStatus, itemCurations).length
   }
 
   getModalDescriptionText = () => {
@@ -73,30 +79,30 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
       metadata: { action }
     } = this.props
 
+    const isPublishing =
+      isPublishLoading && [PublishButtonAction.PUSH_CHANGES, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(action)
+
     return (
-      <Modal className="PublishThirdPartyCollectionModal" size="tiny" onClose={onClose}>
-        <ModalNavigation title={t('publish_third_party_collection_modal.title')} onClose={onClose} />
+      <Modal className="PublishThirdPartyCollectionModal" size="large" onClose={onClose}>
+        <ModalNavigation title={''} onClose={onClose} />
         <Modal.Content>
-          {isPublishLoading && [PublishButtonAction.PUSH_CHANGES, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(action) ? (
-            <>
-              <div className="progressBarContainer">
-                <Progress percent={pushChangesProgress} className="progressBar" progress />
-              </div>
-            </>
-          ) : (
-            <>
-              <div>{this.getModalDescriptionText()}</div>
-              <br />
-              <Button primary fluid loading={isPublishLoading} onClick={this.handleSubmit}>
-                {getTPButtonActionLabel(action)}
-              </Button>
-              <br />
-              <Button secondary fluid onClick={onClose}>
-                {t('global.cancel')}
-              </Button>
-            </>
-          )}
+          <div className={styles.content}>
+            <div className={classNames(styles.loading, { [styles.visible]: isPublishing, [styles.hidden]: !isPublishing })}>
+              <Loader active inline size="massive" />
+              <div>%{pushChangesProgress}</div>
+            </div>
+            <h2>Submitting {this.getSubmittedItemsCount()} items for review</h2>
+            <div>{this.getModalDescriptionText()}</div>
+          </div>
         </Modal.Content>
+        <Modal.Actions>
+          <Button secondary disabled={isPublishLoading} onClick={onClose}>
+            {t('global.cancel')}
+          </Button>
+          <Button primary loading={isPublishLoading} disabled={isPublishLoading} onClick={this.handleSubmit}>
+            Proceed
+          </Button>
+        </Modal.Actions>
       </Modal>
     )
   }
