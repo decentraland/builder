@@ -237,7 +237,7 @@ export default function ThirdPartyCollectionDetailPage({
               </div>
             </div>
           </div>
-          {collection.isMappingComplete && (
+          {!collection.isMappingComplete && (
             <div className={styles.migrationBanner}>
               <Icon name="sync" /> {t('third_party_collection_detail_page.migration_banner')}
             </div>
