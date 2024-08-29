@@ -50,7 +50,7 @@ enum ItemStatus {
   ALL = 'ALL',
   SYNCED = 'SYNCED',
   UNSYNCED = 'UNSYNCED',
-  MAPPING_REQUIRED = 'MAPPING_REQUIRED',
+  MIGRATION_REQUIRED = 'MIGRATION_REQUIRED',
   MAPPING_PENDING = 'MAPPING_PENDING'
 }
 
@@ -190,8 +190,8 @@ export default function ThirdPartyCollectionDetailPage({
     { value: ItemStatus.UNSYNCED, text: t('item_status.unsynced') },
     ...(!collection?.isMappingComplete
       ? [
-          { value: ItemStatus.MAPPING_REQUIRED, text: t('itemStatusOptions.mapping_required') },
-          { value: ItemStatus.MAPPING_PENDING, text: t('itemStatusOptions.mapping_pending') }
+          { value: ItemStatus.MIGRATION_REQUIRED, text: t('item_status.pending_migration') },
+          { value: ItemStatus.MAPPING_PENDING, text: t('item_status.pending_mapping') }
         ]
       : [])
   ]
@@ -202,10 +202,10 @@ export default function ThirdPartyCollectionDetailPage({
         return { synced: true }
       case ItemStatus.UNSYNCED:
         return { synced: false }
-      case ItemStatus.MAPPING_REQUIRED:
-        return { mappingStatus: ItemMappingStatus.MISSING_MAPPING }
-      case ItemStatus.MAPPING_PENDING:
+      case ItemStatus.MIGRATION_REQUIRED:
         return { mappingStatus: ItemMappingStatus.UNPUBLISHED_MAPPING }
+      case ItemStatus.MAPPING_PENDING:
+        return { mappingStatus: ItemMappingStatus.MISSING_MAPPING }
       default:
         return {}
     }
