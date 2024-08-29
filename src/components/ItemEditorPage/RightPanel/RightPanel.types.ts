@@ -5,8 +5,6 @@ import {
   DeleteItemRequestAction,
   saveItemRequest,
   SaveItemRequestAction,
-  setCollection,
-  SetCollectionAction,
   downloadItemRequest,
   DownloadItemRequestAction
 } from 'modules/item/actions'
@@ -31,7 +29,6 @@ export type Props = {
   onSaveItem: typeof saveItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
-  onSetCollection: typeof setCollection
   onDownload: typeof downloadItemRequest
 }
 
@@ -64,7 +61,5 @@ export type MapStateProps = Pick<
   | 'isVrmOptOutEnabled'
   | 'isWearableUtilityEnabled'
 >
-export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection' | 'onDownload'>
-export type MapDispatch = Dispatch<
-  SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | SetCollectionAction | DownloadItemRequestAction
->
+export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onDownload'>
+export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | DownloadItemRequestAction>

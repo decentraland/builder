@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getItem, getError as getItemError, getStatusByItemId, isDownloading } from 'modules/item/selectors'
-import { deleteItemRequest, downloadItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
+import { deleteItemRequest, downloadItemRequest, saveItemRequest } from 'modules/item/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isOwner } from 'modules/item/utils'
 import { getSelectedItemId } from 'modules/location/selectors'
@@ -44,7 +44,6 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSaveItem: (item, contents) => dispatch(saveItemRequest(item, contents)),
   onDeleteItem: item => dispatch(deleteItemRequest(item)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId)),
   onDownload: itemId => dispatch(downloadItemRequest(itemId))
 })
 

@@ -98,8 +98,10 @@ export const SAVE_ITEM_REQUEST = '[Request] Save Item'
 export const SAVE_ITEM_SUCCESS = '[Success] Save Item'
 export const SAVE_ITEM_FAILURE = '[Failure] Save Item'
 
-export const saveItemRequest = (item: Item, contents: Record<string, Blob>) => action(SAVE_ITEM_REQUEST, { item, contents })
-export const saveItemSuccess = (item: Item, contents: Record<string, Blob>) => action(SAVE_ITEM_SUCCESS, { item, contents })
+export const saveItemRequest = (item: Item, contents: Record<string, Blob>, options?: { onlySaveItem?: boolean }) =>
+  action(SAVE_ITEM_REQUEST, { item, contents, options })
+export const saveItemSuccess = (item: Item, contents: Record<string, Blob>, options?: { onlySaveItem?: boolean }) =>
+  action(SAVE_ITEM_SUCCESS, { item, contents, options })
 export const saveItemFailure = (item: Item, contents: Record<string, Blob>, error: string) =>
   action(SAVE_ITEM_FAILURE, { item, contents, error })
 

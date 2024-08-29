@@ -4,7 +4,7 @@ import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { ethers } from 'ethers'
 import { Entity, Rarity, EntityType } from '@dcl/schemas'
-import { call, select, take, race, delay, getContext } from 'redux-saga/effects'
+import { call, select, take, race, delay, getContext, put } from 'redux-saga/effects'
 import {
   BuilderClient,
   MAX_EMOTE_FILE_SIZE,
@@ -28,6 +28,7 @@ import { Collection } from 'modules/collection/types'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -63,7 +64,6 @@ import {
   fetchCollectionItemsFailure,
   deleteItemSuccess,
   fetchItemsRequest,
-  fetchItemsSuccess,
   fetchRaritiesRequest,
   fetchRaritiesSuccess,
   fetchRaritiesFailure,
@@ -73,7 +73,8 @@ import {
   setItemCollection,
   fetchOrphanItemRequest,
   fetchOrphanItemSuccess,
-  fetchOrphanItemFailure
+  fetchOrphanItemFailure,
+  SAVE_ITEM_REQUEST
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import {
@@ -141,7 +142,10 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getItem, item.id), undefined]])
+        .provide([
+          [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true]
+        ])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
@@ -156,14 +160,17 @@ describe('when handling the save item request action', () => {
 
     it('should put a saveItemFailure action with invalid character message', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
-        .provide([[select(getItem, item.id), undefined]])
+        .provide([
+          [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true]
+        ])
         .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
   })
 
-  describe('and file size of the wearable is larger than 2 MB', () => {
+  describe('and file size of the wearable is larger than 3 MB', () => {
     beforeEach(() => {
       item.name = 'valid name'
       item.description = 'valid description'
@@ -174,12 +181,13 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 3MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -197,18 +205,19 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_SKIN_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The max file size is 2MB for Wearables and 8MB for Skins.'))
+        .put(saveItemFailure(item, contents, 'The max file size is 3MB for Wearables and 8MB for Skins.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
   })
 
-  describe('and file size of the emote is larger than 2 MB', () => {
+  describe('and file size of the emote is larger than 3 MB', () => {
     beforeEach(() => {
       item = { ...item, type: ItemType.EMOTE }
     })
@@ -217,12 +226,13 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_EMOTE_FILE_SIZE + 1)],
           [matchers.call.fn(calculateFileSize), MAX_THUMBNAIL_FILE_SIZE]
         ])
-        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 2MB.'))
+        .put(saveItemFailure(item, contents, 'The item is too large to be uploaded. The maximum file size for emote is 3MB.'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
@@ -233,6 +243,7 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
@@ -249,6 +260,7 @@ describe('when handling the save item request action', () => {
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
           [select(getItem, item.id), undefined],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(reHashOlderContents), {}],
           [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: 'someHash', content: blob })],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(MAX_WEARABLE_FILE_SIZE)],
@@ -289,6 +301,7 @@ describe('when handling the save item request action', () => {
           [matchers.call.fn(reHashOlderContents), {}],
           [select(getItem, item.id), undefined],
           [select(getCollection, collection.id), collection],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
           [matchers.call.fn(calculateFileSize), 1]
         ])
@@ -322,6 +335,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -330,7 +344,7 @@ describe('when handling the save item request action', () => {
             ],
             [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
             [matchers.call.fn(calculateFileSize), 1],
-            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve(item)]
           ])
           .put(saveItemSuccess(item, contentsToSave))
           .dispatch(saveItemRequest(item, contentsToSave))
@@ -357,6 +371,7 @@ describe('when handling the save item request action', () => {
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [select(getAddress), mockAddress],
             [
               call(generateCatalystImage, item, {
@@ -364,9 +379,10 @@ describe('when handling the save item request action', () => {
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
-            [call([builderAPI, 'saveItem'], item, contentsToSave), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], itemWithCatalystImage, contentsToSave), Promise.resolve(itemWithCatalystImage)],
+            [put(saveItemSuccess(itemWithCatalystImage, contentsToSave)), undefined]
           ])
           .put(saveItemSuccess(itemWithCatalystImage, contentsToSave))
           .dispatch(saveItemRequest(item, contentsToSave))
@@ -389,9 +405,11 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
+            [put(saveItemSuccess(item, contents)), undefined]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -422,15 +440,20 @@ describe('when handling the save item request action', () => {
               { ...item, contents: { ...item.contents, [IMAGE_PATH]: item.contents[IMAGE_PATH] }, rarity: Rarity.COMMON }
             ],
             [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
               }),
               Promise.resolve({ hash: catalystImageHash, content: blob })
             ],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
-            [call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage), Promise.resolve()]
+            [
+              call([builderAPI, 'saveItem'], itemWithCatalystImage, newContentsContainingNewCatalystImage),
+              Promise.resolve(itemWithCatalystImage)
+            ],
+            [put(saveItemSuccess(itemWithCatalystImage, newContentsContainingNewCatalystImage)), undefined]
           ])
           .put(saveItemSuccess(itemWithCatalystImage, newContentsContainingNewCatalystImage))
           .dispatch(saveItemRequest(item, contents))
@@ -453,9 +476,11 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
+            [put(saveItemSuccess(item, contents)), undefined]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -478,9 +503,11 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
-            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
+            [put(saveItemSuccess(item, contents)), undefined]
           ])
           .put(saveItemSuccess(item, contents))
           .dispatch(saveItemRequest(item, contents))
@@ -501,7 +528,9 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
-            [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call([builderAPI, 'saveItem'], item, {}), Promise.resolve(item)],
+            [put(saveItemSuccess(item, {})), undefined]
           ])
           .put(saveItemSuccess(item, {}))
           .dispatch(saveItemRequest(item, {}))
@@ -534,9 +563,11 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
-            [call(calculateModelFinalSize, itemContents, modelContents, builderAPI), Promise.resolve(1)],
+            [select(getIsLinkedWearablesV2Enabled), true],
+            [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
-            [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve()]
+            [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve(itemWithNewHashes)],
+            [put(saveItemSuccess(itemWithNewHashes, newContents)), undefined]
           ])
           .put(saveItemSuccess(itemWithNewHashes, newContents))
           .dispatch(saveItemRequest(item, contents))
@@ -569,7 +600,8 @@ describe('when handling the save item success action', () => {
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
-            [select(getAddress), mockAddress]
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true]
           ])
           .put(fetchCollectionItemsRequest(item.collectionId!, { page: paginationData.currentPage, limit: paginationData.limit }))
           .dispatch(saveItemSuccess(item, contents))
@@ -588,13 +620,29 @@ describe('when handling the save item success action', () => {
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getPaginationData, item.collectionId!), paginationData],
-            [select(getAddress), mockAddress]
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true]
           ])
           .dispatch(saveItemSuccess(item, contents))
           .run({ silenceTimeout: true })
           .then(() => {
             expect(pushMock).toHaveBeenCalledWith(locations.thirdPartyCollectionDetail(item.collectionId, { page: newPageNumber }))
           })
+      })
+    })
+
+    describe('and the onlySaveItem option is set', () => {
+      it('should not fetch the new collection items paginated', () => {
+        return expectSaga(itemSaga, builderAPI, builderClient)
+          .provide([
+            [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
+            [select(getOpenModals), {}],
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), true]
+          ])
+          .not.call.fn(fetchCollectionItemsRequest)
+          .dispatch(saveItemSuccess(item, {}, { onlySaveItem: true }))
+          .run({ silenceTimeout: true })
       })
     })
   })
@@ -625,7 +673,8 @@ describe('when handling the save item success action', () => {
             .provide([
               [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail(collection.id) } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
-              [select(getAddress), mockAddress]
+              [select(getAddress), mockAddress],
+              [select(getIsLinkedWearablesV2Enabled), true]
             ])
             .dispatch(saveItemSuccess(item, {}))
             .run({ silenceTimeout: true })
@@ -764,6 +813,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           [select(getItems), [item]],
           [select(getCollections), [collection]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+          [select(getIsLinkedWearablesV2Enabled), true],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
         .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))
@@ -1706,21 +1756,13 @@ describe('when handling the fetch of rarities', () => {
 })
 
 describe('when handling the setCollection action', () => {
-  describe('and the item is moved to the selected collection', () => {
-    let paginationData: PaginatedResource<Item>
-    beforeEach(() => {
-      paginationData = { total: 0, limit: 20, page: 1, pages: 1, results: [] }
-      ;(builderAPI.fetchItems as jest.Mock).mockReturnValue(paginationData)
-    })
-
-    it('should put a fetch address items success action to fetch the same page again', () => {
+  describe('and saving the item with the new collection id is not successful', () => {
+    it('should not put an action to close the modal nor request fetching items', () => {
       const collection = {
         id: 'aCollection'
       } as Collection
 
       const item = { ...mockedItem }
-
-      const catalystImageHash = 'someHash'
 
       return expectSaga(itemSaga, builderAPI, builderClient)
         .provide([
@@ -1729,19 +1771,41 @@ describe('when handling the setCollection action', () => {
           [select(getOpenModals), { AddExistingItemModal: true }],
           [select(getItem, item.id), item],
           [select(getCollection, collection.id), collection],
-          [matchers.call.fn(reHashOlderContents), {}],
-          [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: catalystImageHash, content: blob })],
-          [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
-          [matchers.call.fn(calculateFileSize), 1]
+          [matchers.put.actionType(SAVE_ITEM_REQUEST), undefined],
+          [put(fetchItemsRequest(mockAddress)), undefined]
         ])
-        .put(
-          fetchItemsSuccess(
-            paginationData.results,
-            { limit: paginationData.limit, page: paginationData.page, pages: paginationData.pages, total: paginationData.total },
-            mockAddress
-          )
-        )
+        .put(saveItemRequest({ ...item, collectionId: collection.id }, {}))
+        .not.put(fetchItemsRequest(mockAddress))
+        .not.put(closeModal('MoveItemToCollectionModal'))
         .dispatch(setCollection(item, collection.id))
+        .dispatch(saveItemFailure({ ...item, collectionId: collection.id }, {}, 'anError'))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and saving the item with the new collection id is successful', () => {
+    it('should put an action to close the modal and to request fetching items', () => {
+      const collection = {
+        id: 'aCollection'
+      } as Collection
+
+      const item = { ...mockedItem }
+
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getAddress), mockAddress],
+          [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
+          [select(getOpenModals), { AddExistingItemModal: true }],
+          [select(getItem, item.id), item],
+          [select(getCollection, collection.id), collection],
+          [matchers.put.actionType(SAVE_ITEM_REQUEST), undefined],
+          [put(fetchItemsRequest(mockAddress)), undefined]
+        ])
+        .put(saveItemRequest({ ...item, collectionId: collection.id }, {}))
+        .put(fetchItemsRequest(mockAddress))
+
+        .dispatch(setCollection(item, collection.id))
+        .dispatch(saveItemSuccess({ ...item, collectionId: collection.id }, {}))
         .run({ silenceTimeout: true })
     })
   })
@@ -1857,21 +1921,45 @@ describe('when handling the setItemCollection action', () => {
     } as Omit<Toast, 'id'>
   })
 
-  it('should put a save item success action and show the successful move item to another collection toast', () => {
-    return expectSaga(itemSaga, builderAPI, builderClient)
-      .provide([
-        [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
-        [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
-        [select(getCollection, collection.id), collection],
-        [select(getItem, item.id), item],
-        [select(getAddress), mockAddress],
-        [call([builderAPI, 'saveItem'], item, {}), Promise.resolve()],
-        [call(toasts.getSuccessfulMoveItemToAnotherCollectionToast, item, collection), toast]
-      ])
-      .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' }, meta: undefined } })
-      .put(closeModal('MoveItemToAnotherCollectionModal'))
-      .dispatch(saveItemSuccess(item, {}))
-      .dispatch(setItemCollection(item, collection.id))
-      .run({ silenceTimeout: true })
+  describe("and the item's collection is updated successfully", () => {
+    it('should put a save item request action with the new collection id, show the successful toast and close the modal', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
+          [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
+          [select(getCollection, collection.id), collection],
+          [select(getAddress), mockAddress],
+          [matchers.put.actionType(SAVE_ITEM_REQUEST), undefined],
+          [select(getItem, item.id), item],
+          [call(toasts.getSuccessfulMoveItemToAnotherCollectionToast, item, collection), toast]
+        ])
+        .put(saveItemRequest(item, {}))
+        .put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' }, meta: undefined } })
+        .put(closeModal('MoveItemToAnotherCollectionModal'))
+        .dispatch(setItemCollection(item, collection.id))
+        .dispatch(saveItemSuccess(item, {}))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe("and the item's collections fails to be updated", () => {
+    it('should not not the toast message nor close the modal nor close the modal', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient)
+        .provide([
+          [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
+          [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
+          [select(getCollection, collection.id), collection],
+          [select(getAddress), mockAddress],
+          [matchers.put.actionType(SAVE_ITEM_REQUEST), undefined],
+          [select(getItem, item.id), item],
+          [call(toasts.getSuccessfulMoveItemToAnotherCollectionToast, item, collection), toast]
+        ])
+        .put(saveItemRequest(item, {}))
+        .not.put.like({ action: { type: SHOW_TOAST, payload: { toast, position: 'bottom center' }, meta: undefined } })
+        .not.put(closeModal('MoveItemToAnotherCollectionModal'))
+        .dispatch(setItemCollection(item, collection.id))
+        .dispatch(saveItemFailure(item, {}, 'An error'))
+        .run({ silenceTimeout: true })
+    })
   })
 })

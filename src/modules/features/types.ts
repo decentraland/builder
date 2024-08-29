@@ -8,5 +8,6 @@ export enum FeatureName {
   VRM_OPTOUT = 'vrm-optout',
   WEARABLE_UTILITY = 'wearable-utility',
   WORLD_CONTRIBUTOR = 'world-contributor',
-  LINKED_WEARABLES_V2 = 'linked-wearables-v2'
+  LINKED_WEARABLES_V2 = 'linked-wearables-v2',
+  LINKED_WEARABLES_PAYMENTS = 'linked-wearables-payments'
 }

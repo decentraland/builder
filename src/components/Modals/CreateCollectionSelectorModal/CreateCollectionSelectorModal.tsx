@@ -9,7 +9,7 @@ import { Props } from './CreateCollectionSelectorModal.types'
 import styles from './CreateCollectionSelectorModal.module.css'
 import { CREATE_BUTTON_TEST_ID, DISABLED_DATA_TEST_ID } from './constants'
 
-const CollectionSelection = ({
+const CollectionSelectionModal = ({
   image,
   title,
   subtitle,
@@ -52,7 +52,7 @@ export const CreateCollectionSelectorModal = (props: Props) => {
   const { onClose, onCreateCollection, onCreateThirdPartyCollection, name, isThirdPartyManager, isLoadingThirdParties } = props
 
   return (
-    <Modal name={name} onClose={onClose} size="medium">
+    <Modal name={name} onClose={onClose} size="large">
       <ModalNavigation
         title={t('create_collection_selector_modal.title')}
         subtitle={t('create_collection_selector_modal.subtitle')}
@@ -60,16 +60,14 @@ export const CreateCollectionSelectorModal = (props: Props) => {
       />
       <ModalContent>
         <div className={styles.modalContent}>
-          <CollectionSelection
-            // Temporary image for the collections
+          <CollectionSelectionModal
             image={collectionsImage}
             title={t('create_collection_selector_modal.collection.title')}
             subtitle={t('create_collection_selector_modal.collection.subtitle')}
             onCreate={onCreateCollection}
             learnMoreUrl={COLLECTIONS_LEARN_MORE_URL}
           />
-          <CollectionSelection
-            // Temporary image for the linked wearables collections
+          <CollectionSelectionModal
             image={linkedCollectionsImage}
             title={t('create_collection_selector_modal.linked_collection.title')}
             subtitle={t('create_collection_selector_modal.linked_collection.subtitle')}

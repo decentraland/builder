@@ -180,8 +180,9 @@
 
 .CollectionsPage .collections-main-actions {
   display: flex;
+  justify-content: end;
   gap: 20px;
-  margin-top: 20px;
+  min-height: 74px;
 }
 
 .CollectionsPage .collections-main-actions > :first-child {
@@ -200,4 +201,17 @@
   align-self: baseline;
   justify-self: end;
   flex: none;
+}
+
+.CollectionsPage .collections-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+}
+
+.CollectionsPage .action-tabs-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
 }

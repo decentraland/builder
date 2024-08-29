@@ -262,8 +262,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
-    const { item } = action.payload
-    if (item.collectionId && !item.isPublished) {
+    const { item, options } = action.payload
+    if (item.collectionId && !item.isPublished && !options?.onlySaveItem) {
       const collection: Collection = yield select(getCollection, item.collectionId)
       yield put(saveCollectionRequest(collection))
     }
@@ -774,8 +774,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   function* handleFetchCollectionItemsSuccess(action: FetchCollectionItemsSuccessAction) {
     const { paginationIndex: collectionId } = action.payload
     try {
-      const collection: Collection = yield select(getCollection, collectionId)
-      if (collection.isPublished) {
+      const collection: Collection | null = yield select(getCollection, collectionId)
+      if (collection?.isPublished) {
         yield finishCollectionPublishing(collection)
       }
     } catch (error) {

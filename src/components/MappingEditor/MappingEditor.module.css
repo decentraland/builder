@@ -1,20 +1,78 @@
+/* Main class */
 .main {
   display: flex;
+}
+
+.main.full {
   flex-direction: column;
 }
 
+.main.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.main.compact :global(.dcl.select-field),
+.main.compact :global(.dcl.field) {
+  min-width: unset;
+}
+
+/* Mappings class */
+
 .mappings {
   display: flex;
-  flex-direction: column;
 }
+
+.mappings.compact {
+  width: 100%;
+}
+
+.mappings.compact > div {
+  flex-grow: 1;
+}
+
+/* Input margin */
+
+.compact .any,
+.compact .none,
+.compact .multiple {
+  margin-top: 19px;
+}
+
+/* Mapping type class */
 
 .mappingType :global(.ui.dropdown > .text > img) {
   margin-top: 3px;
 }
 
+.mappingType.compact {
+  margin-top: 17px;
+}
+
 .mappingType :global(.ui.dropdown .menu > .item > img) {
   margin-top: 0px;
 }
+
+.mappingType :global(.default.text) {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mappingType :global(.default.text)::before {
+  content: ' ';
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  background-image: url(../../icons/map.svg);
+  bottom: 4px;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+/* Linked contract select class */
 
 .linkedContractSelect :global(.divider.text),
 .linkedContractSelect :global(.visible.menu.transition) > div {
@@ -26,4 +84,36 @@
 .linkedContractSelect :global(.visible.menu.transition) img {
   height: 25px;
   width: 25px;
+}
+
+/* Range class */
+
+.range {
+  display: flex;
+}
+
+.range.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.range.full {
+  flex-direction: column;
+}
+
+.range.compact :global(.dcl.field) {
+  flex: 1 1 auto;
+}
+
+/* To class */
+.to {
+  text-transform: uppercase;
+  color: var(--secondary-text);
+}
+
+/* Multiple */
+
+.mappings :global(.dcl.text-area) {
+  width: 100%;
 }

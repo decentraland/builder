@@ -6,8 +6,6 @@ import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { setCollectionCurationAssigneeRequest } from 'modules/curations/collectionCuration/actions'
 import { FETCH_COLLECTION_REQUEST, initiateApprovalFlow, initiateTPApprovalFlow } from 'modules/collection/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './TopPanel.types'
-import TopPanel from './TopPanel'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getCollection } from 'modules/collection/selectors'
 import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
@@ -15,6 +13,10 @@ import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { getCollectionItems, getLoading as getLoadingItems, getPaginationData } from 'modules/item/selectors'
 import { getCuration } from 'modules/curations/collectionCuration/selectors'
 import { getItemCurations, getLoading as getLoadingItemCurations } from 'modules/curations/itemCuration/selectors'
+import { getCollectionThirdParty } from 'modules/thirdParty/selectors'
+import { isTPCollection } from 'modules/collection/utils'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './TopPanel.types'
+import TopPanel from './TopPanel'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedCollectionId = getSelectedCollectionId(state)
@@ -23,12 +25,15 @@ const mapState = (state: RootState): MapStateProps => {
   const itemCurations = collection ? getItemCurations(state, collection.id) : []
   const curation = selectedCollectionId ? getCuration(state, selectedCollectionId) : null
   const itemsPaginationData = selectedCollectionId ? getPaginationData(state, selectedCollectionId) : undefined
+  const thirdParty = collection && isTPCollection(collection) ? getCollectionThirdParty(state, collection) : null
+
   return {
     address: getAddress(state),
     items,
     totalItems: itemsPaginationData?.total || null,
     collection,
     itemCurations,
+    thirdParty,
     curation,
     chainId: getChainId(state),
     isConnected: isConnected(state),

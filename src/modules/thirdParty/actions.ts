@@ -151,3 +151,18 @@ export const deployBatchedThirdPartyItemsFailure = (errors: ThirdPartyError[], e
 export type DeployBatchedThirdPartyItemsRequestAction = ReturnType<typeof deployBatchedThirdPartyItemsRequest>
 export type DeployBatchedThirdPartyItemsSuccessAction = ReturnType<typeof deployBatchedThirdPartyItemsSuccess>
 export type DeployBatchedThirdPartyItemsFailureAction = ReturnType<typeof deployBatchedThirdPartyItemsFailure>
+
+// Disable Third Party
+
+export const DISABLE_THIRD_PARTY_REQUEST = '[Request] Disable Third Party'
+export const DISABLE_THIRD_PARTY_SUCCESS = '[Success] Disable Third Party'
+export const DISABLE_THIRD_PARTY_FAILURE = '[Failure] Disable Third Party'
+
+export const disableThirdPartyRequest = (thirdPartyId: ThirdParty['id']) => action(DISABLE_THIRD_PARTY_REQUEST, { thirdPartyId })
+export const disableThirdPartySuccess = (thirdPartyId: ThirdParty['id'], chainId: ChainId, txHash: string, thirdPartyName: string) =>
+  action(DISABLE_THIRD_PARTY_SUCCESS, { thirdPartyId, ...buildTransactionPayload(chainId, txHash, { thirdPartyId, thirdPartyName }) })
+export const disableThirdPartyFailure = (error: string) => action(DISABLE_THIRD_PARTY_FAILURE, { error })
+
+export type DisableThirdPartyRequestAction = ReturnType<typeof disableThirdPartyRequest>
+export type DisableThirdPartySuccessAction = ReturnType<typeof disableThirdPartySuccess>
+export type DisableThirdPartyFailureAction = ReturnType<typeof disableThirdPartyFailure>

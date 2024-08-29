@@ -28,7 +28,6 @@ describe("when rendering the Worlds Permissions Add User Form it's loading", () 
   it('should not render the description', () => {
     const { queryByTestId } = renderWorldPermissionsAddUserForm({ isLoading: true })
     expect(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID)).toBeInTheDocument()
-    console.log(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID))
     expect(queryByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_SHOW_FORM_BUTTON_DATA_TEST_ID)).toHaveClass('loading')
   })
 })

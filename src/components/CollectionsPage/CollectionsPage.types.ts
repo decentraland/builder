@@ -10,8 +10,9 @@ import { CollectionPaginationData } from 'modules/collection/reducer'
 import { ItemPaginationData } from 'modules/item/reducer'
 
 export enum TABS {
-  COLLECTIONS,
-  ITEMS
+  STANDARD_COLLECTIONS = 'standard_collections',
+  THIRD_PARTY_COLLECTIONS = 'third_party_collections',
+  ITEMS = 'orphan_items'
 }
 
 export type Props = {
@@ -19,7 +20,7 @@ export type Props = {
   items: Item[]
   collections: Collection[]
   collectionsPaginationData: CollectionPaginationData | null
-  isLinkedWearablesV2Enabled: boolean
+  isLinkedWearablesPaymentsEnabled: boolean
   itemsPaginationData?: ItemPaginationData | null
   view: CollectionPageView
   isThirdPartyManager: boolean
@@ -49,7 +50,7 @@ export type MapStateProps = Pick<
   | 'isLoadingOrphanItem'
   | 'isCampaignEnabled'
   | 'hasUserOrphanItems'
-  | 'isLinkedWearablesV2Enabled'
+  | 'isLinkedWearablesPaymentsEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSetView' | 'onOpenModal' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'>
 export type MapDispatch = Dispatch<

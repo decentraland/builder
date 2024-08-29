@@ -12,6 +12,8 @@ import { ToastType } from 'decentraland-ui'
 import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib'
+import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { loginSuccess } from 'modules/identity/actions'
 import { BuilderAPI } from 'lib/api/builder'
 import { ThirdParty } from './types'
@@ -33,7 +35,10 @@ import {
   publishAndPushChangesThirdPartyItemsSuccess,
   deployBatchedThirdPartyItemsRequest,
   deployBatchedThirdPartyItemsFailure,
-  deployBatchedThirdPartyItemsSuccess
+  deployBatchedThirdPartyItemsSuccess,
+  disableThirdPartyFailure,
+  disableThirdPartyRequest,
+  disableThirdPartySuccess
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -55,6 +60,9 @@ import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
 import { Item } from 'modules/item/types'
 import { thirdPartySaga } from './sagas'
 import { getPublishItemsSignature } from './utils'
+import { getThirdParty } from './selectors'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ChainId, Network } from '@dcl/schemas'
 
 jest.mock('modules/item/export')
 jest.mock('@dcl/crypto')
@@ -82,6 +90,8 @@ beforeEach(() => {
   thirdParty = {
     id: '1',
     name: 'test',
+    root: '',
+    isApproved: true,
     description: 'aDescription',
     managers: [],
     contracts: [],
@@ -131,13 +141,25 @@ describe('when fetching third parties', () => {
         {
           id: '1',
           name: 'a third party',
+          root: '',
+          isApproved: true,
           description: 'some desc',
           managers: ['0x1', '0x2'],
           maxItems: '0',
           totalItems: '0',
           contracts: []
         },
-        { id: '2', name: 'a third party', description: 'some desc', managers: ['0x3'], maxItems: '0', totalItems: '0', contracts: [] }
+        {
+          id: '2',
+          name: 'a third party',
+          description: 'some desc',
+          managers: ['0x3'],
+          maxItems: '0',
+          totalItems: '0',
+          contracts: [],
+          root: '',
+          isApproved: true
+        }
       ]
     })
 
@@ -680,6 +702,54 @@ describe('when handling the batched deployment of third party items', () => {
         .provide([[call(getIdentity), auth]])
         .put(deployBatchedThirdPartyItemsSuccess(collection, itemCurations))
         .dispatch(deployBatchedThirdPartyItemsRequest(items, collection, tree, hashes))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the disabling of a third party', () => {
+  let contract: ContractData
+
+  beforeEach(() => {
+    contract = { address: '0xcontract', abi: [], version: '1', name: 'name', chainId: ChainId.MATIC_MAINNET }
+  })
+
+  describe('and the transaction fails', () => {
+    let errorMessage: string
+    beforeEach(() => {
+      errorMessage = 'Some Error Message'
+    })
+
+    it('should put a disable third party failure action with the error', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+          [select(getThirdParty, thirdParty.id), thirdParty],
+          [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), contract],
+          [call(sendTransaction as any, contract, 'reviewThirdParties', [[thirdParty.id, false, []]]), throwError(new Error(errorMessage))]
+        ])
+        .put(disableThirdPartyFailure(errorMessage))
+        .dispatch(disableThirdPartyRequest(thirdParty.id))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the transaction succeeds', () => {
+    let txHash: string
+    beforeEach(() => {
+      txHash = '0xtxHash'
+    })
+
+    it('should put a successful disable third party action with the transaction data', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [select(getThirdParty, thirdParty.id), thirdParty],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+          [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_MAINNET), contract],
+          [call(sendTransaction as any, contract, 'reviewThirdParties', [[thirdParty.id, false, []]]), txHash]
+        ])
+        .put(disableThirdPartySuccess(thirdParty.id, ChainId.MATIC_MAINNET, txHash, thirdParty.name))
+        .dispatch(disableThirdPartyRequest(thirdParty.id))
         .run({ silenceTimeout: true })
     })
   })

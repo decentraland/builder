@@ -1,0 +1,39 @@
+.status {
+  text-transform: uppercase;
+  padding: 4px 8px 4px 8px;
+  border-radius: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status :global(.icon) {
+  height: 18px;
+}
+
+.pending_migration {
+  color: #ffbc5b;
+  background-color: rgb(255, 188, 91, 0.2);
+}
+
+.synced {
+  color: #65d890;
+  background-color: rgb(101, 216, 144, 0.2);
+}
+
+.unpublished,
+.unsynced {
+  color: #63b4f6;
+  background-color: rgb(99, 180, 246, 0.2);
+}
+
+.pending_mapping,
+.under_review {
+  color: #ecebed;
+  background-color: rgb(236, 235, 237, 0.2);
+}
+
+.icon {
+  width: 17px;
+  height: 17px;
+}

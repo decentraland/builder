@@ -185,6 +185,19 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
         }
 
+        // In case the collection is linked to a smart contract, the mappings must be present
+        if (collection?.linkedContractAddress && collection.linkedContractNetwork) {
+          if (!loadedFile.wearable.mapping) {
+            throw new Error(t('create_and_edit_multiple_items_modal.missing_mapping'))
+          }
+          // Build the mapping with the linked contract address and network
+          itemFactory.withMappings({
+            [collection.linkedContractNetwork]: {
+              [collection.linkedContractAddress]: [loadedFile.wearable.mapping]
+            }
+          })
+        }
+
         // Build the third party item URN in accordance ot the collection URN
         if (isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
           itemFactory.withUrn(

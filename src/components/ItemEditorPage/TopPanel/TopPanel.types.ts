@@ -12,16 +12,18 @@ import {
   setCollectionCurationAssigneeRequest,
   SetCollectionCurationAssigneeRequestAction
 } from 'modules/curations/collectionCuration/actions'
-import { RejectionType } from './RejectionModal/RejectionModal.types'
 import { Collection } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { ThirdParty } from 'modules/thirdParty/types'
+import { RejectionType } from './RejectionModal/RejectionModal.types'
 
 export type Props = {
   items: Item[]
   collection: Collection | null
   curation: CollectionCuration | null
   itemCurations: ItemCuration[] | null
+  thirdParty: ThirdParty | null
   isLoading: boolean
   reviewedItems: Item[]
   totalItems: number | null
@@ -57,6 +59,7 @@ export type MapStateProps = Pick<
   | 'collection'
   | 'curation'
   | 'itemCurations'
+  | 'thirdParty'
   | 'isLoading'
   | 'address'
   | 'chainId'

@@ -13,6 +13,7 @@ import { mockedItem } from 'specs/item'
 import { ItemState } from './reducer'
 import {
   getAuthorizedItems,
+  getIdsOfItemsBeingSaved,
   getItem,
   getItems,
   getPaginatedCollectionItems,
@@ -26,6 +27,7 @@ import {
   hasViewAndEditRights
 } from './selectors'
 import { Item, ItemType, SyncStatus, VIDEO_PATH } from './types'
+import { saveItemRequest } from './actions'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
@@ -741,6 +743,40 @@ describe('Item selectors', () => {
 
       it('should return false', () => {
         expect(hasUserOrphanItems(state)).toEqual(false)
+      })
+    })
+  })
+
+  describe('when getting the ids of the items being saved', () => {
+    describe('and there are no items being saved', () => {
+      beforeEach(() => {
+        state = {
+          ...state,
+          item: {
+            ...state.item,
+            loading: []
+          }
+        } as RootState
+      })
+
+      it('should return an empty object', () => {
+        expect(getIdsOfItemsBeingSaved(state)).toEqual({})
+      })
+    })
+
+    describe('and there are items being saved', () => {
+      beforeEach(() => {
+        state = {
+          ...state,
+          item: {
+            ...state.item,
+            loading: [saveItemRequest(item, {})]
+          }
+        } as RootState
+      })
+
+      it('should return the ids of the items being saved', () => {
+        expect(getIdsOfItemsBeingSaved(state)).toEqual({ [item.id]: true })
       })
     })
   })

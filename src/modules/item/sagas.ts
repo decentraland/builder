@@ -17,15 +17,7 @@ import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import {
-  BuilderClient,
-  RemoteItem,
-  MAX_THUMBNAIL_FILE_SIZE,
-  MAX_WEARABLE_FILE_SIZE,
-  MAX_SKIN_FILE_SIZE,
-  MAX_EMOTE_FILE_SIZE,
-  MAX_SMART_WEARABLE_FILE_SIZE
-} from '@dcl/builder-client'
+import { BuilderClient, RemoteItem, MAX_THUMBNAIL_FILE_SIZE } from '@dcl/builder-client'
 import {
   FetchItemsRequestAction,
   fetchItemsSuccess,
@@ -127,6 +119,7 @@ import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
@@ -150,7 +143,11 @@ import {
   MAX_VIDEO_FILE_SIZE,
   isSmart,
   isWearable,
-  isEmote
+  isEmote,
+  isWearableFileSizeValid,
+  isEmoteFileSizeValid,
+  isSkinFileSizeValid,
+  isSmartWearableFileSizeValid
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -355,10 +352,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   }
 
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
-    const { item: actionItem, contents: actionContents } = action.payload
+    const { item: actionItem, contents: actionContents, options } = action.payload
 
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
+      const isLinkedWearablesV2Enabled: boolean = yield select(getIsLinkedWearablesV2Enabled)
       const oldItem: Item | undefined = yield select(getItem, actionItem.id)
       const rarityChanged = oldItem && oldItem.rarity !== item.rarity
       const shouldValidateCategoryChanged =
@@ -405,7 +403,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         const { [THUMBNAIL_PATH]: thumbnailContent, [VIDEO_PATH]: videoContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _thumbnailContent, [VIDEO_PATH]: _videoContent, ...itemContents } = item.contents
         // This will calculate the model's final size without the thumbnail with a limit of 2MB for wearables/emotes and 8MB for skins
-        const finalModelSize: number = yield call(calculateModelFinalSize, itemContents, modelContents, legacyBuilder)
+        const finalModelSize: number = yield call(calculateModelFinalSize, itemContents, modelContents, item.type, legacyBuilder)
         let finalThumbnailSize = 0
         let finalVideoSize = 0
 
@@ -429,26 +427,32 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         const isSkin = !isEmoteItem && item.data.category === WearableCategory.SKIN
         const isSmartWearable = isSmart(item)
 
-        if (isEmoteItem && finalModelSize > MAX_EMOTE_FILE_SIZE) {
+        // Use the model size + thumbnail size until there's a clear definition of how the catalyst will handle the thumbnail size calculation
+        const finalSize = finalModelSize + finalThumbnailSize
+
+        if (isEmoteItem && !isEmoteFileSizeValid(finalSize)) {
           throw new ItemEmoteTooBigError()
         }
 
-        if (isSkin && finalModelSize > MAX_SKIN_FILE_SIZE) {
+        if (isSkin && !isSkinFileSizeValid(finalSize)) {
           throw new ItemSkinTooBigError()
         }
 
-        if (isSmartWearable && finalModelSize + finalThumbnailSize > MAX_SMART_WEARABLE_FILE_SIZE) {
+        if (isSmartWearable && !isSmartWearableFileSizeValid(finalSize)) {
           throw new ItemSmartWearableTooBigError()
         }
 
-        if (!isSkin && !isSmartWearable && !isEmoteItem && finalModelSize > MAX_WEARABLE_FILE_SIZE) {
+        if (!isSkin && !isSmartWearable && !isEmoteItem && !isWearableFileSizeValid(finalSize)) {
           throw new ItemWearableTooBigError()
         }
       }
 
-      yield call([legacyBuilder, 'saveItem'], item, contents)
-      yield saveItemRequest(item, contents)
-      yield put(saveItemSuccess(item, contents))
+      const savedItem: Item = yield call([legacyBuilder, 'saveItem'], item, contents)
+      if (isLinkedWearablesV2Enabled) {
+        yield put(saveItemSuccess(savedItem, contents, options))
+      } else {
+        yield put(saveItemSuccess(item, contents, options))
+      }
     } catch (error) {
       yield put(saveItemFailure(actionItem, actionContents, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
@@ -481,7 +485,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const location = history.location
     const address: string = yield select(getAddress)
     const openModals: ModalState = yield select(getOpenModals)
-    const { item } = action.payload
+    const { item, options } = action.payload
     const collectionId = item.collectionId!
     const ItemModals = ['EditItemURNModal', 'EditPriceAndBeneficiaryModal', 'AddExistingItemModal']
     if (ItemModals.some(modal => openModals[modal])) {
@@ -521,7 +525,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
     }
     // Fetch the collection items again, we don't know where the item is going to be in the pagination data
-    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId)) {
+    if (location.pathname === locations.thirdPartyCollectionDetail(collectionId) && !options?.onlySaveItem) {
       yield call(fetchNewCollectionItemsPaginated, collectionId)
     }
     if (isThirdParty(item.urn) && item.isPublished) {
@@ -612,9 +616,17 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       newItem.collectionId = collectionId
     }
     yield put(saveItemRequest(newItem, {}))
-    yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('MoveItemToCollectionModal'))
-    yield put(fetchItemsRequest(address))
+    const saveItemAction: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+    if (saveItemAction.success) {
+      yield put(closeModal('MoveItemToCollectionModal'))
+      yield put(fetchItemsRequest(address))
+    }
   }
 
   function* handleSetItemCollectionRequest(action: SetItemCollectionAction) {
@@ -623,18 +635,26 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const address: string = yield select(getAddress)
     const collection: Collection = yield select(getCollection, collectionId)
     yield put(saveItemRequest(newItem, {}))
-    yield take(SAVE_ITEM_SUCCESS)
-    yield put(closeModal('MoveItemToAnotherCollectionModal'))
-    const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
-    yield put(showToast(toast, 'bottom center'))
-    // Get the created toast id to close if the user clicks on the redirect link or changes the page
-    const {
-      payload: { id: toastId }
-    }: RenderToastAction = yield take(RENDER_TOAST)
-    yield put(fetchItemsRequest(address))
-    const location: Location = yield take(LOCATION_CHANGE)
-    if (location.pathname !== locations.collectionDetail(item.collectionId)) {
-      yield put(hideToast(toastId))
+    const saveItemAction: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+    if (saveItemAction.success) {
+      yield put(closeModal('MoveItemToAnotherCollectionModal'))
+      const toast: Omit<Toast, 'id'> = yield call(getSuccessfulMoveItemToAnotherCollectionToast, item, collection)
+      yield put(showToast(toast, 'bottom center'))
+      // Get the created toast id to close if the user clicks on the redirect link or changes the page
+      const {
+        payload: { id: toastId }
+      }: RenderToastAction = yield take(RENDER_TOAST)
+      yield put(fetchItemsRequest(address))
+      const location: Location = yield take(LOCATION_CHANGE)
+      if (location.pathname !== locations.collectionDetail(item.collectionId)) {
+        yield put(hideToast(toastId))
+      }
     }
   }
 

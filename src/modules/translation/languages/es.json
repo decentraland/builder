@@ -260,14 +260,28 @@
     "not_enough_mana": "No tienes suficiente MANA para reclamar un nuevo nombre"
   },
   "mapping_editor": {
+    "to": "A",
     "mapping_types": {
       "single": "Único",
       "multiple": "Múltiple",
       "any": "Cualquiera",
       "range": "Rango"
     },
-    "mapping_type_label": "Tipo de vinculación con tokens NFT",
-    "mapping_value_label": "Vinculado a",
+    "mapping_descriptions": {
+      "single": "Un ID de TOKEN específico",
+      "multiple": "Múltiples ID de TOKEN separados por una coma",
+      "any": "Todos los ID de TOKEN de la colección NFT",
+      "range": "Un rango de ID de TOKEN"
+    },
+    "mapping_examples": {
+      "single": "p.ej. 123456",
+      "multiple": "p. ej. 123456, 123457, 123458",
+      "range": "p. ej. [1, 1000]"
+    },
+    "mapping_type_label": "Vinculado a",
+    "mapping_type_placeholder": "Seleccionar",
+    "mapping_value_label": "Token ID",
+    "mapping_value_multiple_label": "Token IDs",
     "mapping_value_any": "Todos los token IDs",
     "mapping_value_from_label": "Desde",
     "mapping_value_to_label": "Hasta",
@@ -314,19 +328,19 @@
       "wrong_video_format": "El video provisto no es un video MP4",
       "thumbnail_too_big": {
         "title": "El item es demasiado grande para cargarlo",
-        "message": "El tamaño máximo de archivo es de 2 MB para miniaturas."
+        "message": "El tamaño máximo de archivo es de 1MB para miniaturas."
       },
       "wearable_too_big": {
         "title": "El item es demasiado grande para cargarlo",
-        "message": "El tamaño máximo de archivo es de 2 MB para Wearables y de 8 MB para Skins."
+        "message": "El tamaño máximo de archivo es de 3MB para Wearables y de 8MB para Skins."
       },
       "emote_too_big": {
         "title": "El item es demasiado grande para cargarlo",
-        "message": "El tamaño máximo de archivo es de 2MB para Emotes."
+        "message": "El tamaño máximo de archivo es de 3MB para Emotes."
       },
       "smart_wearable_too_big": {
         "title": "El archivo es demasiado grande para cargarlo",
-        "message": "La suma total del tamaño de los archivos descomprimidos del archivo .zip de Smart Wearable debe ser inferior a 3 MB."
+        "message": "La suma total del tamaño de los archivos descomprimidos del archivo .zip de Smart Wearable debe ser inferior a 3MB."
       },
       "unknown_required_permissions": {
         "title": "{count, plural, one {El permiso} other {Los permisos}} {wrong_configurations} de la vestimenta interactiva no {count, plural, one {existe} other {existen}}. Por favor, corrija el archivo 'scene.json'.",
@@ -376,6 +390,7 @@
       "saved_items_table_title": "Items actualizados"
     },
     "wrong_thumbnail_format": "El archivo thumbnail.png no tiene el formato de una imagen PNG.",
+    "missing_mapping": "El item no contiene un mapeo.",
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
     "wearable_file_not_found": "El archivo wearable.json no se encontró.",
     "thumbnail_file_not_generated": "El archivo thumbnail.png no pudo ser generado.",
@@ -1417,7 +1432,8 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}"
+    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}",
+    "disable_third_party": "Has deshabilitado el proveedor: {name}"
   },
   "transfer_page": {
     "title": "Transferir",
@@ -1500,6 +1516,7 @@
     "type": "Tipo",
     "items": "Items",
     "collections": "Colecciones",
+    "third_party_collections": "Colecciones Externas",
     "collection": "Colección",
     "single_items": "Items individuales",
     "empty_description": "Aún no tienes colecciones, comienza creándo una de ellas y entra al metaverso con estilo",
@@ -1574,7 +1591,10 @@
     "disabled": "Deshabilitada",
     "unassigned": "Sin asignar",
     "assign_to_me": "Asignar a mí",
-    "you": "usted"
+    "you": "usted",
+    "linking_tooltip": {
+      "title": "Vincula NFTs a Wearables"
+    }
   },
   "item_detail_page": {
     "details_info": {
@@ -1600,7 +1620,7 @@
     "edit_video": "Editar video"
   },
   "third_party_collection_detail_page": {
-    "notice": "Cada item publicado toma un Slot. Crear un borrador de propuesta en el DAO para solicitar más slots",
+    "linked_to": "Vinculado a",
     "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
     "search_info": "{page}-{pageTotal} de {total}",
     "clear_selection": "Limpiar selección",
@@ -1610,6 +1630,8 @@
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items una vez que estén publicados.",
+    "not_found": "No hay artículos disponibles con este criterio de búsqueda",
+    "try_again": "Prueba cambiar los filtros para encontrar lo que buscas.",
     "publish_items": "Publicar {count, plural, =0 {} one {# item} other {# items}}",
     "new_items": "Nuevos items",
     "publish": "Publicar",
@@ -1619,6 +1641,11 @@
     "cant_publish_items": "Estas tratando de publicar {count} {count, plural, one {item} other {items}}. Hay otro que se encuentran bajo revisión en este momento",
     "exceeds_available_slots": "Estas excediendo la cantidad de slots disponibles. Podrás pedir más slots a la DAO através de una propuesta",
     "cant_publish_and_push_changes": "Estas tratando de publicar {count} {count, plural, one {item} other {items}} y subir cambios al mismo tiempo. Deselecciona los items a publicar para poder subir cambios",
+    "smart_contract_address_short": "DCA",
+    "smart_contract_address_long": "Dirección del contrato inteligente",
+    "slots_short": "Slots",
+    "slots_long": "Puntos de publicación",
+    "migration_banner": "Uno o múltiples items en tu colección necesitan ser migrados a la nueva versión",
     "synced_filter": {
       "all": "Todos los items",
       "synced": "Sincronizados",
@@ -1646,7 +1673,7 @@
     "add_items_title": "Se ve bien!",
     "add_items_subtitle": "Ahora puede comenzar a agregar items a su colección",
     "add_items_subtitle_extensions": "Formatos aceptados: ZIP, GLTF, GLB, PNG.",
-    "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "start_adding_items": "Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "can_mint": "Crear items le permite transferir NFTs directamente a una dirección.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
@@ -1993,6 +2020,12 @@
           "title": "Deshabilitar Colección",
           "subtitle": "Esta colleccion no estara mas disponible. Puedes habilitarla nuevamente en el futuro.",
           "tx_pending": "Esperando a que se confirme la transacción de deshabilitado",
+          "action": "Deshabilitar"
+        },
+        "disable_third_party": {
+          "title": "Deshabilitar proveedor",
+          "subtitle": "Éste proveedor no estará más disponible. Ésto incluye todas las collecciones bajo éste proveedor. No te preocupes, podrás habilitarlo nuevamente luego.",
+          "tx_pending": "Esperando a la confirmación de la transacción para deshabilitar el proveedor",
           "action": "Deshabilitar"
         }
       }
@@ -2346,5 +2379,13 @@
     "description_dcl": "Mientras tanto, los Mundos de los NAMEs de Decentraland tendrán un límite de tamaño máximo dinámico dependiendo de las tenencias del usuario. <b>Cada NAME, LAND y 2,000 tokens MANA poseídos</b> otorgarán un adicional de <b>100 Mb de almacenamiento</b> en el servidor de contenido de Mundos para ser utilizado como desee.",
     "start_building": "comenzar a construir",
     "learn_more": "aprende más"
+  },
+  "item_status": {
+    "unpublished": "Listos para publicar",
+    "under_review": "Bajo revisión",
+    "synced": "Published",
+    "unsynced": "Listo para enviar cambios",
+    "pending_migration": "Migración pendiente",
+    "pending_mapping": "Mapeo pendiente"
   }
 }
