@@ -4,6 +4,7 @@ import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { Item, SyncStatus } from 'modules/item/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
+import { PublishThirdPartyCollectionModalStep } from 'modules/ui/thirdparty/types'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import {
   publishAndPushChangesThirdPartyItemsRequest,
@@ -18,6 +19,7 @@ export type PublishThirdPartyCollectionModalMetadata = {
   collectionId: string
   itemIds: string[]
   action: PublishButtonAction
+  step: PublishThirdPartyCollectionModalStep
 }
 
 export type Props = ModalProps & {

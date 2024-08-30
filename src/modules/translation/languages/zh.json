@@ -1929,7 +1929,11 @@
     "title": "发布链接项目",
     "publish_description": "即将使用 {availableSlots} 个可用插槽中的 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来发布 \"{collectionName}\"。",
     "push_changes_description": "即将对 \"{collectionName}\" 推送对 {itemsWithChanges, 复数，一个 {# item} 其他 {# items}} 的更改。",
-    "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。"
+    "publish_and_push_changes_description": "即将使用 {slotsToUse，复数，一个 {# slot} 其他 {# slot}} 来自 {availableSlots} 可用插槽来发布 \"{collectionName}\"，并且更改将被推送到 {itemsWithChanges，复数，一个 {# item}其他项目}}。",
+    "finish": "完毕",
+    "success_title": "已成功更新",
+    "success_description": "您的商品目前正在审核中。",
+    "publishing_title": "提交 {count} 件商品以供审核"
   },
   "mint_items_modal": {
     "title": "薄荷项目",
