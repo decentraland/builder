@@ -31,7 +31,7 @@ import { CurationStatus } from 'modules/curations/types'
 import { getIdentity } from 'modules/identity/utils'
 import { buildTPItemEntity } from 'modules/item/export'
 import { waitForTx } from 'modules/transaction/utils'
-import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
+import { ThirdPartyAction, PublishThirdPartyCollectionModalStep } from 'modules/ui/thirdparty/types'
 import { getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_FAILURE, FETCH_COLLECTION_SUCCESS, fetchCollectionRequest } from 'modules/collection/actions'
 import {
@@ -80,6 +80,7 @@ import {
 import { getPublishItemsSignature } from './utils'
 import { ThirdParty } from './types'
 import { getThirdParty } from './selectors'
+import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 
 export function* getContractInstance(
   contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
@@ -192,10 +193,17 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       )
 
       yield put(publishThirdPartyItemsSuccess(thirdParty.id, collectionId, newItems, newItemCurations))
+      yield put(
+        openModal('PublishThirdPartyCollectionModal', {
+          collectionId,
+          itemIds: [],
+          action: PublishButtonAction.NONE,
+          step: PublishThirdPartyCollectionModalStep.SUCCESS
+        })
+      )
     } catch (error) {
       yield showActionErrorToast()
       yield put(publishThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
-    } finally {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
@@ -243,10 +251,17 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         yield race({ success: take(FETCH_COLLECTION_SUCCESS), failure: take(FETCH_COLLECTION_FAILURE) })
       }
       yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
+      yield put(
+        openModal('PublishThirdPartyCollectionModal', {
+          collectionId,
+          itemIds: [],
+          action: PublishButtonAction.NONE,
+          step: PublishThirdPartyCollectionModalStep.SUCCESS
+        })
+      )
     } catch (error) {
       yield showActionErrorToast()
       yield put(pushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
-    } finally {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }
@@ -275,10 +290,17 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       }
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
       yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
+      yield put(
+        openModal('PublishThirdPartyCollectionModal', {
+          collectionId,
+          itemIds: [],
+          action: PublishButtonAction.NONE,
+          step: PublishThirdPartyCollectionModalStep.SUCCESS
+        })
+      )
     } catch (error) {
       yield showActionErrorToast()
       yield put(publishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error')) // TODO: show to the user that something went wrong
-    } finally {
       yield put(closeModal('PublishThirdPartyCollectionModal'))
     }
   }

@@ -50,6 +50,10 @@
   margin-top: 17px;
 }
 
+.mappingType.compact :global(.ui.selection.dropdown) {
+  min-width: 10em;
+}
+
 .mappingType :global(.ui.dropdown .menu > .item > img) {
   margin-top: 0px;
 }
@@ -96,6 +100,10 @@
   flex-direction: row;
   align-items: center;
   gap: 15px;
+}
+
+.range.compact :global(.dcl.field) {
+  min-width: 80px;
 }
 
 .range.full {

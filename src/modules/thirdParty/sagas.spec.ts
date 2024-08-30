@@ -13,7 +13,7 @@ import { AuthIdentity, Authenticator, AuthLinkType } from '@dcl/crypto'
 import { ToastType } from 'decentraland-ui'
 import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { loginSuccess } from 'modules/identity/actions'
@@ -58,8 +58,9 @@ import {
 } from 'modules/collection/utils'
 import { updateThirdPartyActionProgress } from 'modules/ui/thirdparty/action'
 import { FETCH_COLLECTION_SUCCESS, fetchCollectionRequest } from 'modules/collection/actions'
-import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
+import { PublishThirdPartyCollectionModalStep, ThirdPartyAction } from 'modules/ui/thirdparty/types'
 import { Item } from 'modules/item/types'
+import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { thirdPartySaga } from './sagas'
 import { getPublishItemsSignature } from './utils'
 import { getThirdParty } from './selectors'
@@ -274,7 +275,7 @@ describe('when publishing third party items', () => {
       ]
     })
 
-    it('should put the fetch third party success action with the new itemCurations and close the PublishThirdPartyCollectionModal modal', () => {
+    it('should put the fetch third party success action with the new itemCurations and open the PublishThirdPartyCollectionModal modal with the success step', () => {
       const mockedItemReturnedByServer = { ...mockedItem, id: 'a new id' }
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
@@ -286,7 +287,14 @@ describe('when publishing third party items', () => {
           ]
         ])
         .put(publishThirdPartyItemsSuccess(thirdParty.id, item.collectionId!, [mockedItemReturnedByServer], itemCurations))
-        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .put(
+          openModal('PublishThirdPartyCollectionModal', {
+            collectionId: item.collectionId,
+            itemIds: [],
+            action: PublishButtonAction.NONE,
+            step: PublishThirdPartyCollectionModalStep.SUCCESS
+          })
+        )
         .dispatch(publishThirdPartyItemsRequest(thirdParty, [item]))
         .run({ silenceTimeout: true })
     })
@@ -406,7 +414,7 @@ describe('when pushing changes to third party items', () => {
       })
     })
 
-    it('should put the push changes success action with the updated item curations, close the PublishThirdPartyCollectionModal modal and reset the progress', () => {
+    it('should put the push changes success action with the updated item curations, open the PublishThirdPartyCollectionModal modal with the success step and reset the progress', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
@@ -416,7 +424,14 @@ describe('when pushing changes to third party items', () => {
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
-        .put(closeModal('PublishThirdPartyCollectionModal'))
+        .put(
+          openModal('PublishThirdPartyCollectionModal', {
+            collectionId: item.collectionId,
+            itemIds: [],
+            action: PublishButtonAction.NONE,
+            step: PublishThirdPartyCollectionModalStep.SUCCESS
+          })
+        )
         .dispatch(pushChangesThirdPartyItemsRequest([item, anotherItem]))
         .run({ silenceTimeout: true })
     })
