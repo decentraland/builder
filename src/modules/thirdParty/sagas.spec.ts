@@ -1,4 +1,6 @@
 import uuidv4 from 'uuid/v4'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ChainId, Network } from '@dcl/schemas'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
@@ -6,7 +8,7 @@ import { call } from '@redux-saga/core/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
-import { select } from 'redux-saga-test-plan/matchers'
+import { select, take } from 'redux-saga-test-plan/matchers'
 import { AuthIdentity, Authenticator, AuthLinkType } from '@dcl/crypto'
 import { ToastType } from 'decentraland-ui'
 import { SHOW_TOAST } from 'decentraland-dapps/dist/modules/toast/actions'
@@ -55,13 +57,12 @@ import {
   ThirdPartyError
 } from 'modules/collection/utils'
 import { updateThirdPartyActionProgress } from 'modules/ui/thirdparty/action'
+import { FETCH_COLLECTION_SUCCESS, fetchCollectionRequest } from 'modules/collection/actions'
 import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
 import { Item } from 'modules/item/types'
 import { thirdPartySaga } from './sagas'
 import { getPublishItemsSignature } from './utils'
 import { getThirdParty } from './selectors'
-import { ContractData, ContractName, getContract } from 'decentraland-transactions'
-import { ChainId, Network } from '@dcl/schemas'
 
 jest.mock('modules/item/export')
 jest.mock('@dcl/crypto')
@@ -386,6 +387,25 @@ describe('when pushing changes to third party items', () => {
       ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[1])
     })
 
+    describe('and the collection does not have its mapping complete', () => {
+      beforeEach(() => {
+        collection = { name: 'valid collection name', id: uuidv4(), isMappingComplete: false } as Collection
+      })
+
+      it('should put an action to re fetch the collection', () => {
+        const anotherItem = { ...mockedItem, id: 'anotherItemId' }
+        return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+          .provide([
+            [select(getItemCurations, item.collectionId), itemCurations],
+            [select(getCollection, item.collectionId), collection],
+            [take(FETCH_COLLECTION_SUCCESS), undefined]
+          ])
+          .put(fetchCollectionRequest(item.collectionId ?? ''))
+          .dispatch(pushChangesThirdPartyItemsRequest([item, anotherItem]))
+          .run({ silenceTimeout: true })
+      })
+    })
+
     it('should put the push changes success action with the updated item curations, close the PublishThirdPartyCollectionModal modal and reset the progress', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
@@ -496,6 +516,25 @@ describe('when publishing & pushing changes to third party items', () => {
       ]
       ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
       ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
+    })
+
+    describe('and the collection does not have its mapping complete', () => {
+      beforeEach(() => {
+        collection = { name: 'valid collection name', id: uuidv4(), isMappingComplete: false } as Collection
+      })
+
+      it('should put an action to re fetch the collection', () => {
+        return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+          .provide([
+            [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+            [select(getItemCurations, item.collectionId), itemCurations],
+            [select(getCollection, item.collectionId), collection],
+            [take(FETCH_COLLECTION_SUCCESS), undefined]
+          ])
+          .put(fetchCollectionRequest(item.collectionId ?? ''))
+          .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
+          .run({ silenceTimeout: true })
+      })
     })
 
     it('should put the publish & push changes success action, the fetch available slots request and reset the progress', () => {
