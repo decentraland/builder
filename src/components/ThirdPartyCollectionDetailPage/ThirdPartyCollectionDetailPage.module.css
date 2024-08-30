@@ -213,6 +213,7 @@
 }
 
 .migrationBanner {
+  min-width: 1116px;
   color: black;
   display: flex;
   align-items: center;

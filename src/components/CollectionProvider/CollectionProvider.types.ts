@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { FetchCollectionsParams } from 'lib/api/builder'
+import { FetchCollectionItemsParams } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
 import { fetchCollectionRequest, FetchCollectionRequestAction } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
@@ -19,7 +19,7 @@ export type Props = {
   itemSelected?: string | null
   itemsPage?: number | number[]
   itemsPageSize?: number
-  fetchOptions?: Pick<FetchCollectionsParams, 'status' | 'synced'>
+  fetchCollectionItemsOptions?: FetchCollectionItemsParams
   curation: CollectionCuration | null
   itemCurations: ItemCuration[] | null
   isLoading: boolean

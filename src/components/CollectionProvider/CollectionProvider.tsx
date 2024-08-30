@@ -8,9 +8,9 @@ export default class CollectionProvider extends React.PureComponent<Props> {
   }
 
   fetchCollectionItems(itemsPage: number | number[] = DEFAULT_ITEMS_PAGE) {
-    const { id, onFetchCollectionItems, itemsPageSize, fetchOptions } = this.props
+    const { id, onFetchCollectionItems, itemsPageSize, fetchCollectionItemsOptions } = this.props
     if (id) {
-      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE, ...fetchOptions })
+      onFetchCollectionItems(id, { page: itemsPage, limit: itemsPageSize || DEFAULT_ITEMS_PAGE_SIZE, ...fetchCollectionItemsOptions })
     }
   }
 
@@ -31,7 +31,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       itemsPage,
       itemsPageSize,
       itemSelected,
-      fetchOptions,
+      fetchCollectionItemsOptions,
       paginatedItems,
       onFetchCollection,
       onChangePage
@@ -70,7 +70,7 @@ export default class CollectionProvider extends React.PureComponent<Props> {
 
     // logic to fetch the new pages requested
     const hasChangedPage = !equal(itemsPage, prevProps.itemsPage)
-    const hasChangeFilter = !equal(fetchOptions, prevProps.fetchOptions)
+    const hasChangeFilter = !equal(fetchCollectionItemsOptions, prevProps.fetchCollectionItemsOptions)
     if (id && ((itemsPage && hasChangedPage) || hasChangeFilter)) {
       const prevPages = prevProps.itemsPage
       this.fetchCollectionItems(

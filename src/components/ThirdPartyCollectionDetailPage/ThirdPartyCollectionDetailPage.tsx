@@ -35,6 +35,7 @@ import { Props, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
 import { CollectionItemHeader } from './CollectionItemHeader'
 import { CollectionItemHeaderV2 } from './CollectionItemHeaderV2'
 import styles from './ThirdPartyCollectionDetailPage.module.css'
+import { ItemMappingStatus } from 'lib/api/builder'
 
 const Info = ({ children, title, info }: { children: React.ReactNode; title: string; info?: string }) => (
   <div className={styles.info}>
@@ -44,6 +45,14 @@ const Info = ({ children, title, info }: { children: React.ReactNode; title: str
     <div className={styles.infoContent}>{children}</div>
   </div>
 )
+
+enum ItemStatus {
+  ALL = 'ALL',
+  SYNCED = 'SYNCED',
+  UNSYNCED = 'UNSYNCED',
+  MIGRATION_REQUIRED = 'MIGRATION_REQUIRED',
+  MAPPING_PENDING = 'MAPPING_PENDING'
+}
 
 export default function ThirdPartyCollectionDetailPage({
   currentPage,
@@ -62,7 +71,7 @@ export default function ThirdPartyCollectionDetailPage({
   const [page, setPage] = useState(currentPage)
   const [showSelectAllPages, setShowSelectAllPages] = useState(false)
   const [shouldFetchAllPages, setShouldFetchAllPages] = useState(false)
-  const [filters, setFilters] = useState<Record<string, any>>({})
+  const [itemStatus, setItemStatus] = useState<ItemStatus>(ItemStatus.ALL)
   const history = useHistory()
 
   useEffect(() => {
@@ -72,9 +81,6 @@ export default function ThirdPartyCollectionDetailPage({
   }, [])
 
   useEffect(() => {
-    if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
-      onFetchAvailableSlots(thirdParty.id)
-    }
     // update the state if the page query param changes
     if (currentPage !== page) {
       setPage(currentPage)
@@ -89,7 +95,7 @@ export default function ThirdPartyCollectionDetailPage({
       setSelectedItems(selectedItems)
       setShowSelectAllPages(false)
     }
-  }, [page, shouldFetchAllPages, items, thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots, currentPage])
+  }, [page, shouldFetchAllPages, items, thirdParty, currentPage])
 
   const handleNewItems = useCallback(() => {
     onOpenModal('CreateItemsModal', { collectionId: collection!.id })
@@ -173,10 +179,37 @@ export default function ThirdPartyCollectionDetailPage({
 
   const handleChangeStatus = useCallback(
     (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-      setFilters({ synced: value as boolean })
+      setItemStatus(value as ItemStatus)
     },
-    [setFilters]
+    [setItemStatus]
   )
+
+  const itemStatusOptions = [
+    { value: ItemStatus.ALL, text: t('third_party_collection_detail_page.synced_filter.all') },
+    { value: ItemStatus.SYNCED, text: t('item_status.synced') },
+    { value: ItemStatus.UNSYNCED, text: t('item_status.unsynced') },
+    ...(!collection?.isMappingComplete
+      ? [
+          { value: ItemStatus.MIGRATION_REQUIRED, text: t('item_status.pending_migration') },
+          { value: ItemStatus.MAPPING_PENDING, text: t('item_status.pending_mapping') }
+        ]
+      : [])
+  ]
+
+  const itemFilters = useMemo(() => {
+    switch (itemStatus) {
+      case ItemStatus.SYNCED:
+        return { synced: true }
+      case ItemStatus.UNSYNCED:
+        return { synced: false }
+      case ItemStatus.MIGRATION_REQUIRED:
+        return { mappingStatus: ItemMappingStatus.UNPUBLISHED_MAPPING }
+      case ItemStatus.MAPPING_PENDING:
+        return { mappingStatus: ItemMappingStatus.MISSING_MAPPING }
+      default:
+        return {}
+    }
+  }, [itemStatus])
 
   const renderPage = useCallback(
     (thirdParty: ThirdParty, allItems: Item[], paginatedItems: Item[], onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest) => {
@@ -257,13 +290,8 @@ export default function ThirdPartyCollectionDetailPage({
                 <Dropdown
                   className={styles.syncedStatusList}
                   direction="left"
-                  value={filters.synced}
-                  placeholder={t('third_party_collection_detail_page.synced_filter.all')}
-                  options={[
-                    { value: undefined, text: t('third_party_collection_detail_page.synced_filter.all') },
-                    { value: true, text: t('third_party_collection_detail_page.synced_filter.synced') },
-                    { value: false, text: t('third_party_collection_detail_page.synced_filter.unsynced') }
-                  ]}
+                  value={itemStatus}
+                  options={itemStatusOptions}
                   onChange={handleChangeStatus}
                 />
               </div>
@@ -365,13 +393,13 @@ export default function ThirdPartyCollectionDetailPage({
       areAllSelected,
       handleChangeStatus,
       handleClearSelection,
-      filters
+      itemStatus
     ]
   )
 
   const shouldRender = hasAccess && collection
   return (
-    <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE} fetchOptions={filters}>
+    <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE} fetchCollectionItemsOptions={itemFilters}>
       {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchCollectionItemsPages }) => (
         <LoggedInDetailPage
           className={styles.main}
