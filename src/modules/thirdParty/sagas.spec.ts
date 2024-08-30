@@ -305,7 +305,7 @@ describe('when pushing changes to third party items', () => {
   let item: Item
   let itemCurations: ItemCuration[]
   beforeEach(() => {
-    collection = { name: 'valid collection name', id: uuidv4() } as Collection
+    collection = { name: 'valid collection name', id: uuidv4(), isMappingComplete: true } as Collection
     item = {
       ...mockedItem,
       collectionId: collection.id
@@ -330,6 +330,7 @@ describe('when pushing changes to third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [select(getItemCurations, item.collectionId), itemCurations],
+          [select(getCollection, item.collectionId), collection],
           [call([mockBuilder, mockBuilder.updateItemCurationStatus], item.id, itemCurations[0].status), throwError(new Error('Error'))]
         ])
         .put(pushChangesThirdPartyItemsFailure('Some item curations were not pushed'))
@@ -344,7 +345,7 @@ describe('when pushing changes to third party items', () => {
   describe('when both api requests succeed', () => {
     let updatedItemCurations: ItemCuration[]
     beforeEach(() => {
-      collection = { name: 'valid collection name', id: uuidv4() } as Collection
+      collection = { name: 'valid collection name', id: uuidv4(), isMappingComplete: true } as Collection
       itemCurations = [
         {
           id: 'id',
@@ -388,7 +389,10 @@ describe('when pushing changes to third party items', () => {
     it('should put the push changes success action with the updated item curations, close the PublishThirdPartyCollectionModal modal and reset the progress', () => {
       const anotherItem = { ...mockedItem, id: 'anotherItemId' }
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
-        .provide([[select(getItemCurations, item.collectionId), itemCurations]])
+        .provide([
+          [select(getItemCurations, item.collectionId), itemCurations],
+          [select(getCollection, item.collectionId), collection]
+        ])
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(pushChangesThirdPartyItemsSuccess(item.collectionId!, updatedItemCurations))
@@ -411,7 +415,7 @@ describe('when publishing & pushing changes to third party items', () => {
   let salt: string
   let qty: number
   beforeEach(() => {
-    collection = { name: 'valid collection name', id: uuidv4() } as Collection
+    collection = { name: 'valid collection name', id: uuidv4(), isMappingComplete: true } as Collection
     item = {
       ...mockedItem,
       collectionId: collection.id
@@ -447,7 +451,8 @@ describe('when publishing & pushing changes to third party items', () => {
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
-          ]
+          ],
+          [select(getCollection, item.collectionId), collection]
         ])
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
@@ -467,7 +472,8 @@ describe('when publishing & pushing changes to third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
-          [select(getItemCurations, item.collectionId), itemCurations]
+          [select(getItemCurations, item.collectionId), itemCurations],
+          [select(getCollection, item.collectionId), collection]
         ])
         .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
@@ -496,7 +502,8 @@ describe('when publishing & pushing changes to third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
-          [select(getItemCurations, item.collectionId), itemCurations]
+          [select(getItemCurations, item.collectionId), itemCurations],
+          [select(getCollection, item.collectionId), collection]
         ])
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))

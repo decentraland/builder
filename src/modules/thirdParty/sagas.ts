@@ -1,6 +1,6 @@
 import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
-import { takeLatest, takeEvery, call, put, select } from 'redux-saga/effects'
+import { takeLatest, takeEvery, call, put, select, race, take } from 'redux-saga/effects'
 import { Contract, providers } from 'ethers'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
@@ -32,6 +32,8 @@ import { getIdentity } from 'modules/identity/utils'
 import { buildTPItemEntity } from 'modules/item/export'
 import { waitForTx } from 'modules/transaction/utils'
 import { ThirdPartyAction } from 'modules/ui/thirdparty/types'
+import { getCollection } from 'modules/collection/selectors'
+import { FETCH_COLLECTION_FAILURE, FETCH_COLLECTION_SUCCESS, fetchCollectionRequest } from 'modules/collection/actions'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
@@ -233,7 +235,13 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
     const { items } = action.payload
     try {
       const collectionId = getCollectionId(items)
+      const collection: ReturnType<typeof getCollection> = yield select(getCollection, collectionId)
       const newItemsCurations: ItemCuration[] = yield call(pushChangesToThirdPartyItems, items)
+      // Update collections that are not complete
+      if (!collection?.isMappingComplete) {
+        yield put(fetchCollectionRequest(collectionId))
+        yield race({ success: take(FETCH_COLLECTION_SUCCESS), failure: take(FETCH_COLLECTION_FAILURE) })
+      }
       yield put(pushChangesThirdPartyItemsSuccess(collectionId, newItemsCurations))
     } catch (error) {
       yield showActionErrorToast()
@@ -246,6 +254,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
     const { thirdParty, itemsToPublish, itemsWithChanges } = action.payload
     const collectionId = getCollectionId(itemsToPublish)
+    const collection: ReturnType<typeof getCollection> = yield select(getCollection, collectionId)
     // We need to execute these two methods in sequence, because the push changes will create a new curation if there was one already approved.
     // It will create them with status PENDING, so the publish will fail if it's executed after that event.
     // Publish items
@@ -259,6 +268,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       const resultFromPushChanges: ItemCuration[] = yield call(pushChangesToThirdPartyItems, itemsWithChanges)
       const newItemCurations = [...resultFromPublish.newItemCurations, ...resultFromPushChanges]
 
+      // Update collections that are not complete
+      if (!collection?.isMappingComplete) {
+        yield put(fetchCollectionRequest(collectionId))
+        yield race({ success: take(FETCH_COLLECTION_SUCCESS), failure: take(FETCH_COLLECTION_FAILURE) })
+      }
       yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
       yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
     } catch (error) {
