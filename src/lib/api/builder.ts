@@ -51,6 +51,19 @@ export type FetchCollectionsParams = {
   limit?: number
 }
 
+export enum ItemMappingStatus {
+  MISSING_MAPPING = 'missing_mapping',
+  UNPUBLISHED_MAPPING = 'unpublished_mapping'
+}
+
+export type FetchCollectionItemsParams = {
+  status?: CurationStatus
+  synced?: boolean
+  mappingStatus?: ItemMappingStatus
+  page?: number
+  limit?: number
+}
+
 export type RemoteItem = {
   id: string // uuid
   name: string
@@ -786,7 +799,7 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteItem(remoteItem)
   }
 
-  async fetchCollectionItems(collectionId: string, options: FetchCollectionsParams = {}) {
+  async fetchCollectionItems(collectionId: string, options: FetchCollectionItemsParams = {}) {
     const { page, limit } = options
     const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, { params: options, retry: retryParams })
     if (page && limit && remoteResponse.results) {
