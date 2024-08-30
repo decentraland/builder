@@ -237,9 +237,11 @@ export default function ThirdPartyCollectionDetailPage({
               </div>
             </div>
           </div>
-          <div className={styles.migrationBanner}>
-            <Icon name="sync" /> {t('third_party_collection_detail_page.migration_banner')}
-          </div>
+          {!collection.isMappingComplete && (
+            <div className={styles.migrationBanner}>
+              <Icon name="sync" /> {t('third_party_collection_detail_page.migration_banner')}
+            </div>
+          )}
           <div className={styles.body}>
             {(collection.itemCount ?? 0) > 0 && (
               <div className={styles.searchContainer}>
