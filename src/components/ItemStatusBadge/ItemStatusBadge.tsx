@@ -29,7 +29,7 @@ export const ItemStatusBadge = (props: Props) => {
       case SyncStatus.UNPUBLISHED:
         return <Icon name="cloud upload" />
     }
-  }, [status])
+  }, [status, isMappingMissingFromItem, isMappingNotPublished])
 
   const text = useMemo(() => {
     if (isMappingMissingFromItem) {
@@ -38,16 +38,16 @@ export const ItemStatusBadge = (props: Props) => {
       return t('item_status.pending_migration')
     }
     return t(`item_status.${status}`)
-  }, [status])
+  }, [status, isMappingMissingFromItem, isMappingNotPublished])
 
   const style = useMemo(() => {
-    if (!item.mappings) {
+    if (isMappingMissingFromItem) {
       return 'pending_mapping'
     } else if (isMappingNotPublished) {
       return 'pending_migration'
     }
     return status
-  }, [status])
+  }, [status, isMappingMissingFromItem, isMappingNotPublished])
 
   return (
     <div className={classNames(styles[style], styles.status)}>
