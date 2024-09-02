@@ -14,6 +14,7 @@ import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/third
 import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
 import { isThirdPartyCollection } from 'modules/collection/utils'
 import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { getLastLocation } from 'modules/ui/location/selector'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
 
@@ -38,7 +39,8 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_REQUEST),
-    isLoadingAvailableSlots: isFetchingAvailableSlots(state)
+    isLoadingAvailableSlots: isFetchingAvailableSlots(state),
+    lastLocation: getLastLocation(state)
   }
 }
 

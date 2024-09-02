@@ -56,6 +56,7 @@ enum ItemStatus {
 
 export default function ThirdPartyCollectionDetailPage({
   currentPage,
+  lastLocation,
   wallet,
   thirdParty,
   items,
@@ -73,6 +74,7 @@ export default function ThirdPartyCollectionDetailPage({
   const [shouldFetchAllPages, setShouldFetchAllPages] = useState(false)
   const [itemStatus, setItemStatus] = useState<ItemStatus>(ItemStatus.ALL)
   const history = useHistory()
+  const isComingFromTheCollectionsPage = lastLocation === locations.collections()
 
   useEffect(() => {
     if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
@@ -108,8 +110,12 @@ export default function ThirdPartyCollectionDetailPage({
   }, [collection, onOpenModal])
 
   const handleGoBack = useCallback(() => {
-    history.push(locations.collections())
-  }, [history])
+    if (isComingFromTheCollectionsPage) {
+      history.goBack()
+    } else {
+      history.push(locations.collections())
+    }
+  }, [history, isComingFromTheCollectionsPage])
 
   const handlePageChange = useCallback(
     (_event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
