@@ -1,5 +1,5 @@
-import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { Loader, Responsive } from 'decentraland-ui'
 import { usePageTracking } from 'decentraland-dapps/dist/hooks/usePageTracking'
 
@@ -7,6 +7,7 @@ import { locations } from 'routing/locations'
 import LoadingPage from 'components/LoadingPage'
 import MobilePage from 'components/MobilePage'
 import { ProtectedRoute } from 'modules/ProtectedRoute'
+import { Props } from './AppRoutes.types'
 
 const ScenesPage = React.lazy(() => import('components/ScenesPage'))
 const HomePage = React.lazy(() => import('components/HomePage'))
@@ -39,7 +40,17 @@ const CurationPage = React.lazy(() => import('components/CurationPage'))
 const TemplatesPage = React.lazy(() => import('components/TemplatesPage'))
 const TemplateDetailPage = React.lazy(() => import('components/TemplateDetailPage'))
 
-export function AppRoutes() {
+export function AppRoutes({ saveLastLocation }: Props) {
+  // Save the last location
+  const location = useLocation()
+  const [currentRoute, setCurrentRoute] = useState(location.pathname)
+  useEffect(() => {
+    if (currentRoute !== location.pathname) {
+      saveLastLocation(currentRoute)
+      setCurrentRoute(location.pathname)
+    }
+  }, [location.pathname, currentRoute])
+
   usePageTracking()
   return (
     <React.Suspense fallback={<Loader size="huge" active />}>

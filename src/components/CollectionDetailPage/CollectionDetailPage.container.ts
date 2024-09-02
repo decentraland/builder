@@ -7,6 +7,7 @@ import { getCollection, isOnSaleLoading, getLoading as getLoadingCollection, get
 import { DELETE_COLLECTION_REQUEST, SET_COLLECTION_MINTERS_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionItems } from 'modules/item/selectors'
+import { getLastLocation } from 'modules/ui/location/selector'
 import { fetchCollectionForumPostReplyRequest, FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST } from 'modules/forum/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetailPage.types'
 import CollectionDetailPage from './CollectionDetailPage'
@@ -24,7 +25,8 @@ const mapState = (state: RootState): MapStateProps => {
     status: statusByCollectionId[collectionId],
     isLoading:
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
-      isLoadingType(getLoadingCollection(state), FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST)
+      isLoadingType(getLoadingCollection(state), FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST),
+    lastLocation: getLastLocation(state)
   }
 }
 
