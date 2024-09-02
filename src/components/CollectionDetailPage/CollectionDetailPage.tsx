@@ -37,6 +37,7 @@ export default function CollectionDetailPage({
   wallet,
   items,
   isOnSaleLoading,
+  lastLocation,
   status,
   onOpenModal,
   isLoading,
@@ -50,6 +51,7 @@ export default function CollectionDetailPage({
 
   const [tab, setTab] = useState<ItemType>(initialTab || ItemType.WEARABLE)
   const history = useHistory()
+  const isComingFromTheCollectionsPage = lastLocation === locations.collections()
 
   const fetchCollectionForumPostReply = useCallback(() => {
     // Only fetch the forum post replies if the collection has a forum link and there's no other fetch process in progress
@@ -85,8 +87,12 @@ export default function CollectionDetailPage({
   }, [collection, wallet, onOpenModal])
 
   const handleGoBack = useCallback(() => {
-    history.push(locations.collections())
-  }, [history])
+    if (isComingFromTheCollectionsPage) {
+      history.goBack()
+    } else {
+      history.push(locations.collections())
+    }
+  }, [history, isComingFromTheCollectionsPage])
 
   const handleNavigateToEditor = useCallback(() => {
     if (collection) {

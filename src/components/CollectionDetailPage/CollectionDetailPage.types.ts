@@ -12,6 +12,7 @@ export type Props = {
   isLoading: boolean
   items: Item[]
   status: SyncStatus
+  lastLocation?: string
   onOpenModal: typeof openModal
   onFetchCollectionForumPostReply: typeof fetchCollectionForumPostReplyRequest
 }
@@ -20,6 +21,6 @@ export type State = {
   tab: ItemType
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'isOnSaleLoading' | 'isLoading' | 'items' | 'status'>
+export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'isOnSaleLoading' | 'isLoading' | 'items' | 'status' | 'lastLocation'>
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchCollectionForumPostReply'>
 export type MapDispatch = Dispatch<OpenModalAction | FetchCollectionForumPostReplyRequestAction>

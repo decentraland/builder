@@ -6,6 +6,7 @@ import { landReducer as land, LandState } from './land/reducer'
 import { CreateMultipleItemsState, createMultipleItemsReducer as createMultipleItems } from './createMultipleItems/reducer'
 import { ThirdPartyReducer as thirdParty } from './thirdparty/reducer'
 import { ThirdPartyState } from './thirdparty/reducer'
+import { LocationState, locationReducer as location } from './location/reducer'
 
 export type UIState = {
   sidebar: SidebarState
@@ -14,6 +15,7 @@ export type UIState = {
   land: LandState
   createMultipleItems: CreateMultipleItemsState
   thirdParty: ThirdPartyState
+  location: LocationState
 }
 
 export const uiReducer = combineReducers({
@@ -22,5 +24,6 @@ export const uiReducer = combineReducers({
   collection,
   land,
   createMultipleItems,
-  thirdParty
+  thirdParty,
+  location
 })

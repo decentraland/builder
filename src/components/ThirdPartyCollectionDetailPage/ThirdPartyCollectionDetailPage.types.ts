@@ -25,6 +25,7 @@ export type Props = {
   itemCurations: ItemCuration[]
   isOnSaleLoading: boolean
   authorizations: Authorization[]
+  lastLocation?: string
   isLoading: boolean
   isLoadingAvailableSlots: boolean
   isThirdPartyV2Enabled: boolean
@@ -54,6 +55,7 @@ export type MapStateProps = Pick<
   | 'items'
   | 'isThirdPartyV2Enabled'
   | 'paginatedData'
+  | 'lastLocation'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchAvailableSlots'>
 export type MapDispatch = Dispatch<
