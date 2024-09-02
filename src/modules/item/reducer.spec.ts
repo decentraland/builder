@@ -1,6 +1,17 @@
-import { ChainId } from '@dcl/schemas'
+import { ChainId, ContractAddress, ContractNetwork, Mapping, MappingType } from '@dcl/schemas'
 import { saveCollectionSuccess } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
+import {
+  publishAndPushChangesThirdPartyItemsSuccess,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  publishThirdPartyItemsSuccess,
+  PublishThirdPartyItemsSuccessAction,
+  pushChangesThirdPartyItemsSuccess,
+  PushChangesThirdPartyItemsSuccessAction
+} from 'modules/thirdParty/actions'
+import { PaginatedResource } from 'lib/api/pagination'
+import { CurationStatus } from 'modules/curations/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import {
   clearSaveMultipleItems,
@@ -19,7 +30,6 @@ import {
 } from './actions'
 import { INITIAL_STATE, itemReducer, ItemState } from './reducer'
 import { Item } from './types'
-import { PaginatedResource } from 'lib/api/pagination'
 import { toItemObject } from './utils'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
@@ -34,8 +44,14 @@ let itemsMap: Record<string, Item>
 let fileNames: string[]
 
 beforeEach(() => {
+  const mappings: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> = {
+    [ContractNetwork.AMOY]: { '0x0': [{ type: MappingType.ANY }] }
+  }
   state = { ...INITIAL_STATE }
-  items = [{ id: 'anItemId' } as Item, { id: 'anotherItemId' } as Item]
+  items = [
+    { id: 'anItemId', isPublished: false, mappings: mappings } as Item,
+    { id: 'anotherItemId', isPublished: false, mappings: null } as Item
+  ]
   itemsMap = {
     [items[0].id]: items[0],
     [items[1].id]: items[1]
@@ -419,6 +435,74 @@ describe('when an action of type FETCH_ORPHAN_ITEM_FAILURE is called', () => {
       ...INITIAL_STATE,
       loading: [],
       error
+    })
+  })
+})
+
+describe.each([
+  ['pushing changes and publishing third party items', publishAndPushChangesThirdPartyItemsSuccess],
+  ['pushing changes third party items', pushChangesThirdPartyItemsSuccess],
+  ['publishing third party items', publishThirdPartyItemsSuccess]
+])('when reducing the successful action of %s', (_, fn) => {
+  let action:
+    | PublishThirdPartyItemsSuccessAction
+    | PublishAndPushChangesThirdPartyItemsSuccessAction
+    | PushChangesThirdPartyItemsSuccessAction
+
+  beforeEach(() => {
+    const curations: ItemCuration[] = items.map(item => ({
+      itemId: item.id,
+      contentHash: 'aHash',
+      id: 'aCurationId',
+      updatedAt: 0,
+      createdAt: 0,
+      status: CurationStatus.PENDING
+    }))
+
+    switch (fn) {
+      case pushChangesThirdPartyItemsSuccess:
+        action = pushChangesThirdPartyItemsSuccess('aCollectionId', curations)
+        break
+      case publishThirdPartyItemsSuccess:
+        action = publishThirdPartyItemsSuccess('aThirdPartyId', 'aCollectionId', items, curations)
+        break
+      case publishAndPushChangesThirdPartyItemsSuccess:
+        action = publishAndPushChangesThirdPartyItemsSuccess('aThirdParty', items, curations)
+        break
+    }
+  })
+
+  describe('and the items are not in the state', () => {
+    beforeEach(() => {
+      state = {
+        ...INITIAL_STATE
+      }
+    })
+
+    it('should return the state as is', () => {
+      expect(itemReducer(state, action)).toEqual(state)
+    })
+  })
+
+  describe('and the items are in the state', () => {
+    beforeEach(() => {
+      state = {
+        ...INITIAL_STATE,
+        data: items.reduce((acc, item) => ({ ...acc, [item.id]: { ...item, isPublished: false, isMappingComplete: !!item.mappings } }), {})
+      }
+    })
+
+    it("should set the items as published and set the isMappingComplete property in accordance to the item's mapping", () => {
+      expect(itemReducer(state, action)).toEqual({
+        ...state,
+        data: items.reduce(
+          (acc, item) => ({
+            ...acc,
+            [item.id]: { ...item, isPublished: true, isMappingComplete: !!item.mappings }
+          }),
+          {}
+        )
+      })
     })
   })
 })
