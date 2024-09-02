@@ -104,8 +104,10 @@ import {
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
+  PushChangesThirdPartyItemsSuccessAction,
   PublishAndPushChangesThirdPartyItemsSuccessAction,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
 } from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
@@ -173,6 +175,7 @@ type ItemReducerAction =
   | FetchRaritiesFailureAction
   | PublishThirdPartyItemsSuccessAction
   | PublishAndPushChangesThirdPartyItemsSuccessAction
+  | PushChangesThirdPartyItemsSuccessAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
   | RescueItemsChunkSuccessAction
@@ -425,6 +428,25 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
+    case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS:
+    case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
+      const { itemCurations } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...itemCurations.reduce((accum, itemCuration) => {
+            const item = state.data[itemCuration.itemId]
+            if (!item) {
+              return accum
+            }
+            accum[item.id] = { ...item, isPublished: true, isMappingComplete: !!item.mappings }
+            return accum
+          }, {} as ItemState['data'])
+        }
+      }
+    }
     case FETCH_TRANSACTION_SUCCESS: {
       const transaction = action.payload.transaction
 
@@ -463,8 +485,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             }
           }
         }
-        case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
-        case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS:
+
         case PUBLISH_COLLECTION_SUCCESS: {
           const items: Item[] = transaction.payload.items
           return {
