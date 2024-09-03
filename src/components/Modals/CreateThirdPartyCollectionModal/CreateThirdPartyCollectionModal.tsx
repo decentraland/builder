@@ -59,10 +59,10 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
 
   const thirdPartyContractNetworkOptions = useMemo(
     () =>
-      selectedThirdParty.contracts.map(contract => ({
-        text: t(`global.networks.${contract.network}`),
-        value: contract.network,
-        image: imgSrcByNetwork[contract.network]
+      Array.from(new Set(selectedThirdParty.contracts.map(contract => contract.network))).map(network => ({
+        text: t(`global.networks.${network}`),
+        value: network,
+        image: imgSrcByNetwork[network]
       })),
     [selectedThirdParty]
   )
