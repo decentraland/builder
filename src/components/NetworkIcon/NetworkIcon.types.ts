@@ -1,8 +1,6 @@
 import { ContractNetwork } from '@dcl/schemas'
 
 export type Props = {
+  network: ContractNetwork
   className?: string
-  network?: ContractNetwork
-  thirdPartyId: string
-  shape?: 'circle' | 'square'
 }

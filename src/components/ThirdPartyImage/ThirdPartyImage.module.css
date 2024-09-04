@@ -1,4 +1,14 @@
+.image,
 .main {
+  position: relative;
   width: 48px;
   height: 48px;
+}
+
+.network {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
 }
