@@ -62,6 +62,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   notSavedItemsFiles: ReturnType<typeof getNotSavedItemsFiles>
   cancelledItemsFiles: ReturnType<typeof getCanceledItemsFiles>
   saveMultipleItemsState: ReturnType<typeof getMultipleItemsSaveState>
+  isLinkedWearablesV2Enabled: boolean
   saveItemsProgress: number
   metadata: CreateAndEditMultipleItemsModalMetadata
 }
@@ -69,7 +70,14 @@ export type Props = Omit<ModalProps, 'metadata'> & {
 export type OwnProps = Pick<Props, 'name' | 'metadata' | 'onClose'>
 export type MapStateProps = Pick<
   Props,
-  'savedItemsFiles' | 'notSavedItemsFiles' | 'cancelledItemsFiles' | 'error' | 'saveMultipleItemsState' | 'saveItemsProgress' | 'collection'
+  | 'savedItemsFiles'
+  | 'notSavedItemsFiles'
+  | 'cancelledItemsFiles'
+  | 'error'
+  | 'saveMultipleItemsState'
+  | 'saveItemsProgress'
+  | 'collection'
+  | 'isLinkedWearablesV2Enabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSaveMultipleItems' | 'onCancelSaveMultipleItems' | 'onModalUnmount'>
 export type MapDispatch = Dispatch<SaveMultipleItemsRequestAction | CancelSaveMultipleItemsAction | ClearStateSaveMultipleItemsAction>

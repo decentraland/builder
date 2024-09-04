@@ -11,6 +11,7 @@ import {
 import { getError } from 'modules/item/selectors'
 import { Collection } from 'modules/collection/types'
 import { getCollection } from 'modules/collection/selectors'
+import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateAndEditMultipleItemsModal.types'
 import CreateAndEditMultipleItemsModal from './CreateAndEditMultipleItemsModal'
 
@@ -24,6 +25,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     notSavedItemsFiles: getNotSavedItemsFiles(state),
     cancelledItemsFiles: getCanceledItemsFiles(state),
     saveMultipleItemsState: getMultipleItemsSaveState(state),
+    isLinkedWearablesV2Enabled: getIsLinkedWearablesV2Enabled(state),
     saveItemsProgress: getProgress(state)
   }
 }
