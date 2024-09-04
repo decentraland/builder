@@ -233,6 +233,9 @@
     "collection_id_field": {
       "label": "Id",
       "message": "Recomendamos incluir la dirección del contrato de la colección como parte del id. Solo puede usar letras, números y guiones (-)"
+    },
+    "errors": {
+      "linked_contract_already_in_use": "El contrato seleccionado está ya vinculado a otra colección. Sólo una colección puede estar vinculada a un contrato."
     }
   },
   "model_metrics": {
