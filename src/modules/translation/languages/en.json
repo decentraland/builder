@@ -231,6 +231,9 @@
     "collection_id_field": {
       "label": "Id",
       "message": "We recommend including the collection contract address as part of the id. Only letters, numbers and dashes (-) are allowed"
+    },
+    "errors": {
+      "linked_contract_already_in_use": "The selected contract is already in use by another collection. Only one collection can be linked to a contract."
     }
   },
   "model_metrics": {

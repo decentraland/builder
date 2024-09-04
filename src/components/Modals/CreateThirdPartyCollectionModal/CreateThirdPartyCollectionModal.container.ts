@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { getLoading } from 'modules/collection/selectors'
+import { getLoading, getError as getCollectionError } from 'modules/collection/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal'
 import { SAVE_COLLECTION_REQUEST, saveCollectionRequest } from 'modules/collection/actions'
 import { getWalletThirdParties, getError } from 'modules/thirdParty/selectors'
@@ -13,7 +13,7 @@ import { CreateThirdPartyCollectionModal } from './CreateThirdPartyCollectionMod
 const mapState = (state: RootState): MapStateProps => ({
   ownerAddress: getAddress(state),
   thirdParties: getWalletThirdParties(state),
-  error: getError(state),
+  error: getCollectionError(state) || getError(state),
   isLinkedWearablesV2Enabled: getIsLinkedWearablesV2Enabled(state),
   isLinkedWearablesPaymentsEnabled: getIsLinkedWearablesPaymentsEnabled(state),
   isCreatingCollection: isLoadingType(getLoading(state), SAVE_COLLECTION_REQUEST)
