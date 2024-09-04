@@ -115,7 +115,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
   }
 
   processAcceptedFile = async (file: File) => {
-    const { collection, metadata } = this.props
+    const { collection, metadata, isLinkedWearablesV2Enabled } = this.props
     try {
       const fileArrayBuffer = await file.arrayBuffer()
       const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
@@ -186,7 +186,7 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         }
 
         // In case the collection is linked to a smart contract, the mappings must be present
-        if (collection?.linkedContractAddress && collection.linkedContractNetwork) {
+        if (isLinkedWearablesV2Enabled && collection?.linkedContractAddress && collection.linkedContractNetwork) {
           if (!loadedFile.wearable.mapping) {
             throw new Error(t('create_and_edit_multiple_items_modal.missing_mapping'))
           }
