@@ -3,16 +3,17 @@ import { Loader, Tabs } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
+import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { isThirdPartyCollection } from 'modules/collection/utils'
 import { Item, ItemType } from 'modules/item/types'
 import CollectionProvider from 'components/CollectionProvider'
+import { ItemAddedToast } from './Toasts/ItemAdded'
 import Header from './Header'
 import Items from './Items'
 import Collections from './Collections'
 import { LEFT_PANEL_PAGE_SIZE } from '../constants'
 import { Props, State, ItemEditorTabs } from './LeftPanel.types'
 import './LeftPanel.css'
-import { ItemAddedToast } from './Toasts/ItemAdded'
 
 const INITIAL_PAGE = 1
 
@@ -122,10 +123,14 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     onSetItems([])
   }
 
-  getItems(collection: Collection | null, collectionItems: Item[]) {
+  getItems(collection: Collection | null, collectionItems: Item[], itemCurations: ItemCuration[] | null) {
     const { selectedCollectionId, orphanItems, isReviewing } = this.props
     if (selectedCollectionId && collection) {
-      return isThirdPartyCollection(collection) && isReviewing ? collectionItems.filter(item => item.isPublished) : collectionItems
+      return isThirdPartyCollection(collection) && isReviewing
+        ? collectionItems.filter(
+            item => !!itemCurations?.find(curation => curation.itemId === item.id && curation.status === CurationStatus.PENDING)
+          )
+        : collectionItems
     }
     return orphanItems
   }
@@ -198,8 +203,15 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
             fetchCollectionItemsOptions={{ status: isReviewing ? CurationStatus.PENDING : undefined }}
             onChangePage={page => this.setState({ pages: [page] })}
           >
-            {({ paginatedCollections, collection, paginatedItems: collectionItems, initialPage: collectionInitialPage, isLoading }) => {
-              const items = this.getItems(collection, collectionItems)
+            {({
+              paginatedCollections,
+              collection,
+              paginatedItems: collectionItems,
+              initialPage: collectionInitialPage,
+              isLoading,
+              itemCurations
+            }) => {
+              const items = this.getItems(collection, collectionItems, itemCurations)
               const isCollectionTab = this.isCollectionTabActive()
               const showLoader = isLoading && ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
               const initialPage = selectedCollectionId && collection ? collectionInitialPage : this.state.initialPage
