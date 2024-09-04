@@ -237,7 +237,7 @@ export default function ThirdPartyCollectionDetailPage({
             <Back absolute onClick={handleGoBack} />
             <div className={styles.content}>
               <div className={styles.title}>
-                <ThirdPartyImage thirdPartyId={thirdParty.id} />
+                <ThirdPartyImage thirdPartyId={thirdParty.id} network={collection.linkedContractNetwork} />
                 <Header size="large" className={styles.name} onClick={handleEditName}>
                   {collection.name}
                 </Header>

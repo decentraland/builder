@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, FC, SyntheticEvent } from 'react'
-import { Collection, TP_COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
+import { ContractNetwork } from '@dcl/schemas'
 import {
   ModalNavigation,
   Button,
@@ -15,20 +15,12 @@ import uuid from 'uuid'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics'
+import { Collection, TP_COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { buildThirdPartyURN, decodeURN, getDefaultThirdPartyUrnSuffix } from 'lib/urn'
 import { shorten } from 'lib/address'
-import ethereumSvg from '../../../icons/ethereum.svg'
-import polygonSvg from '../../../icons/polygon.svg'
+import { imgSrcByNetwork } from 'components/NetworkIcon'
 import { Props } from './CreateThirdPartyCollectionModal.types'
 import styles from './CreateThirdPartyCollectionModal.module.css'
-import { ContractNetwork } from '@dcl/schemas'
-
-const imgSrcByNetwork = {
-  [ContractNetwork.MAINNET]: ethereumSvg,
-  [ContractNetwork.MATIC]: polygonSvg,
-  [ContractNetwork.SEPOLIA]: ethereumSvg,
-  [ContractNetwork.AMOY]: polygonSvg
-}
 
 export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
   const {
