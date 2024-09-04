@@ -9,7 +9,8 @@ import {
   ModalActions,
   SelectField,
   InputOnChangeData,
-  DropdownProps
+  DropdownProps,
+  Message
 } from 'decentraland-ui'
 import uuid from 'uuid'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -142,6 +143,12 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
   const isSubmittable = collectionName && ownerAddress && !isCollectionNameInvalid && collectionId
   !isCreatingCollection && (isLinkedWearablesV2Enabled ? selectedContract && selectedNetwork : true)
   const isLoading = isCreatingCollection
+  const errorMessage = useMemo(() => {
+    if (error?.includes('linkedContract_linkedNetwork_thirdPartyId_unique')) {
+      return t('create_third_party_collection_modal.errors.linked_contract_already_in_use')
+    }
+    return error
+  }, [error, t])
 
   return (
     <Modal name={name} onClose={isLoading ? undefined : onClose} size="small">
@@ -197,10 +204,10 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
               onChange={handleCollectionIdChange}
             />
           )}
-          {error ? <small className="danger-text">{error}</small> : null}
+          {errorMessage ? <Message error tiny visible content={errorMessage} header={t('global.error_ocurred')} /> : null}
         </ModalContent>
         <ModalActions>
-          <Button primary disabled={!isSubmittable} loading={isLoading}>
+          <Button primary disabled={!isSubmittable || isLoading} loading={isLoading}>
             {t('global.create')}
           </Button>
         </ModalActions>
