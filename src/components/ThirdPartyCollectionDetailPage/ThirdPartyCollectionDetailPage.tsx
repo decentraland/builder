@@ -395,6 +395,7 @@ export default function ThirdPartyCollectionDetailPage({
       isLoadingAvailableSlots,
       totalItems,
       page,
+      thirdParty,
       handleSelectItemChange,
       areAllSelected,
       handleChangeStatus,
