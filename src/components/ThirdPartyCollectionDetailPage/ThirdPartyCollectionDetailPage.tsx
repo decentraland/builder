@@ -80,7 +80,7 @@ export default function ThirdPartyCollectionDetailPage({
     if (thirdParty && thirdParty.availableSlots === undefined && !isLoadingAvailableSlots) {
       onFetchAvailableSlots(thirdParty.id)
     }
-  }, [])
+  }, [thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots])
 
   useEffect(() => {
     // update the state if the page query param changes
@@ -395,7 +395,6 @@ export default function ThirdPartyCollectionDetailPage({
       isLoadingAvailableSlots,
       totalItems,
       page,
-      thirdParty,
       handleSelectItemChange,
       areAllSelected,
       handleChangeStatus,
