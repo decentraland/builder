@@ -204,7 +204,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
               onChange={handleCollectionIdChange}
             />
           )}
-          {errorMessage ? <Message error tiny visible content={errorMessage} header={t('global.error_ocurred')} /> : null}
+          {errorMessage ? <Message error visible content={errorMessage} header={t('global.error_ocurred')} /> : null}
         </ModalContent>
         <ModalActions>
           <Button primary disabled={!isSubmittable || isLoading} loading={isLoading}>
