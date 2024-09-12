@@ -6,18 +6,17 @@ import './ConfirmCollectionNameStep.css'
 
 export const ConfirmCollectionNameStep: React.FC<{
   collection: Collection
-  confirmedCollectionName: string
-  onChangeCollectionName: (value: string) => void
   onNextStep: () => void
 }> = props => {
-  const { collection, confirmedCollectionName, onChangeCollectionName, onNextStep } = props
+  const { collection, onNextStep } = props
   const [collectionNameFocus, setCollectionNameFocus] = useState<boolean>(false)
+  const [confirmedCollectionName, setConfirmedCollectionName] = useState<string>('')
 
   const handleCollectionNameChange = useCallback(
     (_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
-      onChangeCollectionName(value)
+      setConfirmedCollectionName(value)
     },
-    [onChangeCollectionName]
+    [setConfirmedCollectionName]
   )
 
   const handleCollectionNameFocus = useCallback(() => {
