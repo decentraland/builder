@@ -53,6 +53,10 @@
   visibility: visible;
 }
 
+.PublishWizardCollectionModal .steps-indicator.list .item.step.beforeActiveStep::after {
+  background-color: var(--primary);
+}
+
 .PublishWizardCollectionModal .steps-indicator.list .item.step:last-child {
   flex: 0;
 }

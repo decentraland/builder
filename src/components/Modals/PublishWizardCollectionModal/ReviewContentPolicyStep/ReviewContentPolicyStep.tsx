@@ -1,29 +1,73 @@
-import React, { useCallback, useState } from 'react'
-import { Button, Checkbox, CheckboxProps, Column, Field, InputOnChangeData, Modal, Row } from 'decentraland-ui'
+import React, { useCallback, useMemo, useState } from 'react'
+import { Button, Checkbox, CheckboxProps, Field, InputOnChangeData, Modal, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { isTPCollection } from 'modules/collection/utils'
 import { emailRegex } from 'lib/validators'
 import { Props } from './ReviewContentPolicyStep.types'
-import './ReviewContentPolicyStep.css'
+import styles from './ReviewContentPolicyStep.module.css'
+
+const termsOfUseLink = (link: string) => (
+  <a href="https://decentraland.org/terms/" rel="noopener noreferrer" target="_blank">
+    {link}
+  </a>
+)
+
+const contentPolicyLink = (link: string) => (
+  <a href="https://decentraland.org/content/" rel="noopener noreferrer" target="_blank">
+    {link}
+  </a>
+)
 
 export const ReviewContentPolicyStep: React.FC<Props> = props => {
   const {
     collection,
     confirmedEmailAddress,
-    contentPolicyFirstConditionChecked,
-    acceptTermsOfUseChecked,
-    acknowledgeImmutability,
-    acknowledgeDaoTermsChecked,
     subscribeToNewsletter,
     onChangeEmailAddress,
-    onContentPolicyFirstConditionChange,
-    onAcceptTermsOfUseChange,
-    onAcknowledgeImmutability,
-    onAcknowledgeDaoTermsChange,
     onSubscribeToNewsletter,
     onNextStep,
     onPrevStep
   } = props
   const [emailAddressFocus, setEmailAddressFocus] = useState<boolean>(false)
+  const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
+  const conditions = useMemo(
+    () =>
+      isThirdParty
+        ? [
+            t('publish_wizard_collection_modal.review_content_policy_step.third_parties.first', {
+              terms_of_use_link: termsOfUseLink,
+              content_policy_link: contentPolicyLink
+            }),
+            t('publish_wizard_collection_modal.review_content_policy_step.third_parties.second'),
+            t('publish_wizard_collection_modal.review_content_policy_step.third_parties.third', {
+              terms_of_use_link: termsOfUseLink,
+              content_policy_link: contentPolicyLink
+            })
+          ]
+        : [
+            t('publish_wizard_collection_modal.review_content_policy_step.standard.content_policy_first_condition', {
+              collection_name: <b>{collection.name}</b>
+            }),
+            t('publish_wizard_collection_modal.review_content_policy_step.standard.accept_terms_of_use', {
+              terms_of_use_link: termsOfUseLink,
+              content_policy_link: contentPolicyLink
+            }),
+            t('publish_wizard_collection_modal.review_content_policy_step.standard.acknowledge_immutability'),
+            t('publish_wizard_collection_modal.review_content_policy_step.standard.acknowledge_dao_terms', {
+              terms_of_use_link: termsOfUseLink,
+              content_policy_link: contentPolicyLink
+            })
+          ],
+    [t, isThirdParty, collection.name]
+  )
+  const [conditionsChecked, setConditionsCheck] = useState<boolean[]>(Array.from({ length: conditions.length }, () => false))
+
+  const handleConditionCheck = useCallback(
+    (index: number) => {
+      setConditionsCheck(prev => prev.map((value, i) => (i === index ? !value : value)))
+    },
+    [conditionsChecked, setConditionsCheck]
+  )
 
   const handleOnEmailAddressChange = useCallback(
     (_: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
@@ -40,34 +84,6 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
     setEmailAddressFocus(false)
   }, [])
 
-  const handleOnContentPolicyFirstConditionChecked = useCallback(
-    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-      onContentPolicyFirstConditionChange(!!checked)
-    },
-    [onContentPolicyFirstConditionChange]
-  )
-
-  const handleOnAcceptTermsOfUseChecked = useCallback(
-    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-      onAcceptTermsOfUseChange(!!checked)
-    },
-    [onAcceptTermsOfUseChange]
-  )
-
-  const handleOnAcknowledgeImmutability = useCallback(
-    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-      onAcknowledgeImmutability(!!checked)
-    },
-    [onAcknowledgeImmutability]
-  )
-
-  const handleOnAcknowledgeDaoTermsChecked = useCallback(
-    (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
-      onAcknowledgeDaoTermsChange(!!checked)
-    },
-    [onAcknowledgeDaoTermsChange]
-  )
-
   const handleOnAcceptSubscriptionNewsletter = useCallback(
     (_: React.FormEvent<HTMLInputElement>, { checked }: CheckboxProps) => {
       onSubscribeToNewsletter(!!checked)
@@ -75,104 +91,53 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
     [onSubscribeToNewsletter]
   )
 
+  const allConditionsChecked = useMemo(() => conditionsChecked.every(Boolean), [conditionsChecked])
   const hasValidEmail = emailRegex.test(confirmedEmailAddress)
   const showEmailError = !hasValidEmail && !emailAddressFocus && !!confirmedEmailAddress
 
-  const isDisabled =
-    !hasValidEmail ||
-    !contentPolicyFirstConditionChecked ||
-    !acceptTermsOfUseChecked ||
-    !acknowledgeImmutability ||
-    !acknowledgeDaoTermsChecked
+  const isDisabled = !hasValidEmail || !allConditionsChecked
 
   return (
     <>
       <Modal.Content className="ReviewContentPolicyStep">
-        <Column>
-          <Row className="details">
-            <Column grow={true}>
-              <p className="title">{t('publish_wizard_collection_modal.review_content_policy_step.title')}</p>
-              <p className="subtitle">{t('publish_wizard_collection_modal.review_content_policy_step.subtitle')}</p>
-              <div className="content-policies-conditions">
-                <div className="checkbox-container">
-                  <Checkbox checked={contentPolicyFirstConditionChecked} onChange={handleOnContentPolicyFirstConditionChecked} />
-                  <span>
-                    {t('publish_wizard_collection_modal.review_content_policy_step.content_policy_first_condition', {
-                      collection_name: <b>{collection.name}</b>
-                    })}
-                  </span>
-                </div>
-                <div className="checkbox-container">
-                  <Checkbox checked={acceptTermsOfUseChecked} onChange={handleOnAcceptTermsOfUseChecked} />
-                  <span>
-                    {t('publish_wizard_collection_modal.review_content_policy_step.accept_terms_of_use', {
-                      terms_of_use_link: (
-                        <a href="https://decentraland.org/terms/" rel="noopener noreferrer" target="_blank">
-                          {t('publish_wizard_collection_modal.review_content_policy_step.terms_of_use')}
-                        </a>
-                      ),
-                      content_policy_link: (
-                        <a href="https://decentraland.org/content/" rel="noopener noreferrer" target="_blank">
-                          {t('publish_wizard_collection_modal.review_content_policy_step.content_policy')}
-                        </a>
-                      )
-                    })}
-                  </span>
-                </div>
-                <div className="checkbox-container">
-                  <Checkbox checked={acknowledgeImmutability} onChange={handleOnAcknowledgeImmutability} />
-                  <span>{t('publish_wizard_collection_modal.review_content_policy_step.acknowledge_immutability')}</span>
-                </div>
-                <div className="checkbox-container">
-                  <Checkbox checked={acknowledgeDaoTermsChecked} onChange={handleOnAcknowledgeDaoTermsChecked} />
-                  <span>
-                    {t('publish_wizard_collection_modal.review_content_policy_step.acknowledge_dao_terms', {
-                      terms_of_use_link: (
-                        <a href="https://decentraland.org/terms/" rel="noopener noreferrer" target="_blank">
-                          {t('publish_wizard_collection_modal.review_content_policy_step.terms_of_use')}
-                        </a>
-                      ),
-                      content_policy_link: (
-                        <a href="https://decentraland.org/content/" rel="noopener noreferrer" target="_blank">
-                          {t('publish_wizard_collection_modal.review_content_policy_step.content_policy')}
-                        </a>
-                      )
-                    })}
-                  </span>
-                </div>
+        <div className={styles.content}>
+          <p className={styles.title}>{t('publish_wizard_collection_modal.review_content_policy_step.title')}</p>
+          <p className={styles.subtitle}>{t('publish_wizard_collection_modal.review_content_policy_step.subtitle')}</p>
+          <div>
+            {conditions.map((condition, index) => (
+              <div className={styles.checkboxContainer} key={index}>
+                <Checkbox checked={conditionsChecked[index]} onChange={() => handleConditionCheck(index)} />
+                <span>{condition}</span>
               </div>
-              <p className="description">{t('publish_wizard_collection_modal.review_content_policy_step.email_disclousure')}</p>
-              <p className="email-disclosure">
-                {t('publish_wizard_collection_modal.review_content_policy_step.email_disclousure_detail', {
-                  enter: <br />
-                })}
-              </p>
-              <Field
-                label={t('global.email')}
-                value={confirmedEmailAddress}
-                onChange={handleOnEmailAddressChange}
-                onFocus={handleOnEmailAddressFocus}
-                onBlur={handleOnEmailAddressBlur}
-                error={showEmailError}
-                message={showEmailError ? t('publish_collection_modal_with_oracle.invalid_email') : undefined}
-              />
-              <div className="content-policies-conditions">
-                <div className="checkbox-container checkbox-newsletter">
-                  <Checkbox checked={subscribeToNewsletter} onChange={handleOnAcceptSubscriptionNewsletter} />
-                  <span>{t('publish_wizard_collection_modal.review_content_policy_step.email_newsletter')}</span>
-                </div>
-              </div>
-            </Column>
-          </Row>
-          <Row className="actions">
-            <Button className="back" secondary onClick={onPrevStep}>
-              {t('global.back')}
-            </Button>
-            <Button className="proceed" primary onClick={onNextStep} disabled={isDisabled}>
-              {t('publish_wizard_collection_modal.review_content_policy_step.continue')}
-            </Button>
-          </Row>
-        </Column>
+            ))}
+          </div>
+          <div>
+            <h3>{t('publish_wizard_collection_modal.review_content_policy_step.subscription.title')}</h3>
+            <p className={styles.subscriptionText}>{t('publish_wizard_collection_modal.review_content_policy_step.subscription.text')}</p>
+            <Field
+              label={t('global.email')}
+              type="email"
+              value={confirmedEmailAddress}
+              onChange={handleOnEmailAddressChange}
+              onFocus={handleOnEmailAddressFocus}
+              onBlur={handleOnEmailAddressBlur}
+              error={showEmailError}
+              message={showEmailError ? t('publish_collection_modal_with_oracle.invalid_email') : undefined}
+            />
+            <div className={styles.checkboxContainer}>
+              <Checkbox checked={subscribeToNewsletter} onChange={handleOnAcceptSubscriptionNewsletter} />
+              <span>{t('publish_wizard_collection_modal.review_content_policy_step.subscription.checkbox_text')}</span>
+            </div>
+          </div>
+        </div>
+        <Row className={styles.actions}>
+          <Button secondary onClick={onPrevStep}>
+            {t('global.back')}
+          </Button>
+          <Button primary onClick={onNextStep} disabled={isDisabled}>
+            {t('publish_wizard_collection_modal.review_content_policy_step.continue')}
+          </Button>
+        </Row>
       </Modal.Content>
     </>
   )

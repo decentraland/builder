@@ -1856,15 +1856,22 @@
     "review_content_policy_step": {
       "title": "Antes de enviar tu colección para revisión",
       "subtitle": "Por favor, confirma tu reconocimiento.",
-      "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo afirmar que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
-      "terms_of_use": "Términos de uso",
-      "content_policy": "Política de contenido",
-      "accept_terms_of_use": "Garantizo que los artículos enviados cumplen plenamente con los {terms_of_use_link} y las {content_policy_link}, que reconozco y acepto.",
-      "acknowledge_immutability": "Entiendo que no podré añadir o eliminar ítems después de que la colección sea publicada.",
-      "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a las {content_policy_link} y los {terms_of_use_link}. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo.",
-      "email_disclousure": "Necesitamos tu email para futuras comunicaciones sobre esta colección.",
-      "email_disclousure_detail": "Solo utilizaremos este email para comunicaciones sobre esta colección en particular.{enter}No estará vinculado a su cuenta.",
-      "email_newsletter": "¡Manténme al tanto! Utilice este correo electrónico para recibir el boletín semanal, las actualizaciones y las noticias del concurso de Decentraland.",
+      "standard": {
+        "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo afirmar que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
+        "accept_terms_of_use": "Garantizo que los artículos enviados cumplen plenamente con los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>, que reconozco y acepto.",
+        "acknowledge_immutability": "Entiendo que no podré añadir o eliminar ítems después de que la colección sea publicada.",
+        "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo."
+      },
+      "third_parties": {
+        "first": "Garantizo que los artículos enviados cumplen plenamente con los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>, que reconozco y acepto.",
+        "second": "Confirmo que tengo permisos de IP para crear Linked Wearables basados en esta colección NFT externa.",
+        "third": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo."
+      },
+      "subscription": {
+        "title": "Información de contacto",
+        "text": "Por favor, ingrese el correo electrónico que sea mejor para contactarlo en relación con esta colección.",
+        "checkbox_text": "¡Manténme al tanto! Utilice este correo electrónico para recibir el boletín semanal, las actualizaciones y las noticias del concurso de Decentraland."
+      },
       "continue": "Continar"
     },
     "pay_publication_fee_step": {

@@ -1837,15 +1837,22 @@
     "review_content_policy_step": {
       "title": "在提交您的收藏审核之前",
       "subtitle": "请确认您的确认。",
-      "content_policy_first_condition": "我了解我将无法修改收藏的名称，并且我可以证明“{collection_name}”作为名称不违反任何知识产权。",
-      "terms_of_use": "使用条款",
-      "content_policy": "内容政策",
-      "accept_terms_of_use": "我保证提交的项目完全符合我承认并接受的 {terms_of_use_link} 和 {content_policy_link}。",
-      "acknowledge_immutability": "我了解一旦收藏发布后，我将无法添加或删除项目。",
-      "acknowledge_dao_terms": "我承认 DAO 可能会因违反 {content_policy_link} 和 {terms_of_use_link} 而拒绝批准该项目。 我也承认，如果被拒绝，提案费将不予退还，因为其目的是补偿策展人的时间和工作。",
-      "email_disclousure": "我们需要您的电子邮件，以便将来就该系列进行交流。",
-      "email_disclousure_detail": "我们只会将这封电子邮件用于特别是有关此收藏的通信。{enter}它不会与您的帐户相关联。",
-      "email_newsletter": "保持联系！使用此电子邮件获取 Decentraland 的每周新闻通讯、更新和竞赛新闻。",
+      "standard": {
+        "content_policy_first_condition": "我了解我将无法修改收藏的名称，并且我可以证明“{collection_name}”作为名称不违反任何知识产权。",
+        "accept_terms_of_use": "我保证所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
+        "acknowledge_immutability": "我了解一旦收藏发布后，我将无法添加或删除项目。",
+        "acknowledge_dao_terms": "我承认，DAO 可能会因违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准该项目。我还承认，如果提案被拒绝，提案费将​​不予退还，因为提案费的目的是补偿策展人的时间和工作。"
+      },
+      "third_parties": {
+        "first": "我确认所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
+        "second": "我确认我拥有基于此外部 NFT 集合创建链接可穿戴设备的 IP 权限。",
+        "third": "我承认, Decentraland DAO 可能会因违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准我的项目。我还承认，如果被拒绝，出版费将不予退还。"
+      },
+      "subscription": {
+        "title": "联系信息",
+        "text": "请输入与此收藏相关的最适合与您联系的电子邮件地址。",
+        "checkbox_text": "让我了解最新动态！订阅 Decentraland 的每周新闻通讯，获取新闻、产品更新等。"
+      },
       "continue": "继续"
     },
     "pay_publication_fee_step": {

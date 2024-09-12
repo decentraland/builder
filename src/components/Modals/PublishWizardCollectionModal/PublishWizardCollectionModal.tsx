@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
 import { List, ModalNavigation } from 'decentraland-ui'
@@ -23,12 +23,7 @@ import './PublishWizardCollectionModal.css'
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
   const { collection, items, wallet, rarities, onClose, onFetchRarities, onPublish, onAuthorizedAction, onCloseAuthorization } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
-  const [collectionName, setCollectionName] = useState<string>('')
   const [emailAddress, setEmailAddress] = useState<string>('')
-  const [contentPolicyFirstConditionChecked, setContentPolicyFirstConditionChecked] = useState<boolean>(false)
-  const [acceptTermsOfUseChecked, setAcceptTermsOfUseChecked] = useState<boolean>(false)
-  const [acknowledgeImmutability, setAcknowledgeImmutability] = useState<boolean>(false)
-  const [acknowledgeDaoTermsChecked, setAcknowledgeDaoTermsChecked] = useState<boolean>(false)
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false)
 
   useEffect(() => {
@@ -40,80 +35,62 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       setCurrentStep(PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
       onCloseAuthorization()
     }
-  }, [collection.forumLink, onCloseAuthorization])
+  }, [collection.forumLink, onCloseAuthorization, setCurrentStep])
 
-  const handleOnNextStep = () => {
+  const handleOnNextStep = useCallback(() => {
     setCurrentStep(step => step + 1)
-  }
+  }, [setCurrentStep])
 
-  const handleOnPrevStep = () => {
+  const handleOnPrevStep = useCallback(() => {
     setCurrentStep(step => step - 1)
-  }
+  }, [setCurrentStep])
 
-  const handleOnConfirmCollectionName = (confirmedCollectionName: string) => {
-    setCollectionName(confirmedCollectionName)
-  }
+  const handleOnChangeEmailAddress = useCallback(
+    (email: string) => {
+      setEmailAddress(email)
+    },
+    [setEmailAddress]
+  )
 
-  const handleOnChangeEmailAddress = (email: string) => {
-    setEmailAddress(email)
-  }
+  const handleOnSubscribeToNewsletter = useCallback(
+    (value: boolean) => {
+      setSubscribeToNewsletter(value)
+    },
+    [setSubscribeToNewsletter]
+  )
 
-  const handleOnContentPolicyFirstConditionChange = (value: boolean) => {
-    setContentPolicyFirstConditionChecked(value)
-  }
+  const handleOnPublish = useCallback(
+    (paymentMethod: PaymentMethod) => {
+      if (paymentMethod === PaymentMethod.FIAT) {
+        onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
+        return
+      }
 
-  const handleOnAcceptTermsOfUseChange = (value: boolean) => {
-    setAcceptTermsOfUseChecked(value)
-  }
+      const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
 
-  const handleOnAcknowledgeImmutability = (value: boolean) => {
-    setAcknowledgeImmutability(value)
-  }
-
-  const handleOnAcknowledgeDaoTermsChange = (value: boolean) => {
-    setAcknowledgeDaoTermsChecked(value)
-  }
-
-  const handleOnSubscribeToNewsletter = (value: boolean) => {
-    setSubscribeToNewsletter(value)
-  }
-
-  const handleOnPublish = (paymentMethod: PaymentMethod) => {
-    if (paymentMethod === PaymentMethod.FIAT) {
-      onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
-      return
-    }
-
-    const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
-
-    onAuthorizedAction({
-      authorizedAddress: authorization.authorizedAddress,
-      authorizedContractLabel: ContractName.CollectionManager,
-      targetContract: {
-        name: authorization.contractName,
-        address: authorization.contractAddress,
-        chainId: authorization.chainId,
-        network: Network.MATIC,
-        category: NFTCategory.ENS
-      },
-      targetContractName: ContractName.MANAToken,
-      requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
-      authorizationType: AuthorizationType.ALLOWANCE,
-      onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
-    })
-  }
+      onAuthorizedAction({
+        authorizedAddress: authorization.authorizedAddress,
+        authorizedContractLabel: ContractName.CollectionManager,
+        targetContract: {
+          name: authorization.contractName,
+          address: authorization.contractAddress,
+          chainId: authorization.chainId,
+          network: Network.MATIC,
+          category: NFTCategory.ENS
+        },
+        targetContractName: ContractName.MANAToken,
+        requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
+        authorizationType: AuthorizationType.ALLOWANCE,
+        onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
+      })
+    },
+    [onPublish, collection, items, emailAddress, subscribeToNewsletter, wallet, rarities, onAuthorizedAction]
+  )
 
   const renderStepView = () => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
-        return (
-          <ConfirmCollectionNameStep
-            collection={collection}
-            confirmedCollectionName={collectionName}
-            onChangeCollectionName={handleOnConfirmCollectionName}
-            onNextStep={handleOnNextStep}
-          />
-        )
+        return <ConfirmCollectionNameStep collection={collection} onNextStep={handleOnNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
@@ -121,16 +98,8 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
           <ReviewContentPolicyStep
             collection={collection}
             confirmedEmailAddress={emailAddress}
-            contentPolicyFirstConditionChecked={contentPolicyFirstConditionChecked}
-            acceptTermsOfUseChecked={acceptTermsOfUseChecked}
-            acknowledgeImmutability={acknowledgeImmutability}
-            acknowledgeDaoTermsChecked={acknowledgeDaoTermsChecked}
             subscribeToNewsletter={subscribeToNewsletter}
             onChangeEmailAddress={handleOnChangeEmailAddress}
-            onContentPolicyFirstConditionChange={handleOnContentPolicyFirstConditionChange}
-            onAcceptTermsOfUseChange={handleOnAcceptTermsOfUseChange}
-            onAcknowledgeImmutability={handleOnAcknowledgeImmutability}
-            onAcknowledgeDaoTermsChange={handleOnAcknowledgeDaoTermsChange}
             onSubscribeToNewsletter={handleOnSubscribeToNewsletter}
             onNextStep={handleOnNextStep}
             onPrevStep={handleOnPrevStep}
@@ -145,7 +114,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     }
   }
 
-  const renderStepTitle = () => {
+  const stepTitle = useMemo(() => {
     switch (currentStep) {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
@@ -159,28 +128,33 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       default:
         return null
     }
-  }
+  }, [t, currentStep])
 
-  const renderStepsInicator = () => {
+  const stepIndicator = useMemo(() => {
     if (currentStep === PublishWizardCollectionSteps.COLLECTION_PUBLISHED) {
       return null
     }
+    const steps = Object.values(PublishWizardCollectionSteps).filter(
+      step => !isNaN(Number(step)) && step !== PublishWizardCollectionSteps.COLLECTION_PUBLISHED
+    )
+    const activeStepPosition = steps.findIndex(step => step === currentStep)
 
     return (
       <List horizontal className="steps-indicator content">
-        {Object.values(PublishWizardCollectionSteps)
-          .filter(step => !isNaN(Number(step)) && step !== PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
-          .map(step => (
-            <List.Item key={step} className={classNames('step', { active: currentStep === step })} />
-          ))}
+        {steps.map((step, index) => (
+          <List.Item
+            key={step}
+            className={classNames('step', { active: currentStep === step, beforeActiveStep: index < activeStepPosition })}
+          />
+        ))}
       </List>
     )
-  }
+  }, [currentStep])
 
   return (
     <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose} closeOnDimmerClick={false}>
-      <ModalNavigation title={renderStepTitle()} onClose={onClose} />
-      {renderStepsInicator()}
+      <ModalNavigation title={stepTitle} onClose={onClose} />
+      {stepIndicator}
       {renderStepView()}
     </Modal>
   )

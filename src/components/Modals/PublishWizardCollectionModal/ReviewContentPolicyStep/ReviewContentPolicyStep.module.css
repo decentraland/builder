@@ -1,0 +1,58 @@
+.content {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px 24px 48px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.checkboxContainer {
+  display: flex;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.checkboxContainer > :global(.ui.checkbox) {
+  margin-top: 3px;
+  margin-right: 14px;
+}
+
+.checkboxContainer > span {
+  text-align: justify;
+  color: var(--clear-divider);
+}
+
+.checkboxContainer > span > a {
+  color: var(--clear-divider);
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.subscriptionText {
+  color: var(--clear-divider);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  margin-bottom: 0px;
+}
+
+.subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.actions {
+  margin-top: 24px;
+  width: 100%;
+  justify-content: space-between !important;
+}
+
+.actions :global(.button) {
+  width: 180px;
+}
