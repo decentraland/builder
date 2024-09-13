@@ -4,7 +4,7 @@ import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import { FetchCollectionItemsSuccessAction, FETCH_COLLECTION_ITEMS_SUCCESS } from 'modules/item/actions'
 import { isThirdParty } from 'lib/urn'
-import { Item } from 'modules/item/types'
+import { chunk } from 'lib/array'
 import {
   fetchItemCurationFailure,
   FetchItemCurationRequestAction,
@@ -20,9 +20,6 @@ import { ItemCuration } from './types'
 
 const MAX_ITEM_CURATIONS = 30
 const REQUESTS_BATCH_SIZE = 10
-
-const chunk = (arr: Item[], size: number) =>
-  Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size))
 
 export function* itemCurationSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEM_CURATION_REQUEST, handleFetchItemCurationRequest)

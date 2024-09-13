@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
+import { chunk } from 'lib/array'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { Land, LandType } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
@@ -92,7 +93,11 @@ export async function getLandRedirectionHashes(builderClient: BuilderClient, lan
   const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
   let coordsWithHashesList: (LandCoords & LandHashes)[] = []
   if (coordsList.length > 0) {
-    coordsWithHashesList = await builderClient.getLandRedirectionHashes(coordsList, getCurrentLocale().locale)
+    for (const coordsBatch of chunk(coordsList, 145)) {
+      coordsWithHashesList = coordsWithHashesList.concat(
+        await builderClient.getLandRedirectionHashes(coordsBatch, getCurrentLocale().locale)
+      )
+    }
   }
   const landHashes: { id: string; hash: string }[] = []
 
