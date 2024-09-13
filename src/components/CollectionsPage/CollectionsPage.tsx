@@ -306,12 +306,14 @@ export default function CollectionsPage(props: Props) {
                   <Tabs.Tab active={currentTab === TABS.STANDARD_COLLECTIONS} onClick={() => handleTabChange(TABS.STANDARD_COLLECTIONS)}>
                     {t('collections_page.collections')}
                   </Tabs.Tab>
-                  <Tabs.Tab
-                    active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
-                    onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
-                  >
-                    {t('collections_page.third_party_collections')}
-                  </Tabs.Tab>
+                  {(isThirdPartyManager || isLinkedWearablesPaymentsEnabled) && (
+                    <Tabs.Tab
+                      active={currentTab === TABS.THIRD_PARTY_COLLECTIONS}
+                      onClick={() => handleTabChange(TABS.THIRD_PARTY_COLLECTIONS)}
+                    >
+                      {t('collections_page.third_party_collections')}
+                    </Tabs.Tab>
+                  )}
                   {hasUserOrphanItems && (
                     // TODO: Remove tabs when there are no users with orphan items
                     <Tabs.Tab active={currentTab === TABS.ITEMS} onClick={() => handleTabChange(TABS.ITEMS)}>
@@ -376,6 +378,8 @@ export default function CollectionsPage(props: Props) {
     isLoadingItems,
     isLoadingCollections,
     isLoadingOrphanItem,
+    isLinkedWearablesPaymentsEnabled,
+    isThirdPartyManager,
     handlePageChange,
     handleNewCollection,
     renderGrid,
