@@ -85,8 +85,12 @@ export type DecodedURN<T extends URNType = any> = BaseDecodedURN &
     ? EntityURN
     : BaseAvatarURN | CollectionsV2URN | CollectionThirdPartyURN | EntityURN)
 
+export function buildThirdPartyId(thirdPartyName: string) {
+  return `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}`
+}
+
 export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
-  let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
+  let urn = `${buildThirdPartyId(thirdPartyName)}:${collectionId}`
   if (tokenId) {
     urn += `:${tokenId}`
   }

@@ -1,3 +1,5 @@
+const addressBeingWrittenRegEx = /^(0x)?[0-9a-fA-F]{0,40}$/
+
 export const includes = (addresses: string[], address: string) => {
   return addresses.some(_address => isEqual(_address, address))
 }
@@ -16,4 +18,8 @@ export const isValid = (addr: string) => {
 
 export function shorten(address: string, leftChars: number = 6, rightChars: number = 5) {
   return address ? address.slice(0, leftChars) + '...' + address.slice(42 - rightChars) : ''
+}
+
+export function isAddressBeingWritten(address: string): boolean {
+  return addressBeingWrittenRegEx.test(address)
 }
