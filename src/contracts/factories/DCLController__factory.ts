@@ -242,7 +242,7 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class DCLController__factory {
   static readonly abi = _abi;
