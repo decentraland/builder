@@ -20,3 +20,18 @@
   min-width: unset;
   flex-grow: 1;
 }
+
+.contract :global(.dcl.field) {
+  max-width: 320px;
+}
+
+.thirdParty {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+}
+
+.contractInput:global(.ui.input) {
+  margin-top: 6px;
+}
