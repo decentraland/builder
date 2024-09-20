@@ -64,8 +64,10 @@ export default function ThirdPartyCollectionDetailPage({
   totalItems,
   isLoading,
   isThirdPartyV2Enabled,
-  onOpenModal,
+  isLinkedWearablesPaymentsEnabled,
   onFetchAvailableSlots,
+  onNewItem,
+  onEditName,
   isLoadingAvailableSlots
 }: Props) {
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({})
@@ -100,14 +102,16 @@ export default function ThirdPartyCollectionDetailPage({
   }, [page, shouldFetchAllPages, items, thirdParty, currentPage])
 
   const handleNewItems = useCallback(() => {
-    onOpenModal('CreateItemsModal', { collectionId: collection!.id })
-  }, [collection, onOpenModal])
+    if (collection?.id) {
+      onNewItem(collection.id)
+    }
+  }, [collection?.id, onNewItem])
 
   const handleEditName = useCallback(() => {
     if (collection) {
-      onOpenModal('EditCollectionNameModal', { collection })
+      onEditName(collection)
     }
-  }, [collection, onOpenModal])
+  }, [collection, onEditName])
 
   const handleGoBack = useCallback(() => {
     if (isComingFromTheCollectionsPage) {
@@ -255,16 +259,21 @@ export default function ThirdPartyCollectionDetailPage({
                     </CopyToClipboard>
                   </Info>
                 )}
-                <Info title={t('third_party_collection_detail_page.slots_short')} info={t('third_party_collection_detail_page.slots_long')}>
-                  <div className={styles.slotsIcon} />
-                  {isLoadingAvailableSlots ? (
-                    <Loader active inline size="tiny" />
-                  ) : (
-                    <span>
-                      {thirdParty.availableSlots ?? 0} / {thirdParty.maxItems}
-                    </span>
-                  )}
-                </Info>
+                {!isLinkedWearablesPaymentsEnabled && (
+                  <Info
+                    title={t('third_party_collection_detail_page.slots_short')}
+                    info={t('third_party_collection_detail_page.slots_long')}
+                  >
+                    <div className={styles.slotsIcon} />
+                    {isLoadingAvailableSlots ? (
+                      <Loader active inline size="tiny" />
+                    ) : (
+                      <span>
+                        {thirdParty.availableSlots ?? 0} / {thirdParty.maxItems}
+                      </span>
+                    )}
+                  </Info>
+                )}
                 <Button inverted onClick={handleNewItems}>
                   <Icon name="plus" />
                   {t('third_party_collection_detail_page.new_items')}
@@ -393,6 +402,8 @@ export default function ThirdPartyCollectionDetailPage({
       collection,
       selectedItems,
       isLoadingAvailableSlots,
+      isLinkedWearablesPaymentsEnabled,
+      isThirdPartyV2Enabled,
       totalItems,
       page,
       handleSelectItemChange,
