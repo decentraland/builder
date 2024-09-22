@@ -205,6 +205,11 @@ type BaseCuration = {
   updated_at: Date
 }
 
+export enum TermsOfServiceEvent {
+  PUBLISH_COLLECTION = 'publish_collection_tos',
+  PUBLISH_THIRD_PARTY_ITEMS = 'publish_third_party_items_tos'
+}
+
 export type RemoteCollectionCuration = {
   collection_id: string
   assignee?: string
@@ -898,8 +903,10 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
-  saveTOS = async (collection: Collection, email: string): Promise<void> => {
-    await this.request('post', `/collections/${collection.id}/tos`, { params: { email, collection_address: collection.contractAddress } })
+  saveTOS = async (event: TermsOfServiceEvent, collection: Collection, email: string, hashes?: string[]): Promise<void> => {
+    await this.request('post', `/collections/${collection.id}/tos`, {
+      params: { event, email, collection_address: collection.contractAddress, ...(hashes ? { hashes } : {}) }
+    })
   }
 
   lockCollection = async (collection: Collection): Promise<string> => {
@@ -1039,6 +1046,10 @@ export class BuilderAPI extends BaseAPI {
         return obj
       }, {})
     )
+  }
+
+  async deleteVirtualThirdParty(thirdPartId: string): Promise<void> {
+    await this.request('delete', `/thirdParties/${thirdPartId}`)
   }
 
   isAxiosError(error: any): error is AxiosError {
