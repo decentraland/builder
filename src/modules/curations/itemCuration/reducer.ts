@@ -2,14 +2,10 @@ import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/lo
 import {
   DeployBatchedThirdPartyItemsSuccessAction,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
-  PublishAndPushChangesThirdPartyItemsFailureAction,
-  PublishAndPushChangesThirdPartyItemsRequestAction,
   PublishAndPushChangesThirdPartyItemsSuccessAction,
   PublishThirdPartyItemsFailureAction,
   PublishThirdPartyItemsRequestAction,
   PublishThirdPartyItemsSuccessAction,
-  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
-  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
   PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
@@ -62,16 +58,13 @@ type CurationReducerAction =
   | PushChangesThirdPartyItemsRequestAction
   | PushChangesThirdPartyItemsSuccessAction
   | PushChangesThirdPartyItemsFailureAction
-  | PublishAndPushChangesThirdPartyItemsRequestAction
   | PublishAndPushChangesThirdPartyItemsSuccessAction
-  | PublishAndPushChangesThirdPartyItemsFailureAction
   | DeployBatchedThirdPartyItemsSuccessAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
   switch (action.type) {
     case PUBLISH_THIRD_PARTY_ITEMS_REQUEST:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
-    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_ITEM_CURATION_REQUEST:
     case FETCH_ITEM_CURATIONS_REQUEST:
       return {
@@ -154,7 +147,6 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
         error: null
       }
     }
-    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case PUBLISH_THIRD_PARTY_ITEMS_FAILURE:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_ITEM_CURATIONS_FAILURE:
