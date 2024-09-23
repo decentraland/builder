@@ -206,7 +206,7 @@ const _abi = [
     name: "NewTTL",
     type: "event",
   },
-];
+] as const;
 
 export class ENS__factory {
   static readonly abi = _abi;

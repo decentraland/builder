@@ -1392,7 +1392,7 @@ const _abi = [
     name: "OwnerUpdate",
     type: "event",
   },
-];
+] as const;
 
 export class LANDRegistry__factory {
   static readonly abi = _abi;
