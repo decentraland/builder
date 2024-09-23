@@ -1859,6 +1859,8 @@
       "title": "确认项目",
       "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。",
       "learn_more": "了解出版费",
+      "already_payed": "已付款但未发布",
+      "already_published": "已发布",
       "quantity": "数量",
       "items": "{count} {count, plural, one {物品} other {项目}}",
       "fee_per_item": "每件费用",

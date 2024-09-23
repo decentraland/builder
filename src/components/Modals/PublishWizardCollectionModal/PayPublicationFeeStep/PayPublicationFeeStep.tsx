@@ -1,58 +1,78 @@
-import React, { useCallback } from 'react'
+import classNames from 'classnames'
+import React, { useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
-import { Button, Column, Icon, InfoTooltip, Mana, Modal, Row } from 'decentraland-ui'
+import { Button, Column, Icon, InfoTooltip, Mana, Modal, Row, Table } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
-import { Currency, BlockchainRarity } from 'modules/item/types'
+import { Currency } from 'modules/item/types'
+import { isTPCollection } from 'modules/collection/utils'
 import { PaymentMethod } from 'modules/collection/types'
-import { MapStateProps } from '../PublishWizardCollectionModal.types'
-import './PayPublicationFeeStep.css'
+import { Props } from '../PublishWizardCollectionModal.types'
+import styles from './PayPublicationFeeStep.module.css'
+import ItemImage from 'components/ItemImage'
 
 export const PayPublicationFeeStep: React.FC<
-  MapStateProps & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
+  Props & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
 > = props => {
   const {
     collection,
-    items,
-    rarities,
+    itemsToPublish,
+    itemsWithChanges,
+    price,
     wallet,
     collectionError,
     unsyncedCollectionError,
     isLoading,
+    thirdParty,
     isPublishCollectionsWertEnabled,
     onNextStep,
     onPrevStep
   } = props
 
-  // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
-  // as reference for the prices is enough.
-  const refRarity: BlockchainRarity | undefined = rarities[0]
+  const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
+  const availableSlots = useMemo(() => thirdParty?.availableSlots ?? 0, [thirdParty?.availableSlots])
+  const amountOfItemsToPublish = useMemo(
+    () => (itemsToPublish.length - availableSlots > 0 ? itemsToPublish.length - availableSlots : 0),
+    [itemsToPublish, availableSlots]
+  )
+  const amountOfItemsAlreadyPayed = useMemo(
+    () => amountOfItemsToPublish - itemsToPublish.length,
+    [amountOfItemsToPublish, itemsToPublish.length]
+  )
+  const amountOfItemsAlreadyPublishedWithChanges = useMemo(() => itemsWithChanges.length, [itemsWithChanges])
 
-  let priceUSD = '0'
-  let totalPrice = '0'
-  let totalPriceUSD = '0'
-  let hasInsufficientMANA = true
-
-  if (refRarity) {
-    priceUSD = refRarity.prices!.USD
-
-    totalPrice = ethers.BigNumber.from(refRarity.prices!.MANA).mul(items.length).toString()
-
-    totalPriceUSD = ethers.BigNumber.from(priceUSD).mul(items.length).toString()
-
-    hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPrice))
-  }
+  const priceUSD = useMemo(
+    () => (thirdParty?.isProgrammatic ? price?.programmatic?.usd : price?.item.usd) ?? '0',
+    [thirdParty?.isProgrammatic, price?.item.usd, price?.programmatic?.usd]
+  )
+  const totalPriceMANA = useMemo(
+    () =>
+      thirdParty?.isProgrammatic
+        ? price?.programmatic?.mana ?? '0'
+        : ethers.BigNumber.from(price?.item.mana ?? '0')
+            .mul(itemsToPublish.length)
+            .toString(),
+    [price?.item.mana, itemsToPublish, thirdParty?.isProgrammatic]
+  )
+  const totalPriceUSD = useMemo(
+    () => (thirdParty?.isProgrammatic ? priceUSD : ethers.BigNumber.from(priceUSD).mul(itemsToPublish.length).toString()),
+    [priceUSD, itemsToPublish]
+  )
+  const hasInsufficientMANA = useMemo(
+    () => !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPriceMANA)),
+    [wallet, totalPriceMANA]
+  )
 
   const renderErrorMessage = () => {
     let content: React.ReactNode | undefined = undefined
 
-    if (!refRarity) {
-      content = <small className="error">{t('publish_collection_modal_with_oracle.rarities_error')}</small>
+    if (!price) {
+      content = <small className={styles.error}>{t('publish_collection_modal_with_oracle.rarities_error')}</small>
     } else if (hasInsufficientMANA) {
       content = (
-        <small className="not-enough-mana-notice error">
+        <small className={classNames(styles.notEnoughManaNotice, styles.error)}>
           {t('publish_collection_modal_with_oracle.not_enough_mana', {
             symbol: (
               <span>
@@ -71,12 +91,12 @@ export const PayPublicationFeeStep: React.FC<
         </small>
       )
     } else if (unsyncedCollectionError && !isLoading) {
-      content = <small className="error ">{t('publish_collection_modal_with_oracle.unsynced_collection')}</small>
+      content = <small className={styles.error}>{t('publish_collection_modal_with_oracle.unsynced_collection')}</small>
     } else if (collectionError && !isLoading) {
-      content = <small className="error">{collectionError}</small>
+      content = <small className={styles.error}>{collectionError}</small>
     }
 
-    return content ? <div className="error-container">{content}</div> : null
+    return content ? <div className={styles.errorContainer}>{content}</div> : null
   }
 
   const handleBuyWithMana = useCallback(() => {
@@ -88,73 +108,102 @@ export const PayPublicationFeeStep: React.FC<
   }, [onNextStep])
 
   return (
-    <Modal.Content className="PayPublicationFeeStep">
+    <Modal.Content>
       <Column>
-        <Row className="details">
+        <Row className={styles.details}>
           <Column grow={true}>
-            <span className="title">{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
-            <span className="subtitle">
+            <span className={styles.title}>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
+            <span className={styles.subtitle}>
               {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
                 collection_name: <b>{collection.name}</b>,
-                count: items.length,
+                count: amountOfItemsToPublish,
                 currency: 'USD',
                 publication_fee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
               })}
             </span>
-            <span className="learn-more">
+            <span className={styles.learnMore}>
               <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener noreferrer">
                 {t('publish_wizard_collection_modal.pay_publication_fee_step.learn_more')}
               </a>
             </span>
-            <div className="price-breakdown-container">
-              <div className="element">
-                <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.quantity')}</div>
-                <div className="element-content">
-                  {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: items.length })}
-                </div>
-              </div>
-              <div className="element">
-                <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.fee_per_item')}</div>
-                <div className="element-content">
-                  {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
-                </div>
-              </div>
-              <div className="element">
-                <div className="element-header">
-                  {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
-                </div>
-                <div className="element-content total-amount">
-                  {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
-                </div>
-              </div>
-              <div className="element">
-                <div className="element-header">{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</div>
-                <div className="element-content total-amount">
-                  <Mana showTooltip network={Network.MATIC} size="small">
-                    {toFixedMANAValue(ethers.utils.formatEther(totalPrice))}
-                  </Mana>
-                </div>
-              </div>
-            </div>
+            <Table basic="very">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.quantity')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.fee_per_item')}</Table.HeaderCell>
+                  <Table.HeaderCell>
+                    {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
+                  </Table.HeaderCell>
+                  <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {amountOfItemsToPublish ? (
+                  <Table.Row>
+                    <Table.Cell className={styles.itemCell}>
+                      <ItemImage item={itemsToPublish[0]} className={styles.itemImage} />
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                    </Table.Cell>
+                    <Table.Cell className={styles.totalAmount}>
+                      <Mana showTooltip network={Network.MATIC} size="small">
+                        {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
+                      </Mana>
+                    </Table.Cell>
+                  </Table.Row>
+                ) : null}
+                {amountOfItemsAlreadyPayed ? (
+                  <Table.Row>
+                    <Table.Cell className={styles.itemCell}>
+                      <ItemImage item={itemsToPublish[itemsToPublish.length - 1]} className={styles.itemImage} />
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
+                    </Table.Cell>
+                    <Table.Cell colspan="3" className={styles.notPayable}>
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.already_payed')}
+                    </Table.Cell>
+                  </Table.Row>
+                ) : null}
+                {amountOfItemsAlreadyPublishedWithChanges ? (
+                  <Table.Row>
+                    <Table.Cell className={styles.itemCell}>
+                      <ItemImage item={itemsWithChanges[0]} className={styles.itemImage} />
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
+                    </Table.Cell>
+                    <Table.Cell colspan="3" className={styles.notPayable}>
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.already_published')}
+                    </Table.Cell>
+                  </Table.Row>
+                ) : null}
+              </Table.Body>
+            </Table>
           </Column>
         </Row>
         {renderErrorMessage()}
-        <Row className="actions">
+        <Row className={styles.actions}>
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
             {t('global.back')}
           </Button>
-          <div className="actions-right">
+          <div className={styles.actionsRight}>
             {isPublishCollectionsWertEnabled ? (
               <>
-                <InfoTooltip
-                  className="pay-with-card-info-tooltip"
-                  position="bottom center"
-                  content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
-                />
-                <Button className="pay-with-card" onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
-                  <Icon name="credit card outline" />
-                  <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
-                </Button>
+                {!isThirdParty && (
+                  <>
+                    <InfoTooltip
+                      className={styles.payWithCardInfoTooltip}
+                      position="bottom center"
+                      content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
+                    />
+                    <Button className={styles.payWithCard} onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+                      <Icon name="credit card outline" />
+                      <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
+                    </Button>
+                  </>
+                )}
               </>
             ) : null}
             <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>

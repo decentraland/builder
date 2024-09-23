@@ -1878,6 +1878,8 @@
       "title": "Confirmar ítems",
       "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count} ítems. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA).",
       "learn_more": "Aprender sobre la tarifa de publicación",
+      "already_payed": "Ya pagados, pero no publicados",
+      "already_published": "Ya publicados",
       "quantity": "Cantidad",
       "items": "{count} {count, plural, one {artículo} other {artículos}}",
       "fee_per_item": "Tarifa por artículo",

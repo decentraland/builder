@@ -1,0 +1,123 @@
+.details {
+  background-color: rgba(var(--dark-raw), 0.48);
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px 24px 48px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: justify;
+}
+
+.details .title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.details .subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--clear-divider);
+}
+
+.details .learnMore {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.details .learnMore > a {
+  color: var(--clear-divider);
+  text-decoration: underline;
+}
+
+.totalAmount {
+  font-weight: 500;
+}
+
+.totalAmount :global(.dcl.mana.header) {
+  margin-top: 0;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.actions {
+  margin-top: 24px;
+  width: 100%;
+  justify-content: space-between !important;
+}
+
+.actions .actionsRight {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.actions .actionsRight button {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.actions .actionsRight button span {
+  margin-left: 6px;
+}
+
+.actions .actionsRight .payWithCard {
+  background-color: white !important;
+  color: black;
+}
+
+.payWithCardInfoTooltip {
+  z-index: 3000 !important;
+}
+
+.actions :global(.button) {
+  max-width: 220px;
+}
+
+.actions :global(.button) > :global(.ui.dcl.mana) {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.actions :global(.button.loading) > :global(.ui.dcl.mana) {
+  visibility: hidden;
+}
+
+.errorContainer {
+  border-radius: 8px;
+  background: #ff2d5533;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.error {
+  flex: 1 1 0;
+}
+
+.notEnoughManaNotice :global(.dcl.mana .symbol) {
+  padding-right: 0;
+}
+
+.notPayable {
+  color: #ffbc5b;
+}
+
+.itemImage {
+  height: 48px;
+  width: 48px;
+}
+
+.itemCell {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+}

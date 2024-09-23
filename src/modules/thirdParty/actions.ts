@@ -6,7 +6,7 @@ import { ThirdPartyError } from 'modules/collection/utils'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { Item } from 'modules/item/types'
-import { Slot, ThirdParty } from './types'
+import { Cheque, Slot, ThirdParty } from './types'
 
 // Fetch Third Party Records
 
@@ -114,11 +114,31 @@ export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST = '[Request] Pub
 export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish & Push third party items changes'
 export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Publish & Push third party items changes'
 
-export const publishAndPushChangesThirdPartyItemsRequest = (thirdParty: ThirdParty, itemsToPublish: Item[], itemsWithChanges: Item[]) =>
-  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, { thirdParty, itemsToPublish, itemsWithChanges })
+export const publishAndPushChangesThirdPartyItemsRequest = (
+  thirdParty: ThirdParty,
+  itemsToPublish: Item[],
+  itemsWithChanges: Item[],
+  cheque?: Cheque,
+  email?: string,
+  subscribeToNewsletter?: boolean,
+  maxSlotPrice?: string
+) =>
+  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, {
+    thirdParty,
+    itemsToPublish,
+    itemsWithChanges,
+    cheque,
+    email,
+    subscribeToNewsletter,
+    maxSlotPrice
+  })
 
-export const publishAndPushChangesThirdPartyItemsSuccess = (collectionId: Collection['id'], items: Item[], itemCurations: ItemCuration[]) =>
-  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, { collectionId, items, itemCurations })
+export const publishAndPushChangesThirdPartyItemsSuccess = (
+  thirdParty: ThirdParty,
+  collectionId: Collection['id'],
+  items: Item[],
+  itemCurations: ItemCuration[]
+) => action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, { thirdParty, collectionId, items, itemCurations })
 
 export const publishAndPushChangesThirdPartyItemsFailure = (error: string) =>
   action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { error })

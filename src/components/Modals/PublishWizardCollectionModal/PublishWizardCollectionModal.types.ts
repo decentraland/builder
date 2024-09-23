@@ -1,11 +1,9 @@
-import { Dispatch } from 'redux'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
-import { publishCollectionRequest, PublishCollectionRequestAction } from 'modules/collection/actions'
-import { Collection } from 'modules/collection/types'
-import { Item, BlockchainRarity } from 'modules/item/types'
-import { fetchRaritiesRequest, FetchRaritiesRequestAction } from 'modules/item/actions'
+import { Collection, PaymentMethod } from 'modules/collection/types'
+import { Item } from 'modules/item/types'
+import { Cheque, ThirdParty } from 'modules/thirdParty/types'
 
 export enum PublishWizardCollectionSteps {
   CONFIRM_COLLECTION_NAME,
@@ -15,37 +13,42 @@ export enum PublishWizardCollectionSteps {
   COLLECTION_PUBLISHED
 }
 
-export type Props = ModalProps & {
+export type Price = {
+  item: {
+    // USD in WEI
+    usd: string
+    // MANA in WEI
+    mana: string
+  }
+  programmatic?: {
+    // USD in WEI
+    usd: string
+    // MANA in WEI
+    mana: string
+  }
+}
+
+export type Props = Omit<ModalProps, 'metadata'> & {
   metadata: PublishCollectionModalMetadata
   wallet: Wallet
+  thirdParty?: ThirdParty
   collection: Collection
-  items: Item[]
-  rarities: BlockchainRarity[]
+  itemsToPublish: Item[]
+  itemsWithChanges: Item[]
+  price?: Price
   unsyncedCollectionError: string | null
   collectionError: string | null
   itemError: string | null
   isLoading: boolean
+  isPublished: boolean
   isPublishCollectionsWertEnabled: boolean
-  onPublish: typeof publishCollectionRequest
-  onFetchRarities: typeof fetchRaritiesRequest
+  onPublish: (email: string, subscribeToNewsletter: boolean, paymentMethod: PaymentMethod, cheque?: Cheque, maxPrice?: string) => unknown
+  onFetchPrice: () => unknown
 } & WithAuthorizedActionProps
 
 export type PublishCollectionModalMetadata = {
   collectionId: string
+  itemsWithChanges: Item[]
+  itemsToPublish: Item[]
 }
-
-export type MapStateProps = Pick<
-  Props,
-  | 'wallet'
-  | 'collection'
-  | 'items'
-  | 'rarities'
-  | 'unsyncedCollectionError'
-  | 'collectionError'
-  | 'itemError'
-  | 'isLoading'
-  | 'isPublishCollectionsWertEnabled'
->
-export type MapDispatchProps = Pick<Props, 'onPublish' | 'onFetchRarities'>
-export type MapDispatch = Dispatch<PublishCollectionRequestAction | FetchRaritiesRequestAction>
-export type OwnProps = Pick<Props, 'metadata'>
+export type OwnProps = Pick<Props, 'metadata'> & Omit<ModalProps, 'metadata'>

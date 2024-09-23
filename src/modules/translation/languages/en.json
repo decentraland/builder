@@ -1869,6 +1869,8 @@
       "title": "Confirm items",
       "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} items. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA).",
       "learn_more": "Learn about the publication fee",
+      "already_payed": "Already payed but not published",
+      "already_published": "Already published",
       "quantity": "Quantity",
       "items": "{count} {count, plural, one {item} other {items}}",
       "fee_per_item": "Fee per item",
