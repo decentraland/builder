@@ -13,7 +13,8 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
 import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
 import { isThirdPartyCollection } from 'modules/collection/utils'
-import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { Collection } from 'modules/collection/types'
+import { getIsLinkedWearablesPaymentsEnabled, getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { getLastLocation } from 'modules/ui/location/selector'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
@@ -33,6 +34,7 @@ const mapState = (state: RootState): MapStateProps => {
     wallet: getWallet(state)!,
     collection,
     isThirdPartyV2Enabled: getIsLinkedWearablesV2Enabled(state),
+    isLinkedWearablesPaymentsEnabled: getIsLinkedWearablesPaymentsEnabled(state),
     thirdParty: collection && isThirdPartyCollection(collection) ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
     isLoading:
@@ -45,7 +47,8 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onNewItem: (collectionId: string) => dispatch(openModal('CreateItemsModal', { collectionId })),
+  onEditName: (collection: Collection) => dispatch(openModal('EditCollectionNameModal', { collection })),
   onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
 })
 

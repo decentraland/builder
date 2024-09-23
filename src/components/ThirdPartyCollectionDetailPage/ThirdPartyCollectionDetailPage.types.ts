@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
 import { FetchCollectionsParams } from 'lib/api/builder'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
+import { OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
@@ -29,7 +29,9 @@ export type Props = {
   isLoading: boolean
   isLoadingAvailableSlots: boolean
   isThirdPartyV2Enabled: boolean
-  onOpenModal: typeof openModal
+  isLinkedWearablesPaymentsEnabled: boolean
+  onNewItem: (collectionId: string) => unknown
+  onEditName: (collection: Collection) => unknown
   onFetchAvailableSlots: typeof fetchThirdPartyAvailableSlotsRequest
 }
 
@@ -49,6 +51,7 @@ export type MapStateProps = Pick<
   | 'thirdParty'
   | 'isLoading'
   | 'isLoadingAvailableSlots'
+  | 'isLinkedWearablesPaymentsEnabled'
   | 'authorizations'
   | 'currentPage'
   | 'totalItems'
@@ -57,7 +60,7 @@ export type MapStateProps = Pick<
   | 'paginatedData'
   | 'lastLocation'
 >
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchAvailableSlots'>
+export type MapDispatchProps = Pick<Props, 'onNewItem' | 'onEditName' | 'onFetchAvailableSlots'>
 export type MapDispatch = Dispatch<
   OpenModalAction | FetchItemCurationsRequestAction | FetchThirdPartyAvailableSlotsRequestAction | FetchCollectionItemsRequestAction
 >
