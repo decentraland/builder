@@ -109,7 +109,7 @@ import {
 import { areSynced, isEmote, isValidText, isWearable, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
-import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
+import { BuilderAPI, FetchCollectionsParams, TermsOfServiceEvent } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -433,7 +433,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
-      yield retry(10, 500, legacyBuilderClient.saveTOS, collection, email)
+      yield retry(
+        10,
+        500,
+        legacyBuilderClient.saveTOS,
+        TermsOfServiceEvent.PUBLISH_COLLECTION,
+        collection,
+        email,
+        items.map(item => item.currentContentHash ?? '').filter(Boolean)
+      )
 
       let txHash: string
 
