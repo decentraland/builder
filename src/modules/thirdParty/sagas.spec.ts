@@ -245,7 +245,7 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
@@ -280,7 +280,7 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             { collection, items: [mockedItemReturnedByServer], itemCurations }
