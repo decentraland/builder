@@ -69,7 +69,7 @@ import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import { Cheque } from 'modules/thirdParty/types'
 import { CurationSortOptions, CurationStatus } from 'modules/curations/types'
-import { BuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
+import { BuilderAPI, FetchCollectionsParams, TermsOfServiceEvent } from 'lib/api/builder'
 import { PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import {
@@ -903,6 +903,7 @@ describe('when executing the approval flow', () => {
 describe('when publishing a collection', () => {
   let collection: Collection
   let items: Item[]
+  let itemsContentHash: string[]
   const email = 'email@domain.com'
 
   const address = '0xa'
@@ -911,6 +912,7 @@ describe('when publishing a collection', () => {
   beforeEach(() => {
     collection = { salt: 'some salt', id: 'someId', name: 'name' } as Collection
     items = []
+    itemsContentHash = []
   })
 
   describe('when saving the collection fails', () => {
@@ -957,7 +959,10 @@ describe('when publishing a collection', () => {
           [select(getAddress), [address]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [retry(10, 500, mockBuilder.lockCollection, lockedCollection), newLock],
-          [retry(10, 500, mockBuilder.saveTOS, lockedCollection, email), undefined],
+          [
+            retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, lockedCollection, email, itemsContentHash),
+            undefined
+          ],
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .not.put(saveCollectionRequest(collection))
@@ -1118,6 +1123,7 @@ describe('when publishing a collection', () => {
         { ...mockedItem, id: 'fstItem', contents: { ...mockedItem.contents, 'aFile.png': 'QmOldHash' } },
         { ...mockedItem, id: 'sndItem', contents: { 'someFile.png': 'newHash' } }
       ]
+      itemsContentHash = items.map(item => item.currentContentHash ?? '').filter(Boolean)
     })
 
     it('should put an action to save each of the items that have contents hashed with an older version', () => {
@@ -1133,7 +1139,7 @@ describe('when publishing a collection', () => {
           [select(getAddress), [address]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [retry(10, 500, mockBuilder.lockCollection, collection), newLock],
-          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+          [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email, itemsContentHash), undefined],
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(saveItemRequest(items[0], {}))
@@ -1191,7 +1197,7 @@ describe('when publishing a collection', () => {
           [select(getAddress), [address]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [retry(10, 500, mockBuilder.lockCollection, collection), newLock],
-          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+          [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email, itemsContentHash), undefined],
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(saveCollectionRequest(collection))
@@ -2024,6 +2030,7 @@ describe('when publishing a collection with fiat', () => {
   let subscribeToNewsletter: boolean
   let collection: Collection
   let items: Item[]
+  let itemsContentHash: string[]
   let serverItems: Item[]
   let email: string
   let paymentMethod: PaymentMethod
@@ -2058,6 +2065,7 @@ describe('when publishing a collection with fiat', () => {
         describe('when no items are provided', () => {
           beforeEach(() => {
             items = []
+            itemsContentHash = []
           })
 
           describe('when the collection has the same amount of items in the server as locally', () => {
@@ -2081,7 +2089,10 @@ describe('when publishing a collection with fiat', () => {
                       [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                       [select(getAddress), 'address'],
                       [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                      [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                      [
+                        retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email, itemsContentHash),
+                        undefined
+                      ],
                       [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
                     ])
                     .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
@@ -2101,7 +2112,10 @@ describe('when publishing a collection with fiat', () => {
                       [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                       [select(getAddress), 'address'],
                       [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                      [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                      [
+                        retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email, itemsContentHash),
+                        undefined
+                      ],
                       [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv]
                     ])
                     .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, paymentMethod))
@@ -2122,7 +2136,10 @@ describe('when publishing a collection with fiat', () => {
                         [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                         [select(getAddress), from],
                         [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                        [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                        [
+                          retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email, itemsContentHash),
+                          undefined
+                        ],
                         [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
                         [put(fetchRaritiesRequest()), undefined],
                         [
@@ -2148,7 +2165,18 @@ describe('when publishing a collection with fiat', () => {
                           [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                           [select(getAddress), from],
                           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                          [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                          [
+                            retry(
+                              10,
+                              500,
+                              mockBuilder.saveTOS,
+                              TermsOfServiceEvent.PUBLISH_COLLECTION,
+                              collection,
+                              email,
+                              itemsContentHash
+                            ),
+                            undefined
+                          ],
                           [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
                           [put(fetchRaritiesRequest()), undefined],
                           [
@@ -2174,7 +2202,18 @@ describe('when publishing a collection with fiat', () => {
                             [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                             [select(getAddress), from],
                             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
-                            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+                            [
+                              retry(
+                                10,
+                                500,
+                                mockBuilder.saveTOS,
+                                TermsOfServiceEvent.PUBLISH_COLLECTION,
+                                collection,
+                                email,
+                                itemsContentHash
+                              ),
+                              undefined
+                            ],
                             [call([config, config.get], 'WERT_PUBLISH_FEES_ENV'), wertEnv],
                             [put(fetchRaritiesRequest()), undefined],
                             [
