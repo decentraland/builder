@@ -30,9 +30,9 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     itemsToPublish,
     itemsWithChanges,
     wallet,
-    price: itemPrice,
     isLoading,
-    isPublished,
+    price: itemPrice,
+    isPublishingFinished,
     onClose,
     onFetchPrice,
     onPublish,
@@ -52,14 +52,13 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }, [onFetchPrice])
 
   useEffect(() => {
-    // TODO: change the isPublished name
-    if (isPublished) {
+    if (isPublishingFinished) {
       setCurrentStep(PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
       onCloseAuthorization()
     } else if (collection.forumLink && isThirdParty) {
       setCurrentStep(PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS)
     }
-  }, [isPublished, isThirdParty, onCloseAuthorization, setCurrentStep])
+  }, [isPublishingFinished, isThirdParty, onCloseAuthorization, setCurrentStep])
 
   const handleOnNextStep = useCallback(() => {
     setCurrentStep(step => step + 1)
@@ -155,8 +154,9 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
         return (
           <ConfirmCollectionItemsStep
-            isLoading={isLoading || isSigningCheque}
+            isSigningCheque={isSigningCheque}
             items={allItems}
+            isThirdParty={isThirdParty}
             onNextStep={handleOnConfirmItemsNextStep}
             onPrevStep={handleOnPrevStep}
           />
@@ -220,7 +220,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }, [currentStep])
 
   return (
-    <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose} closeOnDimmerClick={false}>
+    <Modal className="PublishWizardCollectionModal" size="small" onClose={isLoading ? undefined : onClose} closeOnDimmerClick={false}>
       <ModalNavigation title={stepTitle} onClose={onClose} />
       {stepIndicator}
       {renderStepView()}

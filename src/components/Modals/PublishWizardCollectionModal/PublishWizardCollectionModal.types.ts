@@ -40,7 +40,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   collectionError: string | null
   itemError: string | null
   isLoading: boolean
-  isPublished: boolean
+  isPublishingFinished: boolean
   isPublishCollectionsWertEnabled: boolean
   onPublish: (email: string, subscribeToNewsletter: boolean, paymentMethod: PaymentMethod, cheque?: Cheque, maxPrice?: string) => unknown
   onFetchPrice: () => unknown

@@ -121,3 +121,21 @@
   gap: 16px;
   align-items: center;
 }
+
+.loadingOverlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1000000;
+  background-color: rgba(var(--dark-raw), 0.78);
+  font-weight: 500;
+  border-radius: 8px;
+  font-size: 20px;
+  gap: 8px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

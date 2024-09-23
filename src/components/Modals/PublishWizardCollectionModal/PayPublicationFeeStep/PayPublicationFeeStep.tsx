@@ -3,7 +3,8 @@ import React, { useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
-import { Button, Column, Icon, InfoTooltip, Mana, Modal, Row, Table } from 'decentraland-ui'
+import { Button, Column, Icon, InfoTooltip, Loader, Mana, Modal, Row, Table } from 'decentraland-ui'
+import ItemImage from 'components/ItemImage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { Currency } from 'modules/item/types'
@@ -11,7 +12,6 @@ import { isTPCollection } from 'modules/collection/utils'
 import { PaymentMethod } from 'modules/collection/types'
 import { Props } from '../PublishWizardCollectionModal.types'
 import styles from './PayPublicationFeeStep.module.css'
-import ItemImage from 'components/ItemImage'
 
 export const PayPublicationFeeStep: React.FC<
   Props & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
@@ -111,6 +111,12 @@ export const PayPublicationFeeStep: React.FC<
     <Modal.Content>
       <Column>
         <Row className={styles.details}>
+          {isLoading && (
+            <div className={styles.loadingOverlay}>
+              <Loader inline size="massive" />
+              {t('publish_wizard_collection_modal.accept_in_wallet')}
+            </div>
+          )}
           <Column grow={true}>
             <span className={styles.title}>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
             <span className={styles.subtitle}>
@@ -163,7 +169,7 @@ export const PayPublicationFeeStep: React.FC<
                       <ItemImage item={itemsToPublish[itemsToPublish.length - 1]} className={styles.itemImage} />
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
                     </Table.Cell>
-                    <Table.Cell colspan="3" className={styles.notPayable}>
+                    <Table.Cell colSpan="3" className={styles.notPayable}>
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.already_payed')}
                     </Table.Cell>
                   </Table.Row>
@@ -174,7 +180,7 @@ export const PayPublicationFeeStep: React.FC<
                       <ItemImage item={itemsWithChanges[0]} className={styles.itemImage} />
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
                     </Table.Cell>
-                    <Table.Cell colspan="3" className={styles.notPayable}>
+                    <Table.Cell colSpan="3" className={styles.notPayable}>
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.already_published')}
                     </Table.Cell>
                   </Table.Row>

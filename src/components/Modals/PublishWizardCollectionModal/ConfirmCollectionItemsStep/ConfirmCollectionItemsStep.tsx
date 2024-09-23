@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
-import { Button, Column, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
+import { Button, Column, Loader, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
 import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
@@ -11,8 +11,14 @@ import ItemImage from 'components/ItemImage'
 import ItemBadge from 'components/ItemBadge'
 import './ConfirmCollectionItemsStep.css'
 
-export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: () => void; onPrevStep: () => void }> = props => {
-  const { items, onNextStep, onPrevStep } = props
+export const ConfirmCollectionItemsStep: React.FC<{
+  items: Item[]
+  onNextStep: () => void
+  onPrevStep: () => void
+  isSigningCheque: boolean
+  isThirdParty: boolean
+}> = props => {
+  const { items, onNextStep, onPrevStep, isSigningCheque, isThirdParty } = props
 
   const renderPrice = (item: Item) => {
     const price = ethers.utils.formatEther(item.price!)
@@ -86,18 +92,30 @@ export const ConfirmCollectionItemsStep: React.FC<{ items: Item[]; onNextStep: (
     <Modal.Content className="ConfirmCollectionItemsStep">
       <Column>
         <Row className="details">
+          {isSigningCheque && (
+            <div className="loading-overlay">
+              <Loader inline size="massive" />
+              {t('publish_wizard_collection_modal.accept_in_wallet')}
+            </div>
+          )}
           <Column grow={true}>
             <p className="title">{t('publish_wizard_collection_modal.confirm_collection_items_step.title')}</p>
-            <p className="subtitle">{t('publish_wizard_collection_modal.confirm_collection_items_step.subtitle', { br: <br /> })}</p>
-            <p className="description">{t('publish_wizard_collection_modal.confirm_collection_items_step.description')}</p>
+            <p className="subtitle">
+              {t(`publish_wizard_collection_modal.confirm_collection_items_step.${isThirdParty ? 'third_party' : 'standard'}.subtitle`, {
+                br: <br />
+              })}
+            </p>
+            <p className="description">
+              {t(`publish_wizard_collection_modal.confirm_collection_items_step.${isThirdParty ? 'third_party' : 'standard'}.description`)}
+            </p>
             <div className="items">{renderItemsTable()}</div>
           </Column>
         </Row>
         <Row className="actions">
-          <Button className="back" secondary onClick={onPrevStep}>
+          <Button className="back" secondary disabled={isSigningCheque} onClick={onPrevStep}>
             {t('global.back')}
           </Button>
-          <Button className="proceed" primary onClick={onNextStep}>
+          <Button className="proceed" primary disabled={isSigningCheque} onClick={onNextStep}>
             {t('publish_wizard_collection_modal.confirm_collection_items_step.confirm_items')}
           </Button>
         </Row>
