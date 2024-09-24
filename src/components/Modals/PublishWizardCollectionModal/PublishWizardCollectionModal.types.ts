@@ -48,7 +48,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
 
 export type PublishCollectionModalMetadata = {
   collectionId: string
-  itemsWithChanges: Item[]
-  itemsToPublish: Item[]
+  itemsWithChanges?: Item[]
+  itemsToPublish?: Item[]
 }
 export type OwnProps = Pick<Props, 'metadata'> & Omit<ModalProps, 'metadata'>

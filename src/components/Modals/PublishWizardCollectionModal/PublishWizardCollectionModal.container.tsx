@@ -54,9 +54,12 @@ export default (props: OwnProps) => {
   const collectionError = useSelector(getCollectionError, shallowEqual)
   const thirdPartyPublishingError = useSelector(getThirdPartyError, shallowEqual)
   const isThirdParty = useMemo(() => collection && isTPCollection(collection), [collection])
-  const thirdParty = useSelector((state: RootState) => (collection ? getCollectionThirdParty(state, collection) : undefined), shallowEqual)
+  const thirdParty = useSelector(
+    (state: RootState) => (collection && isThirdParty ? getCollectionThirdParty(state, collection) : undefined),
+    shallowEqual
+  )
 
-  const itemIdsToPublish = useMemo(() => props.metadata.itemsToPublish.map(item => item.id), [props.metadata.itemsToPublish])
+  const itemIdsToPublish = useMemo(() => (props.metadata.itemsToPublish ?? []).map(item => item.id), [props.metadata.itemsToPublish])
   const thirdPartyItemsToPublish = useSelector(
     (state: RootState) => getUnpublishedThirdPartyItemsById(state, itemIdsToPublish),
     shallowEqual
@@ -65,7 +68,7 @@ export default (props: OwnProps) => {
     (state: RootState) =>
       getUnsyncedThirdPartyItemsById(
         state,
-        props.metadata.itemsWithChanges.map(item => item.id)
+        (props.metadata.itemsToPublish ?? []).map(item => item.id)
       ),
     shallowEqual
   )
