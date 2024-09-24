@@ -7,11 +7,20 @@ import { Button, Column, Icon, InfoTooltip, Loader, Mana, Modal, Row, Table } fr
 import ItemImage from 'components/ItemImage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
-import { Currency } from 'modules/item/types'
+import { Currency, Item } from 'modules/item/types'
 import { isTPCollection } from 'modules/collection/utils'
 import { PaymentMethod } from 'modules/collection/types'
 import { Props } from '../PublishWizardCollectionModal.types'
 import styles from './PayPublicationFeeStep.module.css'
+import { getBackgroundStyle } from 'modules/item/utils'
+
+const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }) => (
+  <div className={styles.multipleItemImages}>
+    <ItemImage item={referenceItem} className={styles.itemImage} />
+    <div className={styles.layerOne} style={getBackgroundStyle(referenceItem.rarity)}></div>
+    <div className={styles.layerTwo} style={getBackgroundStyle(referenceItem.rarity)}></div>
+  </div>
+)
 
 export const PayPublicationFeeStep: React.FC<
   Props & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
@@ -147,7 +156,11 @@ export const PayPublicationFeeStep: React.FC<
                 {amountOfItemsToPublish ? (
                   <Table.Row>
                     <Table.Cell className={styles.itemCell}>
-                      <ItemImage item={itemsToPublish[0]} className={styles.itemImage} />
+                      {amountOfItemsToPublish > 1 ? (
+                        <MultipleItemImages referenceItem={itemsToPublish[0]} />
+                      ) : (
+                        <ItemImage item={itemsToPublish[0]} className={styles.itemImage} />
+                      )}
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
                     </Table.Cell>
                     <Table.Cell>
@@ -166,7 +179,11 @@ export const PayPublicationFeeStep: React.FC<
                 {amountOfItemsAlreadyPayed ? (
                   <Table.Row>
                     <Table.Cell className={styles.itemCell}>
-                      <ItemImage item={itemsToPublish[itemsToPublish.length - 1]} className={styles.itemImage} />
+                      {amountOfItemsAlreadyPayed > 1 ? (
+                        <MultipleItemImages referenceItem={itemsToPublish[itemsToPublish.length - 1]} />
+                      ) : (
+                        <ItemImage item={itemsToPublish[itemsToPublish.length - 1]} className={styles.itemImage} />
+                      )}
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
                     </Table.Cell>
                     <Table.Cell colSpan="3" className={styles.notPayable}>
@@ -177,7 +194,11 @@ export const PayPublicationFeeStep: React.FC<
                 {amountOfItemsAlreadyPublishedWithChanges ? (
                   <Table.Row>
                     <Table.Cell className={styles.itemCell}>
-                      <ItemImage item={itemsWithChanges[0]} className={styles.itemImage} />
+                      {amountOfItemsAlreadyPublishedWithChanges > 1 ? (
+                        <MultipleItemImages referenceItem={itemsWithChanges[0]} />
+                      ) : (
+                        <ItemImage item={itemsWithChanges[0]} className={styles.itemImage} />
+                      )}
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
                     </Table.Cell>
                     <Table.Cell colSpan="3" className={styles.notPayable}>
