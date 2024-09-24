@@ -276,18 +276,18 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       typeof getIsLinkedWearablesPaymentsEnabled
     >
 
-    if (!collection) {
-      throw new Error('Collection not found')
-    }
-
-    if (subscribeToNewsletter && email) {
-      yield put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
-    }
-
     // We need to execute these two methods in sequence, because the push changes will create a new curation if there was one already approved.
     // It will create them with status PENDING, so the publish will fail if it's executed after that event.
     // Publish items
     try {
+      if (!collection) {
+        throw new Error('Collection not found')
+      }
+
+      if (subscribeToNewsletter && email) {
+        yield put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+      }
+
       if (thirdParty.availableSlots === undefined) {
         throw new Error('Third party available slots must be defined before publishing')
       }
@@ -326,7 +326,14 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         }
         // If the third party has already been published, just buy the needed slots
         else {
-          txHash = yield call(sendTransaction as any, thirdPartyContract, 'buyItemSlots', thirdParty.id, missingSlots, maxSlotPrice)
+          txHash = yield call(
+            sendTransaction as any,
+            thirdPartyContract,
+            'buyItemSlots',
+            thirdParty.id,
+            missingSlots.toString(),
+            maxSlotPrice
+          )
           yield call(waitForTx, txHash)
         }
       }
@@ -362,6 +369,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
             step: PublishThirdPartyCollectionModalStep.SUCCESS
           })
         )
+      }
+
+      // If the collection was already published, don't show the modal success message, just close the modal
+      if (isLinkedWearablesPaymentsEnabled && collection.isPublished) {
+        yield put(closeModal('PublishWizardCollectionModal'))
       }
     } catch (error) {
       yield put(publishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error')) // TODO: show to the user that something went wrong
