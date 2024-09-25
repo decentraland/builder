@@ -25,13 +25,18 @@ import {
   DisableThirdPartyRequestAction,
   DISABLE_THIRD_PARTY_SUCCESS,
   DISABLE_THIRD_PARTY_REQUEST,
-  DISABLE_THIRD_PARTY_FAILURE
+  DISABLE_THIRD_PARTY_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  PublishAndPushChangesThirdPartyItemsFailureAction,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  PublishAndPushChangesThirdPartyItemsRequestAction
 } from './actions'
 import { ThirdParty } from './types'
 
 export type ThirdPartyState = {
   data: Record<string, ThirdParty>
-  itemSlotPrice: number | null
   loading: LoadingState
   error: string | null
   errors: ThirdPartyError[]
@@ -39,7 +44,6 @@ export type ThirdPartyState = {
 
 export const INITIAL_STATE: ThirdPartyState = {
   data: {},
-  itemSlotPrice: null,
   loading: [],
   error: null,
   errors: []
@@ -59,11 +63,15 @@ type ThirdPartyReducerAction =
   | DisableThirdPartySuccessAction
   | DisableThirdPartyFailureAction
   | DisableThirdPartyRequestAction
+  | PublishAndPushChangesThirdPartyItemsRequestAction
+  | PublishAndPushChangesThirdPartyItemsSuccessAction
+  | PublishAndPushChangesThirdPartyItemsFailureAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
     case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
     case DISABLE_THIRD_PARTY_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
@@ -126,6 +134,7 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
     }
     case DISABLE_THIRD_PARTY_FAILURE:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:
     case FETCH_THIRD_PARTIES_FAILURE: {
       return {
         ...state,
@@ -139,6 +148,20 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         loading: loadingReducer(state.loading, action),
         errors: action.payload.errors,
         error: action.payload.errorMessage || null
+      }
+    }
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [action.payload.thirdParty.id]: {
+            ...state.data[action.payload.thirdParty.id],
+            published: true
+          }
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
 

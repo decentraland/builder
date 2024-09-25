@@ -1,13 +1,13 @@
 import { ChainId, Mapping, Mappings, MappingType, MultipleMapping, Network, RangeMapping, SingleMapping } from '@dcl/schemas'
-import { call } from 'redux-saga/effects'
-import { utils } from 'ethers'
-import { getChainIdByNetwork, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
+import { ethers, utils } from 'ethers'
+import { getChainIdByNetwork, getConnectedProvider, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
+import { ChainLinkOracle__factory, ThirdPartyRegistry__factory } from 'contracts/factories'
 import { extractThirdPartyId } from 'lib/urn'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
-import { ThirdParty } from './types'
+import { Cheque, LinkedContract, ThirdParty, ThirdPartyPrice } from './types'
 
 export function isUserManagerOfThirdParty(address: string, thirdParty: ThirdParty): boolean {
   return thirdParty.managers.map(manager => manager.toLowerCase()).includes(address.toLowerCase())
@@ -19,13 +19,13 @@ export const getThirdPartyForCollection = (thirdParties: Record<string, ThirdPar
 export const getThirdPartyForItem = (thirdParties: Record<string, ThirdParty>, item: Item): ThirdParty | undefined =>
   item.urn ? thirdParties[extractThirdPartyId(item.urn)] : undefined
 
-export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
-  const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-  const provider: Provider | null = yield call(getConnectedProvider)
+export async function getPublishItemsSignature(thirdPartyId: string, qty: number): Promise<Cheque> {
+  const maticChainId: ChainId = getChainIdByNetwork(Network.MATIC)
+  const provider: Provider | null = await getConnectedProvider()
   if (!provider) {
     throw new Error('Could not get a valid connected Wallet')
   }
-  const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+  const thirdPartyContract: ContractData = getContract(ContractName.ThirdPartyRegistry, maticChainId)
   const salt = utils.hexlify(utils.randomBytes(32))
   const domain = {
     name: thirdPartyContract.name,
@@ -55,16 +55,16 @@ export function* getPublishItemsSignature(thirdPartyId: string, qty: number) {
   // TODO: expose this as a function in decentraland-transactions
   const msgString = JSON.stringify({ domain, message: dataToSign, types: domainTypes, primaryType: 'ConsumeSlots' })
 
-  const accounts: string[] = yield call([provider, 'request'], { method: 'eth_requestAccounts', params: [], jsonrpc: '2.0' })
+  const accounts = (await provider.request({ method: 'eth_requestAccounts', params: [], jsonrpc: '2.0' })) as string[]
   const from = accounts[0]
 
-  const signature: string = yield call([provider, 'request'], {
+  const signature = (await provider.request({
     method: 'eth_signTypedData_v4',
     params: [from, msgString],
     jsonrpc: '2.0'
-  })
+  })) as string
 
-  return { signature, salt }
+  return { signature, salt, qty }
 }
 
 export const areMappingsEqual = (a: Mapping, b: Mapping): boolean => {
@@ -91,5 +91,37 @@ export const areMappingsValid = (mappings: Mappings): boolean => {
     return !!validate
   } catch (error) {
     return false
+  }
+}
+
+export function convertThirdPartyMetadataToRawMetadata(name: string, description: string, contracts: LinkedContract[]): string {
+  const rawContracts = contracts.map(contract => `${contract.network}-${contract.address}`).join(';')
+  return `tp:1:${name}:${description}${rawContracts ? `:${rawContracts}` : ''}`
+}
+
+export async function getThirdPartyPrice(): Promise<ThirdPartyPrice> {
+  const maticChainId = getChainIdByNetwork(Network.MATIC)
+  const networkProvider = await getNetworkProvider(maticChainId)
+  const provider = new ethers.providers.Web3Provider(networkProvider)
+  const chainLinkContract = ChainLinkOracle__factory.connect(getContract(ContractName.ChainlinkOracle, maticChainId).address, provider)
+  const thirdPartyContract = ThirdPartyRegistry__factory.connect(
+    getContract(ContractName.ThirdPartyRegistry, maticChainId).address,
+    provider
+  )
+  const [manaToUsdPrice, itemSlotPriceInUsd, programmaticPriceInSlots] = await Promise.all([
+    chainLinkContract.getRate(),
+    thirdPartyContract.itemSlotPrice(),
+    thirdPartyContract.programmaticBasePurchasedSlots()
+  ])
+
+  return {
+    item: {
+      usd: itemSlotPriceInUsd.toString(),
+      mana: ethers.utils.parseEther(itemSlotPriceInUsd.div(manaToUsdPrice).toString()).toString()
+    },
+    programmatic: {
+      usd: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(ethers.constants.WeiPerEther).toString(),
+      mana: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(manaToUsdPrice).toString()
+    }
   }
 }

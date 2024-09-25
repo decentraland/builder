@@ -12,13 +12,13 @@ import {
   DISABLE_THIRD_PARTY_SUCCESS,
   FETCH_THIRD_PARTIES_REQUEST,
   DISABLE_THIRD_PARTY_REQUEST,
-  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST
 } from './actions'
 import { getThirdPartyForCollection, getThirdPartyForItem, isUserManagerOfThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.thirdParty
 export const getData = (state: RootState) => getState(state).data
-export const getItemSlotPrice = (state: RootState) => getState(state).itemSlotPrice
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 export const getErrors = (state: RootState) => getState(state).errors
@@ -45,6 +45,9 @@ export const hasPendingDisableThirdPartyTransaction = (state: RootState, thirdPa
     )
   )
 }
+
+export const isPublishingAndPushingChanges = (state: RootState): boolean =>
+  isLoadingType(getLoading(state), PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST)
 
 export const getThirdParty = (state: RootState, id: string): ThirdParty | null => getData(state)[id] ?? null
 

@@ -11,6 +11,8 @@ export type ThirdParty = {
   maxItems: string
   totalItems: string
   availableSlots?: number
+  published: boolean
+  isProgrammatic: boolean
 }
 
 export type LinkedContract = {
@@ -30,4 +32,9 @@ export type Slot = {
   sigR: string
   sigS: string
   sigV: number
+}
+
+export type ThirdPartyPrice = {
+  item: { usd: string; mana: string }
+  programmatic: { usd: string; mana: string }
 }

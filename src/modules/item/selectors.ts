@@ -219,3 +219,19 @@ export const getIdsOfItemsBeingSaved = createSelector<RootState, AnyAction[], Re
     return acc
   }, {} as Record<string, boolean>)
 )
+
+export const getUnpublishedThirdPartyItemsById = (state: RootState, itemIds: string[]): Item[] => {
+  const statusOfItems = getStatusForItemIds(state, itemIds)
+  return itemIds
+    .filter(itemId => statusOfItems[itemId] === SyncStatus.UNPUBLISHED)
+    .map(itemId => getItem(state, itemId))
+    .filter(Boolean) as Item[]
+}
+
+export const getUnsyncedThirdPartyItemsById = (state: RootState, itemIds: string[]): Item[] => {
+  const statusOfItems = getStatusForItemIds(state, itemIds)
+  return itemIds
+    .filter(itemId => statusOfItems[itemId] === SyncStatus.UNSYNCED)
+    .map(itemId => getItem(state, itemId))
+    .filter(Boolean) as Item[]
+}

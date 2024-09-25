@@ -17,7 +17,7 @@ import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/act
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { loginSuccess } from 'modules/identity/actions'
-import { BuilderAPI } from 'lib/api/builder'
+import { BuilderAPI, TermsOfServiceEvent } from 'lib/api/builder'
 import { ThirdParty } from './types'
 import {
   fetchThirdPartiesRequest,
@@ -62,8 +62,12 @@ import { PublishThirdPartyCollectionModalStep, ThirdPartyAction } from 'modules/
 import { Item } from 'modules/item/types'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 import { thirdPartySaga } from './sagas'
-import { getPublishItemsSignature } from './utils'
+import { convertThirdPartyMetadataToRawMetadata, getPublishItemsSignature } from './utils'
 import { getThirdParty } from './selectors'
+import { getIsLinkedWearablesPaymentsEnabled } from 'modules/features/selectors'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
+import { waitForTx } from 'modules/transaction/utils'
+import { retry } from 'redux-saga/effects'
 
 jest.mock('modules/item/export')
 jest.mock('@dcl/crypto')
@@ -74,7 +78,8 @@ const mockBuilder = {
   publishTPCollection: jest.fn(),
   pushItemCuration: jest.fn(),
   updateItemCurationStatus: jest.fn(),
-  fetchContents: jest.fn()
+  fetchContents: jest.fn(),
+  saveTOS: jest.fn()
 } as any as BuilderAPI
 
 const deployMock = jest.fn()
@@ -94,10 +99,13 @@ beforeEach(() => {
     root: '',
     isApproved: true,
     description: 'aDescription',
-    managers: [],
+    managers: ['0x1'],
     contracts: [],
     maxItems: '1',
-    totalItems: '1'
+    totalItems: '1',
+    published: false,
+    isProgrammatic: false,
+    availableSlots: 200
   }
 })
 
@@ -148,7 +156,9 @@ describe('when fetching third parties', () => {
           managers: ['0x1', '0x2'],
           maxItems: '0',
           totalItems: '0',
-          contracts: []
+          contracts: [],
+          published: false,
+          isProgrammatic: false
         },
         {
           id: '2',
@@ -159,7 +169,9 @@ describe('when fetching third parties', () => {
           totalItems: '0',
           contracts: [],
           root: '',
-          isApproved: true
+          isApproved: true,
+          published: false,
+          isProgrammatic: false
         }
       ]
     })
@@ -245,7 +257,7 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
@@ -280,7 +292,7 @@ describe('when publishing third party items', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             { collection, items: [mockedItemReturnedByServer], itemCurations }
@@ -449,6 +461,10 @@ describe('when publishing & pushing changes to third party items', () => {
   let signature: string
   let salt: string
   let qty: number
+  let email: string
+  let subscribeToNewsletter: boolean
+  let linkedWearablesPaymentsEnabled: boolean
+
   beforeEach(() => {
     collection = { name: 'valid collection name', id: uuidv4(), isMappingComplete: true } as Collection
     item = {
@@ -476,24 +492,347 @@ describe('when publishing & pushing changes to third party items', () => {
     signature = 'a signature'
     salt = '0xsalt'
     qty = 1
+    email = 'anEmail@provider.com'
+    subscribeToNewsletter = true
+    linkedWearablesPaymentsEnabled = false
+  })
+
+  describe('when the collection is not found', () => {
+    it('should put the publish & push changes failure action and reset the progress', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [select(getCollection, item.collectionId), undefined],
+          [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled]
+        ])
+        .put(publishAndPushChangesThirdPartyItemsFailure('Collection not found'))
+        .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+        .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem]))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when it should subscribe to the newsletter', () => {
+    it('should put the subscribe to newsletter request action', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [select(getCollection, item.collectionId), collection],
+          [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled]
+        ])
+        .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+        .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem], undefined, email, subscribeToNewsletter))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the third party does not have its available slots fetched', () => {
+    beforeEach(() => {
+      thirdParty.availableSlots = undefined
+    })
+
+    it('should put the publish & push changes failure action and reset the progress', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [select(getCollection, item.collectionId), collection],
+          [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled]
+        ])
+        .put(publishAndPushChangesThirdPartyItemsFailure('Third party available slots must be defined before publishing'))
+        .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+        .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem]))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the linked wearables payments is enabled', () => {
+    let maxSlotPrice: string | undefined
+
+    beforeEach(() => {
+      linkedWearablesPaymentsEnabled = true
+    })
+
+    describe('and there are items to publish', () => {
+      beforeEach(() => {
+        itemsToPublish = [itemWithChanges]
+      })
+
+      describe("and there aren't enough available slots to publish them", () => {
+        beforeEach(() => {
+          thirdParty.availableSlots = 0
+        })
+
+        describe('and the max slot price is not defined', () => {
+          beforeEach(() => {
+            maxSlotPrice = undefined
+          })
+
+          it('should put the publish & push changes failure action and reset the progress', () => {
+            return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+              .provide([
+                [select(getCollection, item.collectionId), collection],
+                [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled]
+              ])
+              .put(publishAndPushChangesThirdPartyItemsFailure('Max slot price must be defined'))
+              .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+              .dispatch(
+                publishAndPushChangesThirdPartyItemsRequest(
+                  thirdParty,
+                  itemsToPublish,
+                  [],
+                  undefined,
+                  email,
+                  subscribeToNewsletter,
+                  maxSlotPrice
+                )
+              )
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the max slot price is defined', () => {
+          let contractData: ContractData
+          let missingSlots: string
+
+          beforeEach(() => {
+            maxSlotPrice = '1'
+            missingSlots = (itemsToPublish.length - (thirdParty.availableSlots ?? 0)).toString()
+          })
+
+          describe('and the third party is not published', () => {
+            beforeEach(() => {
+              thirdParty.published = false
+              contractData = getContract(ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY)
+            })
+
+            describe('and the add third parties transaction fails', () => {
+              it('should put the publish & push changes failure action and reset the progress', () => {
+                return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                  .provide([
+                    [select(getCollection, item.collectionId), collection],
+                    [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                    [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                    [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                    [matchers.call.fn(sendTransaction), Promise.reject(new Error('Failed to perform the transaction'))]
+                  ])
+                  .put(publishAndPushChangesThirdPartyItemsFailure('Failed to perform the transaction'))
+                  .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+                  .dispatch(
+                    publishAndPushChangesThirdPartyItemsRequest(
+                      thirdParty,
+                      itemsToPublish,
+                      [],
+                      undefined,
+                      email,
+                      subscribeToNewsletter,
+                      maxSlotPrice
+                    )
+                  )
+                  .run({ silenceTimeout: true })
+              })
+            })
+
+            describe('and the add third parties transaction succeeds', () => {
+              it('should send the transaction to create the third party, wait for it to finish and delete the virtual third party', () => {
+                return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                  .provide([
+                    [select(getCollection, item.collectionId), collection],
+                    [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                    [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                    [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                    [matchers.call.fn(sendTransaction), '0x123'],
+                    [call(waitForTx, '0x123'), undefined],
+                    [retry(20, 5000, mockBuilder.deleteVirtualThirdParty, thirdParty.id), undefined],
+                    [
+                      retry(
+                        10,
+                        500,
+                        mockBuilder.saveTOS,
+                        TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS,
+                        collection,
+                        email,
+                        itemsToPublish.map(item => item.id)
+                      ),
+                      undefined
+                    ],
+                    [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
+                    [
+                      call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+                      { collection, items: itemsToPublish, itemCurations }
+                    ]
+                  ])
+                  .call(
+                    sendTransaction,
+                    contractData,
+                    'addThirdParties',
+                    [
+                      [
+                        thirdParty.id,
+                        convertThirdPartyMetadataToRawMetadata(thirdParty.name, thirdParty.description, thirdParty.contracts),
+                        'Disabled',
+                        thirdParty.managers,
+                        [true],
+                        missingSlots
+                      ]
+                    ],
+                    [thirdParty.isProgrammatic],
+                    [maxSlotPrice]
+                  )
+                  .dispatch(
+                    publishAndPushChangesThirdPartyItemsRequest(
+                      thirdParty,
+                      itemsToPublish,
+                      [],
+                      undefined,
+                      email,
+                      subscribeToNewsletter,
+                      maxSlotPrice
+                    )
+                  )
+                  .run({ silenceTimeout: true })
+              })
+            })
+          })
+
+          describe('and the third party is published', () => {
+            beforeEach(() => {
+              thirdParty.published = true
+            })
+
+            describe('and the buy item slots transaction succeeds', () => {
+              it('should send the transaction to buy the missing slots and wait for it to finish', () => {
+                return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                  .provide([
+                    [select(getCollection, item.collectionId), collection],
+                    [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                    [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                    [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                    [matchers.call.fn(sendTransaction), '0x123'],
+                    [call(waitForTx, '0x123'), undefined],
+                    [
+                      retry(
+                        10,
+                        500,
+                        mockBuilder.saveTOS,
+                        TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS,
+                        collection,
+                        email,
+                        itemsToPublish.map(item => item.id)
+                      ),
+                      undefined
+                    ],
+                    [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
+                    [
+                      call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+                      { collection, items: itemsToPublish, itemCurations }
+                    ]
+                  ])
+                  .call(sendTransaction, contractData, 'buyItemSlots', thirdParty.id, missingSlots, maxSlotPrice)
+                  .dispatch(
+                    publishAndPushChangesThirdPartyItemsRequest(
+                      thirdParty,
+                      itemsToPublish,
+                      [],
+                      undefined,
+                      email,
+                      subscribeToNewsletter,
+                      maxSlotPrice
+                    )
+                  )
+                  .run({ silenceTimeout: true })
+              })
+            })
+
+            describe('and the add third parties transaction fails', () => {
+              it('should put the publish & push changes failure action and reset the progress', () => {
+                return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                  .provide([
+                    [select(getCollection, item.collectionId), collection],
+                    [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                    [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                    [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                    [matchers.call.fn(sendTransaction), Promise.reject(new Error('Failed to perform the transaction'))]
+                  ])
+                  .put(publishAndPushChangesThirdPartyItemsFailure('Failed to perform the transaction'))
+                  .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+                  .dispatch(
+                    publishAndPushChangesThirdPartyItemsRequest(
+                      thirdParty,
+                      itemsToPublish,
+                      [],
+                      undefined,
+                      email,
+                      subscribeToNewsletter,
+                      maxSlotPrice
+                    )
+                  )
+                  .run({ silenceTimeout: true })
+              })
+            })
+          })
+        })
+      })
+
+      describe('and there are enough available slots to publish them', () => {
+        beforeEach(() => {
+          thirdParty.availableSlots = 1
+        })
+
+        it('should not perform any transaction', () => {
+          return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+            .provide([
+              [select(getCollection, item.collectionId), collection],
+              [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+              [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
+              [
+                call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+                { collection, items: itemsToPublish, itemCurations }
+              ],
+              [
+                retry(
+                  10,
+                  500,
+                  mockBuilder.saveTOS,
+                  TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS,
+                  collection,
+                  email,
+                  itemsToPublish.map(item => item.id)
+                ),
+                undefined
+              ]
+            ])
+            .not.call.fn(sendTransaction)
+            .dispatch(
+              publishAndPushChangesThirdPartyItemsRequest(
+                thirdParty,
+                itemsToPublish,
+                [],
+                undefined,
+                email,
+                subscribeToNewsletter,
+                maxSlotPrice
+              )
+            )
+            .run({ silenceTimeout: true })
+        })
+      })
+    })
   })
 
   describe('when the publish items fails', () => {
     it('should put the publish & push changes failure action, show the error toast, close the modal and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [select(getCollection, item.collectionId), collection],
+          [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
             call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
-          ],
-          [select(getCollection, item.collectionId), collection]
+          ]
         ])
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
         .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
-        .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem]))
+        .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [mockedItem]))
         .run({ silenceTimeout: true })
     })
   })
@@ -506,7 +845,7 @@ describe('when publishing & pushing changes to third party items', () => {
     it('should put the publish & push changes failure action', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [select(getItemCurations, item.collectionId), itemCurations],
           [select(getCollection, item.collectionId), collection]
         ])
@@ -560,7 +899,12 @@ describe('when publishing & pushing changes to third party items', () => {
           [select(getCollection, item.collectionId), collection]
         ])
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
-        .put(publishAndPushChangesThirdPartyItemsSuccess(item.collectionId!, publishResponse, [...itemCurations, updatedItemCurations[0]]))
+        .put(
+          publishAndPushChangesThirdPartyItemsSuccess(thirdParty, item.collectionId!, publishResponse, [
+            ...itemCurations,
+            updatedItemCurations[0]
+          ])
+        )
         .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
         .run({ silenceTimeout: true })

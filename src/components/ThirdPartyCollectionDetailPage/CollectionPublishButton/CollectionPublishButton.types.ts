@@ -16,12 +16,14 @@ export type Props = {
   items: Item[]
   itemCurations: ItemCuration[]
   isLoadingItemCurations: boolean
+  isLinkedWearablesPaymentsEnabled: boolean
   itemsStatus: Record<string, SyncStatus>
   slots: number
   onClick: (collectionId: string, itemIds: string[], action: PublishButtonAction) => void
+  onNewClick: (collectionId: string, itemsWithChanges: Item[], itemsToPublish: Item[]) => void
 }
 
 export type OwnProps = Pick<Props, 'items' | 'collection'>
-export type MapStateProps = Pick<Props, 'itemCurations' | 'itemsStatus' | 'isLoadingItemCurations'>
-export type MapDispatchProps = Pick<Props, 'onClick'>
+export type MapStateProps = Pick<Props, 'itemCurations' | 'itemsStatus' | 'isLoadingItemCurations' | 'isLinkedWearablesPaymentsEnabled'>
+export type MapDispatchProps = Pick<Props, 'onClick' | 'onNewClick'>
 export type MapDispatch = Dispatch<OpenModalAction>
