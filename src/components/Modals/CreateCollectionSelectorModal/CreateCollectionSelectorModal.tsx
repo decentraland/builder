@@ -7,7 +7,7 @@ import collectionsImage from '../../../images/collections.png'
 import linkedCollectionsImage from '../../../images/linked-collections.png'
 import { Props } from './CreateCollectionSelectorModal.types'
 import styles from './CreateCollectionSelectorModal.module.css'
-import { CREATE_BUTTON_TEST_ID, DISABLED_DATA_TEST_ID } from './constants'
+import { CREATE_BUTTON_TEST_ID } from './constants'
 
 const CollectionSelectionModal = ({
   image,
@@ -28,7 +28,6 @@ const CollectionSelectionModal = ({
 }) => {
   return (
     <div className={classNames(styles.collectionSelection)}>
-      {disabled && <div data-testid={DISABLED_DATA_TEST_ID} className={styles.disabled}></div>}
       <img src={image} alt={title} />
       <div className={styles.content}>
         <div className={styles.text}>
@@ -49,7 +48,7 @@ const COLLECTIONS_LEARN_MORE_URL = `${config.get('DOCS_URL')}/creator/wearables-
 const LINKED_COLLECTIONS_LEARN_MORE_URL = `${config.get('DOCS_URL')}/creator/wearables/linked-wearables/`
 
 export const CreateCollectionSelectorModal = (props: Props) => {
-  const { onClose, onCreateCollection, onCreateThirdPartyCollection, name, isThirdPartyManager, isLoadingThirdParties } = props
+  const { onClose, onCreateCollection, onCreateThirdPartyCollection, name } = props
 
   return (
     <Modal name={name} onClose={onClose} size="large">
@@ -72,8 +71,6 @@ export const CreateCollectionSelectorModal = (props: Props) => {
             title={t('create_collection_selector_modal.linked_collection.title')}
             subtitle={t('create_collection_selector_modal.linked_collection.subtitle')}
             onCreate={onCreateThirdPartyCollection}
-            isLoading={isLoadingThirdParties}
-            disabled={!isThirdPartyManager || isLoadingThirdParties}
             learnMoreUrl={LINKED_COLLECTIONS_LEARN_MORE_URL}
           />
         </div>

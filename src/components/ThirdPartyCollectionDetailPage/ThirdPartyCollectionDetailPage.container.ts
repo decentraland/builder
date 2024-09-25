@@ -10,18 +10,20 @@ import { getCollectionItems, getLoading as getLoadingItem, getPaginationData } f
 import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getCollectionThirdParty, isFetchingAvailableSlots } from 'modules/thirdParty/selectors'
-import { fetchThirdPartyAvailableSlotsRequest } from 'modules/thirdParty/actions'
+import { getCollectionThirdParty, isFetchingAvailableSlots, isLoadingThirdParties, isLoadingThirdParty } from 'modules/thirdParty/selectors'
+import { fetchThirdPartyAvailableSlotsRequest, fetchThirdPartyRequest } from 'modules/thirdParty/actions'
 import { isThirdPartyCollection } from 'modules/collection/utils'
 import { Collection } from 'modules/collection/types'
 import { getIsLinkedWearablesPaymentsEnabled, getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { getLastLocation } from 'modules/ui/location/selector'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
+import { extractThirdPartyId } from 'lib/urn'
 
 const mapState = (state: RootState): MapStateProps => {
   const collectionId = getCollectionId(state) || ''
   const collection = getCollection(state, collectionId)
+  const isThirdParty = collection ? isThirdPartyCollection(collection) : false
   const totalItems = getPaginationData(state, collectionId)?.total || null
   const items = collection ? getCollectionItems(state, collection.id) : []
   const paginatedData = (collection && getPaginationData(state, collection.id)) || null
@@ -40,7 +42,9 @@ const mapState = (state: RootState): MapStateProps => {
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
-      isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_REQUEST),
+      isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_REQUEST) ||
+      isLoadingThirdParties(state) ||
+      !!(isThirdParty && collection && isLoadingThirdParty(state, extractThirdPartyId(collection.urn))),
     isLoadingAvailableSlots: isFetchingAvailableSlots(state),
     lastLocation: getLastLocation(state)
   }
@@ -49,7 +53,8 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNewItem: (collectionId: string) => dispatch(openModal('CreateItemsModal', { collectionId })),
   onEditName: (collection: Collection) => dispatch(openModal('EditCollectionNameModal', { collection })),
-  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId))
+  onFetchAvailableSlots: (thirdPartyId: string) => dispatch(fetchThirdPartyAvailableSlotsRequest(thirdPartyId)),
+  onFetchThirdParty: (thirdPartyId: string) => dispatch(fetchThirdPartyRequest(thirdPartyId))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)

@@ -3,13 +3,10 @@ import { OpenModalAction } from 'decentraland-dapps/dist/modules/modal'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 
 export type Props = ModalProps & {
-  isThirdPartyManager: boolean
-  isLoadingThirdParties: boolean
   onCreateCollection: () => void
   onCreateThirdPartyCollection: () => void
 }
 
-export type MapStateProps = Pick<Props, 'isThirdPartyManager' | 'isLoadingThirdParties'>
 export type MapDispatchProps = Pick<Props, 'onCreateCollection' | 'onCreateThirdPartyCollection'>
 export type OwnProps = Pick<Props, 'metadata' | 'onClose' | 'name'>
 export type MapDispatch = Dispatch<OpenModalAction>

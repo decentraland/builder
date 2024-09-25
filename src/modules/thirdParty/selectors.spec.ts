@@ -5,6 +5,7 @@ import {
   DISABLE_THIRD_PARTY_SUCCESS,
   disableThirdPartyRequest,
   fetchThirdPartiesRequest,
+  fetchThirdPartyRequest,
   publishAndPushChangesThirdPartyItemsRequest
 } from './actions'
 import {
@@ -17,7 +18,8 @@ import {
   getThirdParty,
   isDisablingThirdParty,
   hasPendingDisableThirdPartyTransaction,
-  isPublishingAndPushingChanges
+  isPublishingAndPushingChanges,
+  isLoadingThirdParty
 } from './selectors'
 import { ThirdParty } from './types'
 
@@ -308,6 +310,62 @@ describe('Third Party selectors', () => {
 
       it('should return false', () => {
         expect(isLoadingThirdParties(state)).toBe(false)
+      })
+    })
+  })
+
+  describe('when getting if a third party is being loaded', () => {
+    let state: RootState
+    let thirdPartyId: string
+    beforeEach(() => {
+      thirdPartyId = 'aThirdPartyId'
+    })
+
+    describe('and the third party is being loaded', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [fetchThirdPartyRequest(thirdPartyId)]
+          }
+        }
+      })
+
+      it('should return true', () => {
+        expect(isLoadingThirdParty(state, thirdPartyId)).toBe(true)
+      })
+    })
+
+    describe('and another third party is being loaded', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [fetchThirdPartyRequest('anotherId')]
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isLoadingThirdParty(state, thirdPartyId)).toBe(false)
+      })
+    })
+
+    describe('and no third party is not being loaded', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: []
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isLoadingThirdParty(state, thirdPartyId)).toBe(false)
       })
     })
   })
