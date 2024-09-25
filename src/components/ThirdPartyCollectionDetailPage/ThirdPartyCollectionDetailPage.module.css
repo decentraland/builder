@@ -82,6 +82,7 @@
 
 .editCollectionName {
   visibility: hidden;
+  padding-left: 16px;
 }
 
 .header .title .name:hover + .editCollectionName {
@@ -95,7 +96,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: calc(100% - 80px);
+  width: fit-content;
 }
 
 .header .title .size {
