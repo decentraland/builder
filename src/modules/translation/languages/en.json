@@ -1733,7 +1733,8 @@
     "cannot_edit_urn": "You can't edit the URN once the item is published",
     "reset_item": "Reset changes",
     "move_to_another_collection": "Move to another collection",
-    "preview": "Preview in Editor"
+    "preview": "Preview in Editor",
+    "put_for_sale": "Put up for sale"
   },
   "collection": {
     "type": {
@@ -1829,6 +1830,7 @@
     "title_review_content_policy": "Review Content Policy",
     "title_pay_publication_fee": "Pay the Publication Fee",
     "title_congratulations": "Congratulations!",
+    "accept_in_wallet": "Accept with your wallet",
     "publish_failed": "Failed to publish",
     "confirm_collection_name_step": {
       "title": "Confirm collection name",
@@ -1842,8 +1844,14 @@
     },
     "confirm_collection_items_step": {
       "title": "Confirm items",
-      "subtitle": "Items cannot be added or deleted from a collection once it is published.{br}The rarity of items cannot be changed after publication either.",
-      "description": "Item name, description and categories can be modified.",
+      "third_party": {
+        "subtitle": "Items cannot be deleted from a collection once it is published.",
+        "description": "Item name, description, categories and mapping can be modified."
+      },
+      "standard": {
+        "subtitle": "Items cannot be added or deleted from a collection once it is published.{br}The rarity of items cannot be changed after publication either.",
+        "description": "Item name, description and categories can be modified."
+      },
       "confirm_items": "Confirm Items"
     },
     "review_content_policy_step": {
@@ -1869,8 +1877,10 @@
     },
     "pay_publication_fee_step": {
       "title": "Confirm items",
-      "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} items. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA).",
+      "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA).",
       "learn_more": "Learn about the publication fee",
+      "already_payed": "Already payed but not published",
+      "already_published": "Already published",
       "quantity": "Quantity",
       "items": "{count} {count, plural, one {item} other {items}}",
       "fee_per_item": "Fee per item",

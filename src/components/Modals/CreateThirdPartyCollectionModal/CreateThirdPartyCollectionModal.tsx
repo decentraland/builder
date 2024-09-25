@@ -217,7 +217,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
         collectionName
       })
     }
-  }, [onSubmit, collectionId, collectionName, selectedThirdParty, ownerAddress, analytics])
+  }, [onSubmit, collectionId, selectedContract, selectedNetwork, collectionName, selectedThirdParty, ownerAddress, analytics])
 
   const isSubmittable =
     collectionName &&

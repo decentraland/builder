@@ -204,7 +204,7 @@ export default function CollectionItem({
       {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
         <Table.Cell>
           <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace}>
-            PUT UP FOR SALE
+            {t('collection_item.put_for_sale')}
           </Button>
         </Table.Cell>
       )}

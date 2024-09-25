@@ -4,7 +4,7 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SyncStatus } from 'modules/item/types'
-import { isAllowedToPushChanges } from 'modules/item/utils'
+import { getItemsToPublish, getItemsWithChanges, isAllowedToPushChanges } from 'modules/item/utils'
 import { CurationStatus } from 'modules/curations/types'
 import { Props, PublishButtonAction } from './CollectionPublishButton.types'
 
@@ -20,7 +20,17 @@ export const getTPButtonActionLabel = (buttonAction: PublishButtonAction) => {
 }
 
 const CollectionPublishButton = (props: Props) => {
-  const { collection, items, slots, onClick, itemsStatus, itemCurations, isLoadingItemCurations } = props
+  const {
+    collection,
+    items,
+    slots,
+    isLinkedWearablesPaymentsEnabled,
+    onClick,
+    onNewClick,
+    itemsStatus,
+    itemCurations,
+    isLoadingItemCurations
+  } = props
 
   const buttonAction = useMemo(() => {
     let action = PublishButtonAction.NONE
@@ -59,9 +69,15 @@ const CollectionPublishButton = (props: Props) => {
   }, [itemCurations, itemsStatus, items])
 
   const handleOnClick = useCallback(() => {
-    const itemIds = items.map(item => item.id)
-    onClick(collection.id, itemIds, buttonAction)
-  }, [collection, items, buttonAction, onClick])
+    const itemsToPublish = getItemsToPublish(items, itemsStatus)
+    const itemsToPushChanges = getItemsWithChanges(items, itemsStatus, itemCurations)
+    if (isLinkedWearablesPaymentsEnabled && itemsToPublish.length > 0) {
+      onNewClick(collection.id, itemsToPushChanges, itemsToPublish)
+    } else {
+      const itemIds = items.map(item => item.id)
+      onClick(collection.id, itemIds, buttonAction)
+    }
+  }, [collection, items, buttonAction, onClick, onNewClick, isLinkedWearablesPaymentsEnabled, itemsStatus, itemCurations])
 
   const itemsTryingToPublish = useMemo(
     () => items.filter(item => !itemCurations?.find(itemCuration => itemCuration.itemId === item.id)).length,
@@ -84,7 +100,7 @@ const CollectionPublishButton = (props: Props) => {
 
   const hasPendingItemCurations = itemCurations && !!itemCurations.find(ic => ic.status === CurationStatus.PENDING)
   const isTryingToPublish = [PublishButtonAction.PUBLISH, PublishButtonAction.PUBLISH_AND_PUSH_CHANGES].includes(buttonAction)
-  const hasEnoughSlots = slots >= items.length
+  const hasEnoughSlots = slots >= items.length || slots > 0 || isLinkedWearablesPaymentsEnabled
 
   return !isLoadingItemCurations && hasPendingItemCurations && (isTryingToPublish || buttonAction === PublishButtonAction.NONE) ? (
     <Popup
@@ -109,9 +125,7 @@ const CollectionPublishButton = (props: Props) => {
         <div className="popup-button">
           <NetworkButton
             loading={isLoadingItemCurations}
-            disabled={
-              (isTryingToPublish && (slots === 0 || !hasEnoughSlots)) || items.length === 0 || buttonAction === PublishButtonAction.NONE
-            }
+            disabled={(isTryingToPublish && !hasEnoughSlots) || items.length === 0 || buttonAction === PublishButtonAction.NONE}
             primary
             onClick={handleOnClick}
             network={Network.MATIC}

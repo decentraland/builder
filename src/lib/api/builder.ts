@@ -996,6 +996,10 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', '/thirdParties', { params: { manager }, retry: retryParams }) as Promise<ThirdParty[]>
   }
 
+  async fetchThirdParty(id: string): Promise<ThirdParty> {
+    return this.request('get', `/thirdParties/${id}`) as Promise<ThirdParty>
+  }
+
   async fetchThirdPartyAvailableSlots(thirdPartyId: string): Promise<number> {
     return this.request('get', `/thirdParties/${thirdPartyId}/slots`, { retry: retryParams }) as Promise<number>
   }

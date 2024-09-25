@@ -229,7 +229,9 @@ describe('when getting the authorized collections', () => {
         name: 'aName',
         description: 'aDescription',
         maxItems: '120',
-        totalItems: '100'
+        totalItems: '100',
+        published: true,
+        isProgrammatic: false
       }
     }
   })

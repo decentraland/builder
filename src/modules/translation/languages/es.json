@@ -1697,13 +1697,15 @@
       "price": "Precio",
       "supply": "Suministro",
       "play_mode": "Modo de Reproducción",
-      "status": "Estado"
+      "status": "Estado",
+      "actions": "Acciones"
     },
     "missing_item_price": "Es necesario configurar el precio de una o más {item_type}.",
     "missing_smart_wearable_video": "Es necesario subir un video para uno o más vestimentas interactivas.",
     "unsynced_collection_title": "Hay items no sincronizados con el servidor en esta colección",
     "unsynced_collection_message": "Se modificaron uno o más items después de que se aprobó esta colección.{br}Estas actualizaciones deben ser publicadas y revisadas nuevamente por el comité de curadores.",
-    "under_review_collection_message": "Los items actualizados estan siendo revisados por el comité de curadores.{br}Una vez aprobados, estarán visibles automáticamente para los actuales dueños{br}y en el Marketplace."
+    "under_review_collection_message": "Los items actualizados estan siendo revisados por el comité de curadores.{br}Una vez aprobados, estarán visibles automáticamente para los actuales dueños{br}y en el Marketplace.",
+    "enable_sales": "Habilitar ventas"
   },
   "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
@@ -1740,7 +1742,8 @@
     "cannot_edit_urn": "No puedes cambiar el URN una vez que el item fue publicado",
     "reset_item": "Deshacer cambios",
     "move_to_another_collection": "Mover a otra colección",
-    "preview": "Preview en el Editor"
+    "preview": "Preview en el Editor",
+    "put_for_sale": "Poner en venta"
   },
   "collection": {
     "type": {
@@ -1836,6 +1839,7 @@
     "title_review_content_policy": "Revisar la política de contenido",
     "title_pay_publication_fee": "Pagar la tarifa de publicación",
     "title_congratulations": "Felicidades!",
+    "accept_in_wallet": "Acepte en su billetera",
     "publish_failed": "Error al publicar",
     "confirm_collection_name_step": {
       "title": "Confirma el nombre de la colección",
@@ -1849,8 +1853,14 @@
     },
     "confirm_collection_items_step": {
       "title": "Confirmar ítems",
-      "subtitle": "Los ítems no pueden ser añadidos o eliminados de una colección una vez que está publicada.{br}La rareza de los ítems tampoco puede ser cambiada después de la publicación.",
-      "description": "El nombre, descripción y categorías de los ítems pueden ser modificados.",
+      "third_party": {
+        "subtitle": "Los items no pueden ser eliminados de una colección una vez que son publicados.",
+        "description": "El nombre del item, descripción, categoría o mapeo puede ser modificado."
+      },
+      "standard": {
+        "subtitle": "Los ítems no pueden ser añadidos o eliminados de una colección una vez que está publicada.{br}La rareza de los ítems tampoco puede ser cambiada después de la publicación.",
+        "description": "El nombre, descripción y categorías de los ítems pueden ser modificados."
+      },
       "confirm_items": "Confirmar Artículos"
     },
     "review_content_policy_step": {
@@ -1876,11 +1886,13 @@
     },
     "pay_publication_fee_step": {
       "title": "Confirmar ítems",
-      "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count} ítems. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA).",
+      "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA).",
       "learn_more": "Aprender sobre la tarifa de publicación",
+      "already_payed": "Ya pagados, pero no publicados",
+      "already_published": "Ya publicados",
       "quantity": "Cantidad",
-      "items": "{count} {count, plural, one {artículo} other {artículos}}",
-      "fee_per_item": "Tarifa por artículo",
+      "items": "{count} {count, plural, one {item} other {items}}",
+      "fee_per_item": "Tarifa por item",
       "total_in_usd": "Total en {currency}",
       "total_in_mana": "Total en MANA",
       "pay_card": "pagar con tarjeta",

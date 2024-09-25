@@ -10,8 +10,12 @@ import { ContractName } from 'decentraland-transactions'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { NFTCategory, Network } from '@dcl/schemas'
 import { buildManaAuthorization } from 'lib/mana'
+import { extractThirdPartyId } from 'lib/urn'
 import { getPublishStatus, getError } from 'modules/collection/selectors'
 import { PaymentMethod } from 'modules/collection/types'
+import { isTPCollection } from 'modules/collection/utils'
+import { Cheque } from 'modules/thirdParty/types'
+import { getPublishItemsSignature } from 'modules/thirdParty/utils'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
 import ConfirmCollectionNameStep from './ConfirmCollectionNameStep/ConfirmCollectionNameStep'
 import ConfirmCollectionItemsStep from './ConfirmCollectionItemsStep/ConfirmCollectionItemsStep'
@@ -21,21 +25,40 @@ import CongratulationsStep from './CongratulationsStep/CongratulationsStep'
 import './PublishWizardCollectionModal.css'
 
 export const PublishWizardCollectionModal: React.FC<Props> = props => {
-  const { collection, items, wallet, rarities, onClose, onFetchRarities, onPublish, onAuthorizedAction, onCloseAuthorization } = props
+  const {
+    collection,
+    itemsToPublish,
+    itemsWithChanges,
+    wallet,
+    isLoading,
+    price: itemPrice,
+    isPublishingFinished,
+    onClose,
+    onFetchPrice,
+    onPublish,
+    onAuthorizedAction,
+    onCloseAuthorization
+  } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
   const [emailAddress, setEmailAddress] = useState<string>('')
+  const [cheque, setCheque] = useState<Cheque | undefined>(undefined)
+  const [isSigningCheque, setIsSigningCheque] = useState<boolean>(false)
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false)
+  const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
+  const allItems = useMemo(() => [...itemsToPublish, ...itemsWithChanges], [itemsToPublish, itemsWithChanges])
 
   useEffect(() => {
-    onFetchRarities()
-  }, [onFetchRarities])
+    onFetchPrice()
+  }, [onFetchPrice])
 
   useEffect(() => {
-    if (collection.forumLink) {
+    if (isPublishingFinished) {
       setCurrentStep(PublishWizardCollectionSteps.COLLECTION_PUBLISHED)
       onCloseAuthorization()
+    } else if (collection.forumLink && isThirdParty) {
+      setCurrentStep(PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS)
     }
-  }, [collection.forumLink, onCloseAuthorization, setCurrentStep])
+  }, [isPublishingFinished, isThirdParty, onCloseAuthorization, setCurrentStep])
 
   const handleOnNextStep = useCallback(() => {
     setCurrentStep(step => step + 1)
@@ -52,6 +75,23 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
     [setEmailAddress]
   )
 
+  const handleOnConfirmItemsNextStep = useCallback(async () => {
+    if (!cheque && isThirdParty) {
+      setIsSigningCheque(true)
+      try {
+        const cheque = await getPublishItemsSignature(extractThirdPartyId(collection.urn), itemsToPublish.length)
+        setCheque(cheque)
+        handleOnNextStep()
+      } catch (_) {
+        setCheque(undefined)
+      } finally {
+        setIsSigningCheque(false)
+      }
+    } else {
+      handleOnNextStep()
+    }
+  }, [isThirdParty, handleOnNextStep, cheque, setCheque, setIsSigningCheque, collection.urn, itemsToPublish.length])
+
   const handleOnSubscribeToNewsletter = useCallback(
     (value: boolean) => {
       setSubscribeToNewsletter(value)
@@ -61,16 +101,25 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
 
   const handleOnPublish = useCallback(
     (paymentMethod: PaymentMethod) => {
-      if (paymentMethod === PaymentMethod.FIAT) {
-        onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
+      if (!itemPrice?.item.mana) {
         return
       }
+      // Compute the required allowance in MANA required to publish the collection or items
+      // This does not take into consideration programmatic third party collections
+      const requiredAllowanceInWei = ethers.utils.parseUnits(
+        (Number(ethers.utils.formatEther(ethers.BigNumber.from(itemPrice.item.mana).mul(itemsToPublish.length))) * 1.005).toString()
+      )
 
-      const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, ContractName.CollectionManager)
+      if (paymentMethod === PaymentMethod.FIAT || requiredAllowanceInWei === ethers.BigNumber.from('0')) {
+        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, requiredAllowanceInWei.toString())
+        return
+      }
+      const contractName = isThirdParty ? ContractName.ThirdPartyRegistry : ContractName.CollectionManager
+      const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, contractName)
 
       onAuthorizedAction({
         authorizedAddress: authorization.authorizedAddress,
-        authorizedContractLabel: ContractName.CollectionManager,
+        authorizedContractLabel: contractName,
         targetContract: {
           name: authorization.contractName,
           address: authorization.contractAddress,
@@ -79,12 +128,23 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
           category: NFTCategory.ENS
         },
         targetContractName: ContractName.MANAToken,
-        requiredAllowanceInWei: ethers.BigNumber.from(rarities[0].prices!.MANA).mul(items.length).toString(),
+        requiredAllowanceInWei: requiredAllowanceInWei.toString(),
         authorizationType: AuthorizationType.ALLOWANCE,
-        onAuthorized: () => onPublish(collection, items, emailAddress, subscribeToNewsletter, paymentMethod)
+        onAuthorized: () => onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, requiredAllowanceInWei.toString())
       })
     },
-    [onPublish, collection, items, emailAddress, subscribeToNewsletter, wallet, rarities, onAuthorizedAction]
+    [
+      onPublish,
+      cheque,
+      collection,
+      itemsToPublish,
+      emailAddress,
+      subscribeToNewsletter,
+      wallet,
+      itemPrice,
+      isThirdParty,
+      onAuthorizedAction
+    ]
   )
 
   const renderStepView = () => {
@@ -92,7 +152,15 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME:
         return <ConfirmCollectionNameStep collection={collection} onNextStep={handleOnNextStep} />
       case PublishWizardCollectionSteps.CONFIRM_COLLECTION_ITEMS:
-        return <ConfirmCollectionItemsStep items={items} onNextStep={handleOnNextStep} onPrevStep={handleOnPrevStep} />
+        return (
+          <ConfirmCollectionItemsStep
+            isSigningCheque={isSigningCheque}
+            items={allItems}
+            isThirdParty={isThirdParty}
+            onNextStep={handleOnConfirmItemsNextStep}
+            onPrevStep={handleOnPrevStep}
+          />
+        )
       case PublishWizardCollectionSteps.REVIEW_CONTENT_POLICY:
         return (
           <ReviewContentPolicyStep
@@ -152,7 +220,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }, [currentStep])
 
   return (
-    <Modal className="PublishWizardCollectionModal" size="small" onClose={onClose} closeOnDimmerClick={false}>
+    <Modal className="PublishWizardCollectionModal" size="small" onClose={isLoading ? undefined : onClose} closeOnDimmerClick={false}>
       <ModalNavigation title={stepTitle} onClose={onClose} />
       {stepIndicator}
       {renderStepView()}

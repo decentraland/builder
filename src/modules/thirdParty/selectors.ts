@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux-saga'
 import { createSelector } from 'reselect'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
@@ -12,13 +13,15 @@ import {
   DISABLE_THIRD_PARTY_SUCCESS,
   FETCH_THIRD_PARTIES_REQUEST,
   DISABLE_THIRD_PARTY_REQUEST,
-  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST
+  FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  FETCH_THIRD_PARTY_REQUEST,
+  FetchThirdPartyRequestAction
 } from './actions'
 import { getThirdPartyForCollection, getThirdPartyForItem, isUserManagerOfThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.thirdParty
 export const getData = (state: RootState) => getState(state).data
-export const getItemSlotPrice = (state: RootState) => getState(state).itemSlotPrice
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 export const getErrors = (state: RootState) => getState(state).errors
@@ -46,6 +49,9 @@ export const hasPendingDisableThirdPartyTransaction = (state: RootState, thirdPa
   )
 }
 
+export const isPublishingAndPushingChanges = (state: RootState): boolean =>
+  isLoadingType(getLoading(state), PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST)
+
 export const getThirdParty = (state: RootState, id: string): ThirdParty | null => getData(state)[id] ?? null
 
 export const isDisablingThirdParty = (state: RootState): boolean => isLoadingType(getLoading(state), DISABLE_THIRD_PARTY_REQUEST)
@@ -56,9 +62,16 @@ export const getCollectionThirdParty = (state: RootState, collection: Collection
 export const getItemThirdParty = (state: RootState, item: Item): ThirdParty | null => getThirdPartyForItem(getData(state), item) ?? null
 
 export const isLoadingThirdParties = (state: RootState): boolean => isLoadingType(getLoading(state), FETCH_THIRD_PARTIES_REQUEST)
+export const isLoadingThirdParty = (state: RootState, id: ThirdParty['id']): boolean =>
+  getLoading(state)
+    .filter(isFetchThirdPartyRequestAction)
+    .some(action => action.payload.thirdPartyId === id)
 
 export const isFetchingAvailableSlots = (state: RootState): boolean =>
   isLoadingType(getLoading(state), FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST)
 
 export const isDeployingBatchedThirdPartyItems = (state: RootState): boolean =>
   isLoadingType(getLoading(state), DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST)
+
+const isFetchThirdPartyRequestAction = (action: AnyAction): action is FetchThirdPartyRequestAction =>
+  action.type === FETCH_THIRD_PARTY_REQUEST
