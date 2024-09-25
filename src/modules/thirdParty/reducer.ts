@@ -31,7 +31,13 @@ import {
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PublishAndPushChangesThirdPartyItemsFailureAction,
   PublishAndPushChangesThirdPartyItemsSuccessAction,
-  PublishAndPushChangesThirdPartyItemsRequestAction
+  PublishAndPushChangesThirdPartyItemsRequestAction,
+  FetchThirdPartyRequestAction,
+  FetchThirdPartySuccessAction,
+  FetchThirdPartyFailureAction,
+  FETCH_THIRD_PARTY_REQUEST,
+  FETCH_THIRD_PARTY_SUCCESS,
+  FETCH_THIRD_PARTY_FAILURE
 } from './actions'
 import { ThirdParty } from './types'
 
@@ -66,11 +72,15 @@ type ThirdPartyReducerAction =
   | PublishAndPushChangesThirdPartyItemsRequestAction
   | PublishAndPushChangesThirdPartyItemsSuccessAction
   | PublishAndPushChangesThirdPartyItemsFailureAction
+  | FetchThirdPartyRequestAction
+  | FetchThirdPartySuccessAction
+  | FetchThirdPartyFailureAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
     case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
+    case FETCH_THIRD_PARTY_REQUEST:
     case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST:
     case DISABLE_THIRD_PARTY_REQUEST:
     case FETCH_THIRD_PARTIES_REQUEST: {
@@ -96,6 +106,19 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
+    case FETCH_THIRD_PARTY_SUCCESS: {
+      const { thirdParty } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [thirdParty.id]: thirdParty
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+
     case DISABLE_THIRD_PARTY_SUCCESS: {
       const { thirdPartyId } = action.payload
       return {
@@ -132,6 +155,7 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
+    case FETCH_THIRD_PARTY_FAILURE:
     case DISABLE_THIRD_PARTY_FAILURE:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:
     case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE:

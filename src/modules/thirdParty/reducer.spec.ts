@@ -17,7 +17,10 @@ import {
   disableThirdPartyFailure,
   publishAndPushChangesThirdPartyItemsRequest,
   publishAndPushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsFailure
+  publishAndPushChangesThirdPartyItemsFailure,
+  fetchThirdPartyRequest,
+  fetchThirdPartySuccess,
+  fetchThirdPartyFailure
 } from './actions'
 import { INITIAL_STATE, thirdPartyReducer, ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
@@ -246,6 +249,67 @@ describe('when reducing a PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE act
       ...INITIAL_STATE,
       loading: [],
       error: 'anError'
+    })
+  })
+})
+
+describe('when reducing a FETCH_THIRD_PARTY_REQUEST action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      error: 'Some error',
+      errors: [new ThirdPartyDeploymentError(mockedItem)]
+    }
+  })
+
+  it('should add the action to the loading array and clear the errors', () => {
+    expect(thirdPartyReducer(state, fetchThirdPartyRequest('anId'))).toEqual({
+      ...INITIAL_STATE,
+      loading: [fetchThirdPartyRequest('anId')],
+      error: null,
+      errors: []
+    })
+  })
+})
+
+describe('when reducing a FETCH_THIRD_PARTY_SUCCESS action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      loading: [fetchThirdPartyRequest('anId')],
+      error: 'Some error'
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state, clear the error add the third party to the data', () => {
+    expect(thirdPartyReducer(state, fetchThirdPartySuccess(thirdParty))).toEqual({
+      ...INITIAL_STATE,
+      data: {
+        [thirdParty.id]: thirdParty
+      },
+      loading: [],
+      error: null
+    })
+  })
+})
+
+describe('when reducing a FETCH_THIRD_PARTY_FAILURE action', () => {
+  let error: string
+
+  beforeEach(() => {
+    error = 'anError'
+    state = {
+      ...state,
+      loading: [fetchThirdPartyRequest('anId')],
+      data: {}
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state and set the error', () => {
+    expect(thirdPartyReducer(state, fetchThirdPartyFailure(error))).toEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error
     })
   })
 })

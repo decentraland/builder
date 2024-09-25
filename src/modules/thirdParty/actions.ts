@@ -22,6 +22,20 @@ export type FetchThirdPartiesRequestAction = ReturnType<typeof fetchThirdParties
 export type FetchThirdPartiesSuccessAction = ReturnType<typeof fetchThirdPartiesSuccess>
 export type FetchThirdPartiesFailureAction = ReturnType<typeof fetchThirdPartiesFailure>
 
+// Fetch a single third party
+
+export const FETCH_THIRD_PARTY_REQUEST = '[Request] Fetch Third Party'
+export const FETCH_THIRD_PARTY_SUCCESS = '[Success] Fetch Third Party'
+export const FETCH_THIRD_PARTY_FAILURE = '[Failure] Fetch Third Party'
+
+export const fetchThirdPartyRequest = (thirdPartyId: ThirdParty['id']) => action(FETCH_THIRD_PARTY_REQUEST, { thirdPartyId })
+export const fetchThirdPartySuccess = (thirdParty: ThirdParty) => action(FETCH_THIRD_PARTY_SUCCESS, { thirdParty })
+export const fetchThirdPartyFailure = (error: string) => action(FETCH_THIRD_PARTY_FAILURE, { error })
+
+export type FetchThirdPartyRequestAction = ReturnType<typeof fetchThirdPartyRequest>
+export type FetchThirdPartySuccessAction = ReturnType<typeof fetchThirdPartySuccess>
+export type FetchThirdPartyFailureAction = ReturnType<typeof fetchThirdPartyFailure>
+
 // Fetch Third Party Available Slots
 
 export const FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST = '[Request] Fetch Third Party Available Slots'

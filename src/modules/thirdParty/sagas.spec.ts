@@ -40,7 +40,10 @@ import {
   deployBatchedThirdPartyItemsSuccess,
   disableThirdPartyFailure,
   disableThirdPartyRequest,
-  disableThirdPartySuccess
+  disableThirdPartySuccess,
+  fetchThirdPartyFailure,
+  fetchThirdPartyRequest,
+  fetchThirdPartySuccess
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -74,6 +77,7 @@ jest.mock('@dcl/crypto')
 
 const mockBuilder = {
   fetchThirdParties: jest.fn(),
+  fetchThirdParty: jest.fn(),
   fetchThirdPartyAvailableSlots: jest.fn(),
   publishTPCollection: jest.fn(),
   pushItemCuration: jest.fn(),
@@ -200,6 +204,33 @@ describe('when fetching third parties', () => {
           .dispatch(fetchThirdPartiesRequest())
           .run({ silenceTimeout: true })
       })
+    })
+  })
+})
+
+describe('when fetching a third party', () => {
+  describe('when the api request fails', () => {
+    let errorMessage: string
+    beforeEach(() => {
+      errorMessage = 'Some Error Message'
+    })
+
+    it('should put the fetch third party fail action with an error', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([[matchers.call.fn(mockBuilder.fetchThirdParty), throwError(new Error(errorMessage))]])
+        .put(fetchThirdPartyFailure(errorMessage))
+        .dispatch(fetchThirdPartyRequest('aThirdPartyId'))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the api request succeeds', () => {
+    it('should put the fetch third party success action with the api response', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([[matchers.call.fn(mockBuilder.fetchThirdParty), thirdParty]])
+        .put(fetchThirdPartySuccess(thirdParty))
+        .dispatch(fetchThirdPartyRequest(thirdParty.id))
+        .run({ silenceTimeout: true })
     })
   })
 })

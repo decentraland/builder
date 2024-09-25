@@ -8,7 +8,11 @@ import { Collection } from 'modules/collection/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { FetchItemCurationsRequestAction } from 'modules/curations/itemCuration/actions'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
-import { fetchThirdPartyAvailableSlotsRequest, FetchThirdPartyAvailableSlotsRequestAction } from 'modules/thirdParty/actions'
+import {
+  fetchThirdPartyAvailableSlotsRequest,
+  FetchThirdPartyAvailableSlotsRequestAction,
+  FetchThirdPartyRequestAction
+} from 'modules/thirdParty/actions'
 import { FetchCollectionItemsRequestAction } from 'modules/item/actions'
 import { ItemPaginationData } from 'modules/item/reducer'
 
@@ -32,6 +36,7 @@ export type Props = {
   isLinkedWearablesPaymentsEnabled: boolean
   onNewItem: (collectionId: string) => unknown
   onEditName: (collection: Collection) => unknown
+  onFetchThirdParty: (thirdPartyId: string) => unknown
   onFetchAvailableSlots: typeof fetchThirdPartyAvailableSlotsRequest
 }
 
@@ -60,7 +65,11 @@ export type MapStateProps = Pick<
   | 'paginatedData'
   | 'lastLocation'
 >
-export type MapDispatchProps = Pick<Props, 'onNewItem' | 'onEditName' | 'onFetchAvailableSlots'>
+export type MapDispatchProps = Pick<Props, 'onNewItem' | 'onEditName' | 'onFetchAvailableSlots' | 'onFetchThirdParty'>
 export type MapDispatch = Dispatch<
-  OpenModalAction | FetchItemCurationsRequestAction | FetchThirdPartyAvailableSlotsRequestAction | FetchCollectionItemsRequestAction
+  | OpenModalAction
+  | FetchItemCurationsRequestAction
+  | FetchThirdPartyAvailableSlotsRequestAction
+  | FetchCollectionItemsRequestAction
+  | FetchThirdPartyRequestAction
 >

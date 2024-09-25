@@ -78,7 +78,11 @@ import {
   DISABLE_THIRD_PARTY_REQUEST,
   DisableThirdPartyRequestAction,
   disableThirdPartyFailure,
-  disableThirdPartySuccess
+  disableThirdPartySuccess,
+  FETCH_THIRD_PARTY_REQUEST,
+  FetchThirdPartyRequestAction,
+  fetchThirdPartySuccess,
+  fetchThirdPartyFailure
 } from './actions'
 import { convertThirdPartyMetadataToRawMetadata, getPublishItemsSignature } from './utils'
 import { Cheque, ThirdParty } from './types'
@@ -99,6 +103,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST, handleDeployBatchedThirdPartyItemsRequest)
   yield takeEvery(FETCH_THIRD_PARTIES_REQUEST, handleFetchThirdPartiesRequest)
+  yield takeEvery(FETCH_THIRD_PARTY_REQUEST, handleFetchThirdPartyRequest)
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
@@ -129,6 +134,16 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(fetchThirdPartiesSuccess(thirdParties))
     } catch (error) {
       yield put(fetchThirdPartiesFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
+    }
+  }
+
+  function* handleFetchThirdPartyRequest(action: FetchThirdPartyRequestAction) {
+    const { thirdPartyId } = action.payload
+    try {
+      const thirdParty: ThirdParty = yield call([builder, 'fetchThirdParty'], thirdPartyId)
+      yield put(fetchThirdPartySuccess(thirdParty))
+    } catch (error) {
+      yield put(fetchThirdPartyFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 

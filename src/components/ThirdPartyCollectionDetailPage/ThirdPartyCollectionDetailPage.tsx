@@ -15,6 +15,8 @@ import {
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getArrayOfPagesFromTotal } from 'lib/api/pagination'
 import { locations } from 'routing/locations'
+import { ItemMappingStatus } from 'lib/api/builder'
+import { extractThirdPartyId } from 'lib/urn'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
@@ -35,7 +37,6 @@ import { Props, PAGE_SIZE } from './ThirdPartyCollectionDetailPage.types'
 import { CollectionItemHeader } from './CollectionItemHeader'
 import { CollectionItemHeaderV2 } from './CollectionItemHeaderV2'
 import styles from './ThirdPartyCollectionDetailPage.module.css'
-import { ItemMappingStatus } from 'lib/api/builder'
 
 const Info = ({ children, title, info }: { children: React.ReactNode; title: string; info?: string }) => (
   <div className={styles.info}>
@@ -66,6 +67,7 @@ export default function ThirdPartyCollectionDetailPage({
   isThirdPartyV2Enabled,
   isLinkedWearablesPaymentsEnabled,
   onFetchAvailableSlots,
+  onFetchThirdParty,
   onNewItem,
   onEditName,
   isLoadingAvailableSlots
@@ -83,6 +85,12 @@ export default function ThirdPartyCollectionDetailPage({
       onFetchAvailableSlots(thirdParty.id)
     }
   }, [thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots])
+
+  useEffect(() => {
+    if (!isLoading && !thirdParty && collection?.urn) {
+      onFetchThirdParty(extractThirdPartyId(collection.urn))
+    }
+  }, [collection?.urn, isLoading, thirdParty])
 
   useEffect(() => {
     // update the state if the page query param changes
