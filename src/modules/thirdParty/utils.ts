@@ -9,8 +9,6 @@ import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { Cheque, LinkedContract, ThirdParty, ThirdPartyPrice } from './types'
 
-const ONE_WEI = '1000000000000000000'
-
 export function isUserManagerOfThirdParty(address: string, thirdParty: ThirdParty): boolean {
   return thirdParty.managers.map(manager => manager.toLowerCase()).includes(address.toLowerCase())
 }
@@ -122,7 +120,7 @@ export async function getThirdPartyPrice(): Promise<ThirdPartyPrice> {
       mana: ethers.utils.parseEther(itemSlotPriceInUsd.div(manaToUsdPrice).toString()).toString()
     },
     programmatic: {
-      usd: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(ONE_WEI).toString(),
+      usd: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(ethers.constants.WeiPerEther).toString(),
       mana: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(manaToUsdPrice).toString()
     }
   }
