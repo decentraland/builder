@@ -433,15 +433,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
-      yield retry(
-        10,
-        500,
-        legacyBuilderClient.saveTOS,
-        TermsOfServiceEvent.PUBLISH_COLLECTION,
-        collection,
-        email,
-        items.map(item => item.currentContentHash ?? '').filter(Boolean)
-      )
+      yield retry(10, 500, legacyBuilderClient.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email)
 
       let txHash: string
 
