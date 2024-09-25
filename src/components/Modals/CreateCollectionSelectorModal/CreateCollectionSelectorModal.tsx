@@ -7,7 +7,7 @@ import collectionsImage from '../../../images/collections.png'
 import linkedCollectionsImage from '../../../images/linked-collections.png'
 import { Props } from './CreateCollectionSelectorModal.types'
 import styles from './CreateCollectionSelectorModal.module.css'
-import { CREATE_BUTTON_TEST_ID, DISABLED_DATA_TEST_ID } from './constants'
+import { CREATE_BUTTON_TEST_ID } from './constants'
 
 const CollectionSelectionModal = ({
   image,
@@ -28,7 +28,6 @@ const CollectionSelectionModal = ({
 }) => {
   return (
     <div className={classNames(styles.collectionSelection)}>
-      {disabled && <div data-testid={DISABLED_DATA_TEST_ID} className={styles.disabled}></div>}
       <img src={image} alt={title} />
       <div className={styles.content}>
         <div className={styles.text}>

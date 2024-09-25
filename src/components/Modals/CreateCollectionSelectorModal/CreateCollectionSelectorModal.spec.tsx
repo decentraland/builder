@@ -1,7 +1,7 @@
 import { renderWithProviders } from 'specs/utils'
 import { CreateCollectionSelectorModal } from './CreateCollectionSelectorModal'
 import { Props } from './CreateCollectionSelectorModal.types'
-import { CREATE_BUTTON_TEST_ID, DISABLED_DATA_TEST_ID } from './constants'
+import { CREATE_BUTTON_TEST_ID } from './constants'
 import userEvent from '@testing-library/user-event'
 
 export function renderWorldContributorTab(props: Partial<Props>) {
@@ -12,8 +12,6 @@ export function renderWorldContributorTab(props: Partial<Props>) {
       metadata={{}}
       name="aName"
       onClose={jest.fn()}
-      isLoadingThirdParties={false}
-      isThirdPartyManager={false}
       {...props}
     />
   )
@@ -29,8 +27,7 @@ describe('when clicking on the create collection button', () => {
     onCreateThirdPartyCollection = jest.fn()
     renderedComponent = renderWorldContributorTab({
       onCreateCollection,
-      onCreateThirdPartyCollection,
-      isThirdPartyManager: true
+      onCreateThirdPartyCollection
     })
   })
 
@@ -55,44 +52,5 @@ describe('when clicking on the create collection button', () => {
     it('should call the onCreateThirdPartyCollection method prop', () => {
       expect(onCreateThirdPartyCollection).toHaveBeenCalled()
     })
-  })
-})
-
-describe('and the linked collections are being loaded', () => {
-  let renderedComponent: ReturnType<typeof renderWorldContributorTab>
-  beforeEach(() => {
-    renderedComponent = renderWorldContributorTab({ isLoadingThirdParties: true })
-  })
-
-  it('should show the disabled overlay for the linked collections', () => {
-    const disabledOverlay = renderedComponent.getByTestId(DISABLED_DATA_TEST_ID)
-    expect(disabledOverlay).toBeInTheDocument()
-  })
-
-  it('should disable the create button for the linked collections', () => {
-    const createButton = renderedComponent.getAllByTestId(CREATE_BUTTON_TEST_ID)[1]
-    expect(createButton).toBeDisabled()
-  })
-
-  it('should set the button as loading', () => {
-    const createButton = renderedComponent.getAllByTestId(CREATE_BUTTON_TEST_ID)[1]
-    expect(createButton).toHaveClass('loading')
-  })
-})
-
-describe('and the user is not a third party manager', () => {
-  let renderedComponent: ReturnType<typeof renderWorldContributorTab>
-  beforeEach(() => {
-    renderedComponent = renderWorldContributorTab({ isThirdPartyManager: false })
-  })
-
-  it('should show the disabled overlay for the linked collections', () => {
-    const disabledOverlay = renderedComponent.getByTestId(DISABLED_DATA_TEST_ID)
-    expect(disabledOverlay).toBeInTheDocument()
-  })
-
-  it('should disable the create button for the linked collections', () => {
-    const createButton = renderedComponent.getAllByTestId(CREATE_BUTTON_TEST_ID)[1]
-    expect(createButton).toBeDisabled()
   })
 })
