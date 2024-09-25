@@ -1817,6 +1817,7 @@
     "title_review_content_policy": "审查内容政策",
     "title_pay_publication_fee": "支付出版费",
     "title_congratulations": "恭喜！",
+    "accept_in_wallet": "用你的钱包接受",
     "publish_failed": "發布失敗",
     "confirm_collection_name_step": {
       "title": "确认收藏名称",
@@ -1830,8 +1831,14 @@
     },
     "confirm_collection_items_step": {
       "title": "确认项目",
-      "subtitle": "一旦发布，便不能从集合中添加或删除项目。{br}发布后也不能更改项目的稀有度。",
-      "description": "可以修改项目名称、描述和类别。",
+      "third_party": {
+        "subtitle": "项目一旦发布就无法从集合中删除。",
+        "description": "项目名称、描述、类别和映射都可以修改。"
+      },
+      "standard": {
+        "subtitle": "一旦发布，收藏品就无法添加或删除。{br}发布后，物品的稀有性也无法改变。",
+        "description": "项目名称、描述和类别可以修改。"
+      },
       "confirm_items": "确认项目"
     },
     "review_content_policy_step": {

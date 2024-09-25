@@ -1843,7 +1843,7 @@
       "title": "Confirm items",
       "third_party": {
         "subtitle": "Items cannot be deleted from a collection once it is published.",
-        "description": "Item name, description and categories can be modified."
+        "description": "Item name, description, categories and mapping can be modified."
       },
       "standard": {
         "subtitle": "Items cannot be added or deleted from a collection once it is published.{br}The rarity of items cannot be changed after publication either.",
