@@ -4,7 +4,8 @@ import {
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST,
   DISABLE_THIRD_PARTY_SUCCESS,
   disableThirdPartyRequest,
-  fetchThirdPartiesRequest
+  fetchThirdPartiesRequest,
+  publishAndPushChangesThirdPartyItemsRequest
 } from './actions'
 import {
   isThirdPartyManager,
@@ -15,7 +16,8 @@ import {
   isLoadingThirdParties,
   getThirdParty,
   isDisablingThirdParty,
-  hasPendingDisableThirdPartyTransaction
+  hasPendingDisableThirdPartyTransaction,
+  isPublishingAndPushingChanges
 } from './selectors'
 import { ThirdParty } from './types'
 
@@ -37,7 +39,9 @@ describe('Third Party selectors', () => {
       totalItems: '0',
       contracts: [],
       managers: [address, '0xa'],
-      isApproved: true
+      isApproved: true,
+      isProgrammatic: false,
+      published: false
     }
     thirdParty2 = {
       id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2',
@@ -48,7 +52,9 @@ describe('Third Party selectors', () => {
       totalItems: '0',
       contracts: [],
       managers: [address, '0xb'],
-      isApproved: true
+      isApproved: true,
+      isProgrammatic: false,
+      published: false
     }
     thirdParty3 = {
       id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty3',
@@ -59,7 +65,9 @@ describe('Third Party selectors', () => {
       totalItems: '0',
       contracts: [],
       managers: ['0xc'],
-      isApproved: true
+      isApproved: true,
+      isProgrammatic: false,
+      published: false
     }
     baseState = {
       wallet: {
@@ -443,6 +451,42 @@ describe('Third Party selectors', () => {
 
       it('should return false', () => {
         expect(hasPendingDisableThirdPartyTransaction(baseState, thirdParty1.id)).toBe(false)
+      })
+    })
+  })
+
+  describe("when getting if it's publishing and pushing changes", () => {
+    let state: RootState
+
+    describe('and the action is being processed', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty1, [], [])]
+          }
+        }
+      })
+
+      it('should return true', () => {
+        expect(isPublishingAndPushingChanges(state)).toBe(true)
+      })
+    })
+
+    describe('and the action is not being processed', () => {
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: []
+          }
+        }
+      })
+
+      it('should return false', () => {
+        expect(isPublishingAndPushingChanges(state)).toBe(false)
       })
     })
   })

@@ -1,6 +1,6 @@
 import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
-import { takeLatest, takeEvery, call, put, select, race, take } from 'redux-saga/effects'
+import { takeLatest, takeEvery, call, put, select, race, take, retry } from 'redux-saga/effects'
 import { Contract, providers } from 'ethers'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
@@ -14,7 +14,7 @@ import { ContractData, ContractName, getContract } from 'decentraland-transactio
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { ToastType } from 'decentraland-ui'
-import { BuilderAPI } from 'lib/api/builder'
+import { BuilderAPI, TermsOfServiceEvent } from 'lib/api/builder'
 import { ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
@@ -34,6 +34,9 @@ import { waitForTx } from 'modules/transaction/utils'
 import { ThirdPartyAction, PublishThirdPartyCollectionModalStep } from 'modules/ui/thirdparty/types'
 import { getCollection } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_FAILURE, FETCH_COLLECTION_SUCCESS, fetchCollectionRequest } from 'modules/collection/actions'
+import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
+import { getIsLinkedWearablesPaymentsEnabled } from 'modules/features/selectors'
+import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
 import {
   FETCH_THIRD_PARTIES_REQUEST,
   fetchThirdPartiesRequest,
@@ -77,10 +80,9 @@ import {
   disableThirdPartyFailure,
   disableThirdPartySuccess
 } from './actions'
-import { getPublishItemsSignature } from './utils'
-import { ThirdParty } from './types'
+import { convertThirdPartyMetadataToRawMetadata, getPublishItemsSignature } from './utils'
+import { Cheque, ThirdParty } from './types'
 import { getThirdParty } from './selectors'
-import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
 
 export function* getContractInstance(
   contract: ContractName.ThirdPartyRegistry | ContractName.ChainlinkOracle,
@@ -153,9 +155,9 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
     return collectionId
   }
 
-  function* publishChangesToThirdPartyItems(thirdParty: ThirdParty, items: Item[]) {
+  function* publishChangesToThirdPartyItems(thirdParty: ThirdParty, items: Item[], cheque?: Cheque) {
     const collectionId = getCollectionId(items)
-    const { signature, salt } = yield call(getPublishItemsSignature, thirdParty.id, items.length)
+    const { signature, salt, qty } = cheque ?? (yield call(getPublishItemsSignature, thirdParty.id, items.length))
 
     const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
       [builder, 'publishTPCollection'],
@@ -163,7 +165,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       items.map(i => i.id),
       {
         signature,
-        qty: items.length,
+        qty,
         salt
       }
     )
@@ -267,20 +269,82 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   }
 
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
-    const { thirdParty, itemsToPublish, itemsWithChanges } = action.payload
+    const { thirdParty, maxSlotPrice, itemsToPublish, itemsWithChanges, cheque, email, subscribeToNewsletter } = action.payload
     const collectionId = getCollectionId(itemsToPublish)
     const collection: ReturnType<typeof getCollection> = yield select(getCollection, collectionId)
+    const isLinkedWearablesPaymentsEnabled = (yield select(getIsLinkedWearablesPaymentsEnabled)) as ReturnType<
+      typeof getIsLinkedWearablesPaymentsEnabled
+    >
+
     // We need to execute these two methods in sequence, because the push changes will create a new curation if there was one already approved.
     // It will create them with status PENDING, so the publish will fail if it's executed after that event.
     // Publish items
     try {
-      const resultFromPublish: { newItems: Item[]; newItemCurations: ItemCuration[] } = yield call(
-        publishChangesToThirdPartyItems,
-        thirdParty,
-        itemsToPublish
-      )
+      if (!collection) {
+        throw new Error('Collection not found')
+      }
 
-      const resultFromPushChanges: ItemCuration[] = yield call(pushChangesToThirdPartyItems, itemsWithChanges)
+      if (subscribeToNewsletter && email) {
+        yield put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+      }
+
+      if (thirdParty.availableSlots === undefined) {
+        throw new Error('Third party available slots must be defined before publishing')
+      }
+      const missingSlots = itemsToPublish.length - thirdParty.availableSlots
+
+      // There are items to publish and there are available slots
+      if (itemsToPublish.length > 0 && missingSlots > 0 && isLinkedWearablesPaymentsEnabled) {
+        if (!maxSlotPrice) {
+          throw new Error('Max slot price must be defined')
+        }
+
+        const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+        const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
+        let txHash: string = ''
+        // If the third party has not been published before create a new one with the required slots
+        if (!thirdParty.published) {
+          txHash = yield call(
+            sendTransaction as any,
+            thirdPartyContract,
+            'addThirdParties',
+            [
+              [
+                thirdParty.id,
+                convertThirdPartyMetadataToRawMetadata(thirdParty.name, thirdParty.description, thirdParty.contracts),
+                'Disabled',
+                thirdParty.managers,
+                Array.from({ length: thirdParty.managers.length }, () => true),
+                missingSlots.toString()
+              ]
+            ],
+            [thirdParty.isProgrammatic],
+            [maxSlotPrice]
+          )
+          yield call(waitForTx, txHash)
+          yield retry(20, 5000, builder.deleteVirtualThirdParty.bind(builder), thirdParty.id)
+        }
+        // If the third party has already been published, just buy the needed slots
+        else {
+          txHash = yield call(
+            sendTransaction as any,
+            thirdPartyContract,
+            'buyItemSlots',
+            thirdParty.id,
+            missingSlots.toString(),
+            maxSlotPrice
+          )
+          yield call(waitForTx, txHash)
+        }
+      }
+
+      let resultFromPublish: { newItems: Item[]; newItemCurations: ItemCuration[] } = { newItems: [], newItemCurations: [] }
+      if (itemsToPublish.length > 0) {
+        resultFromPublish = yield call(publishChangesToThirdPartyItems, thirdParty, itemsToPublish, cheque)
+      }
+
+      const resultFromPushChanges: ItemCuration[] =
+        itemsWithChanges.length > 0 ? yield call(pushChangesToThirdPartyItems, itemsWithChanges) : []
       const newItemCurations = [...resultFromPublish.newItemCurations, ...resultFromPushChanges]
 
       // Update collections that are not complete
@@ -288,20 +352,35 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         yield put(fetchCollectionRequest(collectionId))
         yield race({ success: take(FETCH_COLLECTION_SUCCESS), failure: take(FETCH_COLLECTION_FAILURE) })
       }
-      yield put(publishAndPushChangesThirdPartyItemsSuccess(collectionId, resultFromPublish.newItems, newItemCurations))
+      yield put(publishAndPushChangesThirdPartyItemsSuccess(thirdParty, collectionId, resultFromPublish.newItems, newItemCurations))
       yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
-      yield put(
-        openModal('PublishThirdPartyCollectionModal', {
-          collectionId,
-          itemIds: [],
-          action: PublishButtonAction.NONE,
-          step: PublishThirdPartyCollectionModalStep.SUCCESS
-        })
-      )
+      if (email) {
+        // Save the ToS with all the item hashes published or pushed
+        const allItemsHashes = itemsToPublish.map(item => item.id)
+        yield retry(10, 500, builder.saveTOS, TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS, collection, email, allItemsHashes)
+      }
+
+      if (!isLinkedWearablesPaymentsEnabled) {
+        yield put(
+          openModal('PublishThirdPartyCollectionModal', {
+            collectionId,
+            itemIds: [],
+            action: PublishButtonAction.NONE,
+            step: PublishThirdPartyCollectionModalStep.SUCCESS
+          })
+        )
+      }
+
+      // If the collection was already published, don't show the modal success message, just close the modal
+      if (isLinkedWearablesPaymentsEnabled && collection.isPublished) {
+        yield put(closeModal('PublishWizardCollectionModal'))
+      }
     } catch (error) {
-      yield showActionErrorToast()
       yield put(publishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error')) // TODO: show to the user that something went wrong
-      yield put(closeModal('PublishThirdPartyCollectionModal'))
+      if (!isLinkedWearablesPaymentsEnabled) {
+        yield showActionErrorToast()
+        yield put(closeModal('PublishThirdPartyCollectionModal'))
+      }
     }
   }
 

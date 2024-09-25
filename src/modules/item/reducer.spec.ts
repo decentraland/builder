@@ -11,6 +11,7 @@ import {
 } from 'modules/thirdParty/actions'
 import { PaginatedResource } from 'lib/api/pagination'
 import { CurationStatus } from 'modules/curations/types'
+import { ThirdParty } from 'modules/thirdParty/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import {
@@ -467,7 +468,7 @@ describe.each([
         action = publishThirdPartyItemsSuccess('aThirdPartyId', 'aCollectionId', items, curations)
         break
       case publishAndPushChangesThirdPartyItemsSuccess:
-        action = publishAndPushChangesThirdPartyItemsSuccess('aThirdParty', items, curations)
+        action = publishAndPushChangesThirdPartyItemsSuccess({} as ThirdParty, 'aCollectionId', items, curations)
         break
     }
   })

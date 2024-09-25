@@ -13,18 +13,15 @@ import {
   publishThirdPartyItemsFailure,
   publishThirdPartyItemsRequest,
   publishThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsFailure,
   pushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsFailure,
   publishAndPushChangesThirdPartyItemsSuccess,
   deployBatchedThirdPartyItemsSuccess
 } from 'modules/thirdParty/actions'
 import { CurationStatus } from '../types'
 import { ItemCuration } from './types'
 import { ThirdParty } from 'modules/thirdParty/types'
-import { mockedItem } from 'specs/item'
 
 const getMockItemCuration = (props: Partial<ItemCuration> = {}): ItemCuration => ({
   id: 'id',
@@ -48,7 +45,9 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_REQUEST is called', (
       managers: ['0x1', '0x2'],
       contracts: [],
       maxItems: '0',
-      totalItems: '0'
+      totalItems: '0',
+      published: true,
+      isProgrammatic: false
     }
   })
   it('should add a publishThirdPartyItemsRequest to the loading array', () => {
@@ -64,31 +63,6 @@ describe('when an action of type PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST is calle
     expect(itemCurationReducer(INITIAL_STATE, pushChangesThirdPartyItemsRequest([]))).toStrictEqual({
       ...INITIAL_STATE,
       loading: [pushChangesThirdPartyItemsRequest([])]
-    })
-  })
-})
-
-describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST is called', () => {
-  let thirdParty: ThirdParty
-  beforeEach(() => {
-    thirdParty = {
-      id: '1',
-      name: 'a third party',
-      root: '',
-      isApproved: true,
-      description: 'some desc',
-      managers: ['0x1', '0x2'],
-      contracts: [],
-      maxItems: '0',
-      totalItems: '0'
-    }
-  })
-  it('should add a publishAndPushChangesThirdPartyItemsRequest to the loading array', () => {
-    expect(
-      itemCurationReducer(INITIAL_STATE, publishAndPushChangesThirdPartyItemsRequest(thirdParty, [mockedItem], [mockedItem]))
-    ).toStrictEqual({
-      ...INITIAL_STATE,
-      loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [mockedItem], [mockedItem])]
     })
   })
 })
@@ -109,7 +83,9 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
       managers: ['0x1', '0x2'],
       contracts: [],
       maxItems: '0',
-      totalItems: '0'
+      totalItems: '0',
+      published: true,
+      isProgrammatic: false
     }
     itemCurations = [getMockItemCuration()]
   })
@@ -156,10 +132,25 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCC
   let collection: Collection
   let itemCurationsFromPush: ItemCuration[]
   let itemCurationsFromPublish: ItemCuration[]
+  let thirdParty: ThirdParty
+
   beforeEach(() => {
     collection = { id: 'collectionId' } as Collection
     itemCurationsFromPush = [getMockItemCuration({ createdAt: 2 })] // push returns a new curation for the mockItem
     itemCurationsFromPublish = [getMockItemCuration({ createdAt: 3, itemId: 'another itemId' })] // publish returns a new curation for a different item
+    thirdParty = {
+      id: '1',
+      name: 'a third party',
+      root: '',
+      isApproved: true,
+      description: 'some desc',
+      managers: ['0x1', '0x2'],
+      contracts: [],
+      maxItems: '0',
+      totalItems: '0',
+      published: true,
+      isProgrammatic: false
+    }
   })
   it('should replace the old curation for the new ones returned by the publish & push', () => {
     const state = {
@@ -171,7 +162,7 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCC
     expect(
       itemCurationReducer(
         state,
-        publishAndPushChangesThirdPartyItemsSuccess(collection.id, [], [...itemCurationsFromPublish, ...itemCurationsFromPush])
+        publishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection.id, [], [...itemCurationsFromPublish, ...itemCurationsFromPush])
       )
     ).toStrictEqual({
       ...state,
@@ -194,7 +185,9 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_FAILURE is called', (
       managers: ['0x1', '0x2'],
       contracts: [],
       maxItems: '0',
-      totalItems: '0'
+      totalItems: '0',
+      published: true,
+      isProgrammatic: false
     }
   })
   it('should remove the corresponding request action, and set the error', () => {
@@ -202,34 +195,6 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_FAILURE is called', (
       itemCurationReducer(
         { ...INITIAL_STATE, loading: [publishThirdPartyItemsRequest(thirdParty, [])] },
         publishThirdPartyItemsFailure('Some Error')
-      )
-    ).toStrictEqual({
-      ...INITIAL_STATE,
-      error: 'Some Error'
-    })
-  })
-})
-
-describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE is called', () => {
-  let thirdParty: ThirdParty
-  beforeEach(() => {
-    thirdParty = {
-      id: '1',
-      name: 'a third party',
-      root: '',
-      isApproved: true,
-      description: 'some desc',
-      managers: ['0x1', '0x2'],
-      contracts: [],
-      maxItems: '0',
-      totalItems: '0'
-    }
-  })
-  it('should remove the corresponding request action, and set the error', () => {
-    expect(
-      itemCurationReducer(
-        { ...INITIAL_STATE, loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [], [])] },
-        publishAndPushChangesThirdPartyItemsFailure('Some Error')
       )
     ).toStrictEqual({
       ...INITIAL_STATE,
