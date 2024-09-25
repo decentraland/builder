@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
-import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label, SemanticSIZES } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label, SemanticSIZES, Icon } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -13,7 +13,8 @@ import {
   getCollectionEditorURL,
   isOnSale as isCollectionOnSale,
   isLocked as isCollectionLocked,
-  isOwner
+  isOwner,
+  isEnableForSaleOffchain
 } from 'modules/collection/utils'
 import { CollectionType } from 'modules/collection/types'
 import { isEmote, isSmart, isWearable } from 'modules/item/utils'
@@ -41,6 +42,7 @@ export default function CollectionDetailPage({
   status,
   onOpenModal,
   isLoading,
+  isOffchainPublicItemOrdersEnabled,
   onFetchCollectionForumPostReply
 }: Props) {
   const location = useLocation()
@@ -82,7 +84,10 @@ export default function CollectionDetailPage({
 
   const handleOnSaleChange = useCallback(() => {
     if (collection) {
-      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: isCollectionOnSale(collection, wallet) })
+      onOpenModal('SellCollectionModal', {
+        collectionId: collection.id,
+        isOnSale: isOffchainPublicItemOrdersEnabled ? isEnableForSaleOffchain(collection, wallet) : isCollectionOnSale(collection, wallet)
+      })
     }
   }, [collection, wallet, onOpenModal])
 
@@ -177,24 +182,42 @@ export default function CollectionDetailPage({
       return null
     }
 
-    const isOnSale = isCollectionOnSale(collection, wallet)
+    const isOnSaleLegacy = isCollectionOnSale(collection, wallet)
+    const isEnableForSaleOffchainMarketplace = isEnableForSaleOffchain(collection, wallet)
+
+    if (isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy) {
+      return !isEnableForSaleOffchainMarketplace ? (
+        <NetworkCheck network={Network.MATIC}>
+          {isEnabled => (
+            <Button
+              className={classNames('action-button', isEnableForSaleOffchainMarketplace ? 'secondary' : 'primary')}
+              disabled={isOnSaleLoading || !isEnabled}
+              onClick={handleOnSaleChange}
+            >
+              <Icon name="lock" />
+              <span className="text">{t('collection_detail_page.enable_sales')}</span>
+            </Button>
+          )}
+        </NetworkCheck>
+      ) : null
+    }
 
     return (
       <NetworkCheck network={Network.MATIC}>
         {isEnabled => (
           <Button
-            className={classNames('action-button', isOnSale ? 'basic' : 'primary')}
+            className={classNames('action-button', isOnSaleLegacy ? 'basic' : 'primary')}
             disabled={isOnSaleLoading || !isEnabled}
             onClick={handleOnSaleChange}
           >
             <span className="text">
-              {isOnSale ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.put_for_sale')}
+              {isOnSaleLegacy ? t('collection_detail_page.remove_from_marketplace') : t('collection_detail_page.put_for_sale')}
             </span>
           </Button>
         )}
       </NetworkCheck>
     )
-  }, [collection, handleOnSaleChange])
+  }, [collection, isOffchainPublicItemOrdersEnabled, handleOnSaleChange])
 
   const renderForumRepliesBadge = useCallback(
     (size: SemanticSIZES = 'tiny') => {
@@ -244,7 +267,7 @@ export default function CollectionDetailPage({
 
       const canMint = canMintCollectionItems(collection, wallet.address)
       const isLocked = isCollectionLocked(collection)
-      const isOnSale = isCollectionOnSale(collection, wallet)
+      const isOnSaleLegacy = isCollectionOnSale(collection, wallet)
       const hasEmotes = items.some(isEmote)
       const hasWearables = items.some(isWearable)
       const isEmoteMissingPrice = hasEmotes ? items.some(item => isEmote(item) && !item.price) : false
@@ -274,7 +297,7 @@ export default function CollectionDetailPage({
                           {collection.name}
                         </Header>
                         <BuilderIcon name="edit" className="edit-collection-name" />
-                        {isOnSale ? (
+                        {isOnSaleLegacy ? (
                           <Label className="badge-on-sale" size="small" circular>
                             {t('collection_detail_page.on_sale')}
                           </Label>
@@ -359,6 +382,9 @@ export default function CollectionDetailPage({
                       <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell>
                     ) : null}
                     <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
+                    {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
+                      <Table.HeaderCell>{t('collection_detail_page.table.actions')}</Table.HeaderCell>
+                    )}
                     <Table.HeaderCell />
                   </Table.Row>
                 </Table.Header>

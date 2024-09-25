@@ -3,14 +3,19 @@ import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { setOnSale } from 'modules/collection/utils'
+import { setOnSale, enableSaleOffchain } from 'modules/collection/utils'
 import { Props } from './SellCollectionModal.types'
 import './SellCollectionModal.css'
 
 export default class SellCollectionModal extends React.PureComponent<Props> {
   handleToggleOnSale = () => {
-    const { collection, wallet, metadata, onSetMinters } = this.props
-    onSetMinters(collection, setOnSale(collection, wallet, !metadata.isOnSale))
+    const { collection, wallet, metadata, isOffchainPublicItemOrdersEnabled, onSetMinters } = this.props
+    onSetMinters(
+      collection,
+      isOffchainPublicItemOrdersEnabled
+        ? enableSaleOffchain(collection, wallet, !metadata.isOnSale)
+        : setOnSale(collection, wallet, !metadata.isOnSale)
+    )
   }
 
   render() {

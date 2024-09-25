@@ -77,3 +77,11 @@ export const getIsLinkedWearablesPaymentsEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsOffchainPublicItemOrdersEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS)
+  } catch (e) {
+    return false
+  }
+}

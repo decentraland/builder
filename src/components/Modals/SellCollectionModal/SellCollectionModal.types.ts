@@ -11,6 +11,7 @@ export type Props = ModalProps & {
   isLoading: boolean
   isOnSale: boolean
   hasUnsyncedItems: boolean
+  isOffchainPublicItemOrdersEnabled: boolean
   onSetMinters: typeof setCollectionMintersRequest
 }
 
@@ -19,7 +20,7 @@ export type PublishCollectionModalMetadata = {
   isOnSale: boolean
 }
 
-export type MapStateProps = Pick<Props, 'collection' | 'wallet' | 'isLoading' | 'hasUnsyncedItems'>
+export type MapStateProps = Pick<Props, 'collection' | 'wallet' | 'isLoading' | 'hasUnsyncedItems' | 'isOffchainPublicItemOrdersEnabled'>
 export type MapDispatchProps = Pick<Props, 'onSetMinters'>
 export type MapDispatch = Dispatch<SetCollectionMintersRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

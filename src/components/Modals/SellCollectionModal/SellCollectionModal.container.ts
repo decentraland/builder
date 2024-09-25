@@ -7,6 +7,7 @@ import { setCollectionMintersRequest, SET_COLLECTION_MINTERS_REQUEST } from 'mod
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './SellCollectionModal.types'
 import SellCollectionModal from './SellCollectionModal'
 import { UNSYNCED_STATES } from 'modules/item/utils'
+import { getIsOffchainPublicItemOrdersEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { collectionId } = ownProps.metadata
@@ -15,7 +16,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     collection: getCollection(state, collectionId)!,
     wallet: getWallet(state)!,
     isLoading: isLoadingType(getLoading(state), SET_COLLECTION_MINTERS_REQUEST),
-    hasUnsyncedItems: UNSYNCED_STATES.has(getStatusByCollectionId(state)[collectionId])
+    hasUnsyncedItems: UNSYNCED_STATES.has(getStatusByCollectionId(state)[collectionId]),
+    isOffchainPublicItemOrdersEnabled: getIsOffchainPublicItemOrdersEnabled(state)
   }
 }
 
