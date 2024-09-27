@@ -1,6 +1,6 @@
+import { AuthorizationStepStatus } from 'decentraland-ui'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { Collection, PaymentMethod } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { Cheque, ThirdParty } from 'modules/thirdParty/types'
@@ -42,9 +42,10 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   isLoading: boolean
   isPublishingFinished: boolean
   isPublishCollectionsWertEnabled: boolean
+  publishingStatus: AuthorizationStepStatus
   onPublish: (email: string, subscribeToNewsletter: boolean, paymentMethod: PaymentMethod, cheque?: Cheque, maxPrice?: string) => unknown
   onFetchPrice: () => unknown
-} & WithAuthorizedActionProps
+}
 
 export type PublishCollectionModalMetadata = {
   collectionId: string

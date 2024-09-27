@@ -16,8 +16,8 @@ import {
   pushChangesThirdPartyItemsFailure,
   pushChangesThirdPartyItemsRequest,
   pushChangesThirdPartyItemsSuccess,
-  publishAndPushChangesThirdPartyItemsSuccess,
-  deployBatchedThirdPartyItemsSuccess
+  deployBatchedThirdPartyItemsSuccess,
+  finishPublishAndPushChangesThirdPartyItemsSuccess
 } from 'modules/thirdParty/actions'
 import { CurationStatus } from '../types'
 import { ItemCuration } from './types'
@@ -162,7 +162,12 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCC
     expect(
       itemCurationReducer(
         state,
-        publishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection.id, [], [...itemCurationsFromPublish, ...itemCurationsFromPush])
+        finishPublishAndPushChangesThirdPartyItemsSuccess(
+          thirdParty,
+          collection.id,
+          [],
+          [...itemCurationsFromPublish, ...itemCurationsFromPush]
+        )
       )
     ).toStrictEqual({
       ...state,

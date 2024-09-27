@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
-import { Network } from '@dcl/schemas'
-import { Button, Column, Loader, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
+import { EmoteDataADR74, Network } from '@dcl/schemas'
+import { Button, Column, IconBadge, Loader, Mana, Modal, Popup, Row, Table } from 'decentraland-ui'
 import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
-import { isFree } from 'modules/item/utils'
+import { getMapping, isEmote, isFree } from 'modules/item/utils'
+import { Collection } from 'modules/collection/types'
 import ItemImage from 'components/ItemImage'
 import ItemBadge from 'components/ItemBadge'
-import './ConfirmCollectionItemsStep.css'
+import { MappingEditor } from 'components/MappingEditor'
+import styles from './ConfirmCollectionItemsStep.module.css'
 
 export const ConfirmCollectionItemsStep: React.FC<{
   items: Item[]
@@ -17,8 +19,10 @@ export const ConfirmCollectionItemsStep: React.FC<{
   onPrevStep: () => void
   isSigningCheque: boolean
   isThirdParty: boolean
+  collection: Collection
 }> = props => {
-  const { items, onNextStep, onPrevStep, isSigningCheque, isThirdParty } = props
+  const { items, collection, onNextStep, onPrevStep, isSigningCheque, isThirdParty } = props
+  const isCollectionLinked = collection.linkedContractAddress && collection.linkedContractNetwork
 
   const renderPrice = (item: Item) => {
     const price = ethers.utils.formatEther(item.price!)
@@ -31,7 +35,7 @@ export const ConfirmCollectionItemsStep: React.FC<{
           <Mana className="mana" network={Network.MATIC}>
             {price.length > 10 ? (
               <Popup
-                className="price-popup"
+                className={styles.pricePopup}
                 content={price}
                 position="top center"
                 trigger={<span>{`${price.slice(0, 3)}...${price.slice(-4)}`}</span>}
@@ -49,11 +53,57 @@ export const ConfirmCollectionItemsStep: React.FC<{
     )
   }
 
+  const renderThirdPartyItemsTable = useCallback(
+    () => (
+      <Table basic="very">
+        <Table.Header className={classNames({ [styles.hasScrollBar]: items.length > 5 })}>
+          <Table.Row>
+            <Table.HeaderCell width={1}></Table.HeaderCell>
+            <Table.HeaderCell width={5}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
+            <Table.HeaderCell width={1}></Table.HeaderCell>
+            <Table.HeaderCell>Linked to</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {items.map((item, index) => {
+            const itemMapping = getMapping(item)
+            return (
+              <Table.Row key={item.id}>
+                <Table.Cell width={1}>
+                  <div className={styles.itemNumber}>{index + 1}</div>
+                </Table.Cell>
+                <Table.Cell width={5} className={classNames(styles.column, styles.avatarColumn)}>
+                  <div className={styles.avatarContainer}>
+                    <ItemImage className={styles.itemImage} item={item} />
+                    <div className={styles.info}>
+                      <div className={styles.name} title={item.name}>
+                        {item.name}
+                      </div>
+                      <ItemBadge className={styles.badge} item={item} size="small" />
+                    </div>
+                  </div>
+                </Table.Cell>
+                <Table.Cell width={1}>
+                  <IconBadge className={classNames(styles.categoryBadge, styles.thirdParty)} icon={item.data.category} />
+                </Table.Cell>
+                <Table.Cell className={styles.mapping}>
+                  {itemMapping && <MappingEditor mapping={itemMapping} onChange={() => undefined} disabled isCompact />}
+                </Table.Cell>
+              </Table.Row>
+            )
+          })}
+        </Table.Body>
+      </Table>
+    ),
+    [items]
+  )
+
   const renderItemsTable = () => {
     return (
       <Table basic="very">
-        <Table.Header className={classNames({ 'has-scrollbar': items.length > 5 })}>
-          <Table.Row className="row">
+        <Table.Header className={classNames({ [styles.hasScrollBar]: items.length > 5 })}>
+          <Table.Row>
+            <Table.HeaderCell width={1}></Table.HeaderCell>
             <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
             <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
             <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
@@ -61,26 +111,31 @@ export const ConfirmCollectionItemsStep: React.FC<{
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {items.map(item => (
-            <Table.Row key={item.id} className="CollectionItem row">
-              <Table.Cell width={7} className="column avatarColumn">
-                <div className="avatarContainer">
-                  <ItemImage className="itemImage" item={item} hasRarityBackground={false} />
-                  <div className="info">
-                    <div className="name" title={item.name}>
+          {items.map((item, index) => (
+            <Table.Row key={item.id}>
+              <Table.Cell width={1}>
+                <div className={styles.itemNumber}>{index + 1}</div>
+              </Table.Cell>
+              <Table.Cell width={7} className={classNames(styles.column, styles.avatarColumn)}>
+                <div className={styles.avatarContainer}>
+                  <ItemImage className={styles.itemImage} item={item} />
+                  <div className={styles.info}>
+                    <div className={styles.name} title={item.name}>
                       {item.name}
                     </div>
-                    <ItemBadge className="badge" item={item} size="small"></ItemBadge>
+                    <ItemBadge className={styles.badge} item={item} size="small" />
                   </div>
                 </div>
               </Table.Cell>
-              <Table.Cell className="column">
-                {item.rarity ? <RarityBadge rarity={item.rarity} size="small" withTooltip={false} /> : null}
+              <Table.Cell>{item.rarity ? <RarityBadge rarity={item.rarity} size="small" withTooltip={false} /> : null}</Table.Cell>
+              <Table.Cell>
+                <IconBadge
+                  className={styles.categoryBadge}
+                  icon={isEmote(item) ? ((item.data as EmoteDataADR74).loop ? 'play-loop' : 'play-once') : item.data.category}
+                  text={t(`${item.type}.category.${item.data.category!}`)}
+                ></IconBadge>
               </Table.Cell>
-              <Table.Cell className="column">
-                <div>{t(`${item.type}.category.${item.data.category!}`)}</div>
-              </Table.Cell>
-              <Table.Cell className="column priceColumn">{renderPrice(item)}</Table.Cell>
+              <Table.Cell className={styles.priceColumn}>{renderPrice(item)}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
@@ -89,29 +144,29 @@ export const ConfirmCollectionItemsStep: React.FC<{
   }
 
   return (
-    <Modal.Content className="ConfirmCollectionItemsStep">
+    <Modal.Content>
       <Column>
-        <Row className="details">
+        <Row className={styles.details}>
           {isSigningCheque && (
-            <div className="loading-overlay">
+            <div className={styles.loadingOverlay}>
               <Loader inline size="massive" />
               {t('publish_wizard_collection_modal.accept_in_wallet')}
             </div>
           )}
           <Column grow={true}>
-            <p className="title">{t('publish_wizard_collection_modal.confirm_collection_items_step.title')}</p>
-            <p className="subtitle">
+            <p className={styles.title}>{t('publish_wizard_collection_modal.confirm_collection_items_step.title')}</p>
+            <p className={styles.subtitle}>
               {t(`publish_wizard_collection_modal.confirm_collection_items_step.${isThirdParty ? 'third_party' : 'standard'}.subtitle`, {
                 br: <br />
               })}
             </p>
-            <p className="description">
+            <p className={styles.description}>
               {t(`publish_wizard_collection_modal.confirm_collection_items_step.${isThirdParty ? 'third_party' : 'standard'}.description`)}
             </p>
-            <div className="items">{renderItemsTable()}</div>
+            <div className={styles.items}>{isCollectionLinked && isThirdParty ? renderThirdPartyItemsTable() : renderItemsTable()}</div>
           </Column>
         </Row>
-        <Row className="actions">
+        <Row className={styles.actions}>
           <Button className="back" secondary disabled={isSigningCheque} onClick={onPrevStep}>
             {t('global.back')}
           </Button>

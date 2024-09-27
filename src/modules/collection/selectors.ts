@@ -22,7 +22,8 @@ import {
   SET_COLLECTION_MINTERS_SUCCESS,
   APPROVE_COLLECTION_SUCCESS,
   REJECT_COLLECTION_SUCCESS,
-  PUBLISH_COLLECTION_REQUEST
+  PUBLISH_COLLECTION_REQUEST,
+  PUBLISH_COLLECTION_SUCCESS
 } from './actions'
 import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
@@ -170,7 +171,7 @@ export const getPublishStatus = (state: RootState) => {
   }
 
   const pendingActionTypeTransactions = getPendingTransactions(state).filter(
-    transaction => getType({ type: PUBLISH_COLLECTION_REQUEST }) === getType({ type: transaction.actionType })
+    transaction => getType({ type: PUBLISH_COLLECTION_SUCCESS }) === getType({ type: transaction.actionType })
   )
 
   if (isLoadingType(getLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST) || pendingActionTypeTransactions.length) {
