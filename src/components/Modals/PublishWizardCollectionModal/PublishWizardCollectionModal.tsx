@@ -5,6 +5,7 @@ import { List, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { withAuthorizedAction } from 'decentraland-dapps/dist/containers'
+import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { AuthorizedAction } from 'decentraland-dapps/dist/containers/withAuthorizedAction/AuthorizationModal'
 import { ContractName } from 'decentraland-transactions'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
@@ -14,6 +15,7 @@ import { extractThirdPartyId } from 'lib/urn'
 import { getPublishStatus, getError } from 'modules/collection/selectors'
 import { PaymentMethod } from 'modules/collection/types'
 import { isTPCollection } from 'modules/collection/utils'
+import { getThirdPartyPublishStatus } from 'modules/thirdParty/selectors'
 import { Cheque } from 'modules/thirdParty/types'
 import { getPublishItemsSignature } from 'modules/thirdParty/utils'
 import { Props, PublishWizardCollectionSteps } from './PublishWizardCollectionModal.types'
@@ -24,7 +26,7 @@ import PayPublicationFeeStep from './PayPublicationFeeStep/PayPublicationFeeStep
 import CongratulationsStep from './CongratulationsStep/CongratulationsStep'
 import './PublishWizardCollectionModal.css'
 
-export const PublishWizardCollectionModal: React.FC<Props> = props => {
+export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedActionProps> = props => {
   const {
     collection,
     itemsToPublish,
@@ -155,6 +157,7 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
         return (
           <ConfirmCollectionItemsStep
             isSigningCheque={isSigningCheque}
+            collection={collection}
             items={allItems}
             isThirdParty={isThirdParty}
             onNextStep={handleOnConfirmItemsNextStep}
@@ -220,33 +223,43 @@ export const PublishWizardCollectionModal: React.FC<Props> = props => {
   }, [currentStep])
 
   return (
-    <Modal className="PublishWizardCollectionModal" size="small" onClose={isLoading ? undefined : onClose} closeOnDimmerClick={false}>
-      <ModalNavigation title={stepTitle} onClose={onClose} />
+    <Modal className="PublishWizardCollectionModal" size="large" onClose={isLoading ? undefined : onClose} closeOnDimmerClick={false}>
+      <ModalNavigation title={stepTitle} onClose={isLoading ? undefined : onClose} />
       {stepIndicator}
       {renderStepView()}
     </Modal>
   )
 }
 
-export default withAuthorizedAction(
+const AUTHORIZATION_DATA = {
+  title_action: 'publish_wizard_collection_modal.authorization.title_action',
+  action: 'publish_wizard_collection_modal.authorization.action',
+  confirm_transaction: {
+    title: 'publish_wizard_collection_modal.authorization.confirm_transaction_title'
+  },
+  authorize_mana: {
+    description: 'publish_wizard_collection_modal.authorization.authorize_mana_description'
+  },
+  set_cap: {
+    description: 'publish_wizard_collection_modal.authorization.set_cap_description'
+  },
+  insufficient_amount_error: {
+    message: 'publish_wizard_collection_modal.authorization.insufficient_amount_error_message'
+  }
+}
+
+export const AuthorizedPublishWizardThirdPartyCollectionModal = withAuthorizedAction(
   PublishWizardCollectionModal,
   AuthorizedAction.PUBLISH_COLLECTION,
-  {
-    title_action: 'publish_wizard_collection_modal.authorization.title_action',
-    action: 'publish_wizard_collection_modal.authorization.action',
-    confirm_transaction: {
-      title: 'publish_wizard_collection_modal.authorization.confirm_transaction_title'
-    },
-    authorize_mana: {
-      description: 'publish_wizard_collection_modal.authorization.authorize_mana_description'
-    },
-    set_cap: {
-      description: 'publish_wizard_collection_modal.authorization.set_cap_description'
-    },
-    insufficient_amount_error: {
-      message: 'publish_wizard_collection_modal.authorization.insufficient_amount_error_message'
-    }
-  },
+  AUTHORIZATION_DATA,
+  getThirdPartyPublishStatus,
+  getError
+)
+
+export const AuthorizedPublishWizardCollectionModal = withAuthorizedAction(
+  PublishWizardCollectionModal,
+  AuthorizedAction.PUBLISH_COLLECTION,
+  AUTHORIZATION_DATA,
   getPublishStatus,
   getError
 )

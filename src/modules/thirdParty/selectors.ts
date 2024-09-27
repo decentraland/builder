@@ -1,6 +1,8 @@
 import { AnyAction } from 'redux-saga'
 import { createSelector } from 'reselect'
+import { AuthorizationStepStatus } from 'decentraland-ui'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
@@ -16,7 +18,9 @@ import {
   FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   FETCH_THIRD_PARTY_REQUEST,
-  FetchThirdPartyRequestAction
+  FetchThirdPartyRequestAction,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST
 } from './actions'
 import { getThirdPartyForCollection, getThirdPartyForItem, isUserManagerOfThirdParty } from './utils'
 
@@ -49,9 +53,6 @@ export const hasPendingDisableThirdPartyTransaction = (state: RootState, thirdPa
   )
 }
 
-export const isPublishingAndPushingChanges = (state: RootState): boolean =>
-  isLoadingType(getLoading(state), PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST)
-
 export const getThirdParty = (state: RootState, id: string): ThirdParty | null => getData(state)[id] ?? null
 
 export const isDisablingThirdParty = (state: RootState): boolean => isLoadingType(getLoading(state), DISABLE_THIRD_PARTY_REQUEST)
@@ -75,3 +76,31 @@ export const isDeployingBatchedThirdPartyItems = (state: RootState): boolean =>
 
 const isFetchThirdPartyRequestAction = (action: AnyAction): action is FetchThirdPartyRequestAction =>
   action.type === FETCH_THIRD_PARTY_REQUEST
+
+export const getThirdPartyPublishStatus = (state: RootState): AuthorizationStepStatus => {
+  const userAddress = getAddress(state)
+
+  if (!userAddress) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  if (isLoadingType(getLoading(state), PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST)) {
+    return AuthorizationStepStatus.WAITING
+  }
+
+  const pendingActionTypeTransactions = getPendingTransactions(state, userAddress).filter(
+    transaction => getType({ type: PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS }) === getType({ type: transaction.actionType })
+  )
+
+  const isFinishingThirdPartyPublishing = isLoadingType(getLoading(state), FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST)
+
+  if (pendingActionTypeTransactions.length || isFinishingThirdPartyPublishing) {
+    return AuthorizationStepStatus.PROCESSING
+  }
+
+  if (getError(state)) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  return AuthorizationStepStatus.PENDING
+}

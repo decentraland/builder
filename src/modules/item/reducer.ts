@@ -105,10 +105,10 @@ import {
 import {
   PublishThirdPartyItemsSuccessAction,
   PushChangesThirdPartyItemsSuccessAction,
-  PublishAndPushChangesThirdPartyItemsSuccessAction,
-  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
-  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS
+  PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  FinishPublishAndPushChangesThirdPartyItemsSuccessAction
 } from 'modules/thirdParty/actions'
 import { toItemObject } from './utils'
 import { Item, BlockchainRarity } from './types'
@@ -174,7 +174,7 @@ type ItemReducerAction =
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
   | PublishThirdPartyItemsSuccessAction
-  | PublishAndPushChangesThirdPartyItemsSuccessAction
+  | FinishPublishAndPushChangesThirdPartyItemsSuccessAction
   | PushChangesThirdPartyItemsSuccessAction
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
@@ -428,7 +428,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
-    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
+    case FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
     case PUBLISH_THIRD_PARTY_ITEMS_SUCCESS:
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations } = action.payload

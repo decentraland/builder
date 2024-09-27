@@ -299,7 +299,7 @@ export default function CollectionsPage(props: Props) {
         <EventBanner />
         <div className="filters">
           <Container>
-            {(hasUserOrphanItems || isThirdPartyManager) && (
+            {(hasUserOrphanItems || isThirdPartyManager || isLinkedWearablesPaymentsEnabled) && (
               <div className="action-tabs-container">
                 <img src={collectionsIcon} className="collections-icon" />
                 <Tabs isFullscreen>

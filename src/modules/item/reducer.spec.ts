@@ -2,8 +2,8 @@ import { ChainId, ContractAddress, ContractNetwork, Mapping, MappingType } from 
 import { saveCollectionSuccess } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import {
-  publishAndPushChangesThirdPartyItemsSuccess,
-  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  finishPublishAndPushChangesThirdPartyItemsSuccess,
+  FinishPublishAndPushChangesThirdPartyItemsSuccessAction,
   publishThirdPartyItemsSuccess,
   PublishThirdPartyItemsSuccessAction,
   pushChangesThirdPartyItemsSuccess,
@@ -441,13 +441,13 @@ describe('when an action of type FETCH_ORPHAN_ITEM_FAILURE is called', () => {
 })
 
 describe.each([
-  ['pushing changes and publishing third party items', publishAndPushChangesThirdPartyItemsSuccess],
+  ['pushing changes and publishing third party items', finishPublishAndPushChangesThirdPartyItemsSuccess],
   ['pushing changes third party items', pushChangesThirdPartyItemsSuccess],
   ['publishing third party items', publishThirdPartyItemsSuccess]
 ])('when reducing the successful action of %s', (_, fn) => {
   let action:
     | PublishThirdPartyItemsSuccessAction
-    | PublishAndPushChangesThirdPartyItemsSuccessAction
+    | FinishPublishAndPushChangesThirdPartyItemsSuccessAction
     | PushChangesThirdPartyItemsSuccessAction
 
   beforeEach(() => {
@@ -467,8 +467,8 @@ describe.each([
       case publishThirdPartyItemsSuccess:
         action = publishThirdPartyItemsSuccess('aThirdPartyId', 'aCollectionId', items, curations)
         break
-      case publishAndPushChangesThirdPartyItemsSuccess:
-        action = publishAndPushChangesThirdPartyItemsSuccess({} as ThirdParty, 'aCollectionId', items, curations)
+      case finishPublishAndPushChangesThirdPartyItemsSuccess:
+        action = finishPublishAndPushChangesThirdPartyItemsSuccess({} as ThirdParty, 'aCollectionId', items, curations)
         break
     }
   })

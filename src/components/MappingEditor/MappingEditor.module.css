@@ -25,11 +25,12 @@
 }
 
 .mappings.compact {
-  width: 100%;
+  min-width: 0;
+  flex: 1;
 }
 
 .mappings.compact > div {
-  flex-grow: 1;
+  flex: 1;
 }
 
 /* Input margin */
@@ -94,6 +95,7 @@
 
 .range {
   display: flex;
+  min-width: 0;
 }
 
 .range.compact {

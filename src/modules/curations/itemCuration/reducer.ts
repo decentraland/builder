@@ -2,11 +2,9 @@ import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/lo
 import {
   DeployBatchedThirdPartyItemsSuccessAction,
   DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS,
-  PublishAndPushChangesThirdPartyItemsSuccessAction,
   PublishThirdPartyItemsFailureAction,
   PublishThirdPartyItemsRequestAction,
   PublishThirdPartyItemsSuccessAction,
-  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   PUBLISH_THIRD_PARTY_ITEMS_FAILURE,
   PUBLISH_THIRD_PARTY_ITEMS_REQUEST,
   PUBLISH_THIRD_PARTY_ITEMS_SUCCESS,
@@ -15,7 +13,9 @@ import {
   PushChangesThirdPartyItemsSuccessAction,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
   PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
-  PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
+  PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  FinishPublishAndPushChangesThirdPartyItemsSuccessAction
 } from 'modules/thirdParty/actions'
 import {
   FETCH_ITEM_CURATIONS_REQUEST,
@@ -58,7 +58,7 @@ type CurationReducerAction =
   | PushChangesThirdPartyItemsRequestAction
   | PushChangesThirdPartyItemsSuccessAction
   | PushChangesThirdPartyItemsFailureAction
-  | PublishAndPushChangesThirdPartyItemsSuccessAction
+  | FinishPublishAndPushChangesThirdPartyItemsSuccessAction
   | DeployBatchedThirdPartyItemsSuccessAction
 
 export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, action: CurationReducerAction): ItemCurationState {
@@ -129,13 +129,12 @@ export function itemCurationReducer(state: ItemCurationState = INITIAL_STATE, ac
       }
     }
     case PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
-    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
+    case FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
       const { itemCurations: newItemCurations, collectionId } = action.payload
       const oldItemCurations = state.data[collectionId]
       const newCurationsItemIds = newItemCurations.map(newItemCuration => newItemCuration.itemId)
-      const oldCurationsNotIncludedInNewOnes = oldItemCurations.filter(
-        oldItemCuration => !newCurationsItemIds.includes(oldItemCuration.itemId)
-      )
+      const oldCurationsNotIncludedInNewOnes =
+        oldItemCurations?.filter(oldItemCuration => !newCurationsItemIds.includes(oldItemCuration.itemId)) ?? []
 
       return {
         ...state,

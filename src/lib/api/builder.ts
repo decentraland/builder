@@ -878,7 +878,7 @@ export class BuilderAPI extends BaseAPI {
     }
   }
 
-  async publishTPCollection(collectionId: string, itemIds: string[], cheque: Cheque) {
+  publishTPCollection = async (collectionId: string, itemIds: string[], cheque: Cheque) => {
     const { collection, items, itemCurations }: { collection: RemoteCollection; items: RemoteItem[]; itemCurations: RemoteItemCuration[] } =
       await this.request('post', `/collections/${collectionId}/publish`, {
         params: {
@@ -1052,7 +1052,7 @@ export class BuilderAPI extends BaseAPI {
     )
   }
 
-  async deleteVirtualThirdParty(thirdPartId: string): Promise<void> {
+  deleteVirtualThirdParty = async (thirdPartId: string): Promise<void> => {
     await this.request('delete', `/thirdParties/${thirdPartId}`)
   }
 

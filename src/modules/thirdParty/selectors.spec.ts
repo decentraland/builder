@@ -1,3 +1,4 @@
+import { AuthorizationStepStatus } from 'decentraland-ui'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
 import {
@@ -6,6 +7,8 @@ import {
   disableThirdPartyRequest,
   fetchThirdPartiesRequest,
   fetchThirdPartyRequest,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   publishAndPushChangesThirdPartyItemsRequest
 } from './actions'
 import {
@@ -18,10 +21,11 @@ import {
   getThirdParty,
   isDisablingThirdParty,
   hasPendingDisableThirdPartyTransaction,
-  isPublishingAndPushingChanges,
-  isLoadingThirdParty
+  isLoadingThirdParty,
+  getThirdPartyPublishStatus
 } from './selectors'
 import { ThirdParty } from './types'
+import { INITIAL_STATE } from './reducer'
 
 describe('Third Party selectors', () => {
   let address: string
@@ -76,6 +80,12 @@ describe('Third Party selectors', () => {
         data: {
           address
         }
+      },
+      thirdParty: {
+        ...INITIAL_STATE
+      },
+      transaction: {
+        data: []
       }
     } as any
   })
@@ -513,12 +523,28 @@ describe('Third Party selectors', () => {
     })
   })
 
-  describe("when getting if it's publishing and pushing changes", () => {
-    let state: RootState
-
-    describe('and the action is being processed', () => {
+  describe('when getting the third party publish status', () => {
+    describe("and there's no user logged in", () => {
       beforeEach(() => {
-        state = {
+        baseState = {
+          ...baseState,
+          wallet: {
+            ...baseState.wallet,
+            data: null
+          }
+        }
+      })
+
+      it('should return the error authorization step', () => {
+        expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.ERROR)
+      })
+    })
+  })
+
+  describe('and the user is logged in', () => {
+    describe('and the publish and push changes sagas is being processed', () => {
+      beforeEach(() => {
+        baseState = {
           ...baseState,
           thirdParty: {
             ...baseState.thirdParty,
@@ -527,24 +553,89 @@ describe('Third Party selectors', () => {
         }
       })
 
-      it('should return true', () => {
-        expect(isPublishingAndPushingChanges(state)).toBe(true)
+      it('should return the waiting authorization step', () => {
+        expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.WAITING)
       })
     })
 
-    describe('and the action is not being processed', () => {
+    describe('and the transaction is being processed', () => {
       beforeEach(() => {
-        state = {
+        baseState = {
+          ...baseState,
+          transaction: {
+            ...baseState.transaction,
+            data: [
+              {
+                events: [],
+                hash: '0x123',
+                nonce: 1,
+                actionType: PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+                payload: { thirdPartyId: thirdParty1.id },
+                status: null,
+                from: address,
+                replacedBy: null,
+                timestamp: 0,
+                url: 'url',
+                isCrossChain: false,
+                chainId: 1
+              }
+            ]
+          }
+        } as RootState
+      })
+
+      it('should return the waiting authorization step', () => {
+        expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.PROCESSING)
+      })
+    })
+
+    describe('and the user is finishing the publish and pushing of third party items', () => {
+      beforeEach(() => {
+        baseState = {
           ...baseState,
           thirdParty: {
             ...baseState.thirdParty,
-            loading: []
+            loading: [{ type: FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST }],
+            error: null
           }
         }
       })
 
-      it('should return false', () => {
-        expect(isPublishingAndPushingChanges(state)).toBe(false)
+      it('should return the processing authorization step', () => {
+        expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.PROCESSING)
+      })
+    })
+
+    describe('and there is an error', () => {
+      beforeEach(() => {
+        baseState = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            error: 'An error'
+          }
+        }
+      })
+
+      it('should return the error authorization step', () => {
+        expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.ERROR)
+      })
+    })
+
+    describe('and nothing is happening', () => {
+      beforeEach(() => {
+        baseState = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [],
+            error: null
+          }
+        }
+      })
+
+      it('should return the pending authorization step', () => {
+        expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.PENDING)
       })
     })
   })

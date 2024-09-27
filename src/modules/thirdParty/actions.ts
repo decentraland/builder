@@ -122,7 +122,7 @@ export type PushChangesThirdPartyItemsRequestAction = ReturnType<typeof pushChan
 export type PushChangesThirdPartyItemsSuccessAction = ReturnType<typeof pushChangesThirdPartyItemsSuccess>
 export type PushChangesThirdPartyItemsFailureAction = ReturnType<typeof pushChangesThirdPartyItemsFailure>
 
-// Publish & Push changes Third Party Item
+// Publish & Push changes Third Party items
 
 export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST = '[Request] Publish & Push third party items changes'
 export const PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Publish & Push third party items changes'
@@ -149,10 +149,23 @@ export const publishAndPushChangesThirdPartyItemsRequest = (
 
 export const publishAndPushChangesThirdPartyItemsSuccess = (
   thirdParty: ThirdParty,
-  collectionId: Collection['id'],
-  items: Item[],
-  itemCurations: ItemCuration[]
-) => action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, { thirdParty, collectionId, items, itemCurations })
+  collection: Collection,
+  itemsToPublish: Item[],
+  itemsWithChanges: Item[],
+  cheque?: Cheque,
+  txHash?: string,
+  chainId?: ChainId
+) =>
+  action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, {
+    thirdParty,
+    collection,
+    itemsToPublish,
+    itemsWithChanges,
+    cheque,
+    txHash,
+    chainId,
+    ...(txHash && chainId ? buildTransactionPayload(chainId, txHash, { thirdPartyId: thirdParty.id, thirdPartyName: thirdParty.name }) : {})
+  })
 
 export const publishAndPushChangesThirdPartyItemsFailure = (error: string) =>
   action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { error })
@@ -160,6 +173,24 @@ export const publishAndPushChangesThirdPartyItemsFailure = (error: string) =>
 export type PublishAndPushChangesThirdPartyItemsRequestAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsRequest>
 export type PublishAndPushChangesThirdPartyItemsSuccessAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsSuccess>
 export type PublishAndPushChangesThirdPartyItemsFailureAction = ReturnType<typeof publishAndPushChangesThirdPartyItemsFailure>
+
+// Finish Publish and Push changes in Third Party items
+
+export const FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST = '[Request] Finish Publish & Push third party items changes'
+export const FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS = '[Success] Finish Publish & Push third party items changes'
+export const FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE = '[Failure] Finish Publish & Push third party items changes'
+
+export const finishPublishAndPushChangesThirdPartyItemsSuccess = (
+  thirdParty: ThirdParty,
+  collectionId: Collection['id'],
+  items: Item[],
+  itemCurations: ItemCuration[]
+) => action(FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, { thirdParty, collectionId, items, itemCurations })
+export const finishPublishAndPushChangesThirdPartyItemsFailure = (error: string) =>
+  action(FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { error })
+
+export type FinishPublishAndPushChangesThirdPartyItemsSuccessAction = ReturnType<typeof finishPublishAndPushChangesThirdPartyItemsSuccess>
+export type FinishPublishAndPushChangesThirdPartyItemsFailureAction = ReturnType<typeof finishPublishAndPushChangesThirdPartyItemsFailure>
 
 // Deploy batched third party items
 
@@ -200,3 +231,11 @@ export const disableThirdPartyFailure = (error: string) => action(DISABLE_THIRD_
 export type DisableThirdPartyRequestAction = ReturnType<typeof disableThirdPartyRequest>
 export type DisableThirdPartySuccessAction = ReturnType<typeof disableThirdPartySuccess>
 export type DisableThirdPartyFailureAction = ReturnType<typeof disableThirdPartyFailure>
+
+// Clear Third Party Errors
+
+export const CLEAR_THIRD_PARTY_ERRORS = '[Request] Clear Third Party Errors'
+
+export const clearThirdPartyErrors = () => action(CLEAR_THIRD_PARTY_ERRORS)
+
+export type ClearThirdPartyErrorsAction = ReturnType<typeof clearThirdPartyErrors>
