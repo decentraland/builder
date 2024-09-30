@@ -17,7 +17,7 @@ export function* poolGroupSaga(builder: BuilderAPI) {
 
   function* handleLoadPoolGroups(_action: LoadPoolGroupsRequestAction) {
     try {
-      const poolGroups: PoolGroup[] = yield call(() => builder.fetchPoolGroups())
+      const poolGroups: PoolGroup[] = yield call([builder, 'fetchPoolGroups'])
       const record: ModelById<PoolGroup> = {}
 
       for (const poolGroup of poolGroups) {

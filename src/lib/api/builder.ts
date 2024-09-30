@@ -685,7 +685,7 @@ export class BuilderAPI extends BaseAPI {
     return { items: items.map(fromRemotePool), total }
   }
 
-  async fetchPoolGroups(activeOnly = false) {
+  fetchPoolGroups = async (activeOnly = false) => {
     const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { params: { activeOnly } })
     return items.map(fromPoolGroup)
   }

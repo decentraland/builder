@@ -1628,6 +1628,9 @@
     "slots_short": "插槽",
     "slots_long": "出版点",
     "migration_banner": "您收藏中的一个或多个项目必须迁移到新版本",
+    "type": "链接的可穿戴物品",
+    "programmatic": "程序化",
+    "standard": "标准的",
     "synced_filter": {
       "all": "所有项目",
       "synced": "同步的",

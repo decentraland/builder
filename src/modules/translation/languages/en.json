@@ -1642,6 +1642,9 @@
     "slots_short": "Slots",
     "slots_long": "Publishing points",
     "migration_banner": "One or many items in your collection must be migrated to new version",
+    "type": "Linked Wearables",
+    "programmatic": "Programmatic",
+    "standard": "Standard",
     "synced_filter": {
       "all": "All items",
       "synced": "Synced",

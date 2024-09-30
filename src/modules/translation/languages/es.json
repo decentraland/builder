@@ -1649,6 +1649,9 @@
     "slots_short": "Slots",
     "slots_long": "Puntos de publicación",
     "migration_banner": "Uno o múltiples items en tu colección necesitan ser migrados a la nueva versión",
+    "type": "Externamente vinculadas",
+    "programmatic": "Programáticas",
+    "standard": "Estándar",
     "synced_filter": {
       "all": "Todos los items",
       "synced": "Sincronizados",

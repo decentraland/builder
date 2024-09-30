@@ -192,8 +192,4 @@ window.onbeforeunload = function () {
 
 store.dispatch(fetchTilesRequest())
 
-function initTestStore(preloadedState = {}) {
-  const testEnhancer = composeEnhancers(applyMiddleware(historyMiddleware, sagasMiddleware, storageMiddleware, transactionMiddleware))
-  return createStore(rootReducer, preloadedState, testEnhancer)
-}
-export { store, history, initTestStore }
+export { store, history }

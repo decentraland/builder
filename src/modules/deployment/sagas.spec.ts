@@ -36,6 +36,12 @@ let catalystClient: CatalystClient
 let deployMock: jest.Mock
 let fetchEntitiesByPointersMock: jest.Mock
 
+jest.mock('modules/common/store', () => ({
+  store: {
+    dispatch: jest.fn()
+  }
+}))
+
 jest.mock('@dcl/crypto', () => ({
   Authenticator: { signPayload: jest.fn().mockReturnValue('auth') }
 }))
