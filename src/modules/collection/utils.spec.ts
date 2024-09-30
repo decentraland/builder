@@ -1,5 +1,6 @@
 import { ChainId, BodyShape } from '@dcl/schemas'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item } from 'modules/item/types'
 import { Collection, CollectionType } from 'modules/collection/types'
@@ -11,7 +12,10 @@ import {
   isTPCollection,
   getTPThresholdToReview,
   toPaginationStats,
-  getFiatGatewayCommodityAmount
+  getFiatGatewayCommodityAmount,
+  getOffchainSaleAddress,
+  isEnableForSaleOffchain,
+  enableSaleOffchain
 } from './utils'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 import { CollectionPaginationData } from './reducer'
@@ -316,6 +320,53 @@ describe('when getting the fiat commodity amount', () => {
       it('should return 10', () => {
         expect(getFiatGatewayCommodityAmount(unitPrice, items)).toBe(10.05)
       })
+    })
+  })
+})
+
+describe('when getting if a collection is enable for offchain purchases', () => {
+  describe('when the offchain contract is a minter of the collection', () => {
+    it('should return true', () => {
+      const offchainContract = getOffchainSaleAddress(ChainId.MATIC_AMOY)
+      expect(
+        isEnableForSaleOffchain(
+          { minters: [offchainContract], id: '1' } as Collection,
+          { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+        )
+      ).toBe(true)
+    })
+  })
+
+  describe('when the offchain contract is not a minter of the collection', () => {
+    it('should return true', () => {
+      expect(
+        isEnableForSaleOffchain(
+          { minters: [], id: '1' } as unknown as Collection,
+          { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+        )
+      ).toBe(false)
+    })
+  })
+})
+
+describe('when toggling the permissions for the offchain marketplace contract', () => {
+  describe('and the user wants to enable the contract', () => {
+    it('should return the correct set of permissions', () => {
+      const address = getOffchainSaleAddress(ChainId.MATIC_AMOY)
+      const collection = { id: 'id' } as Collection
+      expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, true)).toEqual([
+        { address, hasAccess: true, collection }
+      ])
+    })
+  })
+
+  describe('and the user wants to disable the contract', () => {
+    it('should return the correct set of permissions', () => {
+      const address = getOffchainSaleAddress(ChainId.MATIC_AMOY)
+      const collection = { id: 'id' } as Collection
+      expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, false)).toEqual([
+        { address, hasAccess: false, collection }
+      ])
     })
   })
 })

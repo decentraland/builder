@@ -1679,13 +1679,15 @@
       "price": "价格",
       "supply": "供应",
       "play_mode": "游戏模式",
-      "status": "地位"
+      "status": "地位",
+      "actions": "动作"
     },
     "missing_item_price": "您需要配置一个或多个 {item_type} 的价格。",
     "missing_smart_wearable_video": "您需要上传一个或多个智能可穿戴设备的视频。",
     "unsynced_collection_title": "此集合中有未同步的项目",
     "unsynced_collection_message": "在此集合获得批准后，对一项或多项进行了修改。{br}这些更新需要发布并由策展委员会再次审核。",
-    "under_review_collection_message": "管理委员会正在审查更新的项目。{br}一旦获得批准，它们将自动对当前所有者和市场可见。"
+    "under_review_collection_message": "管理委员会正在审查更新的项目。{br}一旦获得批准，它们将自动对当前所有者和市场可见。",
+    "enable_sales": "启用销售"
   },
   "collection_context_menu": {
     "add_existing_item": "添加现有项目",
@@ -1722,7 +1724,8 @@
     "cannot_edit_urn": "项目发布后您无法编辑 URN",
     "reset_item": "撤消",
     "move_to_another_collection": "移动到另一个集合",
-    "preview": "在编辑器中预览"
+    "preview": "在编辑器中预览",
+    "put_for_sale": "出售"
   },
   "collection": {
     "type": {

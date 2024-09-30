@@ -10,7 +10,7 @@ import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { isComplete, isFree, canManageItem, getMaxSupply, isSmart, isEmote } from 'modules/item/utils'
-import { isLocked } from 'modules/collection/utils'
+import { isEnableForSaleOffchain, isLocked, isOnSale } from 'modules/collection/utils'
 import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
 import ItemStatus from 'components/ItemStatus'
@@ -22,9 +22,20 @@ import styles from './CollectionItem.module.css'
 
 const LENGTH_LIMIT = 25
 
-export default function CollectionItem({ onOpenModal, onSetItems, item, collection, status, ethAddress }: Props) {
+export default function CollectionItem({
+  onOpenModal,
+  onSetItems,
+  item,
+  isOffchainPublicItemOrdersEnabled,
+  collection,
+  status,
+  ethAddress,
+  wallet
+}: Props) {
   analytics = getAnalytics()
   const history = useHistory()
+  const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
+  const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
 
   const handleEditPriceAndBeneficiary = useCallback(() => {
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
@@ -190,6 +201,13 @@ export default function CollectionItem({ onOpenModal, onSetItems, item, collecti
         </Table.Cell>
       ) : null}
       <Table.Cell>{renderItemStatus()}</Table.Cell>
+      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
+        <Table.Cell>
+          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace}>
+            {t('collection_item.put_for_sale')}
+          </Button>
+        </Table.Cell>
+      )}
       <Table.Cell className={styles.contextMenuButton}>{renderItemContextMenu()}</Table.Cell>
     </Table.Row>
   )
