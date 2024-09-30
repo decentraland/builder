@@ -75,9 +75,12 @@
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  flex: 1 1 auto;
   overflow: hidden;
   margin-right: 20px;
+
+  /* Grow and shrink */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .editCollectionName {
@@ -89,6 +92,27 @@
   visibility: visible;
 }
 
+.nameAndType {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  /* Grow and shrink */
+  min-width: 0;
+  flex: 1;
+}
+
+.nameWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+
+  /* Grow and shrink */
+  min-width: 0;
+  flex: 1;
+}
+
 .header .title .name {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -96,6 +120,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+
+  /* Grow and shrink */
+  min-width: 0;
   width: fit-content;
 }
 
@@ -232,4 +259,29 @@
 .migrationBanner :global(.icon) {
   height: 18px;
   margin-right: 10px;
+}
+
+/* Badges */
+
+.type {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.linkedWearableBadge {
+  padding: 4px 8px 4px 8px;
+  border-radius: 32px;
+}
+
+.typeBadge {
+  background-color: #00a146;
+}
+
+.programmaticBadge {
+  background-color: #691fa9;
+}
+
+.standardBadge {
+  background-color: #43404a;
 }
