@@ -36,6 +36,7 @@ let catalystClient: CatalystClient
 let deployMock: jest.Mock
 let fetchEntitiesByPointersMock: jest.Mock
 
+// Mocking store as when the store gets loaded, it runs the default sagas
 jest.mock('modules/common/store', () => ({
   store: {
     dispatch: jest.fn()
@@ -45,7 +46,6 @@ jest.mock('modules/common/store', () => ({
 jest.mock('@dcl/crypto', () => ({
   Authenticator: { signPayload: jest.fn().mockReturnValue('auth') }
 }))
-
 jest.mock('dcl-catalyst-client/dist/client/utils/DeploymentBuilder', () => ({
   buildEntity: jest.fn()
 }))
