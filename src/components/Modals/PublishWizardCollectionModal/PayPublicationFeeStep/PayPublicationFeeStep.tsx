@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
-import { Button, Column, Icon, InfoTooltip, Loader, Mana, Modal, Row, Table } from 'decentraland-ui'
+import { AuthorizationStepStatus, Button, Column, Icon, InfoTooltip, Loader, Mana, Modal, Row, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
@@ -34,6 +34,7 @@ export const PayPublicationFeeStep: React.FC<
     collectionError,
     unsyncedCollectionError,
     isLoading,
+    publishingStatus,
     thirdParty,
     isPublishCollectionsWertEnabled,
     onNextStep,
@@ -123,7 +124,9 @@ export const PayPublicationFeeStep: React.FC<
           {isLoading && (
             <div className={styles.loadingOverlay}>
               <Loader inline size="massive" />
-              {t('publish_wizard_collection_modal.accept_in_wallet')}
+              {publishingStatus === AuthorizationStepStatus.PROCESSING
+                ? 'Submitting for review'
+                : t('publish_wizard_collection_modal.accept_in_wallet')}
             </div>
           )}
           <Column grow={true}>

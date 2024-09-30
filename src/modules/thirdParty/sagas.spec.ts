@@ -34,7 +34,6 @@ import {
   pushChangesThirdPartyItemsSuccess,
   publishAndPushChangesThirdPartyItemsRequest,
   publishAndPushChangesThirdPartyItemsFailure,
-  publishAndPushChangesThirdPartyItemsSuccess,
   deployBatchedThirdPartyItemsRequest,
   deployBatchedThirdPartyItemsFailure,
   deployBatchedThirdPartyItemsSuccess,
@@ -43,7 +42,10 @@ import {
   disableThirdPartySuccess,
   fetchThirdPartyFailure,
   fetchThirdPartyRequest,
-  fetchThirdPartySuccess
+  fetchThirdPartySuccess,
+  finishPublishAndPushChangesThirdPartyItemsSuccess,
+  finishPublishAndPushChangesThirdPartyItemsFailure,
+  publishAndPushChangesThirdPartyItemsSuccess
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -82,6 +84,7 @@ const mockBuilder = {
   publishTPCollection: jest.fn(),
   pushItemCuration: jest.fn(),
   updateItemCurationStatus: jest.fn(),
+  deleteVirtualThirdParty: jest.fn(),
   fetchContents: jest.fn(),
   saveTOS: jest.fn()
 } as any as BuilderAPI
@@ -290,7 +293,7 @@ describe('when publishing third party items', () => {
           [select(getCollection, item.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+            retry(20, 5000, mockBuilder.publishTPCollection, item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
           ]
         ])
@@ -325,7 +328,7 @@ describe('when publishing third party items', () => {
           [select(getCollection, item.collectionId), collection],
           [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+            retry(20, 5000, mockBuilder.publishTPCollection, item.collectionId!, [item.id], { signature, qty, salt }),
             { collection, items: [mockedItemReturnedByServer], itemCurations }
           ]
         ])
@@ -542,16 +545,43 @@ describe('when publishing & pushing changes to third party items', () => {
     })
   })
 
-  describe('when it should subscribe to the newsletter', () => {
-    it('should put the subscribe to newsletter request action', () => {
-      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+  describe('when the email is available', () => {
+    beforeEach(() => {
+      // Force it to fail so it doesn't continue
+      thirdParty.availableSlots = undefined
+    })
+
+    it('should save the TOS', async () => {
+      await expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
           [select(getCollection, item.collectionId), collection],
           [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled]
         ])
-        .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem], undefined, email, subscribeToNewsletter))
         .run({ silenceTimeout: true })
+      expect(mockBuilder.saveTOS).toHaveBeenCalledWith(TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS, collection, email, [
+        item.currentContentHash,
+        mockedItem.currentContentHash
+      ])
+    })
+
+    describe('and the subscribe to newsletter flag is set', () => {
+      beforeEach(() => {
+        // Force it to fail so it doesn't continue
+        thirdParty.availableSlots = undefined
+        subscribeToNewsletter = true
+      })
+
+      it('should put the subscribe to newsletter request action', () => {
+        return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+          .provide([
+            [select(getCollection, item.collectionId), collection],
+            [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled]
+          ])
+          .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
+          .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, [item], [mockedItem], undefined, email, subscribeToNewsletter))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 
@@ -669,20 +699,9 @@ describe('when publishing & pushing changes to third party items', () => {
                     [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
                     [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
                     [matchers.call.fn(sendTransaction), '0x123'],
+                    // Next handler mocks
                     [call(waitForTx, '0x123'), undefined],
                     [retry(20, 5000, mockBuilder.deleteVirtualThirdParty, thirdParty.id), undefined],
-                    [
-                      retry(
-                        10,
-                        500,
-                        mockBuilder.saveTOS,
-                        TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS,
-                        collection,
-                        email,
-                        itemsToPublish.map(item => item.id)
-                      ),
-                      undefined
-                    ],
                     [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
                     [
                       call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
@@ -705,6 +724,17 @@ describe('when publishing & pushing changes to third party items', () => {
                     ],
                     [thirdParty.isProgrammatic],
                     [maxSlotPrice]
+                  )
+                  .put(
+                    publishAndPushChangesThirdPartyItemsSuccess(
+                      thirdParty,
+                      collection,
+                      itemsToPublish,
+                      [],
+                      undefined,
+                      '0x123',
+                      ChainId.MATIC_AMOY
+                    )
                   )
                   .dispatch(
                     publishAndPushChangesThirdPartyItemsRequest(
@@ -736,19 +766,8 @@ describe('when publishing & pushing changes to third party items', () => {
                     [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
                     [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
                     [matchers.call.fn(sendTransaction), '0x123'],
+                    // Next handler mocks
                     [call(waitForTx, '0x123'), undefined],
-                    [
-                      retry(
-                        10,
-                        500,
-                        mockBuilder.saveTOS,
-                        TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS,
-                        collection,
-                        email,
-                        itemsToPublish.map(item => item.id)
-                      ),
-                      undefined
-                    ],
                     [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
                     [
                       call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
@@ -815,18 +834,6 @@ describe('when publishing & pushing changes to third party items', () => {
               [
                 call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
                 { collection, items: itemsToPublish, itemCurations }
-              ],
-              [
-                retry(
-                  10,
-                  500,
-                  mockBuilder.saveTOS,
-                  TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS,
-                  collection,
-                  email,
-                  itemsToPublish.map(item => item.id)
-                ),
-                undefined
               ]
             ])
             .not.call.fn(sendTransaction)
@@ -855,13 +862,13 @@ describe('when publishing & pushing changes to third party items', () => {
           [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
           [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [
-            call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+            retry(20, 5000, mockBuilder.publishTPCollection, item.collectionId!, [item.id], { signature, qty, salt }),
             throwError(new Error(errorMessage))
           ]
         ])
         .put(closeModal('PublishThirdPartyCollectionModal'))
         .put.like({ action: { type: SHOW_TOAST, payload: { toast: { type: ToastType.ERROR } } } })
-        .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
+        .put(finishPublishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .put(updateThirdPartyActionProgress(0, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [mockedItem]))
         .run({ silenceTimeout: true })
@@ -870,7 +877,6 @@ describe('when publishing & pushing changes to third party items', () => {
 
   describe('when the publish works fine but push items fails', () => {
     beforeEach(() => {
-      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
       ;(mockBuilder.pushItemCuration as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put the publish & push changes failure action', () => {
@@ -878,9 +884,13 @@ describe('when publishing & pushing changes to third party items', () => {
         .provide([
           [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [select(getItemCurations, item.collectionId), itemCurations],
-          [select(getCollection, item.collectionId), collection]
+          [select(getCollection, item.collectionId), collection],
+          [
+            retry(20, 5000, mockBuilder.publishTPCollection, item.collectionId!, [item.id], { signature, qty, salt }),
+            { items: publishResponse, itemCurations }
+          ]
         ])
-        .put(publishAndPushChangesThirdPartyItemsFailure(errorMessage))
+        .put(finishPublishAndPushChangesThirdPartyItemsFailure(errorMessage))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
         .run({ silenceTimeout: true })
     })
@@ -899,7 +909,6 @@ describe('when publishing & pushing changes to third party items', () => {
           contentHash: 'aHash'
         }
       ]
-      ;(mockBuilder.publishTPCollection as jest.Mock).mockResolvedValue({ items: publishResponse, itemCurations })
       ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
     })
 
@@ -911,12 +920,16 @@ describe('when publishing & pushing changes to third party items', () => {
       it('should put an action to re fetch the collection', () => {
         return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
           .provide([
-            [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+            [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
             [select(getItemCurations, item.collectionId), itemCurations],
             [select(getCollection, item.collectionId), collection],
-            [take(FETCH_COLLECTION_SUCCESS), undefined]
+            [take(FETCH_COLLECTION_SUCCESS), undefined],
+            [
+              retry(20, 5000, mockBuilder.publishTPCollection, item.collectionId!, [item.id], { signature, qty, salt }),
+              { items: publishResponse, itemCurations }
+            ]
           ])
-          .put(fetchCollectionRequest(item.collectionId ?? ''))
+          .put(fetchCollectionRequest(collection.id))
           .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
           .run({ silenceTimeout: true })
       })
@@ -925,13 +938,18 @@ describe('when publishing & pushing changes to third party items', () => {
     it('should put the publish & push changes success action, the fetch available slots request and reset the progress', () => {
       return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
         .provide([
-          [call(getPublishItemsSignature, thirdParty.id, 1), { signature, salt }],
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
           [select(getItemCurations, item.collectionId), itemCurations],
-          [select(getCollection, item.collectionId), collection]
+          [select(getCollection, item.collectionId), collection],
+          [take(FETCH_COLLECTION_SUCCESS), undefined],
+          [
+            retry(20, 5000, mockBuilder.publishTPCollection, item.collectionId!, [item.id], { signature, qty, salt }),
+            { items: publishResponse, itemCurations }
+          ]
         ])
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
         .put(
-          publishAndPushChangesThirdPartyItemsSuccess(thirdParty, item.collectionId!, publishResponse, [
+          finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, item.collectionId!, publishResponse, [
             ...itemCurations,
             updatedItemCurations[0]
           ])

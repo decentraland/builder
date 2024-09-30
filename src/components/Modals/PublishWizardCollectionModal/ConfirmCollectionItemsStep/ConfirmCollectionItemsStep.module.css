@@ -1,4 +1,4 @@
-.ConfirmCollectionItemsStep .details {
+.details {
   background-color: rgba(var(--dark-raw), 0.48);
   border-radius: 8px;
   width: 100%;
@@ -8,13 +8,13 @@
   line-height: 24px;
 }
 
-.ConfirmCollectionItemsStep .details .title {
+.details .title {
   font-size: 18px;
   font-weight: 700;
   line-height: 24px;
 }
 
-.ConfirmCollectionItemsStep .details .subtitle {
+.details .subtitle {
   font-size: 15px;
   font-weight: 600;
   line-height: 24px;
@@ -22,68 +22,68 @@
   margin-bottom: 0px;
 }
 
-.ConfirmCollectionItemsStep .details .description {
+.details .description {
   font-size: 15px;
   font-weight: 400;
   line-height: 24px;
   color: var(--clear-divider);
 }
 
-.ConfirmCollectionItemsStep .details .fields .dcl.field {
+.details :global(.fields .dcl.field) {
   margin-top: 32px;
 }
 
-.ConfirmCollectionItemsStep .actions {
+.actions {
   margin-top: 24px;
   width: 100%;
   justify-content: space-between !important;
 }
 
-.ConfirmCollectionItemsStep .actions .button {
+.actions :global(.button) {
   width: 180px;
 }
 
-.ConfirmCollectionItemsStep .items {
+.items {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ConfirmCollectionItemsStep .items tbody {
+.items tbody {
   display: block;
   max-height: 425px;
   overflow-y: auto;
 }
 
-.ConfirmCollectionItemsStep .items thead,
-.ConfirmCollectionItemsStep .items tbody tr {
+.items thead,
+.items tbody tr {
   display: table;
   width: 100%;
   table-layout: fixed;
 }
 
-.ConfirmCollectionItemsStep .items thead.has-scrollbar {
+.items thead.hasScrollBar {
   width: calc(100% - 10px);
 }
 
-.ConfirmCollectionItemsStep .avatarColumn .avatarContainer {
+.avatarColumn .avatarContainer {
   display: flex;
   align-items: center;
 }
 
-.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .ItemImage {
+.avatarColumn .avatarContainer .itemImage {
   height: 48px;
   width: 48px;
   margin-right: 16px;
 }
 
-.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .info {
+.avatarColumn .avatarContainer .info {
   display: flex;
   align-items: center;
 }
 
-.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .name {
+.avatarColumn .avatarContainer .name {
   margin-right: 8px;
   font-size: 15px;
   white-space: nowrap;
@@ -92,23 +92,23 @@
   max-width: 150px;
 }
 
-.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .badge {
+.avatarColumn .avatarContainer .badge {
   background-color: var(--smart-grey);
 }
 
-.ConfirmCollectionItemsStep .avatarColumn .avatarContainer .badge::before {
+.avatarColumn .avatarContainer .badge::before {
   filter: none;
 }
 
-.ConfirmCollectionItemsStep .column.priceColumn .ui.mana {
+.priceColumn :global(.ui.mana) {
   font-size: 15px;
 }
 
-.ui.visible.popup.price-popup {
+.price-popup:global(.ui.visible.popup) {
   z-index: 4000;
 }
 
-.ConfirmCollectionItemsStep .loading-overlay {
+.loadingOverlay {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -124,4 +124,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.categoryBadge {
+  width: fit-content;
+}
+
+.categoryBadge.thirdParty {
+  height: 32px;
+}
+
+.itemNumber {
+  background-color: #43404a;
+  border-radius: 8px;
+  padding: 2px 12px 2px 12px;
+  width: fit-content;
+  font-size: 12px;
 }

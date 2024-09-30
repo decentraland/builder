@@ -82,7 +82,12 @@ import {
   FETCH_THIRD_PARTY_REQUEST,
   FetchThirdPartyRequestAction,
   fetchThirdPartySuccess,
-  fetchThirdPartyFailure
+  fetchThirdPartyFailure,
+  PublishAndPushChangesThirdPartyItemsSuccessAction,
+  finishPublishAndPushChangesThirdPartyItemsSuccess,
+  finishPublishAndPushChangesThirdPartyItemsFailure,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
 } from './actions'
 import { convertThirdPartyMetadataToRawMetadata, getPublishItemsSignature } from './utils'
 import { Cheque, ThirdParty } from './types'
@@ -107,6 +112,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeEvery(FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST, handleFetchThirdPartyAvailableSlots)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_REQUEST, handlePublishThirdPartyItemRequest)
   yield takeEvery(PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePushChangesThirdPartyItemRequest)
+  yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, handlePublishAndPushChangesThirdPartyItemSuccess)
   yield takeEvery(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, handlePublishAndPushChangesThirdPartyItemRequest)
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
   yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
@@ -116,6 +122,8 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
     [
       PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
       PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+      FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
+      FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
       PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
       PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE
     ],
@@ -174,8 +182,10 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
     const collectionId = getCollectionId(items)
     const { signature, salt, qty } = cheque ?? (yield call(getPublishItemsSignature, thirdParty.id, items.length))
 
-    const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield call(
-      [builder, 'publishTPCollection'],
+    const { items: newItems, itemCurations: newItemCurations }: { items: Item[]; itemCurations: ItemCuration[] } = yield retry(
+      20,
+      5000,
+      builder.publishTPCollection,
       collectionId,
       items.map(i => i.id),
       {
@@ -284,7 +294,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   }
 
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
-    const { thirdParty, maxSlotPrice, itemsToPublish, itemsWithChanges, cheque, email, subscribeToNewsletter } = action.payload
+    const { thirdParty, maxSlotPrice, itemsToPublish, itemsWithChanges, email, subscribeToNewsletter, cheque } = action.payload
     const collectionId = getCollectionId(itemsToPublish)
     const collection: ReturnType<typeof getCollection> = yield select(getCollection, collectionId)
     const isLinkedWearablesPaymentsEnabled = (yield select(getIsLinkedWearablesPaymentsEnabled)) as ReturnType<
@@ -299,6 +309,15 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         throw new Error('Collection not found')
       }
 
+      if (email) {
+        // Save the ToS with all the item hashes published or pushed
+        const allItemsHashes = itemsToPublish
+          .concat(itemsWithChanges)
+          .map(item => item.currentContentHash)
+          .filter(Boolean) as string[]
+        yield retry(10, 500, builder.saveTOS, TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS, collection, email, allItemsHashes)
+      }
+
       if (subscribeToNewsletter && email) {
         yield put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
       }
@@ -307,6 +326,8 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         throw new Error('Third party available slots must be defined before publishing')
       }
       const missingSlots = itemsToPublish.length - thirdParty.availableSlots
+      let txHash: string | undefined
+      let maticChainId: ChainId | undefined
 
       // There are items to publish and there are available slots
       if (itemsToPublish.length > 0 && missingSlots > 0 && isLinkedWearablesPaymentsEnabled) {
@@ -314,9 +335,8 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
           throw new Error('Max slot price must be defined')
         }
 
-        const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+        maticChainId = (yield call(getChainIdByNetwork, Network.MATIC)) as ChainId
         const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
-        let txHash: string = ''
         // If the third party has not been published before create a new one with the required slots
         if (!thirdParty.published) {
           txHash = yield call(
@@ -336,11 +356,8 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
             [thirdParty.isProgrammatic],
             [maxSlotPrice]
           )
-          yield call(waitForTx, txHash)
-          yield retry(20, 5000, builder.deleteVirtualThirdParty.bind(builder), thirdParty.id)
-        }
-        // If the third party has already been published, just buy the needed slots
-        else {
+        } else {
+          // If the third party has already been published, just buy the needed slots
           txHash = yield call(
             sendTransaction as any,
             thirdPartyContract,
@@ -349,12 +366,42 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
             missingSlots.toString(),
             maxSlotPrice
           )
-          yield call(waitForTx, txHash)
         }
+      }
+
+      yield put(
+        publishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection, itemsToPublish, itemsWithChanges, cheque, txHash, maticChainId)
+      )
+    } catch (error) {
+      yield put(publishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error')) // TODO: show to the user that something went wrong
+      if (!isLinkedWearablesPaymentsEnabled) {
+        yield showActionErrorToast()
+        yield put(closeModal('PublishThirdPartyCollectionModal'))
+      }
+    }
+  }
+
+  function* handlePublishAndPushChangesThirdPartyItemSuccess(action: PublishAndPushChangesThirdPartyItemsSuccessAction) {
+    const { thirdParty, collection, cheque, itemsToPublish, itemsWithChanges, txHash } = action.payload
+
+    const isLinkedWearablesPaymentsEnabled = (yield select(getIsLinkedWearablesPaymentsEnabled)) as ReturnType<
+      typeof getIsLinkedWearablesPaymentsEnabled
+    >
+
+    try {
+      // If a transaction was performed, wait for it to be completed
+      if (txHash) {
+        yield call(waitForTx, txHash)
+      }
+
+      if (!thirdParty.published) {
+        // Retry the request several items until the graph is updated
+        yield retry(20, 5000, builder.deleteVirtualThirdParty, thirdParty.id)
       }
 
       let resultFromPublish: { newItems: Item[]; newItemCurations: ItemCuration[] } = { newItems: [], newItemCurations: [] }
       if (itemsToPublish.length > 0) {
+        // Retry the request several items until the graph is updated
         resultFromPublish = yield call(publishChangesToThirdPartyItems, thirdParty, itemsToPublish, cheque)
       }
 
@@ -362,23 +409,16 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         itemsWithChanges.length > 0 ? yield call(pushChangesToThirdPartyItems, itemsWithChanges) : []
       const newItemCurations = [...resultFromPublish.newItemCurations, ...resultFromPushChanges]
 
-      // Update collections that are not complete
-      if (!collection?.isMappingComplete) {
-        yield put(fetchCollectionRequest(collectionId))
+      // Update collections that are not complete or that are published for the first time
+      if (!collection?.isMappingComplete || !collection?.isPublished) {
+        yield put(fetchCollectionRequest(collection.id))
         yield race({ success: take(FETCH_COLLECTION_SUCCESS), failure: take(FETCH_COLLECTION_FAILURE) })
-      }
-      yield put(publishAndPushChangesThirdPartyItemsSuccess(thirdParty, collectionId, resultFromPublish.newItems, newItemCurations))
-      yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
-      if (email) {
-        // Save the ToS with all the item hashes published or pushed
-        const allItemsHashes = itemsToPublish.map(item => item.id)
-        yield retry(10, 500, builder.saveTOS, TermsOfServiceEvent.PUBLISH_THIRD_PARTY_ITEMS, collection, email, allItemsHashes)
       }
 
       if (!isLinkedWearablesPaymentsEnabled) {
         yield put(
           openModal('PublishThirdPartyCollectionModal', {
-            collectionId,
+            collectionId: collection.id,
             itemIds: [],
             action: PublishButtonAction.NONE,
             step: PublishThirdPartyCollectionModalStep.SUCCESS
@@ -390,8 +430,11 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       if (isLinkedWearablesPaymentsEnabled && collection.isPublished) {
         yield put(closeModal('PublishWizardCollectionModal'))
       }
+
+      yield put(finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection.id, resultFromPublish.newItems, newItemCurations))
+      yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
     } catch (error) {
-      yield put(publishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error')) // TODO: show to the user that something went wrong
+      yield put(finishPublishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
       if (!isLinkedWearablesPaymentsEnabled) {
         yield showActionErrorToast()
         yield put(closeModal('PublishThirdPartyCollectionModal'))

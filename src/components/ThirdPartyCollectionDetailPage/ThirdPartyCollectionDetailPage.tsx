@@ -253,7 +253,7 @@ export default function ThirdPartyCollectionDetailPage({
                 <Header size="large" className={styles.name} onClick={handleEditName}>
                   {collection.name}
                 </Header>
-                <BuilderIcon name="edit" className={styles.editCollectionName} />
+                {!collection.isPublished && <BuilderIcon name="edit" className={styles.editCollectionName} />}
               </div>
               <div className={styles.actions}>
                 {collection.linkedContractAddress && collection.linkedContractNetwork && (

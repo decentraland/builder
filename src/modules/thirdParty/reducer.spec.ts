@@ -20,7 +20,10 @@ import {
   publishAndPushChangesThirdPartyItemsFailure,
   fetchThirdPartyRequest,
   fetchThirdPartySuccess,
-  fetchThirdPartyFailure
+  fetchThirdPartyFailure,
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  finishPublishAndPushChangesThirdPartyItemsSuccess,
+  finishPublishAndPushChangesThirdPartyItemsFailure
 } from './actions'
 import { INITIAL_STATE, thirdPartyReducer, ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
@@ -218,34 +221,71 @@ describe('when reducing a PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST act
 })
 
 describe('when reducing a PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS action', () => {
-  it('should remove the corresponding request action from the loading state, clear the errors and set the third party as published', () => {
-    expect(
-      thirdPartyReducer(
-        {
-          ...state,
-          data: { [thirdParty.id]: { ...thirdParty, published: false } },
-          loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [], [])],
-          error: 'anError'
-        },
-        publishAndPushChangesThirdPartyItemsSuccess(thirdParty, 'aCollectionId', [], [])
-      )
-    ).toEqual({
+  beforeEach(() => {
+    state = {
+      ...state,
+      loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [], [])]
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state and set the finishing action as loading', () => {
+    expect(thirdPartyReducer(state, publishAndPushChangesThirdPartyItemsSuccess(thirdParty, {} as Collection, [], []))).toEqual({
       ...INITIAL_STATE,
-      data: { [thirdParty.id]: { ...thirdParty, published: true } },
+      loading: [{ type: FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST }]
+    })
+  })
+})
+
+describe('when reducing a PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE action', () => {
+  beforeEach(() => {
+    state = { ...state, loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [], [])] }
+  })
+
+  it('should remove the corresponding request action from the loading state and set the error', () => {
+    expect(thirdPartyReducer(state, publishAndPushChangesThirdPartyItemsFailure('anError'))).toEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error: 'anError'
+    })
+  })
+})
+
+describe('when reducing a FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      data: { [thirdParty.id]: { ...thirdParty, published: false } },
+      loading: [{ type: FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST }],
+      error: 'anError'
+    }
+  })
+
+  it('should remove the corresponding request action, set the third party as published and clear the errors', () => {
+    expect(thirdPartyReducer(state, finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, 'aCollectionId', [], []))).toEqual({
+      ...INITIAL_STATE,
+      data: {
+        [thirdParty.id]: {
+          ...thirdParty,
+          published: true
+        }
+      },
       loading: [],
       error: null
     })
   })
 })
 
-describe('when reducing a PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE action', () => {
+describe('when reducing a FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      loading: [{ type: FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST }],
+      error: null
+    }
+  })
+
   it('should remove the corresponding request action from the loading state and set the error', () => {
-    expect(
-      thirdPartyReducer(
-        { ...state, loading: [publishAndPushChangesThirdPartyItemsRequest(thirdParty, [], [])] },
-        publishAndPushChangesThirdPartyItemsFailure('anError')
-      )
-    ).toEqual({
+    expect(thirdPartyReducer(state, finishPublishAndPushChangesThirdPartyItemsFailure('anError'))).toEqual({
       ...INITIAL_STATE,
       loading: [],
       error: 'anError'

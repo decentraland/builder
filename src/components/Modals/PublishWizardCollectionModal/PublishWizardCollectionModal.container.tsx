@@ -1,4 +1,5 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { AuthorizationStepStatus } from 'decentraland-ui'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
@@ -6,7 +7,8 @@ import {
   getCollection,
   getLoading as getCollectionLoading,
   getUnsyncedCollectionError,
-  getError as getCollectionError
+  getError as getCollectionError,
+  getPublishStatus
 } from 'modules/collection/selectors'
 import {
   getLoading as getItemLoading,
@@ -16,35 +18,34 @@ import {
   getUnpublishedThirdPartyItemsById,
   getUnsyncedThirdPartyItemsById
 } from 'modules/item/selectors'
-import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { publishCollectionRequest } from 'modules/collection/actions'
 import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { getIsPublishCollectionsWertEnabled } from 'modules/features/selectors'
 import { OwnProps } from './PublishWizardCollectionModal.types'
-import PublishWizardCollectionModal from './PublishWizardCollectionModal'
+import { AuthorizedPublishWizardThirdPartyCollectionModal, AuthorizedPublishWizardCollectionModal } from './PublishWizardCollectionModal'
 import { useCallback, useMemo } from 'react'
 import { isTPCollection } from 'modules/collection/utils'
 import { PaymentMethod } from 'modules/collection/types'
 import { Cheque } from 'modules/thirdParty/types'
 import { publishAndPushChangesThirdPartyItemsRequest } from 'modules/thirdParty/actions'
-import { getCollectionThirdParty, isPublishingAndPushingChanges, getError as getThirdPartyError } from 'modules/thirdParty/selectors'
+import { getCollectionThirdParty, getError as getThirdPartyError, getThirdPartyPublishStatus } from 'modules/thirdParty/selectors'
 import { useThirdPartyPrice } from './hooks'
 
 export default (props: OwnProps) => {
   const dispatch = useDispatch()
   const { thirdPartyPrice, isFetchingPrice, fetchThirdPartyPrice } = useThirdPartyPrice()
   const collection = useSelector((state: RootState) => getCollection(state, props.metadata.collectionId), shallowEqual)!
-  const isPublishLoading = useSelector(
-    (state: RootState) => isLoadingType(getCollectionLoading(state), PUBLISH_COLLECTION_REQUEST),
-    shallowEqual
-  )
-  const isPublishOrPushingThirdPartyItemsLoading = useSelector(isPublishingAndPushingChanges, shallowEqual)
+
   const isFetchingItems = useSelector((state: RootState) => isLoadingType(getItemLoading(state), FETCH_ITEMS_REQUEST), shallowEqual)
   const isFetchingRarities = useSelector((state: RootState) => isLoadingType(getItemLoading(state), FETCH_RARITIES_REQUEST), shallowEqual)
   const isCreatingForumPost = useSelector(
     (state: RootState) => isLoadingType(getCollectionLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST),
     shallowEqual
   )
+  const standardPublishingStatus = useSelector((state: RootState) => getPublishStatus(state), shallowEqual)
+  const thirdPartyPublishingStatus = useSelector((state: RootState) => getThirdPartyPublishStatus(state), shallowEqual)
+
   const isPublishCollectionsWertEnabled = useSelector(getIsPublishCollectionsWertEnabled, shallowEqual)
   const wallet = useSelector(getWallet, shallowEqual)!
   const unsyncedCollectionError = useSelector(getUnsyncedCollectionError, shallowEqual)
@@ -68,7 +69,7 @@ export default (props: OwnProps) => {
     (state: RootState) =>
       getUnsyncedThirdPartyItemsById(
         state,
-        (props.metadata.itemsToPublish ?? []).map(item => item.id)
+        (props.metadata.itemsWithChanges ?? []).map(item => item.id)
       ),
     shallowEqual
   )
@@ -118,20 +119,19 @@ export default (props: OwnProps) => {
   )
 
   const isPublishingFinished = !!collection.forumLink && thirdPartyItemsToPublish.length === 0 && thirdPartyItemsToPushChanges.length === 0
+  const publishingStatus = isThirdParty ? thirdPartyPublishingStatus : standardPublishingStatus
+  const isPublishing = publishingStatus === AuthorizationStepStatus.WAITING || publishingStatus === AuthorizationStepStatus.PROCESSING
+  const PublishWizardCollectionModal = useMemo(
+    () => (isThirdParty ? AuthorizedPublishWizardThirdPartyCollectionModal : AuthorizedPublishWizardCollectionModal),
+    [isThirdParty]
+  )
 
   return (
     <PublishWizardCollectionModal
       {...props}
       collection={collection}
-      isLoading={
-        isPublishLoading ||
-        isFetchingItems ||
-        isFetchingRarities ||
-        isCreatingForumPost ||
-        isFetchingPrice ||
-        isPublishOrPushingThirdPartyItemsLoading ||
-        !!collection.lock
-      }
+      isLoading={isPublishing || isFetchingItems || isFetchingRarities || isCreatingForumPost || isFetchingPrice || !!collection.lock}
+      publishingStatus={publishingStatus}
       wallet={wallet}
       itemsToPublish={itemsToPublish}
       itemsWithChanges={itemsWithChanges}

@@ -80,7 +80,8 @@ export const getSelectedItemId = (state: RootState) => {
   const items = isReviewingTPCollection ? allItems.filter(item => item.isPublished) : allItems
   return getFirstWearableOrItem(items)?.id ?? null
 }
-export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
+export const getSelectedCollectionId = (state: RootState) =>
+  new URLSearchParams(getSearch(state)).get('collection') ?? new URLSearchParams(getSearch(state)).get('collectionId')
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
 
 export const ensNameMatchSelector = createMatchSelector<

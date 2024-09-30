@@ -25,7 +25,7 @@ export const mockedItem: Item = {
   inCatalyst: false,
   contents: { 'anItemContent.glb': 'theFileHash', 'thumbnail.png': 'theThumbnailHash' },
   blockchainContentHash: null,
-  currentContentHash: null,
+  currentContentHash: 'aContentHash',
   catalystContentHash: null,
   data: {
     category: WearableCategory.HAT,
