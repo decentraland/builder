@@ -45,7 +45,8 @@ import {
   fetchThirdPartySuccess,
   finishPublishAndPushChangesThirdPartyItemsSuccess,
   finishPublishAndPushChangesThirdPartyItemsFailure,
-  publishAndPushChangesThirdPartyItemsSuccess
+  publishAndPushChangesThirdPartyItemsSuccess,
+  clearThirdPartyErrors
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -1167,6 +1168,36 @@ describe('when handling the disabling of a third party', () => {
         ])
         .put(disableThirdPartySuccess(thirdParty.id, ChainId.MATIC_MAINNET, txHash, thirdParty.name))
         .dispatch(disableThirdPartyRequest(thirdParty.id))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the closing a modal', () => {
+  let modalName: string
+
+  describe('and the modal is the publish collection wizard', () => {
+    beforeEach(() => {
+      modalName = 'PublishWizardCollectionModal'
+    })
+
+    it('should clear the third party errors', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .dispatch(closeModal(modalName))
+        .put(clearThirdPartyErrors())
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the modal is not the publish collection wizard', () => {
+    beforeEach(() => {
+      modalName = 'AnotherModalName'
+    })
+
+    it('should not clear the third party errors', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .dispatch(closeModal(modalName))
+        .not.put(clearThirdPartyErrors())
         .run({ silenceTimeout: true })
     })
   })

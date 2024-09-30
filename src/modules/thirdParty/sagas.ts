@@ -7,7 +7,7 @@ import { ChainId, Network } from '@dcl/schemas'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { DeploymentPreparationData } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { closeModal, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { CLOSE_MODAL, closeModal, CloseModalAction, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { showToast } from 'decentraland-dapps/dist/modules/toast/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
@@ -87,7 +87,8 @@ import {
   finishPublishAndPushChangesThirdPartyItemsSuccess,
   finishPublishAndPushChangesThirdPartyItemsFailure,
   FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
-  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
+  clearThirdPartyErrors
 } from './actions'
 import { convertThirdPartyMetadataToRawMetadata, getPublishItemsSignature } from './utils'
 import { Cheque, ThirdParty } from './types'
@@ -129,6 +130,13 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
     ],
     resetThirdPartyProgressAction
   )
+  yield takeEvery(CLOSE_MODAL, handleCloseModal)
+
+  function* handleCloseModal(action: CloseModalAction) {
+    if (action.payload.name === 'PublishWizardCollectionModal') {
+      yield put(clearThirdPartyErrors())
+    }
+  }
 
   function* handleLoginSuccess(action: LoginSuccessAction) {
     const { wallet } = action.payload
