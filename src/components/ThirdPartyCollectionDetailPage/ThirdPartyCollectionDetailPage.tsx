@@ -1,5 +1,6 @@
 import { useHistory } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import classNames from 'classnames'
 import {
   Header,
   Icon,
@@ -24,8 +25,8 @@ import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import CollectionProvider from 'components/CollectionProvider'
 import NotFound from 'components/NotFound'
-import BuilderIcon from 'components/Icon'
 import { ThirdPartyImage } from 'components/ThirdPartyImage'
+import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { shorten } from 'lib/address'
 import { CopyToClipboard } from 'components/CopyToClipboard'
@@ -249,11 +250,23 @@ export default function ThirdPartyCollectionDetailPage({
             <Back absolute onClick={handleGoBack} />
             <div className={styles.content}>
               <div className={styles.title}>
-                <ThirdPartyImage thirdPartyId={thirdParty.id} network={collection.linkedContractNetwork} />
-                <Header size="large" className={styles.name} onClick={handleEditName}>
-                  {collection.name}
-                </Header>
-                {!collection.isPublished && <BuilderIcon name="edit" className={styles.editCollectionName} />}
+                <ThirdPartyImage collectionId={collection.id} />
+                <div className={styles.nameAndType}>
+                  <div className={styles.nameWrapper}>
+                    <Header size="large" className={styles.name} onClick={handleEditName}>
+                      {collection.name}
+                    </Header>
+                    {!collection.isPublished && <BuilderIcon name="edit" className={styles.editCollectionName} />}
+                  </div>
+                  <div className={styles.type}>
+                    <div className={classNames(styles.linkedWearableBadge, styles.typeBadge)}>Linked Wearables</div>
+                    {thirdParty.isProgrammatic ? (
+                      <div className={classNames(styles.linkedWearableBadge, styles.programmaticBadge)}>Programmatic</div>
+                    ) : (
+                      <div className={classNames(styles.linkedWearableBadge, styles.standardBadge)}>Standard</div>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className={styles.actions}>
                 {collection.linkedContractAddress && collection.linkedContractNetwork && (

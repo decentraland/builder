@@ -6,6 +6,7 @@ import { Item } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionImage.types'
 import './CollectionImage.css'
+import { COLLECTION_IMAGE_DATA_TEST_ID } from './constants'
 
 const MAX_IMAGES_TO_SHOW = 4
 
@@ -64,7 +65,7 @@ export default class CollectionImage extends React.PureComponent<Props> {
     const { items, className, itemCount, isLoading } = this.props
 
     return (
-      <div className={classNames('CollectionImage', 'is-image', className)}>
+      <div className={classNames('CollectionImage', 'is-image', className)} data-testid={COLLECTION_IMAGE_DATA_TEST_ID}>
         {isLoading || itemCount === undefined ? (
           <div className="item-row loading">
             <Loader active size="tiny" inline />
