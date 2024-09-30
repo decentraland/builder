@@ -8,6 +8,7 @@ import { DELETE_COLLECTION_REQUEST, SET_COLLECTION_MINTERS_REQUEST } from 'modul
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionItems } from 'modules/item/selectors'
 import { getLastLocation } from 'modules/ui/location/selector'
+import { getIsOffchainPublicItemOrdersEnabled } from 'modules/features/selectors'
 import { fetchCollectionForumPostReplyRequest, FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST } from 'modules/forum/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetailPage.types'
 import CollectionDetailPage from './CollectionDetailPage'
@@ -26,7 +27,8 @@ const mapState = (state: RootState): MapStateProps => {
     isLoading:
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST),
-    lastLocation: getLastLocation(state)
+    lastLocation: getLastLocation(state),
+    isOffchainPublicItemOrdersEnabled: getIsOffchainPublicItemOrdersEnabled(state)
   }
 }
 

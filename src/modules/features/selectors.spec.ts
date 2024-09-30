@@ -6,6 +6,7 @@ import {
   getIsLinkedWearablesPaymentsEnabled,
   getIsLinkedWearablesV2Enabled,
   getIsMaintenanceEnabled,
+  getIsOffchainPublicItemOrdersEnabled,
   getIsPublishCollectionsWertEnabled,
   getIsVrmOptOutEnabled,
   getIsWearableUtilityEnabled,
@@ -69,7 +70,8 @@ const ffSelectors = [
   { selector: getIsWearableUtilityEnabled, app: ApplicationName.DAPPS, feature: FeatureName.WEARABLE_UTILITY },
   { selector: getIsWorldContributorEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLD_CONTRIBUTOR },
   { selector: getIsLinkedWearablesV2Enabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_V2 },
-  { selector: getIsLinkedWearablesPaymentsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_PAYMENTS }
+  { selector: getIsLinkedWearablesPaymentsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_PAYMENTS },
+  { selector: getIsOffchainPublicItemOrdersEnabled, app: ApplicationName.DAPPS, feature: FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

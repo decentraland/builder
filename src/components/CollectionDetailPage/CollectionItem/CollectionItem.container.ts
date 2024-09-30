@@ -7,13 +7,17 @@ import { getStatusByItemId } from 'modules/item/selectors'
 import { setItems } from 'modules/editor/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './CollectionItem.types'
 import CollectionItem from './CollectionItem'
+import { getIsOffchainPublicItemOrdersEnabled } from 'modules/features/selectors'
+import { getWallet } from 'modules/wallet/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const statusByItemId = getStatusByItemId(state)
 
   return {
     ethAddress: getAddress(state),
-    status: statusByItemId[ownProps.item.id]
+    status: statusByItemId[ownProps.item.id],
+    wallet: getWallet(state),
+    isOffchainPublicItemOrdersEnabled: getIsOffchainPublicItemOrdersEnabled(state)
   }
 }
 

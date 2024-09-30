@@ -1690,13 +1690,15 @@
       "price": "Price",
       "supply": "Supply",
       "play_mode": "Play Mode",
-      "status": "Status"
+      "status": "Status",
+      "actions": "Actions"
     },
     "missing_item_price": "You need to configure the price of one or more {item_type}.",
     "missing_smart_wearable_video": "You need to upload a video for one or more smart wearables.",
     "unsynced_collection_title": "There are unsynced items in this collection",
     "unsynced_collection_message": "One or more items have been modified after this collection was approved.{br}These updates need to be published and reviewed again by the curation commitee.",
-    "under_review_collection_message": "Updated items are being reviewed by the curation committee. Once they are approved,{br}they will be automatically visible to the current owners and in the Marketplace."
+    "under_review_collection_message": "Updated items are being reviewed by the curation committee. Once they are approved,{br}they will be automatically visible to the current owners and in the Marketplace.",
+    "enable_sales": "Enable sales"
   },
   "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
@@ -1731,7 +1733,8 @@
     "cannot_edit_urn": "You can't edit the URN once the item is published",
     "reset_item": "Reset changes",
     "move_to_another_collection": "Move to another collection",
-    "preview": "Preview in Editor"
+    "preview": "Preview in Editor",
+    "put_for_sale": "Put up for sale"
   },
   "collection": {
     "type": {

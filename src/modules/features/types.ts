@@ -9,5 +9,6 @@ export enum FeatureName {
   WEARABLE_UTILITY = 'wearable-utility',
   WORLD_CONTRIBUTOR = 'world-contributor',
   LINKED_WEARABLES_V2 = 'linked-wearables-v2',
-  LINKED_WEARABLES_PAYMENTS = 'linked-wearables-payments'
+  LINKED_WEARABLES_PAYMENTS = 'linked-wearables-payments',
+  OFFCHAIN_PUBLIC_ITEM_ORDERS = 'offchain-public-item-orders'
 }

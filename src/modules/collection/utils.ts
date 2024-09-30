@@ -20,6 +20,16 @@ export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: bool
   return [{ address, hasAccess: isOnSale, collection }]
 }
 
+export function enableSaleOffchain(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
+  const address = getOffchainSaleAddress(wallet.networks.MATIC.chainId)
+  return [{ address, hasAccess: isOnSale, collection }]
+}
+
+export function isEnableForSaleOffchain(collection: Collection, wallet: Wallet) {
+  const address = getOffchainSaleAddress(wallet.networks.MATIC.chainId)
+  return includes(collection.minters, address)
+}
+
 export function isOnSale(collection: Collection, wallet: Wallet) {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
   return includes(collection.minters, address)
@@ -37,6 +47,10 @@ export function isLocked(collection: Collection) {
 
 export function getSaleAddress(chainId: ChainId) {
   return getContract(ContractName.CollectionStore, chainId).address.toLowerCase()
+}
+
+export function getOffchainSaleAddress(chainId: ChainId) {
+  return getContract(ContractName.OffChainMarketplace, chainId).address.toLowerCase()
 }
 
 export function getCollectionEditorURL(collection: Collection, items: Item[]): string {
