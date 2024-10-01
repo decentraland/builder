@@ -179,7 +179,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
       case PublishWizardCollectionSteps.PAY_PUBLICATION_FEE:
         return <PayPublicationFeeStep {...props} onNextStep={handleOnPublish} onPrevStep={handleOnPrevStep} />
       case PublishWizardCollectionSteps.COLLECTION_PUBLISHED:
-        return <CongratulationsStep collection={collection} onClose={onClose} />
+        return <CongratulationsStep collection={collection} itemsCount={allItems.length} onClose={onClose} />
       default:
         return null
     }
