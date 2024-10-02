@@ -183,9 +183,8 @@ export const FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE = '[Failu
 export const finishPublishAndPushChangesThirdPartyItemsSuccess = (
   thirdParty: ThirdParty,
   collectionId: Collection['id'],
-  items: Item[],
   itemCurations: ItemCuration[]
-) => action(FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, { thirdParty, collectionId, items, itemCurations })
+) => action(FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS, { thirdParty, collectionId, itemCurations })
 export const finishPublishAndPushChangesThirdPartyItemsFailure = (error: string) =>
   action(FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE, { error })
 
