@@ -20,10 +20,11 @@ export type Props = {
   itemsStatus: Record<string, SyncStatus>
   slots: number
   onClick: (collectionId: string, itemIds: string[], action: PublishButtonAction) => void
+  onPushChangesClick: (collectionId: string, itemsWithChanges: Item[]) => unknown
   onNewClick: (collectionId: string, itemsWithChanges: Item[], itemsToPublish: Item[]) => void
 }
 
 export type OwnProps = Pick<Props, 'items' | 'collection'>
 export type MapStateProps = Pick<Props, 'itemCurations' | 'itemsStatus' | 'isLoadingItemCurations' | 'isLinkedWearablesPaymentsEnabled'>
-export type MapDispatchProps = Pick<Props, 'onClick' | 'onNewClick'>
+export type MapDispatchProps = Pick<Props, 'onClick' | 'onNewClick' | 'onPushChangesClick'>
 export type MapDispatch = Dispatch<OpenModalAction>

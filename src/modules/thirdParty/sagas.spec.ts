@@ -949,14 +949,44 @@ describe('when publishing & pushing changes to third party items', () => {
           ]
         ])
         .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
-        .put(
-          finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, item.collectionId!, publishResponse, [
-            ...itemCurations,
-            updatedItemCurations[0]
-          ])
-        )
+        .put(finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, item.collectionId!, [...itemCurations, updatedItemCurations[0]]))
         .put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id))
         .dispatch(publishAndPushChangesThirdPartyItemsRequest(thirdParty, itemsToPublish, [itemWithChanges]))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe("when there's only push changes to do", () => {
+    let updatedItemCurations: ItemCuration[]
+    beforeEach(() => {
+      updatedItemCurations = [
+        {
+          id: 'id',
+          itemId: mockedItem.id,
+          createdAt: 0,
+          status: CurationStatus.PENDING,
+          updatedAt: 0,
+          contentHash: 'aHash'
+        }
+      ]
+      ;(mockBuilder.pushItemCuration as jest.Mock).mockResolvedValue(updatedItemCurations[0])
+      collection.isPublished = true
+      linkedWearablesPaymentsEnabled = true
+    })
+
+    it('should put the finish publish & push changes success action and close the modal', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([
+          [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
+          [select(getItemCurations, item.collectionId), itemCurations],
+          [select(getCollection, item.collectionId), collection],
+          [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+          [take(FETCH_COLLECTION_SUCCESS), undefined]
+        ])
+        .put(updateThirdPartyActionProgress(100, ThirdPartyAction.PUSH_CHANGES)) // resets the progress
+        .put(finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, itemWithChanges.collectionId!, [updatedItemCurations[0]]))
+        .put(closeModal('PushChangesModal'))
+        .dispatch(publishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection, [], [itemWithChanges]))
         .run({ silenceTimeout: true })
     })
   })
@@ -1179,6 +1209,19 @@ describe('when handling the closing a modal', () => {
   describe('and the modal is the publish collection wizard', () => {
     beforeEach(() => {
       modalName = 'PublishWizardCollectionModal'
+    })
+
+    it('should clear the third party errors', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .dispatch(closeModal(modalName))
+        .put(clearThirdPartyErrors())
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the modal is the push changes modal', () => {
+    beforeEach(() => {
+      modalName = 'PushChangesModal'
     })
 
     it('should clear the third party errors', () => {
