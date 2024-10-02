@@ -261,7 +261,7 @@ describe('when reducing a FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCC
   })
 
   it('should remove the corresponding request action, set the third party as published and clear the errors', () => {
-    expect(thirdPartyReducer(state, finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, 'aCollectionId', [], []))).toEqual({
+    expect(thirdPartyReducer(state, finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, 'aCollectionId', []))).toEqual({
       ...INITIAL_STATE,
       data: {
         [thirdParty.id]: {
