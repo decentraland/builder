@@ -51,4 +51,5 @@ export { default as WorldsForENSOwnersAnnouncementModal } from './WorldsForENSOw
 export { default as EnsMapAddressModal } from './ENSMapAddressModal'
 export { default as ReclaimNameModal } from './ReclaimNameModal'
 export { default as WorldPermissionsModal } from './WorldPermissionsModal'
+export { default as PutForSaleOffchainModal } from './PutForSaleOffchainModal'
 export { CreateCollectionSelectorModal } from './CreateCollectionSelectorModal'

@@ -9,7 +9,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
-import { isComplete, isFree, canManageItem, getMaxSupply, isSmart, isEmote } from 'modules/item/utils'
+import { isComplete, canManageItem, getMaxSupply, isSmart, isEmote, isFree } from 'modules/item/utils'
 import { isEnableForSaleOffchain, isLocked, isOnSale } from 'modules/collection/utils'
 import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
@@ -36,6 +36,7 @@ export default function CollectionItem({
   const history = useHistory()
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
+  const shouldAllowPriceEdition = !isOffchainPublicItemOrdersEnabled || isEnableForSaleOffchainMarketplace || isOnSaleLegacy
 
   const handleEditPriceAndBeneficiary = useCallback(() => {
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
@@ -64,21 +65,31 @@ export default function CollectionItem({
     onOpenModal('MoveItemToAnotherCollectionModal', { item, fromCollection: collection })
   }, [item, onOpenModal, collection])
 
+  const handlePutForSale = useCallback(() => {
+    onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
+  }, [])
+
   const renderPrice = useCallback(() => {
-    return item.price ? (
-      <div>
-        {isFree(item) ? (
-          t('global.free')
-        ) : (
-          <Mana className={styles.mana} network={Network.MATIC} showTooltip>
-            {ethers.utils.formatEther(item.price)}
-          </Mana>
-        )}
-      </div>
-    ) : (
-      <div className={`link ${styles.linkAction}`} onClick={preventDefault(handleEditPriceAndBeneficiary)}>
-        {t('collection_item.set_price')}
-      </div>
+    if (!item.price) {
+      return (
+        <div className={`link ${styles.linkAction}`} onClick={preventDefault(handleEditPriceAndBeneficiary)}>
+          {t('collection_item.set_price')}
+        </div>
+      )
+    }
+
+    if (isFree(item)) {
+      return <span>{t('global.free')}</span>
+    }
+
+    if (item.price === ethers.constants.MaxUint256.toString()) {
+      return <span>-</span>
+    }
+
+    return (
+      <Mana className={styles.mana} network={Network.MATIC} showTooltip>
+        {ethers.utils.formatEther(item.price)}
+      </Mana>
     )
   }, [item, handleEditPriceAndBeneficiary])
 
@@ -135,7 +146,9 @@ export default function CollectionItem({
             )}
             {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
               <>
-                {item.price ? <Dropdown.Item text={t('collection_item.edit_price')} onClick={handleEditPriceAndBeneficiary} /> : null}
+                {item.price && shouldAllowPriceEdition ? (
+                  <Dropdown.Item text={t('collection_item.edit_price')} onClick={handleEditPriceAndBeneficiary} />
+                ) : null}
                 <ResetItemButton itemId={item.id} />
                 {!item.isPublished ? (
                   <>
@@ -203,7 +216,7 @@ export default function CollectionItem({
       <Table.Cell>{renderItemStatus()}</Table.Cell>
       {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
         <Table.Cell>
-          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace}>
+          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace} onClick={handlePutForSale}>
             {t('collection_item.put_for_sale')}
           </Button>
         </Table.Cell>

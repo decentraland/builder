@@ -53,6 +53,7 @@ import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
+import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
 const newIdentitySaga = createIdentitySaga({
   authURL: config.get('AUTH_URL')
@@ -72,7 +73,8 @@ export function* rootSaga(
   getIdentity: () => AuthIdentity | undefined,
   store: RootStore,
   ensApi: ENSApi,
-  worldsApi: WorldsAPI
+  worldsApi: WorldsAPI,
+  tradeService: TradeService
 ) {
   yield all([
     analyticsSaga(),
@@ -88,7 +90,7 @@ export function* rootSaga(
     forumSaga(builderAPI),
     identitySaga(),
     newIdentitySaga(),
-    itemSaga(builderAPI, newBuilderClient),
+    itemSaga(builderAPI, newBuilderClient, tradeService),
     keyboardSaga(),
     landSaga(),
     locationSaga(),

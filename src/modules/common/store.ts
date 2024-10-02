@@ -40,6 +40,7 @@ import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
+import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
 const isTestEnv = process.env.NODE_ENV === 'test'
 
@@ -169,14 +170,14 @@ const getClientAuthAuthority = () => {
 // As the builder client manages by itself the version of the API, we need to remove it from
 // the environment variable that we're using to with the older client.
 const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
-
 const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
 
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
 const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getState())))
 
-sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, getClientAuthAuthority, store, ensApi, worldsAPI)
+const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
+sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, getClientAuthAuthority, store, ensApi, worldsAPI, tradeService)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {

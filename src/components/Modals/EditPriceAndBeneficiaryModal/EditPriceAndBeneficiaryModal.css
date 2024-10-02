@@ -2,8 +2,29 @@
   padding: 16px 32px 38px;
 }
 
+.EditPriceAndBeneficiaryModal.ui.modal .modalContainer {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+}
+
+.EditPriceAndBeneficiaryModal.ui.modal .priceThumbnail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.EditPriceAndBeneficiaryModal.ui.modal .priceThumbnail .priceName {
+  text-align: center;
+  line-height: 20px;
+}
+
 .EditPriceAndBeneficiaryModal .ui.form .dcl.field {
   margin-bottom: 4px;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .dcl.field .field {
+  width: 100%;
 }
 
 .EditPriceAndBeneficiaryModal .ui.form .dcl.field > .message {
@@ -59,12 +80,18 @@
 }
 
 .EditPriceAndBeneficiaryModal .ui.form > .actions {
-  width: auto;
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
+.EditPriceAndBeneficiaryModal .ItemImage {
+  min-height: 200px;
+}
+
 .EditPriceAndBeneficiaryModal .ui.form > .actions > button {
-  width: 100%;
+  width: auto;
+  flex: 1;
   margin: 1em 0 0;
 }
 

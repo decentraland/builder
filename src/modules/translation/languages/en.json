@@ -1764,7 +1764,10 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Set Price",
+    "expiration_date_label": "Expiration Date",
+    "expiration_date_error": "Expiration date must be in the future",
+    "cancel": "Cancel",
+    "title": "Set Price and Beneficiary",
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",

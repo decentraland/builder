@@ -100,7 +100,13 @@ import {
   FetchOrphanItemRequestAction,
   FetchOrphanItemFailureAction,
   FETCH_ORPHAN_ITEM_REQUEST,
-  FETCH_ORPHAN_ITEM_FAILURE
+  FETCH_ORPHAN_ITEM_FAILURE,
+  CreateItemOrderTradeRequestAction,
+  CreateItemOrderTradeFailureAction,
+  CreateItemOrderTradeSuccessAction,
+  CREATE_ITEM_ORDER_TRADE_REQUEST,
+  CREATE_ITEM_ORDER_TRADE_FAILURE,
+  CREATE_ITEM_ORDER_TRADE_SUCCESS
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
@@ -194,6 +200,9 @@ type ItemReducerAction =
   | FetchOrphanItemSuccessAction
   | FetchOrphanItemFailureAction
   | CloseModalAction
+  | CreateItemOrderTradeRequestAction
+  | CreateItemOrderTradeFailureAction
+  | CreateItemOrderTradeSuccessAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -215,9 +224,17 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case DELETE_ITEM_REQUEST:
     case RESET_ITEM_REQUEST:
     case RESCUE_ITEMS_REQUEST:
-    case DOWNLOAD_ITEM_REQUEST: {
+    case DOWNLOAD_ITEM_REQUEST:
+    case CREATE_ITEM_ORDER_TRADE_REQUEST: {
       return {
         ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case CREATE_ITEM_ORDER_TRADE_SUCCESS: {
+      return {
+        ...state,
+        error: null,
         loading: loadingReducer(state.loading, action)
       }
     }
@@ -328,7 +345,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case DELETE_ITEM_FAILURE:
     case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE:
-    case DOWNLOAD_ITEM_FAILURE: {
+    case DOWNLOAD_ITEM_FAILURE:
+    case CREATE_ITEM_ORDER_TRADE_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
