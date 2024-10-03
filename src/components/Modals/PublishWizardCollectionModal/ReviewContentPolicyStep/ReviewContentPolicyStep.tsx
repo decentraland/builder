@@ -5,6 +5,7 @@ import { isTPCollection } from 'modules/collection/utils'
 import { emailRegex } from 'lib/validators'
 import { Props } from './ReviewContentPolicyStep.types'
 import styles from './ReviewContentPolicyStep.module.css'
+import { REVIEW_CONTENT_POLICY_CONTINUE_DATA_TEST_ID } from './constants'
 
 const termsOfUseLink = (link: string) => (
   <a href="https://decentraland.org/terms/" rel="noopener noreferrer" target="_blank">
@@ -134,7 +135,7 @@ export const ReviewContentPolicyStep: React.FC<Props> = props => {
           <Button secondary onClick={onPrevStep}>
             {t('global.back')}
           </Button>
-          <Button primary onClick={onNextStep} disabled={isDisabled}>
+          <Button data-testid={REVIEW_CONTENT_POLICY_CONTINUE_DATA_TEST_ID} primary onClick={onNextStep} disabled={isDisabled}>
             {t('publish_wizard_collection_modal.review_content_policy_step.continue')}
           </Button>
         </Row>

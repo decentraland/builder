@@ -1752,7 +1752,10 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "设定价格",
+    "expiration_date_label": "截止日期",
+    "expiration_date_error": "到期日期必须在未来",
+    "cancel": "取消",
+    "title": "设定价格和受益人",
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",
@@ -2379,5 +2382,9 @@
     "unsynced": "已准备好发送更改",
     "pending_migration": "待迁移",
     "pending_mapping": "待定映射"
+  },
+  "push_changes_modal": {
+    "title": "推送变更",
+    "description": "自上次策展人审核以来，馆藏或其包含的物品已发生更改。{br}为了使这些更改反映在世界上，委员会必须再次审核和批准这些更改。{br }您确定要推送更改以供审核吗？"
   }
 }

@@ -1773,7 +1773,10 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Asignar un precio",
+    "expiration_date_label": "Fecha de expiración",
+    "expiration_date_error": "La fecha de expiración debe ser en el futuro",
+    "cancel": "Cancelar",
+    "title": "Agregar precio y beneficiario",
     "for_me": "Soy el beneficiario",
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
@@ -2398,5 +2401,9 @@
     "unsynced": "Listo para enviar cambios",
     "pending_migration": "Migración pendiente",
     "pending_mapping": "Mapeo pendiente"
+  },
+  "push_changes_modal": {
+    "title": "Enviar Cambios",
+    "description": "Se han realizado cambios en la colección o en los elementos que contiene desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mundo, el comité debe revisarlos y aprobarlos nuevamente.{br}¿Está seguro de que desea enviar los cambios para su revisión?"
   }
 }
