@@ -87,7 +87,8 @@ export default class CollectionProvider extends React.PureComponent<Props> {
       paginatedItems,
       curation,
       itemCurations,
-      isLoading,
+      isLoadingCollection,
+      isLoadingCollectionItems,
       children,
       onFetchCollectionItems
     } = this.props
@@ -102,7 +103,8 @@ export default class CollectionProvider extends React.PureComponent<Props> {
           paginatedCollections,
           curation,
           itemCurations,
-          isLoading,
+          isLoadingCollection,
+          isLoadingCollectionItems,
           onFetchCollectionItemsPages: onFetchCollectionItems
         })}
       </>

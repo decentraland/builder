@@ -30,7 +30,12 @@ export const locations = {
   activity: () => '/activity',
   settings: () => '/settings',
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
-  collections: () => '/collections',
+  collections: (type?: CollectionType) => {
+    if (type) {
+      return `/collections?section=${type === CollectionType.STANDARD ? 'standard_collections' : 'third_party_collections'}`
+    }
+    return '/collections'
+  },
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
   collectionDetail: (collectionId = ':collectionId', type: CollectionType = CollectionType.STANDARD, options?: CollectionDetailOptions) => {
     switch (type) {

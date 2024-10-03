@@ -6,9 +6,8 @@ import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/au
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
-import { getCollectionItems, getLoading as getLoadingItem, getPaginationData } from 'modules/item/selectors'
-import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
-import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { getCollectionItems, getPaginationData } from 'modules/item/selectors'
+import { DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots, isLoadingThirdParties, isLoadingThirdParty } from 'modules/thirdParty/selectors'
 import { fetchThirdPartyAvailableSlotsRequest, fetchThirdPartyRequest } from 'modules/thirdParty/actions'
@@ -40,9 +39,7 @@ const mapState = (state: RootState): MapStateProps => {
     thirdParty: collection && isThirdPartyCollection(collection) ? getCollectionThirdParty(state, collection) : null,
     authorizations: getAuthorizations(state),
     isLoading:
-      isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
-      isLoadingType(getLoadingItem(state), FETCH_COLLECTION_ITEMS_REQUEST) ||
       isLoadingThirdParties(state) ||
       !!(isThirdParty && collection && isLoadingThirdParty(state, extractThirdPartyId(collection.urn))),
     isLoadingAvailableSlots: isFetchingAvailableSlots(state),
