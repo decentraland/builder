@@ -2398,5 +2398,9 @@
     "unsynced": "Listo para enviar cambios",
     "pending_migration": "Migración pendiente",
     "pending_mapping": "Mapeo pendiente"
+  },
+  "push_changes_modal": {
+    "title": "Enviar Cambios",
+    "description": "Se han realizado cambios en la colección o en los elementos que contiene desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mundo, el comité debe revisarlos y aprobarlos nuevamente.{br}¿Está seguro de que desea enviar los cambios para su revisión?"
   }
 }

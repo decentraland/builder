@@ -133,7 +133,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeEvery(CLOSE_MODAL, handleCloseModal)
 
   function* handleCloseModal(action: CloseModalAction) {
-    if (action.payload.name === 'PublishWizardCollectionModal') {
+    if (action.payload.name === 'PublishWizardCollectionModal' || action.payload.name === 'PushChangesModal') {
       yield put(clearThirdPartyErrors())
     }
   }
@@ -303,7 +303,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
     const { thirdParty, maxSlotPrice, itemsToPublish, itemsWithChanges, email, subscribeToNewsletter, cheque } = action.payload
-    const collectionId = getCollectionId(itemsToPublish)
+    const collectionId = itemsToPublish.length > 0 ? getCollectionId(itemsToPublish) : getCollectionId(itemsWithChanges)
     const collection: ReturnType<typeof getCollection> = yield select(getCollection, collectionId)
     const isLinkedWearablesPaymentsEnabled = (yield select(getIsLinkedWearablesPaymentsEnabled)) as ReturnType<
       typeof getIsLinkedWearablesPaymentsEnabled
@@ -439,8 +439,16 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         yield put(closeModal('PublishWizardCollectionModal'))
       }
 
-      yield put(finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection.id, resultFromPublish.newItems, newItemCurations))
-      yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
+      // If we're only pushing changes, close the push changes modal
+      if (isLinkedWearablesPaymentsEnabled && itemsToPublish.length === 0 && itemsWithChanges.length > 0) {
+        yield put(closeModal('PushChangesModal'))
+      }
+
+      // Only fetch the third party slots if we're publishing new items
+      if (itemsToPublish.length > 0) {
+        yield put(fetchThirdPartyAvailableSlotsRequest(thirdParty.id)) // re-fetch available slots after publishing
+      }
+      yield put(finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection.id, newItemCurations))
     } catch (error) {
       yield put(finishPublishAndPushChangesThirdPartyItemsFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
       if (!isLinkedWearablesPaymentsEnabled) {
