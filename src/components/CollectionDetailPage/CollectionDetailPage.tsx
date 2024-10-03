@@ -438,11 +438,11 @@ export default function CollectionDetailPage({
   const HUGE_PAGE_SIZE = 5000 // TODO: Remove this ASAP and implement pagination
   return (
     <CollectionProvider id={collection?.id} itemsPage={1} itemsPageSize={HUGE_PAGE_SIZE}>
-      {({ isLoading: isLoadingCollectionData, items }) => (
+      {({ isLoadingCollection, isLoadingCollectionItems, items }) => (
         <LoggedInDetailPage
           className="CollectionDetailPage"
-          hasNavigation={!hasAccess && !isLoading && !isLoadingCollectionData}
-          isLoading={isLoading || isLoadingCollectionData}
+          hasNavigation={!hasAccess && !isLoading && !isLoadingCollection}
+          isLoading={isLoading || isLoadingCollection || isLoadingCollectionItems}
         >
           {hasAccess ? renderPage(items) : <NotFound />}
         </LoggedInDetailPage>
