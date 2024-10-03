@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { DropdownProps, Field, InputOnChangeData, SelectField, TextAreaField, TextAreaProps } from 'decentraland-ui'
 import { MappingType, MultipleMapping } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation'
+import { LinkingToTooltip } from 'components/LinkedToTooltip'
 import allIcon from '../../icons/all.svg'
 import multipleIcon from '../../icons/multiple.svg'
 import singleIcon from '../../icons/single.svg'
@@ -117,7 +118,13 @@ export const MappingEditor = (props: Props) => {
   return (
     <div className={classNames(styles.main, isCompact ? styles.compact : styles.full)}>
       <SelectField
-        label={isCompact ? undefined : t('mapping_editor.mapping_type_label')}
+        label={
+          isCompact ? undefined : (
+            <div className={styles.typeLabel}>
+              {t('mapping_editor.mapping_type_label')} <LinkingToTooltip />
+            </div>
+          )
+        }
         onChange={handleMappingTypeChange}
         placeholder={t('mapping_editor.mapping_type_placeholder')}
         value={mappingType}
