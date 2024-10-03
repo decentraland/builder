@@ -162,12 +162,10 @@ describe('when an action of type PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCC
     expect(
       itemCurationReducer(
         state,
-        finishPublishAndPushChangesThirdPartyItemsSuccess(
-          thirdParty,
-          collection.id,
-          [],
-          [...itemCurationsFromPublish, ...itemCurationsFromPush]
-        )
+        finishPublishAndPushChangesThirdPartyItemsSuccess(thirdParty, collection.id, [
+          ...itemCurationsFromPublish,
+          ...itemCurationsFromPush
+        ])
       )
     ).toStrictEqual({
       ...state,

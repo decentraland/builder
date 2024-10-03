@@ -1,0 +1,22 @@
+.content {
+  background-color: #1d1a20;
+  border-radius: 8px;
+  padding: 24px 27px 88px 27px;
+  font-size: 16px;
+  color: #cfcdd4;
+}
+
+.actions {
+  margin-top: 24px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between !important;
+}
+
+.actions :global(.button) {
+  width: 180px;
+}
+
+.error {
+  margin: 24px !important;
+}

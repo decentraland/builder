@@ -27,6 +27,7 @@ const CollectionPublishButton = (props: Props) => {
     isLinkedWearablesPaymentsEnabled,
     onClick,
     onNewClick,
+    onPushChangesClick,
     itemsStatus,
     itemCurations,
     isLoadingItemCurations
@@ -73,11 +74,23 @@ const CollectionPublishButton = (props: Props) => {
     const itemsToPushChanges = getItemsWithChanges(items, itemsStatus, itemCurations)
     if (isLinkedWearablesPaymentsEnabled && itemsToPublish.length > 0) {
       onNewClick(collection.id, itemsToPushChanges, itemsToPublish)
+    } else if (isLinkedWearablesPaymentsEnabled && itemsToPushChanges.length > 0) {
+      onPushChangesClick(collection.id, itemsToPushChanges)
     } else {
       const itemIds = items.map(item => item.id)
       onClick(collection.id, itemIds, buttonAction)
     }
-  }, [collection, items, buttonAction, onClick, onNewClick, isLinkedWearablesPaymentsEnabled, itemsStatus, itemCurations])
+  }, [
+    collection,
+    items,
+    buttonAction,
+    onClick,
+    onNewClick,
+    onPushChangesClick,
+    isLinkedWearablesPaymentsEnabled,
+    itemsStatus,
+    itemCurations
+  ])
 
   const itemsTryingToPublish = useMemo(
     () => items.filter(item => !itemCurations?.find(itemCuration => itemCuration.itemId === item.id)).length,
