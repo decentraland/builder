@@ -3,6 +3,10 @@
   visibility: hidden !important;
 }
 
+.CreateSingleItemModalContainer > .ui.page.modals {
+  z-index: 1900;
+}
+
 .CreateSingleItemModal.ui.modal > .content {
   margin-bottom: 32px;
 }
