@@ -30,7 +30,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSave: (item, contents) => dispatch(saveItemRequest(item, contents)),
-  onSetPriceAndBeneficiary: (itemId, price, beneficiary) => dispatch(setPriceAndBeneficiaryRequest(itemId, price, beneficiary))
+  onSetPriceAndBeneficiary: (itemId: string, price: string, beneficiary: string) =>
+    dispatch(setPriceAndBeneficiaryRequest(itemId, price, beneficiary))
 })
 
 export default connect(mapState, mapDispatch)(EditPriceAndBeneficiaryModal)

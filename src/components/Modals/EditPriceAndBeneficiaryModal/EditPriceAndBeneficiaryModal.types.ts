@@ -15,8 +15,11 @@ export type Props = ModalProps & {
   metadata: EditPriceAndBeneficiaryModalMetadata
   itemSortedContents?: Record<string, Blob>
   mountNode?: HTMLDivElement | undefined
-  onSave: typeof saveItemRequest
-  onSetPriceAndBeneficiary: typeof setPriceAndBeneficiaryRequest
+  withExpirationDate?: boolean
+  onSave: typeof saveItemRequest | ((item: Item) => void)
+  onSetPriceAndBeneficiary:
+    | typeof setPriceAndBeneficiaryRequest
+    | ((itemId: string, priceInWei: string, beneficiary: string, expiresAt?: Date) => void)
   onSkip?: () => void
 }
 
@@ -25,6 +28,7 @@ export type State = {
   beneficiary?: string
   isFree: boolean
   isOwnerBeneficiary: boolean
+  expirationDate?: string
 }
 
 export type EditPriceAndBeneficiaryModalMetadata = {
