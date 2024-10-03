@@ -1752,7 +1752,10 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "设定价格",
+    "expiration_date_label": "截止日期",
+    "expiration_date_error": "到期日期必须在未来",
+    "cancel": "取消",
+    "title": "设定价格和受益人",
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",
