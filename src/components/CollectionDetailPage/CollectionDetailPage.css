@@ -357,3 +357,8 @@
 .CollectionDetailPage.popup-mint:before {
   background-color: var(--smart-grey) !important;
 }
+
+.toast-info .body {
+  max-width: 450px;
+  overflow: hidden;
+}

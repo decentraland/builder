@@ -1,10 +1,10 @@
 import { gql } from 'apollo-boost'
 import { config } from 'config'
 import { createClient } from './graph'
+import { BaseAPI } from 'decentraland-dapps/dist/lib'
 
 export const MARKETPLACE_GRAPH_URL = config.get('MARKETPLACE_GRAPH_URL', '')
 const marketplaceGraphClient = createClient(MARKETPLACE_GRAPH_URL)
-
 const BATCH_SIZE = 1000
 
 const getSubdomainQuery = () => gql`
@@ -52,7 +52,7 @@ type OwnerByNameQueryResult = {
   nfts: OwnerByNameTuple[]
 }
 
-export class MarketplaceAPI {
+export class MarketplaceAPI extends BaseAPI {
   public async fetchENSOwnerByDomain(domains: string[]): Promise<Record<string, string>> {
     if (!domains) {
       return {}
@@ -102,6 +102,10 @@ export class MarketplaceAPI {
     }
     return results
   }
+
+  public async fetchCollectionItems(collectionAddress: string) {
+    return this.request('get', `/items?contractAddress=${collectionAddress}`)
+  }
 }
 
-export const marketplace = new MarketplaceAPI()
+export const marketplace = new MarketplaceAPI(config.get('MARKETPLACE_API'))

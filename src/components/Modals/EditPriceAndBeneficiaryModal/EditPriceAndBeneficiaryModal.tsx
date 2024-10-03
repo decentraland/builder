@@ -113,7 +113,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   getItemPrice() {
     const { item } = this.props
-    return item.price ? ethers.utils.formatEther(item.price) : undefined
+    return item.price && item.price !== ethers.constants.MaxUint256.toString() ? ethers.utils.formatEther(item.price) : undefined
   }
 
   isDisabled() {

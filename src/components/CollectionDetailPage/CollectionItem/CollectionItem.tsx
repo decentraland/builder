@@ -25,12 +25,15 @@ const LENGTH_LIMIT = 25
 export default function CollectionItem({
   onOpenModal,
   onSetItems,
+  onRemoveFromSale,
   item,
   isOffchainPublicItemOrdersEnabled,
   collection,
   status,
   ethAddress,
-  wallet
+  wallet,
+  loadingTradeIds,
+  isCancellingItemOrder
 }: Props) {
   analytics = getAnalytics()
   const history = useHistory()
@@ -39,6 +42,11 @@ export default function CollectionItem({
   const shouldAllowPriceEdition = !isOffchainPublicItemOrdersEnabled || isEnableForSaleOffchainMarketplace || isOnSaleLegacy
 
   const handleEditPriceAndBeneficiary = useCallback(() => {
+    if (isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchainMarketplace) {
+      onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
+      return
+    }
+
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
   }, [item, onOpenModal])
 
@@ -69,6 +77,13 @@ export default function CollectionItem({
     onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
   }, [])
 
+  const handleRemoveFromSale = useCallback(() => {
+    if (!item.tradeId) {
+      return
+    }
+    onRemoveFromSale(item.tradeId)
+  }, [])
+
   const renderPrice = useCallback(() => {
     if (!item.price) {
       return (
@@ -78,12 +93,12 @@ export default function CollectionItem({
       )
     }
 
-    if (isFree(item)) {
-      return <span>{t('global.free')}</span>
+    if (item.price === ethers.constants.MaxUint256.toString() || (isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId)) {
+      return <span>-</span>
     }
 
-    if (item.price === ethers.constants.MaxUint256.toString()) {
-      return <span>-</span>
+    if (isFree(item)) {
+      return <span>{t('global.free')}</span>
     }
 
     return (
@@ -91,7 +106,7 @@ export default function CollectionItem({
         {ethers.utils.formatEther(item.price)}
       </Mana>
     )
-  }, [item, handleEditPriceAndBeneficiary])
+  }, [item, isOnSaleLegacy, isOffchainPublicItemOrdersEnabled, handleEditPriceAndBeneficiary])
 
   const renderItemStatus = useCallback(() => {
     return status === SyncStatus.UNSYNCED ? (
@@ -214,10 +229,22 @@ export default function CollectionItem({
         </Table.Cell>
       ) : null}
       <Table.Cell>{renderItemStatus()}</Table.Cell>
-      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
+      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId && (
         <Table.Cell>
           <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace} onClick={handlePutForSale}>
             {t('collection_item.put_for_sale')}
+          </Button>
+        </Table.Cell>
+      )}
+      {isOffchainPublicItemOrdersEnabled && item.tradeId && (
+        <Table.Cell>
+          <Button
+            secondary
+            size="tiny"
+            onClick={handleRemoveFromSale}
+            loading={isCancellingItemOrder && loadingTradeIds.includes(item.tradeId)}
+          >
+            {t('collection_item.remove_from_sale')}
           </Button>
         </Table.Cell>
       )}
