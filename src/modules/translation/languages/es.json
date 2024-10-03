@@ -1774,7 +1774,7 @@
   },
   "edit_price_and_beneficiary_modal": {
     "expiration_date_label": "Fecha de expiración",
-    "expiration_date_error": "La fecha de expiraciön debe ser en el futuro",
+    "expiration_date_error": "La fecha de expiración debe ser en el futuro",
     "cancel": "Cancelar",
     "title": "Agregar precio y beneficiario",
     "for_me": "Soy el beneficiario",
