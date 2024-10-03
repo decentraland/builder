@@ -4,7 +4,7 @@ import { Contract, providers } from 'ethers'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
-import { ChainId, Network, Entity, EntityType, WearableCategory } from '@dcl/schemas'
+import { ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -99,7 +99,11 @@ import {
   FETCH_ORPHAN_ITEM_REQUEST,
   FetchOrphanItemRequestAction,
   fetchOrphanItemSuccess,
-  fetchOrphanItemFailure
+  fetchOrphanItemFailure,
+  CreateItemOrderTradeRequestAction,
+  createItemOrderTradeSuccess,
+  createItemOrderTradeFailure,
+  CREATE_ITEM_ORDER_TRADE_REQUEST
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -147,14 +151,16 @@ import {
   isWearableFileSizeValid,
   isEmoteFileSizeValid,
   isSkinFileSizeValid,
-  isSmartWearableFileSizeValid
+  isSmartWearableFileSizeValid,
+  createItemOrderTrade
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
+import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
-export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient) {
+export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClient, tradeService: TradeService) {
   const createOrEditCancelledItemsChannel = channel()
   const createOrEditProgressChannel = channel()
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -178,11 +184,24 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(DOWNLOAD_ITEM_REQUEST, handleDownloadItemRequest)
   yield takeEvery(createOrEditProgressChannel, handleCreateOrEditProgress)
   yield takeEvery(createOrEditCancelledItemsChannel, handleCreateOrEditCancelledItems)
+  yield takeEvery(CREATE_ITEM_ORDER_TRADE_REQUEST, handleCreateItemOrderTradeRequest)
   yield takeLatestCancellable(
     { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: CANCEL_SAVE_MULTIPLE_ITEMS },
     handleSaveMultipleItemsRequest
   )
   yield fork(fetchItemEntities)
+
+  function* handleCreateItemOrderTradeRequest(action: CreateItemOrderTradeRequestAction) {
+    const { item, beneficiary, priceInWei, collection, expiresAt } = action.payload
+    try {
+      const trade: TradeCreation = yield call(createItemOrderTrade, item, priceInWei, beneficiary, collection, expiresAt)
+      yield call([tradeService, 'addTrade'], trade)
+      yield put(createItemOrderTradeSuccess(trade))
+      yield put(closeAllModals())
+    } catch (error) {
+      yield put(createItemOrderTradeFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
+    }
+  }
 
   function* handleFetchRaritiesRequest() {
     try {
