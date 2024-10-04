@@ -298,8 +298,12 @@ export const CANCEL_ITEM_ORDER_TRADE_REQUEST = '[Request] Cancel Item Order Trad
 export const CANCEL_ITEM_ORDER_TRADE_SUCCESS = '[Success] Cancel Item Order Trade'
 export const CANCEL_ITEM_ORDER_TRADE_FAILURE = '[Failure] Cancel Item Order Trade'
 
+export const CANCEL_ITEM_ORDER_TRADE_TX_SUCCESS = '[Success] Cancel Item Order Trade Tx'
+
 export const cancelItemOrderTradeRequest = (tradeId: string, errorToast = false) =>
   action(CANCEL_ITEM_ORDER_TRADE_REQUEST, { tradeId, errorToast })
+export const cancelItemOrderTradeTxSuccess = (trade: Trade, txHash: string) =>
+  action(CANCEL_ITEM_ORDER_TRADE_TX_SUCCESS, buildTransactionPayload(trade.chainId, txHash, { tradeId: trade.id }))
 export const cancelItemOrderTradeSuccess = (tradeId: string) => action(CANCEL_ITEM_ORDER_TRADE_SUCCESS, { tradeId })
 export const cancelItemOrderTradeFailure = (error: string) => action(CANCEL_ITEM_ORDER_TRADE_FAILURE, { error })
 

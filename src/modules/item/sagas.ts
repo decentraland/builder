@@ -107,7 +107,8 @@ import {
   CANCEL_ITEM_ORDER_TRADE_REQUEST,
   cancelItemOrderTradeSuccess,
   cancelItemOrderTradeFailure,
-  CancelItemOrderTradeRequestAction
+  CancelItemOrderTradeRequestAction,
+  cancelItemOrderTradeTxSuccess
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -290,7 +291,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         restOfOptions
       )
       let itemsToSave = items
-      const collection: Collection | undefined = collectionId ? yield select(getCollection, collectionId) : undefined
+      let collection: Collection | undefined = yield select(getCollection, collectionId)
+
+      if (!collection) {
+        collection = yield call([legacyBuilder, 'fetchCollection'], collectionId)
+      }
+
       if (collection && collection.isPublished) {
         const result: { data: DCLItem[] } = yield call([marketplace, 'fetchCollectionItems'], collection.contractAddress!)
         itemsToSave = items.map(item => {
@@ -844,7 +850,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const { tradeId, errorToast } = action.payload
     try {
       const trade: Trade = yield call([tradeService, 'fetchTrade'], tradeId)
-      yield call([tradeService, 'cancel'], trade, ethers.constants.AddressZero)
+      const txHash: string = yield call([tradeService, 'cancel'], trade, ethers.constants.AddressZero)
+      yield put(cancelItemOrderTradeTxSuccess(trade, txHash))
+      yield call(waitForTx, txHash)
       yield put(cancelItemOrderTradeSuccess(tradeId))
     } catch (error) {
       const errorMessage = isErrorWithMessage(error) ? error.message : 'Unknown error'

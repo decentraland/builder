@@ -39,7 +39,8 @@ export default function CollectionItem({
   const history = useHistory()
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
-  const shouldAllowPriceEdition = !isOffchainPublicItemOrdersEnabled || isEnableForSaleOffchainMarketplace || isOnSaleLegacy
+  const shouldAllowPriceEdition =
+    !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
 
   const handleEditPriceAndBeneficiary = useCallback(() => {
     if (isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchainMarketplace) {
