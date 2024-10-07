@@ -105,7 +105,8 @@ const builderAPI = {
   fetchContents: jest.fn(),
   fetchCollectionItems: jest.fn(),
   fetchRarities: jest.fn(),
-  fetchItems: jest.fn()
+  fetchItems: jest.fn(),
+  fetchCollection: jest.fn()
 } as unknown as BuilderAPI
 
 let builderClient: BuilderClient
@@ -1511,6 +1512,7 @@ describe('when handling the fetch of collection items', () => {
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+        .provide([[select(getCollection, item.collectionId!), { isPublished: false } as Collection]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(
           fetchCollectionItemsSuccess(item.collectionId!, [item], {
@@ -1557,6 +1559,7 @@ describe('when handling the fetch of collection items pages', () => {
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
       return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+        .provide([[select(getCollection, item.collectionId!), { isPublished: false } as Collection]])
         .dispatch(
           fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit, overridePaginationData: false })
         )

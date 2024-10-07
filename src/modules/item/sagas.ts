@@ -300,7 +300,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (collection && collection.isPublished) {
         const result: { data: DCLItem[] } = yield call([marketplace, 'fetchCollectionItems'], collection.contractAddress!)
         itemsToSave = items.map(item => {
-          const publishedItem = result.data.find(publishedItem => publishedItem.id === `${collection.contractAddress}-${item.tokenId}`)
+          const publishedItem = result.data.find(publishedItem => publishedItem.id === `${collection?.contractAddress}-${item.tokenId}`)
           return {
             ...item,
             tradeExpiresAt: publishedItem?.tradeExpiresAt,
