@@ -83,7 +83,7 @@ export default function CollectionItem({
       return
     }
     onRemoveFromSale(item.tradeId)
-  }, [])
+  }, [item])
 
   const renderPrice = useCallback(() => {
     if (!item.price) {
