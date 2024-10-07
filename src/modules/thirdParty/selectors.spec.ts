@@ -9,7 +9,8 @@ import {
   fetchThirdPartyRequest,
   FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
-  publishAndPushChangesThirdPartyItemsRequest
+  publishAndPushChangesThirdPartyItemsRequest,
+  setThirdPartyKindRequest
 } from './actions'
 import {
   isThirdPartyManager,
@@ -22,7 +23,8 @@ import {
   isDisablingThirdParty,
   hasPendingDisableThirdPartyTransaction,
   isLoadingThirdParty,
-  getThirdPartyPublishStatus
+  getThirdPartyPublishStatus,
+  isSettingThirdPartyType
 } from './selectors'
 import { ThirdParty } from './types'
 import { INITIAL_STATE } from './reducer'
@@ -636,6 +638,40 @@ describe('Third Party selectors', () => {
 
       it('should return the pending authorization step', () => {
         expect(getThirdPartyPublishStatus(baseState)).toEqual(AuthorizationStepStatus.PENDING)
+      })
+    })
+  })
+
+  describe('when setting the third party type', () => {
+    describe('and the third party type is being set', () => {
+      beforeEach(() => {
+        baseState = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            loading: [setThirdPartyKindRequest(thirdParty1.id, true)]
+          }
+        }
+      })
+
+      it('should return true', () => {
+        expect(isSettingThirdPartyType(baseState)).toBe
+      })
+
+      describe('and the third party type is not being set', () => {
+        beforeEach(() => {
+          baseState = {
+            ...baseState,
+            thirdParty: {
+              ...baseState.thirdParty,
+              loading: []
+            }
+          }
+        })
+
+        it('should return false', () => {
+          expect(isSettingThirdPartyType(baseState)).toBe(false)
+        })
       })
     })
   })

@@ -36,5 +36,5 @@ export type Slot = {
 
 export type ThirdPartyPrice = {
   item: { usd: string; mana: string }
-  programmatic: { usd: string; mana: string }
+  programmatic: { usd: string; mana: string; minSlots: string }
 }

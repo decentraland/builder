@@ -42,7 +42,13 @@ import {
   FinishPublishAndPushChangesThirdPartyItemsSuccessAction,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
   FinishPublishAndPushChangesThirdPartyItemsFailureAction,
-  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  SetThirdPartyTypeRequestAction,
+  SetThirdPartyTypeFailureAction,
+  SetThirdPartyTypeSuccessAction,
+  SET_THIRD_PARTY_KIND_SUCCESS,
+  SET_THIRD_PARTY_KIND_FAILURE,
+  SET_THIRD_PARTY_KIND_REQUEST
 } from './actions'
 import { ThirdParty } from './types'
 
@@ -82,9 +88,13 @@ type ThirdPartyReducerAction =
   | FetchThirdPartyRequestAction
   | FetchThirdPartySuccessAction
   | FetchThirdPartyFailureAction
+  | SetThirdPartyTypeRequestAction
+  | SetThirdPartyTypeFailureAction
+  | SetThirdPartyTypeSuccessAction
 
 export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
+    case SET_THIRD_PARTY_KIND_REQUEST:
     case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST:
     case FETCH_THIRD_PARTY_REQUEST:
@@ -155,12 +165,26 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
-    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS:
+    case PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(loadingReducer(state.loading, action), { type: FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST })
       }
-
+    }
+    case SET_THIRD_PARTY_KIND_SUCCESS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [action.payload.thirdPartyId]: {
+            ...state.data[action.payload.thirdPartyId],
+            isProgrammatic: action.payload.isProgrammatic
+          }
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
     case DEPLOY_BATCHED_THIRD_PARTY_ITEMS_SUCCESS: {
       return {
         ...state,
@@ -168,6 +192,7 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: null
       }
     }
+    case SET_THIRD_PARTY_KIND_FAILURE:
     case FETCH_THIRD_PARTY_FAILURE:
     case DISABLE_THIRD_PARTY_FAILURE:
     case FETCH_THIRD_PARTY_AVAILABLE_SLOTS_FAILURE:

@@ -392,6 +392,17 @@
       "finished_partial_successfully_subtitle": "Agregaste {number_of_items} items pero {number_of_failed_items} fallaron. Por favor revise las URNs subidas",
       "saved_items_table_title": "Items actualizados"
     },
+    "third_party_kind_selector": {
+      "standard": {
+        "title": "Wearables externamente vinculados estándar",
+        "subtitle": "Wearables hechos a mano. Cada weawrable fue hecho individualmente. El costo de revisión es de {price} USD por wearable."
+      },
+      "programmatic": {
+        "title": "Wearables externamente vinculados programáticos",
+        "subtitle": "Las partes o características de cada wearable se hicieron a mano, pero la mezcla de características se hace mediante código. El costo de revisión es de {price} USD por colección."
+      },
+      "action": "Seleccionar"
+    },
     "wrong_thumbnail_format": "El archivo thumbnail.png no tiene el formato de una imagen PNG.",
     "missing_mapping": "El item no contiene un mapeo.",
     "wrong_file_extension": "La extensión del artchivo no es correcta.",
@@ -1584,6 +1595,7 @@
     "owner": "Dueño",
     "link": "Enlace",
     "type": "Tipo",
+    "kind": "Clase",
     "type_third_party": "Colección Externa",
     "type_standard": "Estándar",
     "review_request": "Solicitud de revisión",
@@ -1649,9 +1661,6 @@
     "slots_short": "Slots",
     "slots_long": "Puntos de publicación",
     "migration_banner": "Uno o múltiples items en tu colección necesitan ser migrados a la nueva versión",
-    "type": "Externamente vinculadas",
-    "programmatic": "Programáticas",
-    "standard": "Estándar",
     "synced_filter": {
       "all": "Todos los items",
       "synced": "Sincronizados",
@@ -1880,7 +1889,7 @@
       },
       "third_parties": {
         "first": "Garantizo que los artículos enviados cumplen plenamente con los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>, que reconozco y acepto.",
-        "second": "Confirmo que tengo permisos de IP para crear Linked Wearables basados en esta colección NFT externa.",
+        "second": "Confirmo que tengo permisos de IP para crear Wearables externamente vinculados basados en esta colección NFT externa.",
         "third": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo."
       },
       "subscription": {
@@ -1892,7 +1901,12 @@
     },
     "pay_publication_fee_step": {
       "title": "Confirmar ítems",
-      "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA).",
+      "third_parties": {
+        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por colección (pagado en MANA) una única vez."
+      },
+      "standard": {
+        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA)."
+      },
       "learn_more": "Aprender sobre la tarifa de publicación",
       "already_payed": "Ya pagados, pero no publicados",
       "already_published": "Ya publicados",
@@ -2405,5 +2419,13 @@
   "push_changes_modal": {
     "title": "Enviar Cambios",
     "description": "Se han realizado cambios en la colección o en los elementos que contiene desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mundo, el comité debe revisarlos y aprobarlos nuevamente.{br}¿Está seguro de que desea enviar los cambios para su revisión?"
+  },
+  "collection_type_badge": {
+    "third_party": "Wearables exteneramente vinculados",
+    "regular": "Regular"
+  },
+  "third_party_kind_badge": {
+    "programmatic": "Programáticas",
+    "standard": "Estándar"
   }
 }

@@ -116,6 +116,7 @@ export type RemoteCollection = {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   linked_contract_network: ContractNetwork | null
   is_mapping_complete: boolean
+  is_programmatic?: boolean
 }
 
 export type RemoteProject = {
@@ -458,7 +459,8 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     linkedContractNetwork: remoteCollection.linked_contract_network || undefined,
     isMappingComplete: remoteCollection.is_mapping_complete,
     createdAt: +new Date(remoteCollection.created_at),
-    updatedAt: +new Date(remoteCollection.updated_at)
+    updatedAt: +new Date(remoteCollection.updated_at),
+    isProgrammatic: remoteCollection.is_programmatic
   }
 
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
@@ -1050,6 +1052,10 @@ export class BuilderAPI extends BaseAPI {
         return obj
       }, {})
     )
+  }
+
+  setThirdPartyKind = (thirdPartyId: string, isProgrammatic: boolean) => {
+    return this.request('PATCH', `/thirdParties/${thirdPartyId}`, { params: { isProgrammatic } })
   }
 
   deleteVirtualThirdParty = async (thirdPartId: string): Promise<void> => {

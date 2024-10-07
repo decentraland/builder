@@ -23,7 +23,7 @@ const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }
 )
 
 export const PayPublicationFeeStep: React.FC<
-  Props & { onNextStep: (paymentMethod: PaymentMethod) => void; onPrevStep: () => void }
+  Props & { onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string) => void; onPrevStep: () => void }
 > = props => {
   const {
     collection,
@@ -44,11 +44,11 @@ export const PayPublicationFeeStep: React.FC<
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const availableSlots = useMemo(() => thirdParty?.availableSlots ?? 0, [thirdParty?.availableSlots])
   const amountOfItemsToPublish = useMemo(
-    () => (itemsToPublish.length - availableSlots > 0 ? itemsToPublish.length - availableSlots : 0),
-    [itemsToPublish, availableSlots]
+    () => (thirdParty?.isProgrammatic ? 0 : itemsToPublish.length - availableSlots > 0 ? itemsToPublish.length - availableSlots : 0),
+    [thirdParty, itemsToPublish, availableSlots]
   )
   const amountOfItemsAlreadyPayed = useMemo(
-    () => amountOfItemsToPublish - itemsToPublish.length,
+    () => (thirdParty?.isProgrammatic ? itemsToPublish.length : amountOfItemsToPublish - itemsToPublish.length),
     [amountOfItemsToPublish, itemsToPublish.length]
   )
   const amountOfItemsAlreadyPublishedWithChanges = useMemo(() => itemsWithChanges.length, [itemsWithChanges])
@@ -57,19 +57,26 @@ export const PayPublicationFeeStep: React.FC<
     () => (thirdParty?.isProgrammatic ? price?.programmatic?.usd : price?.item.usd) ?? '0',
     [thirdParty?.isProgrammatic, price?.item.usd, price?.programmatic?.usd]
   )
-  const totalPriceMANA = useMemo(
-    () =>
-      thirdParty?.isProgrammatic
-        ? price?.programmatic?.mana ?? '0'
-        : ethers.BigNumber.from(price?.item.mana ?? '0')
-            .mul(itemsToPublish.length)
-            .toString(),
-    [price?.item.mana, itemsToPublish, thirdParty?.isProgrammatic]
-  )
-  const totalPriceUSD = useMemo(
-    () => (thirdParty?.isProgrammatic ? priceUSD : ethers.BigNumber.from(priceUSD).mul(itemsToPublish.length).toString()),
-    [priceUSD, itemsToPublish]
-  )
+  const totalPriceMANA = useMemo(() => {
+    // Programmatic third parties should pay for the items only once, when they're being published
+    if (thirdParty?.isProgrammatic && !thirdParty?.published) {
+      return price?.programmatic?.mana ?? '0'
+    } else if (thirdParty?.isProgrammatic && thirdParty?.published) {
+      return '0'
+    }
+    return ethers.BigNumber.from(price?.item.mana ?? '0')
+      .mul(itemsToPublish.length)
+      .toString()
+  }, [price?.item.mana, itemsToPublish, thirdParty?.isProgrammatic])
+  const totalPriceUSD = useMemo(() => {
+    // Programmatic third parties should pay for the items only once, when they're being published
+    if (thirdParty?.isProgrammatic && !thirdParty?.published) {
+      return priceUSD
+    } else if (thirdParty?.isProgrammatic && thirdParty?.published) {
+      return '0'
+    }
+    return ethers.BigNumber.from(priceUSD).mul(itemsToPublish.length).toString()
+  }, [priceUSD, itemsToPublish])
   const hasInsufficientMANA = useMemo(
     () => !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPriceMANA)),
     [wallet, totalPriceMANA]
@@ -110,12 +117,18 @@ export const PayPublicationFeeStep: React.FC<
   }
 
   const handleBuyWithMana = useCallback(() => {
-    onNextStep(PaymentMethod.MANA)
-  }, [onNextStep])
+    const priceToPayInWei = thirdParty
+      ? ethers.utils.parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(totalPriceMANA))) * 1.005).toString()).toString()
+      : totalPriceMANA
+    onNextStep(PaymentMethod.MANA, priceToPayInWei)
+  }, [!!thirdParty, totalPriceMANA, onNextStep])
 
   const handleBuyWithFiat = useCallback(() => {
-    onNextStep(PaymentMethod.FIAT)
-  }, [onNextStep])
+    const priceToPayInWei = ethers.utils
+      .parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(totalPriceMANA))) * 1.005).toString())
+      .toString()
+    onNextStep(PaymentMethod.FIAT, priceToPayInWei)
+  }, [onNextStep, totalPriceMANA])
 
   return (
     <Modal.Content>
@@ -132,7 +145,7 @@ export const PayPublicationFeeStep: React.FC<
           <Column grow={true}>
             <span className={styles.title}>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
             <span className={styles.subtitle}>
-              {t('publish_wizard_collection_modal.pay_publication_fee_step.subtitle', {
+              {t(`publish_wizard_collection_modal.pay_publication_fee_step.${thirdParty ? 'third_parties' : 'standard'}.subtitle`, {
                 collection_name: <b>{collection.name}</b>,
                 count: amountOfItemsToPublish,
                 currency: 'USD',
@@ -148,7 +161,9 @@ export const PayPublicationFeeStep: React.FC<
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.quantity')}</Table.HeaderCell>
-                  <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.fee_per_item')}</Table.HeaderCell>
+                  {!thirdParty?.isProgrammatic ? (
+                    <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.fee_per_item')}</Table.HeaderCell>
+                  ) : null}
                   <Table.HeaderCell>
                     {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
                   </Table.HeaderCell>
@@ -166,9 +181,11 @@ export const PayPublicationFeeStep: React.FC<
                       )}
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
                     </Table.Cell>
-                    <Table.Cell>
-                      {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
-                    </Table.Cell>
+                    {!thirdParty?.isProgrammatic ? (
+                      <Table.Cell>
+                        {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
+                      </Table.Cell>
+                    ) : null}
                     <Table.Cell>
                       {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
                     </Table.Cell>
@@ -187,7 +204,7 @@ export const PayPublicationFeeStep: React.FC<
                       ) : (
                         <ItemImage item={itemsToPublish[itemsToPublish.length - 1]} className={styles.itemImage} />
                       )}
-                      {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsToPublish })}
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: amountOfItemsAlreadyPayed })}
                     </Table.Cell>
                     <Table.Cell colSpan="3" className={styles.notPayable}>
                       {t('publish_wizard_collection_modal.pay_publication_fee_step.already_payed')}
@@ -237,8 +254,14 @@ export const PayPublicationFeeStep: React.FC<
               </>
             ) : null}
             <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
-              <Mana inline size="small" network={Network.MATIC} />
-              <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
+              {ethers.BigNumber.from(totalPriceMANA).gt(0) ? (
+                <>
+                  <Mana inline size="small" network={Network.MATIC} />
+                  <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
+                </>
+              ) : (
+                t('global.proceed')
+              )}
             </Button>
           </div>
         </Row>

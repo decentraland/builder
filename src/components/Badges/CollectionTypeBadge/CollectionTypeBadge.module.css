@@ -1,0 +1,16 @@
+.badge {
+  padding: 4px 8px 4px 8px;
+  border-radius: 32px;
+  width: fit-content;
+  text-wrap: nowrap;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.thirdParty {
+  background-color: #00a146;
+}
+
+.regular {
+  background-color: #1764c0;
+}

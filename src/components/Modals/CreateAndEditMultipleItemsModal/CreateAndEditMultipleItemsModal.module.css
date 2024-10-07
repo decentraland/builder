@@ -92,3 +92,53 @@
 .saveItemsError {
   color: var(--primary);
 }
+
+/* Third party type selector */
+
+.selector {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item {
+  background-color: #43404a;
+  padding: 24px;
+  border-radius: 8px;
+  display: flex;
+  gap: 24px;
+  flex-direction: row;
+}
+
+.item img {
+  width: 225px;
+  height: 120px;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+}
+
+.action {
+  display: flex;
+  justify-content: end;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 421px;
+}
