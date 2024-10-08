@@ -20,7 +20,8 @@ import {
   FETCH_THIRD_PARTY_REQUEST,
   FetchThirdPartyRequestAction,
   PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
-  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST
+  FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
+  SET_THIRD_PARTY_KIND_REQUEST
 } from './actions'
 import { getThirdPartyForCollection, getThirdPartyForItem, isUserManagerOfThirdParty } from './utils'
 
@@ -70,6 +71,7 @@ export const isLoadingThirdParty = (state: RootState, id: ThirdParty['id']): boo
 
 export const isFetchingAvailableSlots = (state: RootState): boolean =>
   isLoadingType(getLoading(state), FETCH_THIRD_PARTY_AVAILABLE_SLOTS_REQUEST)
+export const isSettingThirdPartyType = (state: RootState): boolean => isLoadingType(getLoading(state), SET_THIRD_PARTY_KIND_REQUEST)
 
 export const isDeployingBatchedThirdPartyItems = (state: RootState): boolean =>
   isLoadingType(getLoading(state), DEPLOY_BATCHED_THIRD_PARTY_ITEMS_REQUEST)

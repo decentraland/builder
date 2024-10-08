@@ -135,7 +135,8 @@ export const publishAndPushChangesThirdPartyItemsRequest = (
   cheque?: Cheque,
   email?: string,
   subscribeToNewsletter?: boolean,
-  maxSlotPrice?: string
+  maxSlotPrice?: string,
+  minSlots?: string
 ) =>
   action(PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST, {
     thirdParty,
@@ -144,7 +145,8 @@ export const publishAndPushChangesThirdPartyItemsRequest = (
     cheque,
     email,
     subscribeToNewsletter,
-    maxSlotPrice
+    maxSlotPrice,
+    minSlots
   })
 
 export const publishAndPushChangesThirdPartyItemsSuccess = (
@@ -238,3 +240,19 @@ export const CLEAR_THIRD_PARTY_ERRORS = '[Request] Clear Third Party Errors'
 export const clearThirdPartyErrors = () => action(CLEAR_THIRD_PARTY_ERRORS)
 
 export type ClearThirdPartyErrorsAction = ReturnType<typeof clearThirdPartyErrors>
+
+// Set Third Party Type
+
+export const SET_THIRD_PARTY_KIND_REQUEST = '[Request] Set Third Party Kind'
+export const SET_THIRD_PARTY_KIND_SUCCESS = '[Success] Set Third Party Kind'
+export const SET_THIRD_PARTY_KIND_FAILURE = '[Failure] Set Third Party Kind'
+
+export const setThirdPartyKindRequest = (thirdPartyId: ThirdParty['id'], isProgrammatic: ThirdParty['isProgrammatic']) =>
+  action(SET_THIRD_PARTY_KIND_REQUEST, { thirdPartyId, isProgrammatic })
+export const setThirdPartyKindSuccess = (thirdPartyId: ThirdParty['id'], isProgrammatic: ThirdParty['isProgrammatic']) =>
+  action(SET_THIRD_PARTY_KIND_SUCCESS, { thirdPartyId, isProgrammatic })
+export const setThirdPartyKindFailure = (error: string) => action(SET_THIRD_PARTY_KIND_FAILURE, { error })
+
+export type SetThirdPartyTypeRequestAction = ReturnType<typeof setThirdPartyKindRequest>
+export type SetThirdPartyTypeSuccessAction = ReturnType<typeof setThirdPartyKindSuccess>
+export type SetThirdPartyTypeFailureAction = ReturnType<typeof setThirdPartyKindFailure>

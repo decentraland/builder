@@ -56,7 +56,7 @@ export default (props: OwnProps) => {
   const thirdPartyPublishingError = useSelector(getThirdPartyError, shallowEqual)
   const isThirdParty = useMemo(() => collection && isTPCollection(collection), [collection])
   const thirdParty = useSelector(
-    (state: RootState) => (collection && isThirdParty ? getCollectionThirdParty(state, collection) : undefined),
+    (state: RootState) => (collection && isThirdParty ? getCollectionThirdParty(state, collection) : null),
     shallowEqual
   )
 
@@ -74,40 +74,46 @@ export default (props: OwnProps) => {
     shallowEqual
   )
 
-  const itemsToPublish = isThirdParty ? thirdPartyItemsToPublish : allCollectionItems
+  const itemsToPublish = thirdParty ? thirdPartyItemsToPublish : allCollectionItems
   const itemsWithChanges = thirdPartyItemsToPushChanges
 
   const price = useMemo(() => {
-    if (isThirdParty) {
+    if (thirdParty) {
       return thirdPartyPrice
     } else if (rarities[0]?.prices?.USD && rarities[0]?.prices?.MANA) {
       // The UI is designed in a way that considers that all rarities have the same price, so only using the first one
       // as reference for the prices is enough.
       return { item: { usd: rarities[0].prices.USD, mana: rarities[0].prices.MANA } }
     }
-  }, [thirdPartyPrice, rarities[0]?.prices?.USD, rarities[0]?.prices?.MANA])
+  }, [thirdParty, thirdPartyPrice, rarities[0]?.prices?.USD, rarities[0]?.prices?.MANA])
 
   const onFetchRarities = useCallback(() => dispatch(fetchRaritiesRequest()), [dispatch, fetchRaritiesRequest])
 
   const onPublish = useCallback(
-    (email: string, subscribeToNewsletter: boolean, paymentMethod: PaymentMethod, cheque?: Cheque, maxSlotPrice?: string) => {
-      return isThirdParty
-        ? thirdParty &&
-            dispatch(
-              publishAndPushChangesThirdPartyItemsRequest(
-                thirdParty,
-                itemsToPublish,
-                itemsWithChanges,
-                cheque,
-                email,
-                subscribeToNewsletter,
-                maxSlotPrice
-              )
+    (
+      email: string,
+      subscribeToNewsletter: boolean,
+      paymentMethod: PaymentMethod,
+      cheque?: Cheque,
+      maxSlotPrice?: string,
+      minSlots?: string
+    ) => {
+      return thirdParty
+        ? dispatch(
+            publishAndPushChangesThirdPartyItemsRequest(
+              thirdParty,
+              itemsToPublish,
+              itemsWithChanges,
+              cheque,
+              email,
+              subscribeToNewsletter,
+              maxSlotPrice,
+              minSlots
             )
+          )
         : dispatch(publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod))
     },
     [
-      isThirdParty,
       thirdParty,
       collection,
       itemsToPublish,
@@ -119,11 +125,11 @@ export default (props: OwnProps) => {
   )
 
   const isPublishingFinished = !!collection.forumLink && thirdPartyItemsToPublish.length === 0 && thirdPartyItemsToPushChanges.length === 0
-  const publishingStatus = isThirdParty ? thirdPartyPublishingStatus : standardPublishingStatus
+  const publishingStatus = thirdParty ? thirdPartyPublishingStatus : standardPublishingStatus
   const isPublishing = publishingStatus === AuthorizationStepStatus.WAITING || publishingStatus === AuthorizationStepStatus.PROCESSING
   const PublishWizardCollectionModal = useMemo(
-    () => (isThirdParty ? AuthorizedPublishWizardThirdPartyCollectionModal : AuthorizedPublishWizardCollectionModal),
-    [isThirdParty]
+    () => (thirdParty ? AuthorizedPublishWizardThirdPartyCollectionModal : AuthorizedPublishWizardCollectionModal),
+    [thirdParty]
   )
 
   return (
@@ -143,6 +149,7 @@ export default (props: OwnProps) => {
       isPublishCollectionsWertEnabled={isPublishCollectionsWertEnabled}
       onPublish={onPublish}
       onFetchPrice={isThirdParty ? fetchThirdPartyPrice : onFetchRarities}
+      thirdParty={thirdParty}
     />
   )
 }

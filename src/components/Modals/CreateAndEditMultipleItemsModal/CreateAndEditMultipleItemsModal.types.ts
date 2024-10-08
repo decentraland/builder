@@ -17,6 +17,8 @@ import {
 } from 'modules/ui/createMultipleItems/selectors'
 import { BuiltFile } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import { SetThirdPartyTypeRequestAction } from 'modules/thirdParty/actions'
+import { ThirdParty } from 'modules/thirdParty/types'
 
 export enum CreateOrEditMultipleItemsModalType {
   CREATE,
@@ -32,7 +34,8 @@ export enum ItemCreationView {
   IMPORTING,
   REVIEW,
   UPLOADING,
-  COMPLETED
+  COMPLETED,
+  THIRD_PARTY_KIND_SELECTOR
 }
 export enum ImportedFileType {
   ACCEPTED,
@@ -46,23 +49,21 @@ export type CreateAndEditMultipleItemsModalMetadata = {
   type?: CreateOrEditMultipleItemsModalType
 }
 
-export type State = {
-  view: ItemCreationView
-  loadingFilesProgress: number
-  importedFiles: Record<string, ImportedFile<Blob>>
-}
-
 export type Props = Omit<ModalProps, 'metadata'> & {
   collection: Collection | null
+  thirdParty: ThirdParty | null
   error: string | null
   onSaveMultipleItems: typeof saveMultipleItemsRequest
   onCancelSaveMultipleItems: typeof cancelSaveMultipleItems
   onModalUnmount: typeof clearSaveMultipleItems
+  onSetThirdPartyType: (thirdPartyId: string, isProgrammatic: boolean) => unknown
   savedItemsFiles: ReturnType<typeof getSavedItemsFiles>
   notSavedItemsFiles: ReturnType<typeof getNotSavedItemsFiles>
   cancelledItemsFiles: ReturnType<typeof getCanceledItemsFiles>
   saveMultipleItemsState: ReturnType<typeof getMultipleItemsSaveState>
   isLinkedWearablesV2Enabled: boolean
+  isLinkedWearablesPaymentsEnabled: boolean
+  isSettingThirdPartyType: boolean
   saveItemsProgress: number
   metadata: CreateAndEditMultipleItemsModalMetadata
 }
@@ -78,6 +79,11 @@ export type MapStateProps = Pick<
   | 'saveItemsProgress'
   | 'collection'
   | 'isLinkedWearablesV2Enabled'
+  | 'isSettingThirdPartyType'
+  | 'isLinkedWearablesPaymentsEnabled'
+  | 'thirdParty'
 >
-export type MapDispatchProps = Pick<Props, 'onSaveMultipleItems' | 'onCancelSaveMultipleItems' | 'onModalUnmount'>
-export type MapDispatch = Dispatch<SaveMultipleItemsRequestAction | CancelSaveMultipleItemsAction | ClearStateSaveMultipleItemsAction>
+export type MapDispatchProps = Pick<Props, 'onSaveMultipleItems' | 'onCancelSaveMultipleItems' | 'onModalUnmount' | 'onSetThirdPartyType'>
+export type MapDispatch = Dispatch<
+  SaveMultipleItemsRequestAction | CancelSaveMultipleItemsAction | ClearStateSaveMultipleItemsAction | SetThirdPartyTypeRequestAction
+>
