@@ -40,9 +40,8 @@ import { generateCatalystImage, getModelPath } from 'modules/item/utils'
 import { ThumbnailFileTooBigError } from 'modules/item/errors'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
-// These images are place-holders for the real ones
-import collectionsImage from '../../../images/collections.png'
-import linkedCollectionsImage from '../../../images/linked-collections.png'
+import standardKindImage from '../../../images/standard.webp'
+import programmaticKindImage from '../../../images/programmatic.webp'
 import { useThirdPartyPrice } from '../PublishWizardCollectionModal/hooks'
 import {
   CreateOrEditMultipleItemsModalType,
@@ -502,7 +501,7 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
                   subtitle: t('create_and_edit_multiple_items_modal.third_party_kind_selector.standard.subtitle', {
                     price: ethers.utils.formatEther(thirdPartyPrice?.item.usd ?? 0)
                   }),
-                  img: collectionsImage,
+                  img: standardKindImage,
                   action: () => handleSetThirdPartyType(false)
                 },
                 {
@@ -510,7 +509,7 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
                   subtitle: t('create_and_edit_multiple_items_modal.third_party_kind_selector.programmatic.subtitle', {
                     price: ethers.utils.formatEther(thirdPartyPrice?.programmatic.usd ?? 0)
                   }),
-                  img: linkedCollectionsImage,
+                  img: programmaticKindImage,
                   action: () => handleSetThirdPartyType(true)
                 }
               ].map(({ title, subtitle, img, action }, index) => (
