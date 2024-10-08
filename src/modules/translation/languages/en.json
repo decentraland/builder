@@ -1737,7 +1737,9 @@
     "reset_item": "Reset changes",
     "move_to_another_collection": "Move to another collection",
     "preview": "Preview in Editor",
-    "put_for_sale": "Put up for sale"
+    "put_for_sale": "Put up for sale",
+    "remove_from_sale": "Remove from sale",
+    "cancel_order_error": "Error when removing order for item"
   },
   "collection": {
     "type": {
@@ -2387,5 +2389,11 @@
   "push_changes_modal": {
     "title": "Push Changes",
     "description": "Changes have been made to the collection or the items contained by it since the last time a curator has reviewed them.{br}In order to have this changes reflected in world, they have to be reviewed and approved again by the committee.{br}Are you sure you want to push the changes for review?"
+  },
+  "put_for_sale_offchain_modal": {
+    "title": "Action needed",
+    "subtitle": "In order to update the new price, you have to remove the previous sale first",
+    "cancel": "Cancel",
+    "reject_old_prices": "Reject old prices"
   }
 }

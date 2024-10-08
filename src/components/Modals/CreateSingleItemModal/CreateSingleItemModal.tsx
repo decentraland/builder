@@ -363,7 +363,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
     if ((hasScreenshotTaken || type !== ItemType.EMOTE) && isOffchainPublicItemOrdersEnabled) {
       item.price = ethers.constants.MaxUint256.toString()
-      item.beneficiary = ethers.constants.AddressZero
+      item.beneficiary = item.beneficiary || address
       return onSave(item as Item, sortedContents.all)
     }
 

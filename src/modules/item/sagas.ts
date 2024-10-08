@@ -1,10 +1,10 @@
 import PQueue from 'p-queue'
 import { History } from 'history'
-import { Contract, providers } from 'ethers'
+import { Contract, ethers, providers } from 'ethers'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
-import { ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation } from '@dcl/schemas'
+import { ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation, Trade, Item as DCLItem } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -103,7 +103,12 @@ import {
   CreateItemOrderTradeRequestAction,
   createItemOrderTradeSuccess,
   createItemOrderTradeFailure,
-  CREATE_ITEM_ORDER_TRADE_REQUEST
+  CREATE_ITEM_ORDER_TRADE_REQUEST,
+  CANCEL_ITEM_ORDER_TRADE_REQUEST,
+  cancelItemOrderTradeSuccess,
+  cancelItemOrderTradeFailure,
+  CancelItemOrderTradeRequestAction,
+  cancelItemOrderTradeTxSuccess
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -157,6 +162,7 @@ import {
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
+import { marketplace } from 'lib/api/marketplace'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -185,6 +191,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield takeEvery(createOrEditProgressChannel, handleCreateOrEditProgress)
   yield takeEvery(createOrEditCancelledItemsChannel, handleCreateOrEditCancelledItems)
   yield takeEvery(CREATE_ITEM_ORDER_TRADE_REQUEST, handleCreateItemOrderTradeRequest)
+  yield takeEvery(CANCEL_ITEM_ORDER_TRADE_REQUEST, handleCancelItemOrderTradeRequest)
   yield takeLatestCancellable(
     { initializer: SAVE_MULTIPLE_ITEMS_REQUEST, cancellable: CANCEL_SAVE_MULTIPLE_ITEMS },
     handleSaveMultipleItemsRequest
@@ -194,9 +201,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   function* handleCreateItemOrderTradeRequest(action: CreateItemOrderTradeRequestAction) {
     const { item, beneficiary, priceInWei, collection, expiresAt } = action.payload
     try {
-      const trade: TradeCreation = yield call(createItemOrderTrade, item, priceInWei, beneficiary, collection, expiresAt)
-      yield call([tradeService, 'addTrade'], trade)
-      yield put(createItemOrderTradeSuccess(trade))
+      const tradeToCreate: TradeCreation = yield call(createItemOrderTrade, item, priceInWei, beneficiary, collection, expiresAt)
+      const trade: Trade = yield call([tradeService, 'addTrade'], tradeToCreate)
+      yield put(createItemOrderTradeSuccess(trade, item, priceInWei, beneficiary, expiresAt.getTime()))
       yield put(closeAllModals())
     } catch (error) {
       yield put(createItemOrderTradeFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
@@ -283,7 +290,27 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         isFetchingMultiplePages ? page : [page],
         restOfOptions
       )
-      yield put(fetchCollectionItemsSuccess(collectionId, items, overridePaginationData ? paginationStats : undefined))
+      let itemsToSave = items
+      let collection: Collection | undefined = yield select(getCollection, collectionId)
+
+      if (!collection) {
+        collection = yield call([legacyBuilder, 'fetchCollection'], collectionId)
+      }
+
+      if (collection && collection.isPublished) {
+        const result: { data: DCLItem[] } = yield call([marketplace, 'fetchCollectionItems'], collection.contractAddress!)
+        itemsToSave = items.map(item => {
+          const publishedItem = result.data.find(publishedItem => publishedItem.id === `${collection?.contractAddress}-${item.tokenId}`)
+          return {
+            ...item,
+            tradeExpiresAt: publishedItem?.tradeExpiresAt,
+            tradeId: publishedItem?.tradeId,
+            beneficiary: publishedItem?.beneficiary || item.beneficiary,
+            price: publishedItem?.price || item.price
+          }
+        })
+      }
+      yield put(fetchCollectionItemsSuccess(collectionId, itemsToSave, overridePaginationData ? paginationStats : undefined))
     } catch (error) {
       yield put(fetchCollectionItemsFailure(collectionId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
@@ -816,6 +843,31 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       yield put(downloadItemSuccess(itemId))
     } catch (error) {
       yield put(downloadItemFailure(itemId, isErrorWithMessage(error) ? error.message : 'Unknown error'))
+    }
+  }
+
+  function* handleCancelItemOrderTradeRequest(action: CancelItemOrderTradeRequestAction) {
+    const { tradeId, errorToast } = action.payload
+    try {
+      const trade: Trade = yield call([tradeService, 'fetchTrade'], tradeId)
+      const txHash: string = yield call([tradeService, 'cancel'], trade, ethers.constants.AddressZero)
+      yield put(cancelItemOrderTradeTxSuccess(trade, txHash))
+      yield call(waitForTx, txHash)
+      yield put(cancelItemOrderTradeSuccess(tradeId))
+    } catch (error) {
+      const errorMessage = isErrorWithMessage(error) ? error.message : 'Unknown error'
+      yield put(cancelItemOrderTradeFailure(errorMessage))
+      if (errorToast) {
+        yield put(
+          showToast({
+            type: ToastType.ERROR,
+            title: t('collection_item.cancel_order_error'),
+            body: errorMessage,
+            timeout: 10000,
+            closable: true
+          })
+        )
+      }
     }
   }
 }

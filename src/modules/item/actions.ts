@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { ChainId, TradeCreation } from '@dcl/schemas'
+import { ChainId, Trade } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { PaginationStats } from 'lib/api/pagination'
 import { FetchCollectionItemsParams } from 'lib/api/builder'
@@ -286,9 +286,27 @@ export const CREATE_ITEM_ORDER_TRADE_FAILURE = '[Failure] Create Item Order Trad
 
 export const createItemOrderTradeRequest = (item: Item, priceInWei: string, beneficiary: string, collection: Collection, expiresAt: Date) =>
   action(CREATE_ITEM_ORDER_TRADE_REQUEST, { item, priceInWei, beneficiary, collection, expiresAt })
-export const createItemOrderTradeSuccess = (trade: TradeCreation) => action(CREATE_ITEM_ORDER_TRADE_SUCCESS, { trade })
+export const createItemOrderTradeSuccess = (trade: Trade, item: Item, priceInWei: string, beneficiary: string, expiresAt: number) =>
+  action(CREATE_ITEM_ORDER_TRADE_SUCCESS, { trade, priceInWei, beneficiary, expiresAt, item })
 export const createItemOrderTradeFailure = (error: string) => action(CREATE_ITEM_ORDER_TRADE_FAILURE, { error })
 
 export type CreateItemOrderTradeRequestAction = ReturnType<typeof createItemOrderTradeRequest>
 export type CreateItemOrderTradeSuccessAction = ReturnType<typeof createItemOrderTradeSuccess>
 export type CreateItemOrderTradeFailureAction = ReturnType<typeof createItemOrderTradeFailure>
+
+export const CANCEL_ITEM_ORDER_TRADE_REQUEST = '[Request] Cancel Item Order Trade'
+export const CANCEL_ITEM_ORDER_TRADE_SUCCESS = '[Success] Cancel Item Order Trade'
+export const CANCEL_ITEM_ORDER_TRADE_FAILURE = '[Failure] Cancel Item Order Trade'
+
+export const CANCEL_ITEM_ORDER_TRADE_TX_SUCCESS = '[Success] Cancel Item Order Trade Tx'
+
+export const cancelItemOrderTradeRequest = (tradeId: string, errorToast = false) =>
+  action(CANCEL_ITEM_ORDER_TRADE_REQUEST, { tradeId, errorToast })
+export const cancelItemOrderTradeTxSuccess = (trade: Trade, txHash: string) =>
+  action(CANCEL_ITEM_ORDER_TRADE_TX_SUCCESS, buildTransactionPayload(trade.chainId, txHash, { tradeId: trade.id }))
+export const cancelItemOrderTradeSuccess = (tradeId: string) => action(CANCEL_ITEM_ORDER_TRADE_SUCCESS, { tradeId })
+export const cancelItemOrderTradeFailure = (error: string) => action(CANCEL_ITEM_ORDER_TRADE_FAILURE, { error })
+
+export type CancelItemOrderTradeRequestAction = ReturnType<typeof cancelItemOrderTradeRequest>
+export type CancelItemOrderTradeSuccessAction = ReturnType<typeof cancelItemOrderTradeSuccess>
+export type CancelItemOrderTradeFailureAction = ReturnType<typeof cancelItemOrderTradeFailure>

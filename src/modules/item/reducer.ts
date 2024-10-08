@@ -106,7 +106,13 @@ import {
   CreateItemOrderTradeSuccessAction,
   CREATE_ITEM_ORDER_TRADE_REQUEST,
   CREATE_ITEM_ORDER_TRADE_FAILURE,
-  CREATE_ITEM_ORDER_TRADE_SUCCESS
+  CREATE_ITEM_ORDER_TRADE_SUCCESS,
+  CANCEL_ITEM_ORDER_TRADE_REQUEST,
+  CancelItemOrderTradeRequestAction,
+  CancelItemOrderTradeSuccessAction,
+  CancelItemOrderTradeFailureAction,
+  CANCEL_ITEM_ORDER_TRADE_FAILURE,
+  CANCEL_ITEM_ORDER_TRADE_SUCCESS
 } from './actions'
 import {
   PublishThirdPartyItemsSuccessAction,
@@ -120,6 +126,7 @@ import { toItemObject } from './utils'
 import { Item, BlockchainRarity } from './types'
 import { buildCatalystItemURN, buildThirdPartyURN, decodeURN, isThirdPartyCollectionDecodedUrn, URNType } from 'lib/urn'
 import { CLOSE_MODAL, CloseModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
+import { ethers } from 'ethers'
 
 export type ItemPaginationData = {
   ids: string[]
@@ -203,6 +210,9 @@ type ItemReducerAction =
   | CreateItemOrderTradeRequestAction
   | CreateItemOrderTradeFailureAction
   | CreateItemOrderTradeSuccessAction
+  | CancelItemOrderTradeRequestAction
+  | CancelItemOrderTradeSuccessAction
+  | CancelItemOrderTradeFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -225,17 +235,29 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case RESET_ITEM_REQUEST:
     case RESCUE_ITEMS_REQUEST:
     case DOWNLOAD_ITEM_REQUEST:
-    case CREATE_ITEM_ORDER_TRADE_REQUEST: {
+    case CREATE_ITEM_ORDER_TRADE_REQUEST:
+    case CANCEL_ITEM_ORDER_TRADE_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
     case CREATE_ITEM_ORDER_TRADE_SUCCESS: {
+      const { trade, item, priceInWei, expiresAt, beneficiary } = action.payload
       return {
         ...state,
         error: null,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [item.id]: {
+            ...state.data[item.id],
+            tradeId: trade.id,
+            price: priceInWei,
+            beneficiary: beneficiary,
+            tradeExpiresAt: expiresAt
+          }
+        }
       }
     }
     case FETCH_ORPHAN_ITEM_REQUEST: {
@@ -346,7 +368,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE:
     case DOWNLOAD_ITEM_FAILURE:
-    case CREATE_ITEM_ORDER_TRADE_FAILURE: {
+    case CREATE_ITEM_ORDER_TRADE_FAILURE:
+    case CANCEL_ITEM_ORDER_TRADE_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -562,6 +585,28 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               throw new Error(`The item ${item.id} has an incorrect URN type`)
             }
             accum[item.id] = { ...state.data[item.id], urn: newItemURN }
+          } else {
+            accum[item.id] = item
+          }
+          return accum
+        }, {} as ItemState['data'])
+      }
+    }
+    case CANCEL_ITEM_ORDER_TRADE_SUCCESS: {
+      const { tradeId } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null,
+        data: Object.values(state.data).reduce((accum, item) => {
+          if (item.tradeId === tradeId) {
+            accum[item.id] = {
+              ...item,
+              tradeId: undefined,
+              price: ethers.constants.MaxUint256.toString(),
+              beneficiary: undefined,
+              tradeExpiresAt: undefined
+            }
           } else {
             accum[item.id] = item
           }
