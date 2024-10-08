@@ -9,11 +9,12 @@ import { isThirdPartyCollection } from 'modules/collection/utils'
 import { CurationStatus } from 'modules/curations/types'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
+import { CollectionTypeBadge } from 'components/Badges/CollectionTypeBadge'
+import { ThirdPartyKindBadge } from 'components/Badges/ThirdPartyKindBadge'
 import { AssignModalOperationType } from 'components/Modals/EditCurationAssigneeModal/EditCurationAssigneeModal.types'
 import Profile from 'components/Profile'
 import { formatDistanceToNow } from 'lib/date'
 import { Props } from './CollectionRow.types'
-
 import './CollectionRow.css'
 
 export default function CollectionRow(props: Props) {
@@ -91,7 +92,10 @@ export default function CollectionRow(props: Props) {
         </div>
       </Table.Cell>
       <Table.Cell width={2}>
-        <div>{isThirdPartyCollection(collection) ? t('collection_row.type_third_party') : t('collection_row.type_standard')}</div>
+        <CollectionTypeBadge isThirdParty={isThirdPartyCollection(collection)} />
+      </Table.Cell>
+      <Table.Cell width={2}>
+        <ThirdPartyKindBadge isProgrammatic={collection.isProgrammatic} />
       </Table.Cell>
       <Table.Cell width={2}>
         <div>{isThirdPartyCollection(collection) ? '-' : <Profile textOnly address={collection.owner} />}</div>

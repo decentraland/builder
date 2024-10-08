@@ -53,7 +53,8 @@ describe('when using the third party price hook', () => {
         },
         programmatic: {
           mana: '3',
-          usd: '4'
+          usd: '4',
+          minSlots: '1'
         }
       }
 

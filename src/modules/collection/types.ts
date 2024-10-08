@@ -23,6 +23,7 @@ export type Collection = {
   createdAt: number
   updatedAt: number
   isMappingComplete?: boolean
+  isProgrammatic?: boolean
 }
 
 export enum CollectionType {

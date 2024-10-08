@@ -1,0 +1,16 @@
+.badge {
+  padding: 4px 8px 4px 8px;
+  border-radius: 32px;
+  width: fit-content;
+  text-wrap: nowrap;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.programmatic {
+  background-color: #691fa9;
+}
+
+.standard {
+  background-color: #43404a;
+}

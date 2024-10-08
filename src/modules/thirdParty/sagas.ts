@@ -1,7 +1,7 @@
 import PQueue from 'p-queue'
 import { channel } from 'redux-saga'
 import { takeLatest, takeEvery, call, put, select, race, take, retry } from 'redux-saga/effects'
-import { Contract, providers } from 'ethers'
+import { Contract, ethers, providers } from 'ethers'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { ChainId, Network } from '@dcl/schemas'
 import { CatalystClient } from 'dcl-catalyst-client'
@@ -88,7 +88,11 @@ import {
   finishPublishAndPushChangesThirdPartyItemsFailure,
   FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_FAILURE,
   FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_SUCCESS,
-  clearThirdPartyErrors
+  clearThirdPartyErrors,
+  SetThirdPartyTypeRequestAction,
+  SET_THIRD_PARTY_KIND_REQUEST,
+  setThirdPartyKindFailure,
+  setThirdPartyKindSuccess
 } from './actions'
 import { convertThirdPartyMetadataToRawMetadata, getPublishItemsSignature } from './utils'
 import { Cheque, ThirdParty } from './types'
@@ -118,6 +122,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeEvery(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishThirdPartyItemSuccess)
   yield takeLatest(REVIEW_THIRD_PARTY_REQUEST, handleReviewThirdPartyRequest)
   yield takeEvery(DISABLE_THIRD_PARTY_REQUEST, handleDisableThirdPartyRequest)
+  yield takeEvery(SET_THIRD_PARTY_KIND_REQUEST, handleSetThirdPartyKind)
   yield takeEvery(actionProgressChannel, handleUpdateApprovalFlowProgress)
   yield takeEvery(
     [
@@ -302,7 +307,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
   }
 
   function* handlePublishAndPushChangesThirdPartyItemRequest(action: PublishAndPushChangesThirdPartyItemsRequestAction) {
-    const { thirdParty, maxSlotPrice, itemsToPublish, itemsWithChanges, email, subscribeToNewsletter, cheque } = action.payload
+    const { thirdParty, minSlots, maxSlotPrice, itemsToPublish, itemsWithChanges, email, subscribeToNewsletter, cheque } = action.payload
     const collectionId = itemsToPublish.length > 0 ? getCollectionId(itemsToPublish) : getCollectionId(itemsWithChanges)
     const collection: ReturnType<typeof getCollection> = yield select(getCollection, collectionId)
     const isLinkedWearablesPaymentsEnabled = (yield select(getIsLinkedWearablesPaymentsEnabled)) as ReturnType<
@@ -347,6 +352,17 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
         const thirdPartyContract: ContractData = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
         // If the third party has not been published before create a new one with the required slots
         if (!thirdParty.published) {
+          let slotsToPublish: string
+          if (thirdParty.isProgrammatic) {
+            // When publishing a programmatic third party collection, we need to publish the maximum number between the
+            // missing slots and the minimum amount of slots required to publish a programmatic third party.
+            slotsToPublish = ethers.BigNumber.from(missingSlots).gt(minSlots ?? '0')
+              ? missingSlots.toString()
+              : (minSlots ?? '0').toString()
+          } else {
+            slotsToPublish = missingSlots.toString()
+          }
+
           txHash = yield call(
             sendTransaction as any,
             thirdPartyContract,
@@ -358,7 +374,7 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
                 'Disabled',
                 thirdParty.managers,
                 Array.from({ length: thirdParty.managers.length }, () => true),
-                missingSlots.toString()
+                slotsToPublish
               ]
             ],
             [thirdParty.isProgrammatic],
@@ -546,6 +562,17 @@ export function* thirdPartySaga(builder: BuilderAPI, catalystClient: CatalystCli
       yield put(disableThirdPartySuccess(thirdPartyId, maticChainId, txHash, thirdParty?.name ?? 'Unknown Third Party Name'))
     } catch (error) {
       yield put(disableThirdPartyFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
+    }
+  }
+
+  function* handleSetThirdPartyKind(action: SetThirdPartyTypeRequestAction) {
+    const { thirdPartyId, isProgrammatic } = action.payload
+    try {
+      yield call([builder, 'setThirdPartyKind'], thirdPartyId, isProgrammatic)
+      yield put(setThirdPartyKindSuccess(thirdPartyId, isProgrammatic))
+      yield put(closeModal('CreateAndEditMultipleItemsModal'))
+    } catch (error) {
+      yield put(setThirdPartyKindFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

@@ -102,18 +102,12 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
   )
 
   const handleOnPublish = useCallback(
-    (paymentMethod: PaymentMethod) => {
+    (paymentMethod: PaymentMethod, priceToPayInWei: string) => {
       if (!itemPrice?.item.mana) {
         return
       }
-      // Compute the required allowance in MANA required to publish the collection or items
-      // This does not take into consideration programmatic third party collections
-      const requiredAllowanceInWei = ethers.utils.parseUnits(
-        (Number(ethers.utils.formatEther(ethers.BigNumber.from(itemPrice.item.mana).mul(itemsToPublish.length))) * 1.005).toString()
-      )
-
-      if (paymentMethod === PaymentMethod.FIAT || requiredAllowanceInWei === ethers.BigNumber.from('0')) {
-        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, requiredAllowanceInWei.toString())
+      if (paymentMethod === PaymentMethod.FIAT || priceToPayInWei === ethers.BigNumber.from('0').toString()) {
+        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots)
         return
       }
       const contractName = isThirdParty ? ContractName.ThirdPartyRegistry : ContractName.CollectionManager
@@ -130,9 +124,10 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
           category: NFTCategory.ENS
         },
         targetContractName: ContractName.MANAToken,
-        requiredAllowanceInWei: requiredAllowanceInWei.toString(),
+        requiredAllowanceInWei: priceToPayInWei,
         authorizationType: AuthorizationType.ALLOWANCE,
-        onAuthorized: () => onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, requiredAllowanceInWei.toString())
+        onAuthorized: () =>
+          onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots)
       })
     },
     [

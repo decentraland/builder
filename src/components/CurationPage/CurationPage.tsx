@@ -274,6 +274,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
                       <Table.Row>
                         <Table.HeaderCell>{t('collection_row.collection')}</Table.HeaderCell>
                         <Table.HeaderCell>{t('collection_row.type')}</Table.HeaderCell>
+                        <Table.HeaderCell>{t('collection_row.kind')}</Table.HeaderCell>
                         <Table.HeaderCell>{t('collection_row.owner')}</Table.HeaderCell>
                         <Table.HeaderCell>{t('collection_row.date')}</Table.HeaderCell>
                         <Table.HeaderCell>{t('collection_row.status')}</Table.HeaderCell>

@@ -1,6 +1,5 @@
 import { useHistory } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import classNames from 'classnames'
 import {
   Header,
   Icon,
@@ -31,6 +30,8 @@ import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { shorten } from 'lib/address'
 import { CopyToClipboard } from 'components/CopyToClipboard'
+import { CollectionTypeBadge } from 'components/Badges/CollectionTypeBadge'
+import { ThirdPartyKindBadge } from 'components/Badges/ThirdPartyKindBadge'
 import CollectionContextMenu from './CollectionContextMenu'
 import CollectionPublishButton from './CollectionPublishButton'
 import CollectionItem from './CollectionItem'
@@ -266,18 +267,8 @@ export default function ThirdPartyCollectionDetailPage({
                     {!collection.isPublished && <BuilderIcon name="edit" className={styles.editCollectionName} />}
                   </div>
                   <div className={styles.type}>
-                    <div className={classNames(styles.linkedWearableBadge, styles.typeBadge)}>
-                      {t('third_party_collection_detail_page.type')}
-                    </div>
-                    {thirdParty.isProgrammatic ? (
-                      <div className={classNames(styles.linkedWearableBadge, styles.programmaticBadge)}>
-                        {t('third_party_collection_detail_page.programmatic')}
-                      </div>
-                    ) : (
-                      <div className={classNames(styles.linkedWearableBadge, styles.standardBadge)}>
-                        {t('third_party_collection_detail_page.standard')}
-                      </div>
-                    )}
+                    <CollectionTypeBadge isThirdParty />
+                    <ThirdPartyKindBadge isProgrammatic={thirdParty.isProgrammatic} />
                   </div>
                 </div>
               </div>
