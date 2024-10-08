@@ -4,7 +4,12 @@ import { RootState } from 'modules/common/types'
 import { getAuthorizedItems, getError, getLoading } from 'modules/item/selectors'
 import { OwnProps, MapStateProps, MapDispatch, MapDispatchProps } from './PutForSaleOffchainModal.types'
 import PutForSaleOffchainModal from './PutForSaleOffchainModal'
-import { CREATE_ITEM_ORDER_TRADE_REQUEST, createItemOrderTradeRequest } from 'modules/item/actions'
+import {
+  CANCEL_ITEM_ORDER_TRADE_REQUEST,
+  cancelItemOrderTradeRequest,
+  CREATE_ITEM_ORDER_TRADE_REQUEST,
+  createItemOrderTradeRequest
+} from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading'
 import { getAuthorizedCollections } from 'modules/collection/selectors'
@@ -21,13 +26,15 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     item,
     collection,
     isLoading: isLoadingType(getLoading(state), CREATE_ITEM_ORDER_TRADE_REQUEST),
+    isLoadingCancel: isLoadingType(getLoading(state), CANCEL_ITEM_ORDER_TRADE_REQUEST),
     error: getError(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCreateItemOrder: (item: Item, priceInWei: string, beneficiary: string, collection: Collection, expiresAt: Date) =>
-    dispatch(createItemOrderTradeRequest(item, priceInWei, beneficiary, collection, expiresAt))
+    dispatch(createItemOrderTradeRequest(item, priceInWei, beneficiary, collection, expiresAt)),
+  onRemoveFromSale: (tradeId: string) => dispatch(cancelItemOrderTradeRequest(tradeId))
 })
 
 export default connect(mapState, mapDispatch)(PutForSaleOffchainModal)

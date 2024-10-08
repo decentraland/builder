@@ -124,6 +124,8 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
   mappings: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | null
   isMappingComplete?: boolean
+  tradeId?: string
+  tradeExpiresAt?: number
 }
 
 export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>

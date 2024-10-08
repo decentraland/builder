@@ -1734,7 +1734,9 @@
     "reset_item": "撤消",
     "move_to_another_collection": "移动到另一个集合",
     "preview": "在编辑器中预览",
-    "put_for_sale": "出售"
+    "put_for_sale": "出售",
+    "remove_from_sale": "删除出售",
+    "cancel_order_error": "删除项目订单时出错"
   },
   "collection": {
     "type": {
@@ -2408,5 +2410,11 @@
   "third_party_kind_badge": {
     "programmatic": "程序化",
     "standard": "标准"
+  },
+  "put_for_sale_offchain_modal": {
+    "title": "需要采取行动",
+    "subtitle": "为了更新新价格，您必须首先删除先前的销售",
+    "cancel": "取消",
+    "reject_old_prices": "拒绝旧价格"
   }
 }
