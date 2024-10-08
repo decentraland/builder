@@ -21,6 +21,7 @@ import { extractThirdPartyId } from 'lib/urn'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { Item } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
+import { CollectionType } from 'modules/collection/types'
 import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import CollectionProvider from 'components/CollectionProvider'
@@ -126,7 +127,7 @@ export default function ThirdPartyCollectionDetailPage({
     if (isComingFromTheCollectionsPage) {
       history.goBack()
     } else {
-      history.push(locations.collections())
+      history.push(locations.collections(CollectionType.THIRD_PARTY))
     }
   }, [history, isComingFromTheCollectionsPage])
 
@@ -231,7 +232,13 @@ export default function ThirdPartyCollectionDetailPage({
   }, [itemStatus])
 
   const renderPage = useCallback(
-    (thirdParty: ThirdParty, allItems: Item[], paginatedItems: Item[], onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest) => {
+    (
+      thirdParty: ThirdParty,
+      allItems: Item[],
+      paginatedItems: Item[],
+      isLoadingCollectionItems: boolean,
+      onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
+    ) => {
       const allSelectedItems = allItems.filter(item => selectedItems[item.id])
       const selectedItemsCount = allSelectedItems.length
       const isCollectionLinked = Boolean(collection?.linkedContractAddress && collection?.linkedContractNetwork)
@@ -259,11 +266,17 @@ export default function ThirdPartyCollectionDetailPage({
                     {!collection.isPublished && <BuilderIcon name="edit" className={styles.editCollectionName} />}
                   </div>
                   <div className={styles.type}>
-                    <div className={classNames(styles.linkedWearableBadge, styles.typeBadge)}>Linked Wearables</div>
+                    <div className={classNames(styles.linkedWearableBadge, styles.typeBadge)}>
+                      {t('third_party_collection_detail_page.type')}
+                    </div>
                     {thirdParty.isProgrammatic ? (
-                      <div className={classNames(styles.linkedWearableBadge, styles.programmaticBadge)}>Programmatic</div>
+                      <div className={classNames(styles.linkedWearableBadge, styles.programmaticBadge)}>
+                        {t('third_party_collection_detail_page.programmatic')}
+                      </div>
                     ) : (
-                      <div className={classNames(styles.linkedWearableBadge, styles.standardBadge)}>Standard</div>
+                      <div className={classNames(styles.linkedWearableBadge, styles.standardBadge)}>
+                        {t('third_party_collection_detail_page.standard')}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -312,108 +325,116 @@ export default function ThirdPartyCollectionDetailPage({
             </div>
           )}
           <div className={styles.body}>
-            {(collection.itemCount ?? 0) > 0 && (
-              <div className={styles.searchContainer}>
-                {paginatedItems.length > 0 && (
-                  <div className={styles.searchInfo}>
-                    {t('third_party_collection_detail_page.search_info', {
-                      page: (page - 1) * PAGE_SIZE + 1,
-                      pageTotal: Math.min(total, page * PAGE_SIZE),
-                      total
-                    })}
+            {isLoadingCollectionItems ? (
+              <div className={styles.loader}>
+                <Loader size="massive" inline active />
+              </div>
+            ) : (
+              <>
+                {(collection.itemCount ?? 0) > 0 && (
+                  <div className={styles.searchContainer}>
+                    {paginatedItems.length > 0 && (
+                      <div className={styles.searchInfo}>
+                        {t('third_party_collection_detail_page.search_info', {
+                          page: (page - 1) * PAGE_SIZE + 1,
+                          pageTotal: Math.min(total, page * PAGE_SIZE),
+                          total
+                        })}
+                      </div>
+                    )}
+                    <Dropdown
+                      className={styles.syncedStatusList}
+                      direction="left"
+                      value={itemStatus}
+                      options={itemStatusOptions}
+                      onChange={handleChangeStatus}
+                    />
                   </div>
                 )}
-                <Dropdown
-                  className={styles.syncedStatusList}
-                  direction="left"
-                  value={itemStatus}
-                  options={itemStatusOptions}
-                  onChange={handleChangeStatus}
-                />
-              </div>
-            )}
-            {paginatedItems.length ? (
-              <>
-                {selectedItemsCount > 0 ? (
-                  <div className={styles.selectionInfo}>
-                    {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
-                    &nbsp;
-                    <span className="link" onClick={handleClearSelection}>
-                      {t('third_party_collection_detail_page.clear_selection')}
-                    </span>
-                    . &nbsp;
-                    {showSelectAllPages && totalPages > 1 ? (
-                      <span className="link" onClick={() => handleSelectAllItems(onFetchCollectionItemsPages)}>
-                        {t('third_party_collection_detail_page.select_all', { total })}
-                      </span>
-                    ) : null}
-                    &nbsp;
-                  </div>
-                ) : null}
-
-                <div>
-                  {isThirdPartyV2Enabled && isCollectionLinked ? (
-                    <CollectionItemHeaderV2
-                      areAllSelected={areAllSelected(paginatedItems)}
-                      onSelectedAllClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
-                        handleSelectPageChange(paginatedItems, data)
-                      }
-                    />
-                  ) : (
-                    <CollectionItemHeader
-                      areAllSelected={areAllSelected(paginatedItems)}
-                      onSelectedAllClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
-                        handleSelectPageChange(paginatedItems, data)
-                      }
-                    />
-                  )}
-
-                  {paginatedItems.map(item =>
-                    isThirdPartyV2Enabled && isCollectionLinked ? (
-                      <CollectionItemV2
-                        key={item.id}
-                        collection={collection}
-                        item={item}
-                        selected={!!selectedItems[item.id]}
-                        onSelect={handleSelectItemChange}
-                      />
-                    ) : (
-                      <CollectionItem
-                        key={item.id}
-                        collection={collection}
-                        item={item}
-                        selected={!!selectedItems[item.id]}
-                        onSelect={handleSelectItemChange}
-                      />
-                    )
-                  )}
-
-                  {totalPages > 1 ? (
-                    <Pagination
-                      firstItem={null}
-                      lastItem={null}
-                      totalPages={totalPages}
-                      activePage={page}
-                      onPageChange={handlePageChange}
-                    />
-                  ) : null}
-                </div>
-              </>
-            ) : (
-              <div className={styles.empty}>
-                <div className={isCollectionEmpty ? styles.start : styles.sparkles} />
-                {isCollectionEmpty ? (
+                {paginatedItems.length ? (
                   <>
-                    <h3>{t('third_party_collection_detail_page.start_adding_items')}</h3>
-                    <p>{t('third_party_collection_detail_page.cant_remove')}</p>
+                    {selectedItemsCount > 0 ? (
+                      <div className={styles.selectionInfo}>
+                        {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
+                        &nbsp;
+                        <span className="link" onClick={handleClearSelection}>
+                          {t('third_party_collection_detail_page.clear_selection')}
+                        </span>
+                        . &nbsp;
+                        {showSelectAllPages && totalPages > 1 ? (
+                          <span className="link" onClick={() => handleSelectAllItems(onFetchCollectionItemsPages)}>
+                            {t('third_party_collection_detail_page.select_all', { total })}
+                          </span>
+                        ) : null}
+                        &nbsp;
+                      </div>
+                    ) : null}
+
+                    <div>
+                      {isThirdPartyV2Enabled && isCollectionLinked ? (
+                        <CollectionItemHeaderV2
+                          areAllSelected={areAllSelected(paginatedItems)}
+                          onSelectedAllClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
+                            handleSelectPageChange(paginatedItems, data)
+                          }
+                        />
+                      ) : (
+                        <CollectionItemHeader
+                          areAllSelected={areAllSelected(paginatedItems)}
+                          onSelectedAllClick={(_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) =>
+                            handleSelectPageChange(paginatedItems, data)
+                          }
+                        />
+                      )}
+
+                      {paginatedItems.map(item =>
+                        isThirdPartyV2Enabled && isCollectionLinked ? (
+                          <CollectionItemV2
+                            key={item.id}
+                            collection={collection}
+                            item={item}
+                            selected={!!selectedItems[item.id]}
+                            onSelect={handleSelectItemChange}
+                          />
+                        ) : (
+                          <CollectionItem
+                            key={item.id}
+                            collection={collection}
+                            item={item}
+                            selected={!!selectedItems[item.id]}
+                            onSelect={handleSelectItemChange}
+                          />
+                        )
+                      )}
+
+                      {totalPages > 1 ? (
+                        <Pagination
+                          firstItem={null}
+                          lastItem={null}
+                          totalPages={totalPages}
+                          activePage={page}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : null}
+                    </div>
                   </>
                 ) : (
-                  <>
-                    <h3>{t('third_party_collection_detail_page.not_found')}</h3>
-                    <p>{t('third_party_collection_detail_page.try_again')}</p>
-                  </>
+                  <div className={styles.empty}>
+                    <div className={isCollectionEmpty ? styles.start : styles.sparkles} />
+                    {isCollectionEmpty ? (
+                      <>
+                        <h3>{t('third_party_collection_detail_page.start_adding_items')}</h3>
+                        <p>{t('third_party_collection_detail_page.cant_remove')}</p>
+                      </>
+                    ) : (
+                      <>
+                        <h3>{t('third_party_collection_detail_page.not_found')}</h3>
+                        <p>{t('third_party_collection_detail_page.try_again')}</p>
+                      </>
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         </>
@@ -436,15 +457,20 @@ export default function ThirdPartyCollectionDetailPage({
   )
 
   const shouldRender = hasAccess && collection
+
   return (
     <CollectionProvider id={collection?.id} itemsPage={page} itemsPageSize={PAGE_SIZE} fetchCollectionItemsOptions={itemFilters}>
-      {({ isLoading: isLoadingCollectionData, items, paginatedItems, onFetchCollectionItemsPages }) => (
+      {({ isLoadingCollection, isLoadingCollectionItems, items, paginatedItems, onFetchCollectionItemsPages }) => (
         <LoggedInDetailPage
           className={styles.main}
-          hasNavigation={!hasAccess && !isLoading}
-          isLoading={isLoading || isLoadingCollectionData}
+          hasNavigation={!hasAccess && !isLoading && !isLoadingCollection}
+          isLoading={isLoading || isLoadingCollection}
         >
-          {shouldRender && thirdParty ? renderPage(thirdParty, items, paginatedItems, onFetchCollectionItemsPages) : <NotFound />}
+          {shouldRender && thirdParty ? (
+            renderPage(thirdParty, items, paginatedItems, isLoadingCollectionItems, onFetchCollectionItemsPages)
+          ) : (
+            <NotFound />
+          )}
         </LoggedInDetailPage>
       )}
     </CollectionProvider>

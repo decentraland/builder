@@ -127,3 +127,11 @@
 .mappings :global(.dcl.text-area) {
   width: 100%;
 }
+
+/* Tooltip */
+
+.typeLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

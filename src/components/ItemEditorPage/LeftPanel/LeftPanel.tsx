@@ -208,12 +208,15 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
               collection,
               paginatedItems: collectionItems,
               initialPage: collectionInitialPage,
-              isLoading,
+              isLoadingCollection,
+              isLoadingCollectionItems,
               itemCurations
             }) => {
               const items = this.getItems(collection, collectionItems, itemCurations)
               const isCollectionTab = this.isCollectionTabActive()
-              const showLoader = isLoading && ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
+              const showLoader =
+                (isLoadingCollection || isLoadingCollectionItems) &&
+                ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
               const initialPage = selectedCollectionId && collection ? collectionInitialPage : this.state.initialPage
               if (showLoader) {
                 return <Loader size="massive" active />
@@ -262,7 +265,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                       hasHeader={items.length > 0}
                       selectedCollectionId={selectedCollectionId}
                       onLoadPage={this.loadPage}
-                      isLoading={isLoading}
+                      isLoading={isLoadingCollection}
                     />
                   ) : null}
                   {showItems ? (
@@ -280,7 +283,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                         onSetItems={onSetItems}
                         wearableController={wearableController}
                         initialPage={initialPage}
-                        isLoading={isLoading || isLoadingOrphanItems}
+                        isLoading={isLoadingCollectionItems || isLoadingOrphanItems}
                         onLoadRandomPage={() => this.loadRandomPage(items)}
                         onLoadPage={this.loadPage}
                         onSetReviewedItems={onSetReviewedItems}

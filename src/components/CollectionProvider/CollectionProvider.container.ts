@@ -31,8 +31,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     itemCurations,
     curation,
     isConnected: isConnected(state),
-    isLoading:
-      isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
+    isLoadingCollection: isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST),
+    isLoadingCollectionItems:
       isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST) ||
       isLoadingType(getLoadingItems(state), FETCH_COLLECTION_ITEMS_REQUEST)
   }
