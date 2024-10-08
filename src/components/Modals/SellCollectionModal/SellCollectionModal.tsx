@@ -19,8 +19,8 @@ export default class SellCollectionModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { metadata, isLoading, hasUnsyncedItems, onClose } = this.props
-    const tKey = metadata.isOnSale ? 'remove_from_marketplace' : 'put_for_sale'
+    const { metadata, isLoading, hasUnsyncedItems, isOffchainPublicItemOrdersEnabled, onClose } = this.props
+    const tKey = metadata.isOnSale ? 'remove_from_marketplace' : isOffchainPublicItemOrdersEnabled ? 'enable_sales' : 'put_for_sale'
     return (
       <Modal className="SellCollectionModal" size="tiny" onClose={onClose}>
         <ModalNavigation title={t(`sell_collection_modal.${tKey}.title`)} onClose={onClose} />

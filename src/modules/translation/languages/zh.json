@@ -1708,7 +1708,7 @@
   },
   "collection_item": {
     "set_price": "设定价格",
-    "ready": "已完成",
+    "ready": "准备提交",
     "published": "发表",
     "not_ready": "没有准备好",
     "under_review": "审查中",
@@ -1914,6 +1914,11 @@
       "title": "您想出售此收藏吗？",
       "description": "该系列将可在 Decentraland 市场上购买。",
       "cta": "出售"
+    },
+    "enable_sales": {
+      "title": "您想为此系列启用销售吗？",
+      "description": "接受后，您将能够将该系列的物品放在分散的市场上出售。",
+      "cta": "启用销售"
     },
     "remove_from_marketplace": {
       "title": "你想从市场中删除这个集合吗？",
