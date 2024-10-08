@@ -119,7 +119,6 @@
 .description {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .title {
@@ -130,11 +129,13 @@
 
 .subtitle {
   font-size: 14px;
+  color: #cfcdd4;
 }
 
 .action {
   display: flex;
   justify-content: start;
+  margin-top: 16px;
 }
 
 .loader {
