@@ -23,7 +23,10 @@ import {
   fetchThirdPartyFailure,
   FINISH_PUBLISH_AND_PUSH_CHANGES_THIRD_PARTY_ITEMS_REQUEST,
   finishPublishAndPushChangesThirdPartyItemsSuccess,
-  finishPublishAndPushChangesThirdPartyItemsFailure
+  finishPublishAndPushChangesThirdPartyItemsFailure,
+  setThirdPartyKindRequest,
+  setThirdPartyKindSuccess,
+  setThirdPartyKindFailure
 } from './actions'
 import { INITIAL_STATE, thirdPartyReducer, ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
@@ -347,6 +350,64 @@ describe('when reducing a FETCH_THIRD_PARTY_FAILURE action', () => {
 
   it('should remove the corresponding request action from the loading state and set the error', () => {
     expect(thirdPartyReducer(state, fetchThirdPartyFailure(error))).toEqual({
+      ...INITIAL_STATE,
+      loading: [],
+      error
+    })
+  })
+})
+
+describe('when reducing a SET_THIRD_PARTY_TYPE_REQUEST action', () => {
+  it('should add the action to the loading array', () => {
+    expect(thirdPartyReducer(state, setThirdPartyKindRequest(thirdParty.id, true))).toEqual({
+      ...INITIAL_STATE,
+      loading: [setThirdPartyKindRequest(thirdParty.id, true)]
+    })
+  })
+})
+
+describe('when reducing a SET_THIRD_PARTY_TYPE_SUCCESS action', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      data: {
+        [thirdParty.id]: thirdParty
+      },
+      loading: [setThirdPartyKindRequest(thirdParty.id, true)],
+      error: 'anError'
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state, clear the error and set the third party isProgrammatic property with the value given in the action', () => {
+    expect(thirdPartyReducer(state, setThirdPartyKindSuccess(thirdParty.id, true))).toEqual({
+      ...INITIAL_STATE,
+      error: null,
+      data: {
+        ...state.data,
+        [thirdParty.id]: {
+          ...state.data[thirdParty.id],
+          isProgrammatic: true
+        }
+      },
+      loading: []
+    })
+  })
+})
+
+describe('when reducing a SET_THIRD_PARTY_TYPE_FAILURE action', () => {
+  let error: string
+
+  beforeEach(() => {
+    error = 'anError'
+    state = {
+      ...state,
+      error: null,
+      loading: [setThirdPartyKindRequest(thirdParty.id, true)]
+    }
+  })
+
+  it('should remove the corresponding request action from the loading state and set the error', () => {
+    expect(thirdPartyReducer(state, setThirdPartyKindFailure(error))).toEqual({
       ...INITIAL_STATE,
       loading: [],
       error

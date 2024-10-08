@@ -120,8 +120,9 @@ export async function getThirdPartyPrice(): Promise<ThirdPartyPrice> {
       mana: ethers.utils.parseEther(itemSlotPriceInUsd.div(manaToUsdPrice).toString()).toString()
     },
     programmatic: {
-      usd: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(ethers.constants.WeiPerEther).toString(),
-      mana: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(manaToUsdPrice).toString()
+      usd: programmaticPriceInSlots.mul(itemSlotPriceInUsd).toString(),
+      minSlots: programmaticPriceInSlots.toString(),
+      mana: programmaticPriceInSlots.mul(itemSlotPriceInUsd).div(manaToUsdPrice).mul(ethers.constants.WeiPerEther).toString()
     }
   }
 }

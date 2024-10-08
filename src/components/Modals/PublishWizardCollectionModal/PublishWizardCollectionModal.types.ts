@@ -25,13 +25,15 @@ export type Price = {
     usd: string
     // MANA in WEI
     mana: string
+    // Slots in Ether
+    minSlots: string
   }
 }
 
 export type Props = Omit<ModalProps, 'metadata'> & {
   metadata: PublishCollectionModalMetadata
   wallet: Wallet
-  thirdParty?: ThirdParty
+  thirdParty: ThirdParty | null
   collection: Collection
   itemsToPublish: Item[]
   itemsWithChanges: Item[]
@@ -43,7 +45,14 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   isPublishingFinished: boolean
   isPublishCollectionsWertEnabled: boolean
   publishingStatus: AuthorizationStepStatus
-  onPublish: (email: string, subscribeToNewsletter: boolean, paymentMethod: PaymentMethod, cheque?: Cheque, maxPrice?: string) => unknown
+  onPublish: (
+    email: string,
+    subscribeToNewsletter: boolean,
+    paymentMethod: PaymentMethod,
+    cheque?: Cheque,
+    maxPrice?: string,
+    minSlots?: string
+  ) => unknown
   onFetchPrice: () => unknown
 }
 

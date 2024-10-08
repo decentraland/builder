@@ -393,6 +393,17 @@
       "finished_partial_successfully_subtitle": "You've updated {number_of_items} items but {number_of_failed_items} failed. Please review the URNs provided",
       "saved_items_table_title": "Updated items"
     },
+    "third_party_kind_selector": {
+      "standard": {
+        "title": "Standard Linked Wearables",
+        "subtitle": "Hand made wearables. Each wearable was made individually. Submission costs {price} USD per wearable."
+      },
+      "programmatic": {
+        "title": "Programmatic Linked Wearables",
+        "subtitle": "Parts or traits of each wearable were made by hand, but the mix of traits is done by code. Submission costs {price} USD per collection."
+      },
+      "action": "Select"
+    },
     "wrong_thumbnail_format": "The thumbnail.png file is not formatted as a PNG image.",
     "missing_mapping": "The item is missing a mapping.",
     "wrong_file_extension": "File extension is not correct.",
@@ -1575,6 +1586,7 @@
     "owner": "Owner",
     "link": "Link",
     "type": "Type",
+    "kind": "Kind",
     "type_third_party": "Linked",
     "type_standard": "Standard",
     "review_request": "Review request",
@@ -1642,9 +1654,6 @@
     "slots_short": "Slots",
     "slots_long": "Publishing points",
     "migration_banner": "One or many items in your collection must be migrated to new version",
-    "type": "Linked Wearables",
-    "programmatic": "Programmatic",
-    "standard": "Standard",
     "synced_filter": {
       "all": "All items",
       "synced": "Synced",
@@ -1885,7 +1894,12 @@
     },
     "pay_publication_fee_step": {
       "title": "Confirm items",
-      "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA).",
+      "third_parties": {
+        "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per collection (paid in MANA) only once."
+      },
+      "standard": {
+        "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA)."
+      },
       "learn_more": "Learn about the publication fee",
       "already_payed": "Already payed but not published",
       "already_published": "Already published",
@@ -2389,6 +2403,14 @@
   "push_changes_modal": {
     "title": "Push Changes",
     "description": "Changes have been made to the collection or the items contained by it since the last time a curator has reviewed them.{br}In order to have this changes reflected in world, they have to be reviewed and approved again by the committee.{br}Are you sure you want to push the changes for review?"
+  },
+  "collection_type_badge": {
+    "third_party": "Linked Wearables",
+    "regular": "Regular"
+  },
+  "third_party_kind_badge": {
+    "programmatic": "Programmatic",
+    "standard": "Standard"
   },
   "put_for_sale_offchain_modal": {
     "title": "Action needed",

@@ -339,7 +339,7 @@ describe('when getting the third party price', () => {
       beforeEach(() => {
         mockedGetRate.mockResolvedValueOnce(ethers.BigNumber.from('500000000000000000'))
         mockedItemSlotPrice.mockResolvedValueOnce(ethers.BigNumber.from('100000000000000000000'))
-        mockedProgrammaticBasePurchasedSlots.mockResolvedValueOnce(ethers.BigNumber.from('200000000000000000000'))
+        mockedProgrammaticBasePurchasedSlots.mockResolvedValueOnce(ethers.BigNumber.from('200'))
       })
 
       it('should return the third party price', () => {
@@ -350,7 +350,8 @@ describe('when getting the third party price', () => {
           },
           programmatic: {
             usd: '20000000000000000000000',
-            mana: '40000000000000000000000'
+            mana: '40000000000000000000000',
+            minSlots: '200'
           }
         })
       })

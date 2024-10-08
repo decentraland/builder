@@ -46,7 +46,10 @@ import {
   finishPublishAndPushChangesThirdPartyItemsSuccess,
   finishPublishAndPushChangesThirdPartyItemsFailure,
   publishAndPushChangesThirdPartyItemsSuccess,
-  clearThirdPartyErrors
+  clearThirdPartyErrors,
+  setThirdPartyKindSuccess,
+  setThirdPartyKindRequest,
+  setThirdPartyKindFailure
 } from './actions'
 import { mockedItem } from 'specs/item'
 import { getCollection } from 'modules/collection/selectors'
@@ -87,6 +90,7 @@ const mockBuilder = {
   updateItemCurationStatus: jest.fn(),
   deleteVirtualThirdParty: jest.fn(),
   fetchContents: jest.fn(),
+  setThirdPartyKind: jest.fn(),
   saveTOS: jest.fn()
 } as any as BuilderAPI
 
@@ -652,6 +656,7 @@ describe('when publishing & pushing changes to third party items', () => {
         describe('and the max slot price is defined', () => {
           let contractData: ContractData
           let missingSlots: string
+          let minSlots: string
 
           beforeEach(() => {
             maxSlotPrice = '1'
@@ -692,63 +697,207 @@ describe('when publishing & pushing changes to third party items', () => {
             })
 
             describe('and the add third parties transaction succeeds', () => {
-              it('should send the transaction to create the third party, wait for it to finish and delete the virtual third party', () => {
-                return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
-                  .provide([
-                    [select(getCollection, item.collectionId), collection],
-                    [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
-                    [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
-                    [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
-                    [matchers.call.fn(sendTransaction), '0x123'],
-                    // Next handler mocks
-                    [call(waitForTx, '0x123'), undefined],
-                    [retry(20, 5000, mockBuilder.deleteVirtualThirdParty, thirdParty.id), undefined],
-                    [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
-                    [
-                      call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
-                      { collection, items: itemsToPublish, itemCurations }
-                    ]
-                  ])
-                  .call(
-                    sendTransaction,
-                    contractData,
-                    'addThirdParties',
-                    [
+              describe('and the third party is programmatic', () => {
+                beforeEach(() => {
+                  thirdParty.isProgrammatic = true
+                })
+
+                describe('and the amount of items to publish is lower than the minimum amount of slots the programmatic third party should have', () => {
+                  beforeEach(() => {
+                    minSlots = '2'
+                  })
+
+                  it('should send the transaction to create the third party with the minimum amount of slots, wait for it to finish and delete the virtual third party', () => {
+                    return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                      .provide([
+                        [select(getCollection, item.collectionId), collection],
+                        [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                        [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                        [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                        [matchers.call.fn(sendTransaction), '0x123'],
+                        // Next handler mocks
+                        [call(waitForTx, '0x123'), undefined],
+                        [retry(20, 5000, mockBuilder.deleteVirtualThirdParty, thirdParty.id), undefined],
+                        [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
+                        [
+                          call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+                          { collection, items: itemsToPublish, itemCurations }
+                        ]
+                      ])
+                      .call(
+                        sendTransaction,
+                        contractData,
+                        'addThirdParties',
+                        [
+                          [
+                            thirdParty.id,
+                            convertThirdPartyMetadataToRawMetadata(thirdParty.name, thirdParty.description, thirdParty.contracts),
+                            'Disabled',
+                            thirdParty.managers,
+                            [true],
+                            minSlots
+                          ]
+                        ],
+                        [thirdParty.isProgrammatic],
+                        [maxSlotPrice]
+                      )
+                      .put(
+                        publishAndPushChangesThirdPartyItemsSuccess(
+                          thirdParty,
+                          collection,
+                          itemsToPublish,
+                          [],
+                          undefined,
+                          '0x123',
+                          ChainId.MATIC_AMOY
+                        )
+                      )
+                      .dispatch(
+                        publishAndPushChangesThirdPartyItemsRequest(
+                          thirdParty,
+                          itemsToPublish,
+                          [],
+                          undefined,
+                          email,
+                          subscribeToNewsletter,
+                          maxSlotPrice,
+                          minSlots
+                        )
+                      )
+                      .run({ silenceTimeout: true })
+                  })
+                })
+
+                describe('and the amount of items to publish is higher or equal than the minimum amount of slots the programmatic third party should have', () => {
+                  beforeEach(() => {
+                    minSlots = '0'
+                  })
+
+                  it('should send the transaction to create the third party with amount of slots to publish, wait for it to finish and delete the virtual third party', () => {
+                    return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                      .provide([
+                        [select(getCollection, item.collectionId), collection],
+                        [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                        [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                        [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                        [matchers.call.fn(sendTransaction), '0x123'],
+                        // Next handler mocks
+                        [call(waitForTx, '0x123'), undefined],
+                        [retry(20, 5000, mockBuilder.deleteVirtualThirdParty, thirdParty.id), undefined],
+                        [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
+                        [
+                          call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+                          { collection, items: itemsToPublish, itemCurations }
+                        ]
+                      ])
+                      .call(
+                        sendTransaction,
+                        contractData,
+                        'addThirdParties',
+                        [
+                          [
+                            thirdParty.id,
+                            convertThirdPartyMetadataToRawMetadata(thirdParty.name, thirdParty.description, thirdParty.contracts),
+                            'Disabled',
+                            thirdParty.managers,
+                            [true],
+                            missingSlots
+                          ]
+                        ],
+                        [thirdParty.isProgrammatic],
+                        [maxSlotPrice]
+                      )
+                      .put(
+                        publishAndPushChangesThirdPartyItemsSuccess(
+                          thirdParty,
+                          collection,
+                          itemsToPublish,
+                          [],
+                          undefined,
+                          '0x123',
+                          ChainId.MATIC_AMOY
+                        )
+                      )
+                      .dispatch(
+                        publishAndPushChangesThirdPartyItemsRequest(
+                          thirdParty,
+                          itemsToPublish,
+                          [],
+                          undefined,
+                          email,
+                          subscribeToNewsletter,
+                          maxSlotPrice,
+                          minSlots
+                        )
+                      )
+                      .run({ silenceTimeout: true })
+                  })
+                })
+              })
+
+              describe('and the third party is not programmatic', () => {
+                beforeEach(() => {
+                  thirdParty.isProgrammatic = false
+                })
+
+                it('should send the transaction to create the third party, wait for it to finish and delete the virtual third party', () => {
+                  return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+                    .provide([
+                      [select(getCollection, item.collectionId), collection],
+                      [select(getIsLinkedWearablesPaymentsEnabled), linkedWearablesPaymentsEnabled],
+                      [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+                      [call(getContract, ContractName.ThirdPartyRegistry, ChainId.MATIC_AMOY), contractData],
+                      [matchers.call.fn(sendTransaction), '0x123'],
+                      // Next handler mocks
+                      [call(waitForTx, '0x123'), undefined],
+                      [retry(20, 5000, mockBuilder.deleteVirtualThirdParty, thirdParty.id), undefined],
+                      [call(getPublishItemsSignature, thirdParty.id, qty), { signature, salt, qty }],
                       [
-                        thirdParty.id,
-                        convertThirdPartyMetadataToRawMetadata(thirdParty.name, thirdParty.description, thirdParty.contracts),
-                        'Disabled',
-                        thirdParty.managers,
-                        [true],
-                        missingSlots
+                        call([mockBuilder, mockBuilder.publishTPCollection], item.collectionId!, [item.id], { signature, qty, salt }),
+                        { collection, items: itemsToPublish, itemCurations }
                       ]
-                    ],
-                    [thirdParty.isProgrammatic],
-                    [maxSlotPrice]
-                  )
-                  .put(
-                    publishAndPushChangesThirdPartyItemsSuccess(
-                      thirdParty,
-                      collection,
-                      itemsToPublish,
-                      [],
-                      undefined,
-                      '0x123',
-                      ChainId.MATIC_AMOY
+                    ])
+                    .call(
+                      sendTransaction,
+                      contractData,
+                      'addThirdParties',
+                      [
+                        [
+                          thirdParty.id,
+                          convertThirdPartyMetadataToRawMetadata(thirdParty.name, thirdParty.description, thirdParty.contracts),
+                          'Disabled',
+                          thirdParty.managers,
+                          [true],
+                          missingSlots
+                        ]
+                      ],
+                      [thirdParty.isProgrammatic],
+                      [maxSlotPrice]
                     )
-                  )
-                  .dispatch(
-                    publishAndPushChangesThirdPartyItemsRequest(
-                      thirdParty,
-                      itemsToPublish,
-                      [],
-                      undefined,
-                      email,
-                      subscribeToNewsletter,
-                      maxSlotPrice
+                    .put(
+                      publishAndPushChangesThirdPartyItemsSuccess(
+                        thirdParty,
+                        collection,
+                        itemsToPublish,
+                        [],
+                        undefined,
+                        '0x123',
+                        ChainId.MATIC_AMOY
+                      )
                     )
-                  )
-                  .run({ silenceTimeout: true })
+                    .dispatch(
+                      publishAndPushChangesThirdPartyItemsRequest(
+                        thirdParty,
+                        itemsToPublish,
+                        [],
+                        undefined,
+                        email,
+                        subscribeToNewsletter,
+                        maxSlotPrice
+                      )
+                    )
+                    .run({ silenceTimeout: true })
+                })
               })
             })
           })
@@ -1198,6 +1347,40 @@ describe('when handling the disabling of a third party', () => {
         ])
         .put(disableThirdPartySuccess(thirdParty.id, ChainId.MATIC_MAINNET, txHash, thirdParty.name))
         .dispatch(disableThirdPartyRequest(thirdParty.id))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling setting a third party kind', () => {
+  let thirdPartyId: string
+
+  beforeEach(() => {
+    thirdPartyId = 'aThirdPartyId'
+  })
+
+  describe('and the request succeeds', () => {
+    it('should put the set third party kind success action and close the modal', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([[call([mockBuilder, 'setThirdPartyKind'], thirdPartyId, true), Promise.resolve()]])
+        .put(setThirdPartyKindSuccess(thirdPartyId, true))
+        .dispatch(setThirdPartyKindRequest(thirdPartyId, true))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the request fails', () => {
+    let error: string
+
+    beforeEach(() => {
+      error = 'anError'
+    })
+
+    it('should put the set third party kind failure action and close the modal', () => {
+      return expectSaga(thirdPartySaga, mockBuilder, mockCatalystClient)
+        .provide([[call([mockBuilder, 'setThirdPartyKind'], thirdPartyId, true), Promise.reject(new Error(error))]])
+        .put(setThirdPartyKindFailure(error))
+        .dispatch(setThirdPartyKindRequest(thirdPartyId, true))
         .run({ silenceTimeout: true })
     })
   })

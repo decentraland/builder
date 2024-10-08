@@ -1,4 +1,5 @@
-import * as React from 'react'
+import { useState, FC, useMemo, useCallback, useEffect } from 'react'
+import { ethers } from 'ethers'
 import PQueue from 'p-queue'
 import {
   ItemFactory,
@@ -14,7 +15,7 @@ import {
   MAX_EMOTE_FILE_SIZE
 } from '@dcl/builder-client'
 import Dropzone, { DropzoneState } from 'react-dropzone'
-import { Button, Icon, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
+import { Button, Icon, Loader, Message, ModalNavigation, Progress, Table } from 'decentraland-ui'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -39,413 +40,426 @@ import { generateCatalystImage, getModelPath } from 'modules/item/utils'
 import { ThumbnailFileTooBigError } from 'modules/item/errors'
 import ItemImport from 'components/ItemImport'
 import { InfoIcon } from 'components/InfoIcon'
+import standardKindImage from '../../../images/standard.webp'
+import programmaticKindImage from '../../../images/programmatic.webp'
+import { useThirdPartyPrice } from '../PublishWizardCollectionModal/hooks'
 import {
   CreateOrEditMultipleItemsModalType,
   ImportedFile,
   ImportedFileType,
   ItemCreationView,
   Props,
-  RejectedFile,
-  State
+  RejectedFile
 } from './CreateAndEditMultipleItemsModal.types'
 import styles from './CreateAndEditMultipleItemsModal.module.css'
 
 const WEARABLES_ZIP_INFRA_URL = config.get('WEARABLES_ZIP_INFRA_URL', '')
 const AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY = 4
 
-export default class CreateAndEditMultipleItemsModal extends React.PureComponent<Props, State> {
-  analytics = getAnalytics()
-  state = {
-    view: ItemCreationView.IMPORT,
-    loadingFilesProgress: 0,
-    importedFiles: {} as Record<string, ImportedFile<Blob>>
-  }
+export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
+  const {
+    thirdParty,
+    collection,
+    metadata,
+    isLinkedWearablesV2Enabled,
+    isLinkedWearablesPaymentsEnabled,
+    saveMultipleItemsState,
+    savedItemsFiles,
+    notSavedItemsFiles,
+    cancelledItemsFiles,
+    saveItemsProgress,
+    error,
+    onCancelSaveMultipleItems,
+    onModalUnmount,
+    onSaveMultipleItems,
+    onSetThirdPartyType,
+    onClose
+  } = props
+  const analytics = getAnalytics()
+  const [view, setView] = useState(ItemCreationView.IMPORT)
+  const [loadingFilesProgress, setLoadingFilesProgress] = useState(0)
+  const [importedFiles, setImportedFiles] = useState<Record<string, ImportedFile<Blob>>>({})
+  const [finishedState, setFinishedState] = useState<{
+    state: MultipleItemsSaveState
+    savedFiles: string[]
+    notSavedFiles: string[]
+    cancelledFiles: string[]
+  }>()
+  const { thirdPartyPrice, isFetchingPrice, fetchThirdPartyPrice } = useThirdPartyPrice()
 
-  private isViewClosable = (): boolean => {
-    const { view } = this.state
-    return view === ItemCreationView.IMPORTING || view === ItemCreationView.COMPLETED
-  }
-
-  private getValidFiles = (): BuiltFile<Blob>[] => {
-    const { importedFiles } = this.state
-    return Object.values(importedFiles).filter(file => file.type === ImportedFileType.ACCEPTED) as BuiltFile<Blob>[]
-  }
-
-  private getRejectedFiles = (): RejectedFile[] => {
-    const { importedFiles } = this.state
-    return Object.values(importedFiles).filter(file => file.type === ImportedFileType.REJECTED) as RejectedFile[]
-  }
-
-  static getDerivedStateFromProps(props: Props, state: State): State | null {
-    const isCancelled = props.saveMultipleItemsState === MultipleItemsSaveState.CANCELLED
+  const isViewClosable = useMemo(() => view === ItemCreationView.IMPORTING || view === ItemCreationView.COMPLETED, [])
+  const validFiles = useMemo(
+    () => Object.values(importedFiles).filter(file => file.type === ImportedFileType.ACCEPTED) as BuiltFile<Blob>[],
+    [importedFiles]
+  )
+  const rejectedFiles = useMemo(
+    () => Object.values(importedFiles).filter(file => file.type === ImportedFileType.REJECTED) as RejectedFile[],
+    [importedFiles]
+  )
+  const isCreating = useMemo(
+    () => (metadata.type ?? CreateOrEditMultipleItemsModalType.CREATE) === CreateOrEditMultipleItemsModalType.CREATE,
+    [metadata.type]
+  )
+  const operationTypeKey = useMemo(() => (isCreating ? 'create' : 'edit'), [isCreating])
+  const modalTitle = useMemo(() => t(`create_and_edit_multiple_items_modal.${operationTypeKey}.title`), [operationTypeKey, t])
+  const modalSubtitle = useMemo(() => (isCreating ? null : t('create_and_edit_multiple_items_modal.edit.subtitle')), [isCreating, t])
+  useEffect(() => {
+    const isCancelled = saveMultipleItemsState === MultipleItemsSaveState.CANCELLED
     const hasFinished =
-      props.saveMultipleItemsState === MultipleItemsSaveState.FINISHED_SUCCESSFULLY ||
-      props.saveMultipleItemsState === MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
-
-    if (state.view !== ItemCreationView.COMPLETED && (isCancelled || hasFinished)) {
-      return { ...state, view: ItemCreationView.COMPLETED }
+      saveMultipleItemsState === MultipleItemsSaveState.FINISHED_SUCCESSFULLY ||
+      saveMultipleItemsState === MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
+    if (view !== ItemCreationView.COMPLETED && (isCancelled || hasFinished)) {
+      setFinishedState({
+        state: saveMultipleItemsState,
+        savedFiles: savedItemsFiles,
+        notSavedFiles: notSavedItemsFiles,
+        cancelledFiles: cancelledItemsFiles
+      })
+      setView(ItemCreationView.COMPLETED)
     }
 
-    return null
-  }
+    return () => {
+      onModalUnmount()
+    }
+  }, [saveMultipleItemsState, savedItemsFiles, notSavedItemsFiles, cancelledItemsFiles, view, onModalUnmount])
 
-  componentWillUnmount(): void {
-    const { onModalUnmount } = this.props
-    onModalUnmount()
-  }
+  useEffect(() => {
+    if (isLinkedWearablesPaymentsEnabled && view === ItemCreationView.THIRD_PARTY_KIND_SELECTOR && !thirdPartyPrice && !isFetchingPrice) {
+      return fetchThirdPartyPrice() as unknown as void
+    }
+  }, [view, isLinkedWearablesPaymentsEnabled, thirdPartyPrice, isFetchingPrice, fetchThirdPartyPrice])
 
-  private handleRejectedFiles = (rejectedFiles: File[]): void => {
-    this.setState({
-      importedFiles: {
-        ...this.state.importedFiles,
-        ...rejectedFiles.reduce((accum, file) => {
-          accum[file.name] = {
-            type: ImportedFileType.REJECTED,
-            fileName: file.name,
-            reason: t('create_and_edit_multiple_items_modal.wrong_file_extension')
+  const handleRejectedFiles = useCallback((rejectedFiles: File[]): void => {
+    setImportedFiles(prev => ({
+      ...prev,
+      ...rejectedFiles.reduce((accum, file) => {
+        accum[file.name] = {
+          type: ImportedFileType.REJECTED,
+          fileName: file.name,
+          reason: t('create_and_edit_multiple_items_modal.wrong_file_extension')
+        }
+        return accum
+      }, {} as Record<string, ImportedFile<Blob>>)
+    }))
+
+    setView(ItemCreationView.REVIEW)
+  }, [])
+
+  const handleSetThirdPartyType = useCallback(
+    (type: boolean) => {
+      if (thirdParty && thirdParty.isProgrammatic !== type) {
+        onSetThirdPartyType(thirdParty.id, type)
+      } else {
+        onClose()
+      }
+    },
+    [thirdParty, onSetThirdPartyType, onClose]
+  )
+
+  const processAcceptedFile = useCallback(
+    async (file: File) => {
+      try {
+        const fileArrayBuffer = await file.arrayBuffer()
+        const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
+        // Multiple files must contain an asset file
+        if (!loadedFile.wearable) {
+          throw new Error(t('create_and_edit_multiple_items_modal.wearable_file_not_found'))
+        }
+
+        const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable, loadedFile.content)
+
+        let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
+
+        if (!thumbnail) {
+          const modelPath = getModelPath(loadedFile.wearable.data.representations)
+          const url = URL.createObjectURL(loadedFile.content[modelPath])
+          const data = await getModelData(url, {
+            width: 1024,
+            height: 1024,
+            extension: getExtension(modelPath) || undefined,
+            engine: EngineType.BABYLON
+          })
+          URL.revokeObjectURL(url)
+          thumbnail = dataURLToBlob(data.image)
+          if (!thumbnail) {
+            throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
           }
-          return accum
-        }, {} as Record<string, ImportedFile<Blob>>)
-      }
-    })
+        } else {
+          const thumbnailImageType = await getImageType(thumbnail)
+          if (thumbnailImageType !== ImageType.PNG) {
+            throw new Error(t('create_and_edit_multiple_items_modal.wrong_thumbnail_format'))
+          }
+        }
 
-    this.setState({
-      view: ItemCreationView.REVIEW
-    })
-  }
+        // Process the thumbnail so it fits our requirements
+        thumbnail = dataURLToBlob(await convertImageIntoWearableThumbnail(thumbnail))
 
-  processAcceptedFile = async (file: File) => {
-    const { collection, metadata, isLinkedWearablesV2Enabled } = this.props
-    try {
-      const fileArrayBuffer = await file.arrayBuffer()
-      const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
-      // Multiple files must contain an asset file
-      if (!loadedFile.wearable) {
-        throw new Error(t('create_and_edit_multiple_items_modal.wearable_file_not_found'))
-      }
-
-      const itemFactory = new ItemFactory<Blob>().fromConfig(loadedFile.wearable, loadedFile.content)
-
-      let thumbnail: Blob | null = loadedFile.content[THUMBNAIL_PATH]
-
-      if (!thumbnail) {
-        const modelPath = getModelPath(loadedFile.wearable.data.representations)
-        const url = URL.createObjectURL(loadedFile.content[modelPath])
-        const data = await getModelData(url, {
-          width: 1024,
-          height: 1024,
-          extension: getExtension(modelPath) || undefined,
-          engine: EngineType.BABYLON
-        })
-        URL.revokeObjectURL(url)
-        thumbnail = dataURLToBlob(data.image)
         if (!thumbnail) {
           throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
         }
-      } else {
-        const thumbnailImageType = await getImageType(thumbnail)
-        if (thumbnailImageType !== ImageType.PNG) {
-          throw new Error(t('create_and_edit_multiple_items_modal.wrong_thumbnail_format'))
-        }
-      }
 
-      // Process the thumbnail so it fits our requirements
-      thumbnail = dataURLToBlob(await convertImageIntoWearableThumbnail(thumbnail))
-
-      if (!thumbnail) {
-        throw new Error(t('create_and_edit_multiple_items_modal.thumbnail_file_not_generated'))
-      }
-
-      if (thumbnail.size > MAX_THUMBNAIL_FILE_SIZE) {
-        throw new ThumbnailFileTooBigError()
-      }
-
-      itemFactory.withThumbnail(thumbnail)
-
-      // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
-      itemFactory.withRarity(Rarity.UNIQUE)
-
-      // Override collection id if specified in the modal's metadata
-      if (metadata.collectionId) {
-        itemFactory.withCollectionId(metadata.collectionId)
-      }
-
-      // Generate or set the correct URN for the items taking into consideration the selected collection
-      const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
-      // Check if the collection is a third party collection
-      if (decodedCollectionUrn && isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
-        const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
-        const thirdPartyTokenId =
-          loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY
-            ? decodedUrn.thirdPartyTokenId ?? null
-            : null
-
-        // Check if the decoded collections match a the collection level
-        if (decodedUrn && !decodedCollectionsUrnAreEqual(decodedCollectionUrn, decodedUrn)) {
-          throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
+        if (thumbnail.size > MAX_THUMBNAIL_FILE_SIZE) {
+          throw new ThumbnailFileTooBigError()
         }
 
-        // In case the collection is linked to a smart contract, the mappings must be present
-        if (isLinkedWearablesV2Enabled && collection?.linkedContractAddress && collection.linkedContractNetwork) {
-          if (!loadedFile.wearable.mapping) {
-            throw new Error(t('create_and_edit_multiple_items_modal.missing_mapping'))
+        itemFactory.withThumbnail(thumbnail)
+
+        // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
+        itemFactory.withRarity(Rarity.UNIQUE)
+
+        // Override collection id if specified in the modal's metadata
+        if (metadata.collectionId) {
+          itemFactory.withCollectionId(metadata.collectionId)
+        }
+
+        // Generate or set the correct URN for the items taking into consideration the selected collection
+        const decodedCollectionUrn: DecodedURN<any> | null = collection?.urn ? decodeURN(collection.urn) : null
+        // Check if the collection is a third party collection
+        if (decodedCollectionUrn && isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
+          const decodedUrn: DecodedURN<any> | null = loadedFile.wearable.id ? decodeURN(loadedFile.wearable.id) : null
+          const thirdPartyTokenId =
+            loadedFile.wearable.id && decodedUrn && decodedUrn.type === URNType.COLLECTIONS_THIRDPARTY
+              ? decodedUrn.thirdPartyTokenId ?? null
+              : null
+
+          // Check if the decoded collections match a the collection level
+          if (decodedUrn && !decodedCollectionsUrnAreEqual(decodedCollectionUrn, decodedUrn)) {
+            throw new Error(t('create_and_edit_multiple_items_modal.invalid_urn'))
           }
-          // Build the mapping with the linked contract address and network
-          itemFactory.withMappings({
-            [collection.linkedContractNetwork]: {
-              [collection.linkedContractAddress]: [loadedFile.wearable.mapping]
+
+          // In case the collection is linked to a smart contract, the mappings must be present
+          if (isLinkedWearablesV2Enabled && collection?.linkedContractAddress && collection.linkedContractNetwork) {
+            if (!loadedFile.wearable.mapping) {
+              throw new Error(t('create_and_edit_multiple_items_modal.missing_mapping'))
             }
+            // Build the mapping with the linked contract address and network
+            itemFactory.withMappings({
+              [collection.linkedContractNetwork]: {
+                [collection.linkedContractAddress]: [loadedFile.wearable.mapping]
+              }
+            })
+          }
+
+          // Build the third party item URN in accordance ot the collection URN
+          if (isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
+            itemFactory.withUrn(
+              buildThirdPartyURN(
+                decodedCollectionUrn.thirdPartyName,
+                decodedCollectionUrn.thirdPartyCollectionId,
+                thirdPartyTokenId ?? getDefaultThirdPartyUrnSuffix(loadedFile.wearable.name)
+              )
+            )
+          }
+        }
+
+        const builtItem = await itemFactory.build()
+        if (!isCreating) {
+          const { id: _id, ...itemWithoutId } = builtItem.item
+          builtItem.item = itemWithoutId as LocalItem
+        }
+
+        // Generate catalyst image as part of the item
+        const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
+        builtItem.newContent[IMAGE_PATH] = catalystImage.content
+        builtItem.item.contents[IMAGE_PATH] = catalystImage.hash
+
+        return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
+      } catch (error) {
+        if (!(error instanceof FileTooBigErrorBuilderClient)) {
+          return {
+            type: ImportedFileType.REJECTED,
+            fileName: file.name,
+            reason: isErrorWithMessage(error) ? error.message : 'Unknown error'
+          }
+        }
+
+        const fileName = error.geFileName()
+        const maxSize = error.getMaxFileSize()
+        const type = error.getType()
+        let reason: string = ''
+
+        if (type === FileType.THUMBNAIL) {
+          reason = t('create_single_item_modal.error.thumbnail_file_too_big', {
+            maxSize: `${toMB(maxSize)}MB`
+          })
+        } else if (type === FileType.WEARABLE) {
+          reason = t('create_and_edit_multiple_items_modal.max_file_size', {
+            name: fileName,
+            max: `${toMB(MAX_WEARABLE_FILE_SIZE)}`
+          })
+        } else if (type === FileType.SKIN) {
+          reason = t('create_and_edit_multiple_items_modal.max_file_size_skin', {
+            name: fileName,
+            max: `${toMB(MAX_SKIN_FILE_SIZE)}`
+          })
+        } else if (type === FileType.EMOTE) {
+          reason = t('create_and_edit_multiple_items_modal.max_file_size_emote', {
+            name: fileName,
+            max: `${toMB(MAX_EMOTE_FILE_SIZE)}`
           })
         }
 
-        // Build the third party item URN in accordance ot the collection URN
-        if (isThirdPartyCollectionDecodedUrn(decodedCollectionUrn)) {
-          itemFactory.withUrn(
-            buildThirdPartyURN(
-              decodedCollectionUrn.thirdPartyName,
-              decodedCollectionUrn.thirdPartyCollectionId,
-              thirdPartyTokenId ?? getDefaultThirdPartyUrnSuffix(loadedFile.wearable.name)
-            )
-          )
-        }
-      }
-
-      const builtItem = await itemFactory.build()
-      if (!this.isCreating()) {
-        const { id: _id, ...itemWithoutId } = builtItem.item
-        builtItem.item = itemWithoutId as LocalItem
-      }
-
-      // Generate catalyst image as part of the item
-      const catalystImage = await generateCatalystImage(builtItem.item, { thumbnail: builtItem.newContent[THUMBNAIL_PATH] })
-      builtItem.newContent[IMAGE_PATH] = catalystImage.content
-      builtItem.item.contents[IMAGE_PATH] = catalystImage.hash
-
-      return { type: ImportedFileType.ACCEPTED, ...builtItem, fileName: file.name }
-    } catch (error) {
-      if (!(error instanceof FileTooBigErrorBuilderClient)) {
         return {
           type: ImportedFileType.REJECTED,
-          fileName: file.name,
-          reason: isErrorWithMessage(error) ? error.message : 'Unknown error'
+          fileName,
+          reason: reason
         }
       }
+    },
+    [collection, metadata, isLinkedWearablesV2Enabled, isCreating]
+  )
 
-      const fileName = error.geFileName()
-      const maxSize = error.getMaxFileSize()
-      const type = error.getType()
-      let reason: string = ''
-
-      if (type === FileType.THUMBNAIL) {
-        reason = t('create_single_item_modal.error.thumbnail_file_too_big', {
-          maxSize: `${toMB(maxSize)}MB`
-        })
-      } else if (type === FileType.WEARABLE) {
-        reason = t('create_and_edit_multiple_items_modal.max_file_size', {
-          name: fileName,
-          max: `${toMB(MAX_WEARABLE_FILE_SIZE)}`
-        })
-      } else if (type === FileType.SKIN) {
-        reason = t('create_and_edit_multiple_items_modal.max_file_size_skin', {
-          name: fileName,
-          max: `${toMB(MAX_SKIN_FILE_SIZE)}`
-        })
-      } else if (type === FileType.EMOTE) {
-        reason = t('create_and_edit_multiple_items_modal.max_file_size_emote', {
-          name: fileName,
-          max: `${toMB(MAX_EMOTE_FILE_SIZE)}`
-        })
-      }
-
-      return {
-        type: ImportedFileType.REJECTED,
-        fileName,
-        reason: reason
-      }
-    }
-  }
-
-  private handleFilesImport = async (acceptedFiles: File[]): Promise<void> => {
-    this.setState({
-      view: ItemCreationView.IMPORTING
-    })
-
-    const queue = new PQueue({ concurrency: AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY })
-    queue.on('next', () => {
-      this.setState({
-        loadingFilesProgress: Math.round(((acceptedFiles.length - (queue.size + queue.pending)) * 100) / acceptedFiles.length)
+  const handleFilesImport = useCallback(
+    async (acceptedFiles: File[]) => {
+      setView(ItemCreationView.IMPORTING)
+      const queue = new PQueue({ concurrency: AMOUNT_OF_FILES_TO_PROCESS_SIMULTANEOUSLY })
+      queue.on('next', () => {
+        setLoadingFilesProgress(Math.round(((acceptedFiles.length - (queue.size + queue.pending)) * 100) / acceptedFiles.length))
       })
-    })
-    const promisesToProcess = acceptedFiles.map(file => () => this.processAcceptedFile(file))
-    const importedFiles: ImportedFile<Blob>[] = await queue.addAll(promisesToProcess)
-    this.setState({
-      importedFiles: {
-        ...this.state.importedFiles,
+      const promisesToProcess = acceptedFiles.map(file => () => processAcceptedFile(file))
+      const importedFiles: ImportedFile<Blob>[] = await queue.addAll(promisesToProcess)
+      setImportedFiles(prev => ({
+        ...prev,
         ...importedFiles.reduce((accum, file) => {
           accum[file.fileName] = file
           return accum
         }, {} as Record<string, ImportedFile<Blob>>)
-      },
-      view: ItemCreationView.REVIEW
-    })
-  }
+      }))
+      setView(ItemCreationView.REVIEW)
+    },
+    [processAcceptedFile]
+  )
 
-  private handleFilesUpload = (): void => {
-    const { collection, onSaveMultipleItems } = this.props
-    const files = this.getValidFiles()
-    onSaveMultipleItems(files)
-    this.setState({
-      view: ItemCreationView.UPLOADING
-    })
-    this.analytics.track(`${this.isCreating() ? 'Create' : 'Edit'} TP Items`, {
-      items: files.map(file => file.item.id),
+  const handleFilesUpload = useCallback((): void => {
+    onSaveMultipleItems(validFiles)
+    setView(ItemCreationView.UPLOADING)
+    analytics.track(`${isCreating ? 'Create' : 'Edit'} TP Items`, {
+      items: validFiles.map(file => file.item.id),
       collectionId: collection?.id
     })
-  }
+  }, [validFiles, collection, isCreating, onSaveMultipleItems])
 
-  private onRejectedFilesClear = (): void => {
-    this.setState({
-      importedFiles: {
-        ...Object.entries(this.state.importedFiles)
-          .filter(entry => entry[1].type !== ImportedFileType.REJECTED)
-          .reduce((accum, entry) => {
-            accum[entry[0]] = entry[1]
-            return accum
-          }, {} as Record<string, ImportedFile<Blob>>)
-      }
+  const onRejectedFilesClear = useCallback((): void => {
+    setImportedFiles({
+      ...Object.entries(importedFiles)
+        .filter(entry => entry[1].type !== ImportedFileType.REJECTED)
+        .reduce((accum, entry) => {
+          accum[entry[0]] = entry[1]
+          return accum
+        }, {} as Record<string, ImportedFile<Blob>>)
     })
-  }
+  }, [importedFiles])
 
-  private renderDropZone = (props: DropzoneState) => {
-    // TODO: Upgrade react-dropzone to a newer version to avoid the linting error: unbound-method
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { open, getRootProps, getInputProps } = props
+  const renderDropZone = useCallback(
+    (props: DropzoneState) => {
+      // TODO: Upgrade react-dropzone to a newer version to avoid the linting error: unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      const { open, getRootProps, getInputProps } = props
 
-    const validFiles = this.getValidFiles()
-    const rejectedFiles = this.getRejectedFiles()
-
-    return (
-      <>
-        <Modal.Content scrolling>
-          <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            <div>
-              <div className={`${styles.tablesContainer} ${styles.itemDropZoneContainer}`}>
-                {rejectedFiles.length > 0 ? (
-                  <Table basic="very" compact="very">
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.invalid_title')}</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right">
-                          <Icon
-                            className={styles.trashIcon}
-                            aria-label="clear rejected files"
-                            name="trash"
-                            onClick={this.onRejectedFilesClear}
-                          />
-                        </Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                      {rejectedFiles.map(({ fileName, reason }, index) => {
-                        return (
-                          <Table.Row key={index}>
-                            <Table.Cell>
-                              <Icon name="warning circle" size="small" color="red" /> {fileName}
-                            </Table.Cell>
-                            <Table.Cell textAlign="right">{reason}</Table.Cell>
-                          </Table.Row>
-                        )
-                      })}
-                    </Table.Body>
-                  </Table>
-                ) : null}
-                {validFiles.length > 0 ? (
-                  <Table basic="very" compact="very">
-                    {rejectedFiles.length > 0 ? (
+      return (
+        <>
+          <Modal.Content scrolling>
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              <div>
+                <div className={`${styles.tablesContainer} ${styles.itemDropZoneContainer}`}>
+                  {rejectedFiles.length > 0 ? (
+                    <Table basic="very" compact="very">
                       <Table.Header>
                         <Table.Row>
-                          <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.valid_title')}</Table.HeaderCell>
+                          <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.invalid_title')}</Table.HeaderCell>
+                          <Table.HeaderCell textAlign="right">
+                            <Icon
+                              className={styles.trashIcon}
+                              aria-label="clear rejected files"
+                              name="trash"
+                              onClick={onRejectedFilesClear}
+                            />
+                          </Table.HeaderCell>
                         </Table.Row>
                       </Table.Header>
-                    ) : null}
-                    <Table.Body>
-                      {validFiles.map(({ fileName }, index) => {
-                        return (
-                          <Table.Row key={index}>
-                            <Table.Cell colSpan="2">{fileName}</Table.Cell>
+                      <Table.Body>
+                        {rejectedFiles.map(({ fileName, reason }, index) => {
+                          return (
+                            <Table.Row key={index}>
+                              <Table.Cell>
+                                <Icon name="warning circle" size="small" color="red" /> {fileName}
+                              </Table.Cell>
+                              <Table.Cell textAlign="right">{reason}</Table.Cell>
+                            </Table.Row>
+                          )
+                        })}
+                      </Table.Body>
+                    </Table>
+                  ) : null}
+                  {validFiles.length > 0 ? (
+                    <Table basic="very" compact="very">
+                      {rejectedFiles.length > 0 ? (
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell>{t('create_and_edit_multiple_items_modal.valid_title')}</Table.HeaderCell>
                           </Table.Row>
-                        )
-                      })}
-                    </Table.Body>
-                  </Table>
-                ) : null}
+                        </Table.Header>
+                      ) : null}
+                      <Table.Body>
+                        {validFiles.map(({ fileName }, index) => {
+                          return (
+                            <Table.Row key={index}>
+                              <Table.Cell colSpan="2">{fileName}</Table.Cell>
+                            </Table.Row>
+                          )
+                        })}
+                      </Table.Body>
+                    </Table>
+                  ) : null}
+                </div>
               </div>
+              {rejectedFiles.length > 0 ? (
+                <div className={styles.rejectedFilesInfo}>
+                  <InfoIcon className={styles.infoIcon} />
+                  {t('create_and_edit_multiple_items_modal.only_valid_items_info')}
+                </div>
+              ) : null}
             </div>
-            {rejectedFiles.length > 0 ? (
-              <div className={styles.rejectedFilesInfo}>
-                <InfoIcon className={styles.infoIcon} />
-                {t('create_and_edit_multiple_items_modal.only_valid_items_info')}
-              </div>
-            ) : null}
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button secondary onClick={open}>
-            {t('create_and_edit_multiple_items_modal.add_more_button')}
-          </Button>
-          <Button primary disabled={validFiles.length === 0} onClick={this.handleFilesUpload}>
-            {t('create_and_edit_multiple_items_modal.upload_items_button')}
-          </Button>
-        </Modal.Actions>
-      </>
-    )
-  }
+          </Modal.Content>
+          <Modal.Actions>
+            <Button secondary onClick={open}>
+              {t('create_and_edit_multiple_items_modal.add_more_button')}
+            </Button>
+            <Button primary disabled={validFiles.length === 0} onClick={handleFilesUpload}>
+              {t('create_and_edit_multiple_items_modal.upload_items_button')}
+            </Button>
+          </Modal.Actions>
+        </>
+      )
+    },
+    [onRejectedFilesClear, rejectedFiles, validFiles, handleFilesUpload, t]
+  )
 
-  private renderReviewTable = () => {
-    const { onClose } = this.props
-    return (
+  const renderReviewTable = useCallback(
+    () => (
       <>
-        <ModalNavigation title={this.getModalTitle()} subtitle={this.getModalSubtitle()} onClose={onClose} />
+        <ModalNavigation title={modalTitle} subtitle={modalSubtitle} onClose={onClose} />
         <Dropzone
-          children={this.renderDropZone}
-          onDropAccepted={this.handleFilesImport}
-          onDropRejected={this.handleRejectedFiles}
+          children={renderDropZone}
+          onDropAccepted={handleFilesImport}
+          onDropRejected={handleRejectedFiles}
           accept={['.zip']}
           noClick
         />
       </>
-    )
-  }
+    ),
+    [modalTitle, modalSubtitle, onClose, handleFilesImport, handleRejectedFiles, renderDropZone]
+  )
 
-  private isCreating = () => {
-    const {
-      metadata: { type = CreateOrEditMultipleItemsModalType.CREATE }
-    } = this.props
-    return type === CreateOrEditMultipleItemsModalType.CREATE
-  }
-
-  private getOperationTypeKey = () => {
-    return this.isCreating() ? 'create' : 'edit'
-  }
-
-  private getModalTitle = () => {
-    return t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.title`)
-  }
-
-  private getModalSubtitle = () => {
-    return this.isCreating() ? null : t('create_and_edit_multiple_items_modal.edit.subtitle')
-  }
-
-  private renderImportView = () => {
-    const { onClose } = this.props
-    return (
+  const renderImportView = useCallback(
+    () => (
       <>
-        <ModalNavigation title={this.getModalTitle()} subtitle={this.getModalSubtitle()} onClose={onClose} />
+        <ModalNavigation title={modalTitle} subtitle={modalSubtitle} onClose={onClose} />
         <Modal.Content>
           <ItemImport
-            onDropAccepted={this.handleFilesImport}
-            onDropRejected={this.handleRejectedFiles}
+            onDropAccepted={handleFilesImport}
+            onDropRejected={handleRejectedFiles}
             acceptedExtensions={['.zip']}
             moreInformation={
               WEARABLES_ZIP_INFRA_URL ? (
@@ -466,13 +480,64 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           />
         </Modal.Content>
       </>
-    )
-  }
+    ),
+    [modalTitle, modalSubtitle, onClose, handleFilesImport, handleRejectedFiles, t]
+  )
 
-  private renderProgressBar(progress: number, label: string, cancel?: () => void) {
-    return (
+  const renderThirdPartyKindSelector = useCallback(
+    () => (
       <>
-        <ModalNavigation title={this.getModalTitle()} subtitle={this.getModalSubtitle()} />
+        <ModalNavigation title={modalTitle} subtitle={modalSubtitle} onClose={onClose} />
+        <Modal.Content>
+          {isFetchingPrice || !thirdPartyPrice ? (
+            <div className={styles.loader}>
+              <Loader active size="medium" />
+            </div>
+          ) : (
+            <div className={styles.selector}>
+              {[
+                {
+                  title: t('create_and_edit_multiple_items_modal.third_party_kind_selector.standard.title'),
+                  subtitle: t('create_and_edit_multiple_items_modal.third_party_kind_selector.standard.subtitle', {
+                    price: ethers.utils.formatEther(thirdPartyPrice?.item.usd ?? 0)
+                  }),
+                  img: standardKindImage,
+                  action: () => handleSetThirdPartyType(false)
+                },
+                {
+                  title: t('create_and_edit_multiple_items_modal.third_party_kind_selector.programmatic.title'),
+                  subtitle: t('create_and_edit_multiple_items_modal.third_party_kind_selector.programmatic.subtitle', {
+                    price: ethers.utils.formatEther(thirdPartyPrice?.programmatic.usd ?? 0)
+                  }),
+                  img: programmaticKindImage,
+                  action: () => handleSetThirdPartyType(true)
+                }
+              ].map(({ title, subtitle, img, action }, index) => (
+                <div className={styles.item} key={index}>
+                  <img src={img} />
+                  <div className={styles.description}>
+                    <h2 className={styles.title}>{title}</h2>
+                    <div className={styles.subtitle}>{subtitle}</div>
+                    <div className={styles.action}>
+                      <Button primary size="small" onClick={action}>
+                        {t('create_and_edit_multiple_items_modal.third_party_kind_selector.action')}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Modal.Content>
+      </>
+    ),
+    [modalTitle, modalSubtitle, isFetchingPrice, thirdPartyPrice, onClose, handleSetThirdPartyType, t]
+  )
+
+  const renderProgressBar = useCallback(
+    (progress: number, label: string, cancel?: () => void) => (
+      <>
+        <ModalNavigation title={modalTitle} subtitle={modalSubtitle} />
         <Modal.Content className={styles.modalContent}>
           <div className={styles.progressBarContainer}>
             <div className={styles.progressBarLabel}>{label}</div>
@@ -485,11 +550,12 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           </div>
         </Modal.Content>
       </>
-    )
-  }
+    ),
+    [modalTitle, modalSubtitle, t]
+  )
 
-  private renderItemsTableSection(title: string, items: string[]) {
-    return (
+  const renderItemsTableSection = useCallback(
+    (title: string, items: string[]) => (
       <div className={styles.tablesContainer}>
         <Table basic="very" compact="very">
           <Table.Header>
@@ -506,22 +572,34 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
           </Table.Body>
         </Table>
       </div>
-    )
-  }
+    ),
+    []
+  )
 
-  private renderCompleted() {
-    const { onClose, savedItemsFiles, notSavedItemsFiles, cancelledItemsFiles, saveMultipleItemsState, error } = this.props
-    const hasFinishedSuccessfully = saveMultipleItemsState === MultipleItemsSaveState.FINISHED_SUCCESSFULLY
-    const hasBeenCancelled = saveMultipleItemsState === MultipleItemsSaveState.CANCELLED
-    const hasFailed = saveMultipleItemsState === MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
+  const handleDone = useCallback(() => {
+    if (isLinkedWearablesPaymentsEnabled && thirdParty && !thirdParty.published) {
+      setView(ItemCreationView.THIRD_PARTY_KIND_SELECTOR)
+    } else {
+      onClose()
+    }
+  }, [onClose, isLinkedWearablesPaymentsEnabled, thirdParty])
+
+  const renderCompleted = useCallback(() => {
+    const hasFinishedSuccessfully = finishedState?.state === MultipleItemsSaveState.FINISHED_SUCCESSFULLY
+    const hasBeenCancelled = finishedState?.state === MultipleItemsSaveState.CANCELLED
+    const hasFailed = finishedState?.state === MultipleItemsSaveState.FINISHED_UNSUCCESSFULLY
+
+    const notSavedItemsFiles = finishedState?.notSavedFiles ?? []
+    const savedItemsFiles = finishedState?.savedFiles ?? []
+    const cancelledItemsFiles = finishedState?.cancelledFiles ?? []
 
     let title: string
     if (hasFinishedSuccessfully) {
-      title = t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.successful_title`)
+      title = t(`create_and_edit_multiple_items_modal.${operationTypeKey}.successful_title`)
     } else if (hasFailed) {
-      title = t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.failed_title`)
+      title = t(`create_and_edit_multiple_items_modal.${operationTypeKey}.failed_title`)
     } else {
-      title = t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.cancelled_title`)
+      title = t(`create_and_edit_multiple_items_modal.${operationTypeKey}.cancelled_title`)
     }
 
     return (
@@ -530,67 +608,72 @@ export default class CreateAndEditMultipleItemsModal extends React.PureComponent
         <Modal.Content>
           <p className={styles.createdItems}>
             {!notSavedItemsFiles.length
-              ? t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_successfully_subtitle`, {
+              ? t(`create_and_edit_multiple_items_modal.${operationTypeKey}.finished_successfully_subtitle`, {
                   number_of_items: savedItemsFiles.length
                 })
-              : t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.finished_partial_successfully_subtitle`, {
+              : t(`create_and_edit_multiple_items_modal.${operationTypeKey}.finished_partial_successfully_subtitle`, {
                   number_of_items: savedItemsFiles.length,
                   number_of_failed_items: notSavedItemsFiles.length
                 })}
           </p>
           {hasFailed ? <Message error size="tiny" visible content={error} header={t('global.error_ocurred')} /> : null}
           {hasBeenCancelled && cancelledItemsFiles.length > 0
-            ? this.renderItemsTableSection(t('create_and_edit_multiple_items_modal.cancelled_items_table_title'), cancelledItemsFiles)
+            ? renderItemsTableSection(t('create_and_edit_multiple_items_modal.cancelled_items_table_title'), cancelledItemsFiles)
             : null}
           {hasBeenCancelled || notSavedItemsFiles.length > 0
-            ? this.renderItemsTableSection(t('create_and_edit_multiple_items_modal.not_saved_items_table_title'), notSavedItemsFiles)
+            ? renderItemsTableSection(t('create_and_edit_multiple_items_modal.not_saved_items_table_title'), notSavedItemsFiles)
             : null}
           {savedItemsFiles.length > 0
-            ? this.renderItemsTableSection(
-                t(`create_and_edit_multiple_items_modal.${this.getOperationTypeKey()}.saved_items_table_title`),
+            ? renderItemsTableSection(
+                t(`create_and_edit_multiple_items_modal.${operationTypeKey}.saved_items_table_title`),
                 savedItemsFiles
               )
             : null}
         </Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={onClose}>
+          <Button primary onClick={handleDone}>
             {t('create_and_edit_multiple_items_modal.done_button')}
           </Button>
         </Modal.Actions>
       </>
     )
-  }
+  }, [onClose, handleDone, operationTypeKey, finishedState, error])
 
-  private renderView() {
-    const { view, loadingFilesProgress } = this.state
-    const { onCancelSaveMultipleItems, saveItemsProgress } = this.props
-    const validFiles = this.getValidFiles()
-
+  const renderedView = useMemo(() => {
     switch (view) {
       case ItemCreationView.IMPORT:
-        return this.renderImportView()
+        return renderImportView()
       case ItemCreationView.IMPORTING:
-        return this.renderProgressBar(loadingFilesProgress, t('create_and_edit_multiple_items_modal.importing_files_progress_label'))
+        return renderProgressBar(loadingFilesProgress, t('create_and_edit_multiple_items_modal.importing_files_progress_label'))
       case ItemCreationView.REVIEW:
-        return this.renderReviewTable()
+        return renderReviewTable()
       case ItemCreationView.UPLOADING:
-        return this.renderProgressBar(
+        return renderProgressBar(
           saveItemsProgress,
           t('create_and_edit_multiple_items_modal.uploading_items_progress_label', { number_of_items: validFiles.length }),
           onCancelSaveMultipleItems
         )
       case ItemCreationView.COMPLETED:
-        return this.renderCompleted()
+        return renderCompleted()
+      case ItemCreationView.THIRD_PARTY_KIND_SELECTOR:
+        return renderThirdPartyKindSelector()
     }
-  }
+  }, [
+    view,
+    loadingFilesProgress,
+    validFiles,
+    onCancelSaveMultipleItems,
+    saveItemsProgress,
+    renderImportView,
+    renderProgressBar,
+    renderReviewTable,
+    renderCompleted,
+    renderThirdPartyKindSelector
+  ])
 
-  public render() {
-    const { name, onClose } = this.props
-
-    return (
-      <Modal name={name} closeOnEscape={this.isViewClosable()} closeOnDimmerClick={this.isViewClosable()} onClose={onClose}>
-        {this.renderView()}
-      </Modal>
-    )
-  }
+  return (
+    <Modal name={name} closeOnEscape={isViewClosable} closeOnDimmerClick={isViewClosable} onClose={onClose}>
+      {renderedView}
+    </Modal>
+  )
 }
