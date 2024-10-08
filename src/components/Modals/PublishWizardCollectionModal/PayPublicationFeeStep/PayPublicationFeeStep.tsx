@@ -44,11 +44,16 @@ export const PayPublicationFeeStep: React.FC<
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const availableSlots = useMemo(() => thirdParty?.availableSlots ?? 0, [thirdParty?.availableSlots])
   const amountOfItemsToPublish = useMemo(
-    () => (thirdParty?.isProgrammatic ? 0 : itemsToPublish.length - availableSlots > 0 ? itemsToPublish.length - availableSlots : 0),
+    () =>
+      thirdParty?.isProgrammatic && thirdParty.published
+        ? 0
+        : itemsToPublish.length - availableSlots > 0
+        ? itemsToPublish.length - availableSlots
+        : 0,
     [thirdParty, itemsToPublish, availableSlots]
   )
   const amountOfItemsAlreadyPayed = useMemo(
-    () => (thirdParty?.isProgrammatic ? itemsToPublish.length : amountOfItemsToPublish - itemsToPublish.length),
+    () => (thirdParty?.isProgrammatic && thirdParty.published ? itemsToPublish.length : amountOfItemsToPublish - itemsToPublish.length),
     [amountOfItemsToPublish, itemsToPublish.length]
   )
   const amountOfItemsAlreadyPublishedWithChanges = useMemo(() => itemsWithChanges.length, [itemsWithChanges])
