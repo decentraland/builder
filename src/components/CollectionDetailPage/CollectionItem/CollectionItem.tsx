@@ -111,27 +111,30 @@ export default function CollectionItem({
 
   const renderItemStatus = useCallback(() => {
     return status === SyncStatus.UNSYNCED ? (
-      <div className={`${styles.unsynced} ${styles.action}`}>
+      <div className={`${styles.unsynced} ${styles.status}`}>
         <div className={styles.alertIcon} />
         {t('collection_item.unsynced')}
       </div>
     ) : status === SyncStatus.UNDER_REVIEW || (item.isPublished && !item.isApproved) ? (
-      <div className={`${styles.notReady} ${styles.action}`}>
+      <div className={`${styles.underReview} ${styles.status}`}>
         <Icon name="clock outline" />
         {t('collection_item.under_review')}
       </div>
     ) : item.isPublished && item.isApproved ? (
-      <div className={`${styles.published} ${styles.action}`}>
+      <div className={`${styles.published} ${styles.status}`}>
         <Icon name="check circle outline" />
         {t('collection_item.published')}
       </div>
     ) : isComplete(item) ? (
-      <div className={`${styles.ready} ${styles.action}`}>
-        <Icon className={styles.check} name="check" />
+      <div className={`${styles.ready} ${styles.status}`}>
+        <Icon className={styles.check} name="cloud upload" />
         {t('collection_item.ready')}
       </div>
     ) : !item.price || (isSmart(item) && !(VIDEO_PATH in item.contents)) ? (
-      <div className={`${styles.notReady} ${styles.action}`}>{t('collection_item.not_ready')}</div>
+      <div className={`${styles.notReady} ${styles.status}`}>
+        <Icon name="exclamation circle" />
+        {t('collection_item.not_ready')}
+      </div>
     ) : (
       <span onClick={preventDefault(handleNavigateToEditor)} className={`link ${styles.linkAction}`}>
         {t('collection_item.edit_item')}
@@ -242,6 +245,7 @@ export default function CollectionItem({
           <Button
             secondary
             size="tiny"
+            className={styles.removeSaleButton}
             onClick={handleRemoveFromSale}
             loading={isCancellingItemOrder && loadingTradeIds.includes(item.tradeId)}
           >

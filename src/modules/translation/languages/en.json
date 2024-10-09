@@ -1731,7 +1731,7 @@
   },
   "collection_item": {
     "set_price": "set price",
-    "ready": "Ready",
+    "ready": "Ready to submit",
     "published": "Published",
     "not_ready": "Not ready",
     "under_review": "Under Review",
@@ -1959,6 +1959,11 @@
       "title": "Do you want to put this collection for sale?",
       "description": "The collection will be available for purchase in the Decentraland Marketplace.",
       "cta": "Put up for Sale"
+    },
+    "enable_sales": {
+      "title": "Do you want to enable sales for this collection?",
+      "description": "After accepting, you will be able to put items of this collection for sale in the Decentraland Marketplace.",
+      "cta": "Enable sales"
     },
     "remove_from_marketplace": {
       "title": "Do you want to remove this collection from the Marketplace?",

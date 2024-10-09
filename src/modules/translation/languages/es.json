@@ -1738,7 +1738,7 @@
   },
   "collection_item": {
     "set_price": "agregar precio",
-    "ready": "Listo",
+    "ready": "Listo para publicar",
     "published": "Publicado",
     "not_ready": "Incompleto",
     "under_review": "En Revisión",
@@ -1947,6 +1947,11 @@
       "title": "¿Quieres poner en venta esta colección?",
       "description": "La colección estará en venta en el mercado de Decentraland.",
       "cta": "Poner en Venta"
+    },
+    "enable_sales": {
+      "title": "¿Quieres habilitar las ventas para esta colección?",
+      "description": "Después de aceptar, podrá poner artículos de esta colección a la venta en el mercado Decentraland.",
+      "cta": "Habilitar ventas"
     },
     "remove_from_marketplace": {
       "title": "¿Quieres remover esta colección del Marketplace?",

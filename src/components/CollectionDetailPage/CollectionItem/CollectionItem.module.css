@@ -90,12 +90,34 @@
   width: 100%;
 }
 
+.removeSaleButton:global(.ui.button.secondary) {
+  background: white;
+  color: black;
+}
+
+.status {
+  padding: 4px 10px 4px 8px;
+  margin: 0 10px;
+  border-radius: 32px;
+  align-items: center;
+  width: fit-content;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.status i {
+  margin-right: 5px;
+}
+
 .ready {
-  color: var(--light-blue-raw);
+  color: #63b4f6;
+  background: #2196f333;
 }
 
 .notReady {
-  color: #736e7d;
+  background: #fb3b3b33;
+  color: #e97177;
 }
 
 .incomplete {
@@ -103,13 +125,14 @@
 }
 
 .published {
-  color: var(--text);
+  color: #65d890;
+  background: #34ce7733;
 }
 
+.underReview,
 .unsynced {
-  display: flex;
-  align-items: center;
-  color: var(--millenial-orange);
+  color: #fe9c2a;
+  background: #fe9c2a33;
 }
 
 .alertIcon {

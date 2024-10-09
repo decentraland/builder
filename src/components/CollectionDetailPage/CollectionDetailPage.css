@@ -121,6 +121,11 @@
   border-top: 1px solid var(--divider);
 }
 
+.CollectionDetailPage .narrow.dcl {
+  width: 100%;
+  max-width: 1200px;
+}
+
 .CollectionDetailPage .CollectionStatus {
   width: 16px;
   height: 16px;
