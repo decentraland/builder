@@ -92,14 +92,6 @@
   max-width: 150px;
 }
 
-.avatarColumn .avatarContainer .badge {
-  background-color: var(--smart-grey);
-}
-
-.avatarColumn .avatarContainer .badge::before {
-  filter: none;
-}
-
 .priceColumn :global(.ui.mana) {
   font-size: 15px;
 }
@@ -140,4 +132,20 @@
   padding: 2px 12px 2px 12px;
   width: fit-content;
   font-size: 12px;
+  margin-right: 15px;
+}
+
+.badges {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+.badges .badge {
+  background-color: var(--smart-grey);
+}
+
+.badges .badge::before {
+  filter: none;
 }

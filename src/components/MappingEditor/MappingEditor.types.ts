@@ -6,5 +6,6 @@ export type Props = {
   isCompact?: boolean
   error?: string
   disabled?: boolean
+  readOnly?: boolean
   onChange: (mapping: Mapping) => void
 }

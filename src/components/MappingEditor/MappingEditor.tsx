@@ -19,7 +19,7 @@ const mappingTypeIcons = {
 }
 
 export const MappingEditor = (props: Props) => {
-  const { mapping, error, loading, disabled, isCompact, onChange } = props
+  const { mapping, readOnly, error, loading, disabled, isCompact, onChange } = props
 
   const [mappingType, mappingValue] = useMemo(() => {
     if (!mapping) {
@@ -116,7 +116,7 @@ export const MappingEditor = (props: Props) => {
   )
 
   return (
-    <div className={classNames(styles.main, isCompact ? styles.compact : styles.full)}>
+    <div className={classNames(styles.main, isCompact ? styles.compact : styles.full, readOnly && styles.readOnly)}>
       <SelectField
         label={
           isCompact ? undefined : (
@@ -128,7 +128,7 @@ export const MappingEditor = (props: Props) => {
         onChange={handleMappingTypeChange}
         placeholder={t('mapping_editor.mapping_type_placeholder')}
         value={mappingType}
-        disabled={disabled}
+        disabled={disabled || readOnly}
         className={classNames(styles.mappingType, isCompact ? styles.compact : styles.full)}
         options={mappingTypeOptions}
       />
@@ -146,20 +146,20 @@ export const MappingEditor = (props: Props) => {
         ) : mappingType === MappingType.SINGLE ? (
           <Field
             label={isCompact ? undefined : t('mapping_editor.mapping_value_label')}
-            disabled={disabled}
+            disabled={disabled || readOnly}
             type="number"
             value={mappingValue}
             loading={loading}
             error={!!error}
             message={error}
             placeholder={'1234567890'}
-            maxLength={78}
+            maxLength={!readOnly ? 78 : undefined}
             onChange={handleSingleMappingValueChange}
           />
         ) : mappingType === MappingType.MULTIPLE ? (
           isCompact ? (
             <Field
-              disabled={disabled}
+              disabled={disabled || readOnly}
               loading={loading}
               error={!!error}
               message={
@@ -173,7 +173,7 @@ export const MappingEditor = (props: Props) => {
           ) : (
             <TextAreaField
               label={t('mapping_editor.mapping_value_multiple_label')}
-              disabled={disabled}
+              disabled={disabled || readOnly}
               loading={loading}
               info={
                 mappingValue.length === 0 && !error
@@ -193,22 +193,22 @@ export const MappingEditor = (props: Props) => {
               label={isCompact ? undefined : t('mapping_editor.mapping_value_from_label')}
               error={!!error}
               message={error}
-              disabled={disabled}
+              disabled={disabled || readOnly}
               type="number"
               placeholder={'1'}
-              maxLength={78}
+              maxLength={!readOnly ? 78 : undefined}
               value={mappingValue.split(',')[0]}
               onChange={handleFromMappingValueChange}
             />
             {isCompact ? <div className={styles.to}>{t('mapping_editor.to')}</div> : null}
             <Field
               label={isCompact ? undefined : t('mapping_editor.mapping_value_to_label')}
-              disabled={disabled}
+              disabled={disabled || readOnly}
               error={!!error}
               message={error}
               type="number"
               placeholder={'4000'}
-              maxLength={78}
+              maxLength={!readOnly ? 78 : undefined}
               value={mappingValue.split(',')[1]}
               onChange={handleToMappingValueChange}
             />

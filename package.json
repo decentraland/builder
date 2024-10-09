@@ -42,7 +42,7 @@
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^2.16.0",
-    "decentraland-ui": "^6.9.2",
+    "decentraland-ui": "^6.9.3",
     "ethers": "^5.6.8",
     "file-saver": "^2.0.1",
     "graphql": "^15.8.0",
