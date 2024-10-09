@@ -263,7 +263,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
       />
       <Form onSubmit={handleSubmit} disabled={!isSubmittable}>
         <ModalContent>
-          {thirdParties.length && !isLinkedWearablesPaymentsEnabled && (
+          {thirdParties.length && !isLinkedWearablesPaymentsEnabled ? (
             <SelectField
               label={t('create_third_party_collection_modal.third_party_field.label')}
               options={thirdPartyOptions}
@@ -271,8 +271,8 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
               disabled={isLoading}
               value={selectedThirdParty?.id}
             />
-          )}
-          {isLinkedWearablesPaymentsEnabled && collectionNameField}
+          ) : null}
+          {isLinkedWearablesPaymentsEnabled ? collectionNameField : undefined}
           {isLinkedWearablesV2Enabled && (
             <div className={styles.contract}>
               {thirdPartyContractNetworkOptions.length > 0 && !isLinkedWearablesPaymentsEnabled ? (
@@ -315,7 +315,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
               )}
             </div>
           )}
-          {!isLinkedWearablesPaymentsEnabled && collectionNameField}
+          {!isLinkedWearablesPaymentsEnabled ? collectionNameField : null}
           {!isLinkedWearablesV2Enabled && (
             <Field
               label={t('create_third_party_collection_modal.collection_id_field.label')}

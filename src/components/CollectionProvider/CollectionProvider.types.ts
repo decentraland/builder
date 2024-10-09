@@ -22,7 +22,8 @@ export type Props = {
   fetchCollectionItemsOptions?: FetchCollectionItemsParams
   curation: CollectionCuration | null
   itemCurations: ItemCuration[] | null
-  isLoading: boolean
+  isLoadingCollection: boolean
+  isLoadingCollectionItems: boolean
   isConnected: boolean
   children: ({
     collection,
@@ -31,7 +32,8 @@ export type Props = {
     curation,
     itemCurations,
     initialPage,
-    isLoading,
+    isLoadingCollection,
+    isLoadingCollectionItems,
     onFetchCollectionItemsPages
   }: {
     collection: Collection | null
@@ -41,7 +43,8 @@ export type Props = {
     curation: CollectionCuration | null
     itemCurations: ItemCuration[] | null
     initialPage: number
-    isLoading: boolean
+    isLoadingCollection: boolean
+    isLoadingCollectionItems: boolean
     onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
   }) => React.ReactNode
   onFetchCollection: typeof fetchCollectionRequest
@@ -51,7 +54,16 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'id' | 'collection' | 'items' | 'isLoading' | 'isConnected' | 'curation' | 'itemCurations' | 'paginatedItems' | 'paginatedCollections'
+  | 'id'
+  | 'collection'
+  | 'items'
+  | 'isLoadingCollection'
+  | 'isLoadingCollectionItems'
+  | 'isConnected'
+  | 'curation'
+  | 'itemCurations'
+  | 'paginatedItems'
+  | 'paginatedCollections'
 >
 export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems'>
 export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>

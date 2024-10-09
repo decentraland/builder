@@ -386,6 +386,17 @@
       "finished_partial_successfully_subtitle": "您已更新 {number_of_items} 个项目，但 {number_of_failed_items} 个失败。请查看提供的 URN",
       "saved_items_table_title": "更新项目"
     },
+    "third_party_kind_selector": {
+      "standard": {
+        "title": "标准链接可穿戴物品",
+        "subtitle": "手工制作的可穿戴物品。每件可穿戴物品都是单独制作的。每件可穿戴物品的提交费用为 {price} 美元。"
+      },
+      "programmatic": {
+        "title": "程序化链接的可穿戴物品",
+        "subtitle": "每件可穿戴物品的部件或特征都是手工制作的，但特征的混合是通过代码完成的。提交每件收藏品的费用为 {price} 美元。"
+      },
+      "action": "选择"
+    },
     "wrong_thumbnail_format": "thumbnail.png 文件未格式化为 PNG 图像。",
     "missing_mapping": "该项缺少映射。",
     "wrong_file_extension": "文件扩展名不正确。",
@@ -1563,6 +1574,7 @@
     "owner": "所有者",
     "link": "关联",
     "type": "类型",
+    "kind": "班级",
     "type_third_party": "链接的",
     "type_standard": "标准",
     "review_request": "审查请求",
@@ -1628,9 +1640,6 @@
     "slots_short": "插槽",
     "slots_long": "出版点",
     "migration_banner": "您收藏中的一个或多个项目必须迁移到新版本",
-    "type": "链接的可穿戴物品",
-    "programmatic": "程序化",
-    "standard": "标准的",
     "synced_filter": {
       "all": "所有项目",
       "synced": "同步的",
@@ -1708,7 +1717,7 @@
   },
   "collection_item": {
     "set_price": "设定价格",
-    "ready": "已完成",
+    "ready": "准备提交",
     "published": "发表",
     "not_ready": "没有准备好",
     "under_review": "审查中",
@@ -1725,7 +1734,9 @@
     "reset_item": "撤消",
     "move_to_another_collection": "移动到另一个集合",
     "preview": "在编辑器中预览",
-    "put_for_sale": "出售"
+    "put_for_sale": "出售",
+    "remove_from_sale": "删除出售",
+    "cancel_order_error": "删除项目订单时出错"
   },
   "collection": {
     "type": {
@@ -1752,7 +1763,10 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "设定价格",
+    "expiration_date_label": "截止日期",
+    "expiration_date_error": "到期日期必须在未来",
+    "cancel": "取消",
+    "title": "设定价格和受益人",
     "for_me": "我是受益人",
     "free": "免费",
     "price_label": "价格",
@@ -1870,7 +1884,12 @@
     },
     "pay_publication_fee_step": {
       "title": "确认项目",
-      "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。",
+      "third_parties": {
+        "subtitle": "您即将发送包含 {count} {count, plural, one {item} other {items}} 的收藏集 \"{collection_name}\" 进行审核。为了支持策展委员会和 DAO 宝藏，每个收藏集仅需支付一次出版费 {currency} {publication_fee}（以 MANA 支付）。"
+      },
+      "standard": {
+        "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。"
+      },
       "learn_more": "了解出版费",
       "already_payed": "已付款但未发布",
       "already_published": "已发布",
@@ -1909,6 +1928,11 @@
       "title": "您想出售此收藏吗？",
       "description": "该系列将可在 Decentraland 市场上购买。",
       "cta": "出售"
+    },
+    "enable_sales": {
+      "title": "您想为此系列启用销售吗？",
+      "description": "接受后，您将能够将该系列的物品放在分散的市场上出售。",
+      "cta": "启用销售"
     },
     "remove_from_marketplace": {
       "title": "你想从市场中删除这个集合吗？",
@@ -2379,5 +2403,23 @@
     "unsynced": "已准备好发送更改",
     "pending_migration": "待迁移",
     "pending_mapping": "待定映射"
+  },
+  "push_changes_modal": {
+    "title": "推送变更",
+    "description": "自上次策展人审核以来，馆藏或其包含的物品已发生更改。{br}为了使这些更改反映在世界上，委员会必须再次审核和批准这些更改。{br }您确定要推送更改以供审核吗？"
+  },
+  "collection_type_badge": {
+    "third_party": "链接可穿戴物品",
+    "regular": "常规的"
+  },
+  "third_party_kind_badge": {
+    "programmatic": "程序化",
+    "standard": "标准"
+  },
+  "put_for_sale_offchain_modal": {
+    "title": "需要采取行动",
+    "subtitle": "为了更新新价格，您必须首先删除先前的销售",
+    "cancel": "取消",
+    "reject_old_prices": "拒绝旧价格"
   }
 }

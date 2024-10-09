@@ -272,7 +272,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   createItem = async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-    const { address, collection, onSave } = this.props
+    const { address, collection, isOffchainPublicItemOrdersEnabled, onSave } = this.props
     const {
       id,
       name,
@@ -358,6 +358,12 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     if ((hasScreenshotTaken || type !== ItemType.EMOTE) && belongsToAThirdPartyCollection) {
       item.price = '0'
       item.beneficiary = ethers.constants.AddressZero
+      return onSave(item as Item, sortedContents.all)
+    }
+
+    if ((hasScreenshotTaken || type !== ItemType.EMOTE) && isOffchainPublicItemOrdersEnabled) {
+      item.price = ethers.constants.MaxUint256.toString()
+      item.beneficiary = item.beneficiary || address
       return onSave(item as Item, sortedContents.all)
     }
 

@@ -1,3 +1,13 @@
+/* Login wrapper */
+
+.main,
+.main > :global(.ui.container) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
 .slots {
   font-weight: bold;
   text-transform: uppercase;
@@ -146,6 +156,7 @@
   margin-top: 16px;
   gap: 16px;
   min-width: 1400px;
+  flex: 1;
 }
 
 .info {
@@ -284,4 +295,14 @@
 
 .standardBadge {
   background-color: #43404a;
+}
+
+/* Loader */
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+  flex: 1;
 }

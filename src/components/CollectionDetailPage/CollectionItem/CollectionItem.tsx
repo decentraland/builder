@@ -9,7 +9,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
-import { isComplete, isFree, canManageItem, getMaxSupply, isSmart, isEmote } from 'modules/item/utils'
+import { isComplete, canManageItem, getMaxSupply, isSmart, isEmote, isFree } from 'modules/item/utils'
 import { isEnableForSaleOffchain, isLocked, isOnSale } from 'modules/collection/utils'
 import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
@@ -25,19 +25,29 @@ const LENGTH_LIMIT = 25
 export default function CollectionItem({
   onOpenModal,
   onSetItems,
+  onRemoveFromSale,
   item,
   isOffchainPublicItemOrdersEnabled,
   collection,
   status,
   ethAddress,
-  wallet
+  wallet,
+  loadingTradeIds,
+  isCancellingItemOrder
 }: Props) {
   analytics = getAnalytics()
   const history = useHistory()
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
+  const shouldAllowPriceEdition =
+    !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
 
   const handleEditPriceAndBeneficiary = useCallback(() => {
+    if (isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchainMarketplace) {
+      onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
+      return
+    }
+
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
   }, [item, onOpenModal])
 
@@ -64,47 +74,67 @@ export default function CollectionItem({
     onOpenModal('MoveItemToAnotherCollectionModal', { item, fromCollection: collection })
   }, [item, onOpenModal, collection])
 
+  const handlePutForSale = useCallback(() => {
+    onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
+  }, [])
+
+  const handleRemoveFromSale = useCallback(() => {
+    if (!item.tradeId) {
+      return
+    }
+    onRemoveFromSale(item.tradeId)
+  }, [item])
+
   const renderPrice = useCallback(() => {
-    return item.price ? (
-      <div>
-        {isFree(item) ? (
-          t('global.free')
-        ) : (
-          <Mana className={styles.mana} network={Network.MATIC} showTooltip>
-            {ethers.utils.formatEther(item.price)}
-          </Mana>
-        )}
-      </div>
-    ) : (
-      <div className={`link ${styles.linkAction}`} onClick={preventDefault(handleEditPriceAndBeneficiary)}>
-        {t('collection_item.set_price')}
-      </div>
+    if (!item.price) {
+      return (
+        <div className={`link ${styles.linkAction}`} onClick={preventDefault(handleEditPriceAndBeneficiary)}>
+          {t('collection_item.set_price')}
+        </div>
+      )
+    }
+
+    if (item.price === ethers.constants.MaxUint256.toString() || (isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId)) {
+      return <span>-</span>
+    }
+
+    if (isFree(item)) {
+      return <span>{t('global.free')}</span>
+    }
+
+    return (
+      <Mana className={styles.mana} network={Network.MATIC} showTooltip>
+        {ethers.utils.formatEther(item.price)}
+      </Mana>
     )
-  }, [item, handleEditPriceAndBeneficiary])
+  }, [item, isOnSaleLegacy, isOffchainPublicItemOrdersEnabled, handleEditPriceAndBeneficiary])
 
   const renderItemStatus = useCallback(() => {
     return status === SyncStatus.UNSYNCED ? (
-      <div className={`${styles.unsynced} ${styles.action}`}>
+      <div className={`${styles.unsynced} ${styles.status}`}>
         <div className={styles.alertIcon} />
         {t('collection_item.unsynced')}
       </div>
     ) : status === SyncStatus.UNDER_REVIEW || (item.isPublished && !item.isApproved) ? (
-      <div className={`${styles.notReady} ${styles.action}`}>
+      <div className={`${styles.underReview} ${styles.status}`}>
         <Icon name="clock outline" />
         {t('collection_item.under_review')}
       </div>
     ) : item.isPublished && item.isApproved ? (
-      <div className={`${styles.published} ${styles.action}`}>
+      <div className={`${styles.published} ${styles.status}`}>
         <Icon name="check circle outline" />
         {t('collection_item.published')}
       </div>
     ) : isComplete(item) ? (
-      <div className={`${styles.ready} ${styles.action}`}>
-        <Icon className={styles.check} name="check" />
+      <div className={`${styles.ready} ${styles.status}`}>
+        <Icon className={styles.check} name="cloud upload" />
         {t('collection_item.ready')}
       </div>
     ) : !item.price || (isSmart(item) && !(VIDEO_PATH in item.contents)) ? (
-      <div className={`${styles.notReady} ${styles.action}`}>{t('collection_item.not_ready')}</div>
+      <div className={`${styles.notReady} ${styles.status}`}>
+        <Icon name="exclamation circle" />
+        {t('collection_item.not_ready')}
+      </div>
     ) : (
       <span onClick={preventDefault(handleNavigateToEditor)} className={`link ${styles.linkAction}`}>
         {t('collection_item.edit_item')}
@@ -135,7 +165,9 @@ export default function CollectionItem({
             )}
             {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
               <>
-                {item.price ? <Dropdown.Item text={t('collection_item.edit_price')} onClick={handleEditPriceAndBeneficiary} /> : null}
+                {item.price && shouldAllowPriceEdition ? (
+                  <Dropdown.Item text={t('collection_item.edit_price')} onClick={handleEditPriceAndBeneficiary} />
+                ) : null}
                 <ResetItemButton itemId={item.id} />
                 {!item.isPublished ? (
                   <>
@@ -201,10 +233,23 @@ export default function CollectionItem({
         </Table.Cell>
       ) : null}
       <Table.Cell>{renderItemStatus()}</Table.Cell>
-      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
+      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId && (
         <Table.Cell>
-          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace}>
+          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace} onClick={handlePutForSale}>
             {t('collection_item.put_for_sale')}
+          </Button>
+        </Table.Cell>
+      )}
+      {isOffchainPublicItemOrdersEnabled && item.tradeId && (
+        <Table.Cell>
+          <Button
+            secondary
+            size="tiny"
+            className={styles.removeSaleButton}
+            onClick={handleRemoveFromSale}
+            loading={isCancellingItemOrder && loadingTradeIds.includes(item.tradeId)}
+          >
+            {t('collection_item.remove_from_sale')}
           </Button>
         </Table.Cell>
       )}

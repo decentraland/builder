@@ -94,6 +94,7 @@ import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem
 import { ItemPaginationData } from './reducer'
 import * as toasts from './toasts'
 import { fromRemoteItem } from 'lib/api/transformations'
+import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
 const blob: Blob = new Blob()
 let contents: Record<string, Blob>
@@ -104,7 +105,8 @@ const builderAPI = {
   fetchContents: jest.fn(),
   fetchCollectionItems: jest.fn(),
   fetchRarities: jest.fn(),
-  fetchItems: jest.fn()
+  fetchItems: jest.fn(),
+  fetchCollection: jest.fn()
 } as unknown as BuilderAPI
 
 let builderClient: BuilderClient
@@ -113,6 +115,7 @@ let dateNowSpy: jest.SpyInstance
 let pushMock: jest.Mock
 const updatedAt = Date.now()
 const mockAddress = '0x6D7227d6F36FC997D53B4646132b3B55D751cc7c'
+let tradeService: TradeService
 
 beforeEach(() => {
   dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
@@ -122,6 +125,7 @@ beforeEach(() => {
   } as unknown as BuilderClient
   contents = { path: blob }
   pushMock = jest.fn()
+  tradeService = new TradeService('dcl:test', 'test.com', () => undefined)
 })
 
 afterEach(() => {
@@ -141,7 +145,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should put a saveItemFailure action with invalid character message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true]
@@ -159,7 +163,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should put a saveItemFailure action with invalid character message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true]
@@ -178,7 +182,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should put a saveItemFailure action with item too big message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true],
@@ -202,7 +206,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should put a saveItemFailure action with item too big message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true],
@@ -223,7 +227,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should put a saveItemFailure action with item too big message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true],
@@ -240,7 +244,7 @@ describe('when handling the save item request action', () => {
 
   describe('and thumbnail file size is larger than 1MB', () => {
     it('should put a saveItemFailure action with thumbnail too big message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true],
@@ -257,7 +261,7 @@ describe('when handling the save item request action', () => {
 
   describe('and video file size is larger than 250MB', () => {
     it('should put a saveItemFailure action with video too big message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItem, item.id), undefined],
           [select(getIsLinkedWearablesV2Enabled), true],
@@ -296,7 +300,7 @@ describe('when handling the save item request action', () => {
     })
 
     it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [matchers.call.fn(reHashOlderContents), {}],
           [select(getItem, item.id), undefined],
@@ -328,7 +332,7 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action with the catalyst image', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -365,7 +369,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with the catalyst image', () => {
         const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contentsToSave
         const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithCatalystImage.contents
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -398,7 +402,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action without a new catalyst image', () => {
         const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -430,7 +434,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action with a new catalyst image', () => {
         const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = newContentsContainingNewCatalystImage
         const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithCatalystImage.contents
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -469,7 +473,7 @@ describe('when handling the save item request action', () => {
       it('should put a save item success action', () => {
         const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -496,7 +500,7 @@ describe('when handling the save item request action', () => {
       it('should save item if it is already published', () => {
         const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
         const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -521,7 +525,7 @@ describe('when handling the save item request action', () => {
       })
 
       it('should not calculate the size of the contents', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
             [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
@@ -551,7 +555,7 @@ describe('when handling the save item request action', () => {
       it("should update the item's content with the new hash and upload the files", () => {
         const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = newContents
         const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithNewHashes.contents
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [
               call(reHashOlderContents, item.contents, builderAPI),
@@ -595,7 +599,7 @@ describe('when handling the save item success action', () => {
         paginationData = { currentPage: 1, limit: 20, total: 5, ids: [item.id], totalPages: 1 }
       })
       it('should put a fetch collection items success action to fetch the same page again', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
@@ -615,7 +619,7 @@ describe('when handling the save item success action', () => {
       })
       it('should put a fetch collection items success action to fetch the same page again', () => {
         const newPageNumber = Math.ceil((paginationData.total + paginationData.ids.length) / paginationData.limit)
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), { EditItemURNModal: true }],
@@ -633,7 +637,7 @@ describe('when handling the save item success action', () => {
 
     describe('and the onlySaveItem option is set', () => {
       it('should not fetch the new collection items paginated', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
             [select(getOpenModals), {}],
@@ -651,7 +655,7 @@ describe('when handling the save item success action', () => {
     describe('and the CreateSingleItemModal is opened', () => {
       describe('and the item type is wearable', () => {
         it('should close the modal CreateSingleItemModal', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail(collection.id) } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
@@ -669,7 +673,7 @@ describe('when handling the save item success action', () => {
         })
 
         it('should put a location change to the item editor', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail(collection.id) } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
@@ -700,7 +704,7 @@ describe('when handling the save item success action', () => {
     describe('and the CreateSingleItemModal is opened', () => {
       describe('and the item type is wearable', () => {
         it('should close the modal CreateSingleItemModal', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [getContext('history'), { push: pushMock, location: { pathname: locations.itemEditor() } }],
               [select(getOpenModals), { CreateSingleItemModal: true }],
@@ -721,7 +725,7 @@ describe('when handling the save item success action', () => {
 
         describe('and the FF EmotesFlow is enabled', () => {
           it('should close the modal CreateSingleItemModal', () => {
-            return expectSaga(itemSaga, builderAPI, builderClient)
+            return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
               .provide([
                 [getContext('history'), { push: pushMock, location: { pathname: locations.itemEditor() } }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
@@ -737,7 +741,7 @@ describe('when handling the save item success action', () => {
 
         describe('and the FF EmotesFlow is disabled', () => {
           it('should close the modal CreateSingleItemModal', () => {
-            return expectSaga(itemSaga, builderAPI, builderClient)
+            return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
               .provide([
                 [getContext('history'), { push: pushMock, location: { pathname: locations.itemEditor() } }],
                 [select(getOpenModals), { CreateSingleItemModal: true }],
@@ -808,7 +812,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
       const price = '1000'
       const beneficiary = '0xpepe'
 
-      await expectSaga(itemSaga, builderAPI, builderClient)
+      await expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -842,7 +846,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
         const nonExistentItemId = 'non-existent-id'
         const errorMessage = 'Error message'
 
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [select(getItems), [item]],
             [select(getCollections), [collection]],
@@ -871,7 +875,7 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
 
       const errorMessage = 'Error message'
 
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
@@ -1074,7 +1078,7 @@ describe('when handling the downloadItemRequest action', () => {
   describe('when id is not found', () => {
     const itemId = 'invalid'
     it('should throw an error with a message that says the item was not found', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([[select(getItemsById), itemsById]])
         .put(downloadItemFailure(itemId, 'Item not found for itemId="invalid"'))
         .dispatch(downloadItemRequest(itemId))
@@ -1089,7 +1093,7 @@ describe('when handling the downloadItemRequest action', () => {
       const model = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': model }
       const zip: Record<string, Blob> = { 'male/model.glb': model }
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -1110,7 +1114,7 @@ describe('when handling the downloadItemRequest action', () => {
       const femaleModel = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
       const zip: Record<string, Blob> = { 'male/model.glb': maleModel, 'female/model.glb': femaleModel }
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -1130,7 +1134,7 @@ describe('when handling the downloadItemRequest action', () => {
       const model = new Blob()
       const files: Record<string, Blob> = { 'male/model.glb': model, 'female/model.glb': model }
       const zip: Record<string, Blob> = { 'model.glb': model }
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getItemsById), itemsById],
           [call([builderAPI, 'fetchContents'], item.contents), files],
@@ -1187,7 +1191,7 @@ describe('when handling the save multiple items requests action', () => {
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[2])
     })
     it('should dispatch the update progress action for each uploaded item and the success action with the upserted items and the name of the files of the upserted items', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [getContext('history'), { push: pushMock, location: { pathname: 'notTPDetailPage' } }],
           [select(getOpenModals), { EditItemURNModal: true }]
@@ -1214,7 +1218,7 @@ describe('when handling the save multiple items requests action', () => {
           paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should request the same page of items if the user is in the TP detail page', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [
                 getContext('history'),
@@ -1236,7 +1240,7 @@ describe('when handling the save multiple items requests action', () => {
         })
         it('should push the tp detail page location with the new page of items', () => {
           const newPageNumber = Math.ceil((paginationData.total + items.length) / paginationData.limit)
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [
                 getContext('history'),
@@ -1262,7 +1266,7 @@ describe('when handling the save multiple items requests action', () => {
       ;(builderClient.upsertItem as jest.Mock).mockResolvedValueOnce(remoteItems[2])
     })
     it('should dispatch the update progress action for the non-failing item upload and the success action with the items that failed, the upserted items and the name of the files of the upserted items', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [getContext('history'), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
           [select(getPaginationData, items[0].collectionId!), paginationData]
@@ -1295,7 +1299,7 @@ describe('when handling the save multiple items requests action', () => {
     })
 
     it('should dispatch the update progress action for the first non-cancelled upsert and the cancelling action with the upserted items and the name of the files of the upserted items', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) } }],
           [select(getPaginationData, items[0].collectionId!), paginationData]
@@ -1326,7 +1330,7 @@ describe('when handling the save multiple items requests action', () => {
           paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should request the same page of items if the user is in the TP detail page', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [
                 getContext('history'),
@@ -1357,7 +1361,7 @@ describe('when handling the save multiple items requests action', () => {
           const newPageNumber = Math.ceil(
             (paginationData.total + (savedFilesWithCancelled.length - amountOfFilesThatWillBeCancelled)) / paginationData.limit
           )
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [
                 getContext('history'),
@@ -1390,7 +1394,7 @@ describe('when handling the save multiple items requests action', () => {
           paginationData = { currentPage: 1, limit: 20, total: 5, ids: items.map(item => item.id), totalPages: 1 }
         })
         it('should request the same page of items if the user is in the TP detail page', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [getContext('history'), { pathname: locations.thirdPartyCollectionDetail(items[0].collectionId) }],
               [select(getOpenModals), { EditItemURNModal: true }],
@@ -1442,7 +1446,7 @@ describe('when handling the rescue items request action', () => {
 
   describe('and the meta transactions are successful', () => {
     it('should dispatch a rescueItemsChunkSuccess per chunk and the rescueItemsSuccess once the transactions finish', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
           [matchers.call.fn(getMethodData), transactionData],
@@ -1460,7 +1464,7 @@ describe('when handling the rescue items request action', () => {
   describe('and the meta transactions are unsuccessful', () => {
     describe('and the transaction fails to get mined', () => {
       it('should dispatch the rescueItemsFailure with the information about the error', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
             [matchers.call.fn(getMethodData), transactionData],
@@ -1474,7 +1478,7 @@ describe('when handling the rescue items request action', () => {
 
     describe('and the call to the transaction service fails', () => {
       it('should dispatch the rescueItemsFailure with the information about the error', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
             [matchers.call.fn(getMethodData), transactionData],
@@ -1507,7 +1511,8 @@ describe('when handling the fetch of collection items', () => {
       ;(builderAPI.fetchCollectionItems as jest.Mock).mockReturnValue(paginationData)
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+        .provide([[select(getCollection, item.collectionId!), { isPublished: false } as Collection]])
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(
           fetchCollectionItemsSuccess(item.collectionId!, [item], {
@@ -1527,7 +1532,7 @@ describe('when handling the fetch of collection items', () => {
       ;(builderAPI.fetchCollectionItems as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: 1, limit: paginationData.limit }))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
@@ -1553,7 +1558,8 @@ describe('when handling the fetch of collection items pages', () => {
       ;(builderAPI.fetchCollectionItems as jest.Mock).mockReturnValue(paginationData)
     })
     it('should put a fetchCollectionItemsSuccess action with items and pagination data', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+        .provide([[select(getCollection, item.collectionId!), { isPublished: false } as Collection]])
         .dispatch(
           fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit, overridePaginationData: false })
         )
@@ -1568,7 +1574,7 @@ describe('when handling the fetch of collection items pages', () => {
       ;(builderAPI.fetchCollectionItems as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put a fetchCollectionItemsFailure action with items and pagination data', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .dispatch(fetchCollectionItemsRequest(item.collectionId!, { page: [1], limit: paginationData.limit }))
         .put(fetchCollectionItemsFailure(item.collectionId!, errorMessage))
         .run({ silenceTimeout: true })
@@ -1588,7 +1594,7 @@ describe('when handling the delete item success action', () => {
         paginationData = { currentPage: 3, limit: 20, total: 65, ids: [item.id, item.id], totalPages: 3 }
       })
       it('should put a fetch collection items success action to fetch the same page again', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [select(getAddress), mockAddress],
             [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
@@ -1608,7 +1614,7 @@ describe('when handling the delete item success action', () => {
           paginationData = { currentPage: 3, limit: 20, total: 61, ids: [item.id], totalPages: 3 }
         })
         it('should put a fetch collection items success action to fetch the previous page', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [select(getAddress), mockAddress],
               [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
@@ -1631,7 +1637,7 @@ describe('when handling the delete item success action', () => {
           paginationData = { currentPage: 1, limit: 20, total: 1, ids: [item.id], totalPages: 1 }
         })
         it('should put a fetch collection items success action to fetch the same first page', () => {
-          return expectSaga(itemSaga, builderAPI, builderClient)
+          return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
             .provide([
               [select(getAddress), mockAddress],
               [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
@@ -1651,7 +1657,7 @@ describe('when handling the delete item success action', () => {
       paginationData = { currentPage: 3, limit: 20, total: 65, ids: [item.id, item.id], totalPages: 3 }
     })
     it('should put a fetch address items success action to fetch the same page again', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getAddress), mockAddress],
           [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
@@ -1672,7 +1678,7 @@ describe('when handling the save item curation success action', () => {
   })
 
   it('should put a fetch item curation request action if the item is a TP one', () => {
-    return expectSaga(itemSaga, builderAPI, builderClient)
+    return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
       .provide([
         [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
         [select(getOpenModals), { EditItemURNModal: true }],
@@ -1690,7 +1696,7 @@ describe('when handling the save item curation success action', () => {
   })
 
   it('should not put a fetch item curation request action if the item is a standard one', () => {
-    return expectSaga(itemSaga, builderAPI, builderClient)
+    return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
       .provide([
         [getContext('history'), { push: pushMock, location: { pathname: locations.thirdPartyCollectionDetail(item.collectionId) } }],
         [select(getOpenModals), { EditItemURNModal: true }],
@@ -1703,7 +1709,7 @@ describe('when handling the save item curation success action', () => {
   })
 
   it('should not put a location change to the item detail if the CreateSingleItemModal was opened and the location was not /collections', () => {
-    return expectSaga(itemSaga, builderAPI, builderClient)
+    return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
       .provide([
         [getContext('history'), { push: pushMock, location: { pathname: locations.collectionDetail('id') } }],
         [select(getOpenModals), { CreateSingleItemModal: true }],
@@ -1737,7 +1743,7 @@ describe('when handling the fetch of rarities', () => {
   })
 
   it('should put a fetch rarities success action with the fetched rarities', () => {
-    return expectSaga(itemSaga, builderAPI, builderClient)
+    return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
       .provide([[call([builderAPI, builderAPI.fetchRarities]), rarities]])
       .dispatch(fetchRaritiesRequest())
       .put(fetchRaritiesSuccess(rarities))
@@ -1746,7 +1752,7 @@ describe('when handling the fetch of rarities', () => {
 
   describe('when the request to the builder fails', () => {
     it('should put a fetch rarities failure action with the error', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([[call([builderAPI, builderAPI.fetchRarities]), Promise.reject(new Error('Failed to fetch rarities'))]])
         .dispatch(fetchRaritiesRequest())
         .put(fetchRaritiesFailure('Failed to fetch rarities'))
@@ -1764,7 +1770,7 @@ describe('when handling the setCollection action', () => {
 
       const item = { ...mockedItem }
 
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getAddress), mockAddress],
           [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
@@ -1791,7 +1797,7 @@ describe('when handling the setCollection action', () => {
 
       const item = { ...mockedItem }
 
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getAddress), mockAddress],
           [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
@@ -1825,7 +1831,7 @@ describe('when handling the failure of setting token items id', () => {
 
   describe('when error code is 401', () => {
     it('should put the setItemsTokenIdRequest action to retry the request', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [delay(5000), void 0],
           [select(getCollection, collection.id), collection],
@@ -1838,7 +1844,7 @@ describe('when handling the failure of setting token items id', () => {
   })
   describe('when error code is not 401', () => {
     it('should display a toast message saying that the publishing failed', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [delay(5000), void 0],
           [select(getCollection, collection.id), collection],
@@ -1866,7 +1872,7 @@ describe('when handling the fetch of an orphan item', () => {
         ;(builderAPI.fetchItems as jest.Mock).mockReturnValue(paginationData)
       })
       it('should put a fetchOrphanItemSuccess action with hasUserOrphanItems true', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .dispatch(fetchOrphanItemRequest(mockAddress))
           .put(fetchOrphanItemSuccess(paginationData.total !== 0))
           .run({ silenceTimeout: true })
@@ -1884,7 +1890,7 @@ describe('when handling the fetch of an orphan item', () => {
         ;(builderAPI.fetchItems as jest.Mock).mockReturnValue(paginationData)
       })
       it('should put a fetchOrphanItemSuccess action with hasUserOrphanItems false', () => {
-        return expectSaga(itemSaga, builderAPI, builderClient)
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .dispatch(fetchOrphanItemRequest(mockAddress))
           .put(fetchOrphanItemSuccess(paginationData.total !== 0))
           .run({ silenceTimeout: true })
@@ -1898,7 +1904,7 @@ describe('when handling the fetch of an orphan item', () => {
       ;(builderAPI.fetchItems as jest.Mock).mockRejectedValue(new Error(errorMessage))
     })
     it('should put a fetchOrphanItemFailure action with the error message', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .dispatch(fetchOrphanItemRequest(mockAddress))
         .put(fetchOrphanItemFailure(errorMessage))
         .run({ silenceTimeout: true })
@@ -1923,7 +1929,7 @@ describe('when handling the setItemCollection action', () => {
 
   describe("and the item's collection is updated successfully", () => {
     it('should put a save item request action with the new collection id, show the successful toast and close the modal', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
           [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],
@@ -1944,7 +1950,7 @@ describe('when handling the setItemCollection action', () => {
 
   describe("and the item's collections fails to be updated", () => {
     it('should not not the toast message nor close the modal nor close the modal', () => {
-      return expectSaga(itemSaga, builderAPI, builderClient)
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
           [getContext('history'), { push: pushMock, location: { pathname: locations.collections() } }],

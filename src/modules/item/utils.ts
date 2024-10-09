@@ -17,7 +17,11 @@ import {
   Entity,
   ContractNetwork,
   Mapping,
-  Mappings
+  Mappings,
+  TradeAssetType,
+  TradeCreation,
+  TradeType,
+  Network
 } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
@@ -48,6 +52,11 @@ import {
   EmotePlayMode,
   VIDEO_PATH
 } from './types'
+import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib'
+import { getOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
+import { ContractName, getContract } from 'decentraland-transactions'
+import { BigNumber } from 'eth-connect'
+import { ethers } from 'ethers'
 
 export const MAX_VIDEO_FILE_SIZE = 262144000 // 250 MB
 export const MAX_NFTS_PER_MINT = 50
@@ -777,4 +786,60 @@ export const isSkinFileSizeValid = (fileSize: number): boolean => {
 
 export const isSmartWearableFileSizeValid = (fileSize: number): boolean => {
   return fileSize < MAX_SMART_WEARABLE_FILE_SIZE
+}
+
+export async function createItemOrderTrade(
+  item: Item,
+  priceInWei: string,
+  beneficiary: string,
+  collection: Collection,
+  expiresAt: Date
+): Promise<TradeCreation> {
+  const signer = await getSigner()
+  const address = await signer.getAddress()
+  const chainId = getChainIdByNetwork(Network.MATIC)
+  const marketplaceContract = await getOffChainMarketplaceContract(chainId)
+  const manaContract = getContract(ContractName.MANAToken, chainId)
+  const contractSignatureIndex = (await marketplaceContract.contractSignatureIndex()) as BigNumber
+  const signerSignatureIndex = (await marketplaceContract.signerSignatureIndex(address)) as BigNumber
+
+  if (!item.isPublished) {
+    return Promise.reject(new Error('Item is not published'))
+  }
+
+  const tradeToSign: Omit<TradeCreation, 'signature'> = {
+    signer: address,
+    network: Network.MATIC,
+    chainId: chainId,
+    type: TradeType.PUBLIC_ITEM_ORDER,
+    checks: {
+      uses: getMaxSupply(item) - (item.totalSupply || 0),
+      allowedRoot: '0x',
+      contractSignatureIndex: contractSignatureIndex.toNumber(),
+      signerSignatureIndex: signerSignatureIndex.toNumber(),
+      effective: Date.now(),
+      expiration: expiresAt.getTime(),
+      externalChecks: [],
+      salt: ethers.utils.hexlify(Math.floor(Math.random() * 1000000000000))
+    },
+    sent: [
+      {
+        assetType: TradeAssetType.COLLECTION_ITEM,
+        contractAddress: collection.contractAddress!,
+        itemId: item.tokenId!,
+        extra: ''
+      }
+    ],
+    received: [
+      {
+        assetType: TradeAssetType.ERC20,
+        contractAddress: manaContract.address,
+        amount: priceInWei,
+        extra: '',
+        beneficiary
+      }
+    ]
+  }
+
+  return { ...tradeToSign, signature: await getTradeSignature(tradeToSign) }
 }

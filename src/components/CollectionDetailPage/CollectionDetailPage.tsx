@@ -86,7 +86,7 @@ export default function CollectionDetailPage({
     if (collection) {
       onOpenModal('SellCollectionModal', {
         collectionId: collection.id,
-        isOnSale: isOffchainPublicItemOrdersEnabled ? isEnableForSaleOffchain(collection, wallet) : isCollectionOnSale(collection, wallet)
+        isOnSale: isEnableForSaleOffchain(collection, wallet) || isCollectionOnSale(collection, wallet)
       })
     }
   }, [collection, wallet, onOpenModal])
@@ -277,7 +277,6 @@ export default function CollectionDetailPage({
       const hasOnlyWearables = hasWearables && !hasEmotes
       const filteredItems = items.filter(item => (hasOnlyWearables ? isWearable(item) : hasOnlyEmotes ? isEmote(item) : item.type === tab))
       const showShowTabs = hasEmotes && hasWearables
-
       return (
         <>
           <Section className={classNames({ 'is-published': collection.isPublished })}>
@@ -439,11 +438,11 @@ export default function CollectionDetailPage({
   const HUGE_PAGE_SIZE = 5000 // TODO: Remove this ASAP and implement pagination
   return (
     <CollectionProvider id={collection?.id} itemsPage={1} itemsPageSize={HUGE_PAGE_SIZE}>
-      {({ isLoading: isLoadingCollectionData, items }) => (
+      {({ isLoadingCollection, isLoadingCollectionItems, items }) => (
         <LoggedInDetailPage
           className="CollectionDetailPage"
-          hasNavigation={!hasAccess && !isLoading && !isLoadingCollectionData}
-          isLoading={isLoading || isLoadingCollectionData}
+          hasNavigation={!hasAccess && !isLoading && !isLoadingCollection}
+          isLoading={isLoading || isLoadingCollection || isLoadingCollectionItems}
         >
           {hasAccess ? renderPage(items) : <NotFound />}
         </LoggedInDetailPage>

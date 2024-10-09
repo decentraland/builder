@@ -26,6 +26,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNewClick: (collectionId: string, itemsWithChanges: Item[], itemsToPublish: Item[]) =>
     dispatch(openModal('PublishWizardCollectionModal', { collectionId, itemsWithChanges, itemsToPublish })),
+  onPushChangesClick: (collectionId: string, itemsWithChanges: Item[]) =>
+    dispatch(openModal('PushChangesModal', { collectionId, itemsWithChanges })),
   onClick: (collectionId: string, itemIds: string[], action: PublishButtonAction) =>
     dispatch(openModal('PublishThirdPartyCollectionModal', { collectionId, itemIds, action }))
 })

@@ -468,7 +468,7 @@ describe.each([
         action = publishThirdPartyItemsSuccess('aThirdPartyId', 'aCollectionId', items, curations)
         break
       case finishPublishAndPushChangesThirdPartyItemsSuccess:
-        action = finishPublishAndPushChangesThirdPartyItemsSuccess({} as ThirdParty, 'aCollectionId', items, curations)
+        action = finishPublishAndPushChangesThirdPartyItemsSuccess({} as ThirdParty, 'aCollectionId', curations)
         break
     }
   })
