@@ -7,7 +7,7 @@ import cryptoFetch from 'decentraland-crypto-fetch'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
+import { takeLatest, takeEvery, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
 import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
@@ -83,7 +83,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeLatest(DEPLOY_TO_WORLD_REQUEST, handleDeployToWorldRequest)
-  yield takeLatest(FETCH_WORLD_DEPLOYMENTS_REQUEST, handleFetchWorldDeploymentsRequest)
+  yield takeEvery(FETCH_WORLD_DEPLOYMENTS_REQUEST, handleFetchWorldDeploymentsRequest)
 
   function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
     const { projectId, additionalInfo } = action.payload
