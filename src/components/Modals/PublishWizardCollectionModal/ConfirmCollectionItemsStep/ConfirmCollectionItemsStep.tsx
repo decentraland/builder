@@ -58,10 +58,9 @@ export const ConfirmCollectionItemsStep: React.FC<{
       <Table basic="very">
         <Table.Header className={classNames({ [styles.hasScrollBar]: items.length > 5 })}>
           <Table.Row>
+            <Table.HeaderCell width={3}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
             <Table.HeaderCell width={1}></Table.HeaderCell>
-            <Table.HeaderCell width={5}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
-            <Table.HeaderCell width={1}></Table.HeaderCell>
-            <Table.HeaderCell>Linked to</Table.HeaderCell>
+            <Table.HeaderCell width={5}>Linked to</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -69,25 +68,25 @@ export const ConfirmCollectionItemsStep: React.FC<{
             const itemMapping = getMapping(item)
             return (
               <Table.Row key={item.id}>
-                <Table.Cell width={1}>
-                  <div className={styles.itemNumber}>{index + 1}</div>
-                </Table.Cell>
-                <Table.Cell width={5} className={classNames(styles.column, styles.avatarColumn)}>
+                <Table.Cell width={3} className={classNames(styles.column, styles.avatarColumn)}>
                   <div className={styles.avatarContainer}>
+                    <div className={styles.itemNumber}>{index + 1}</div>
                     <ItemImage className={styles.itemImage} item={item} />
                     <div className={styles.info}>
                       <div className={styles.name} title={item.name}>
                         {item.name}
                       </div>
-                      <ItemBadge className={styles.badge} item={item} size="small" />
                     </div>
                   </div>
                 </Table.Cell>
                 <Table.Cell width={1}>
-                  <IconBadge className={classNames(styles.categoryBadge, styles.thirdParty)} icon={item.data.category} />
+                  <div className={styles.badges}>
+                    <ItemBadge className={styles.badge} size="normal" item={item} />
+                    <IconBadge className={classNames(styles.categoryBadge, styles.thirdParty)} icon={item.data.category} />
+                  </div>
                 </Table.Cell>
-                <Table.Cell className={styles.mapping}>
-                  {itemMapping && <MappingEditor mapping={itemMapping} onChange={() => undefined} disabled isCompact />}
+                <Table.Cell width={5}>
+                  {itemMapping && <MappingEditor mapping={itemMapping} onChange={() => undefined} readOnly isCompact />}
                 </Table.Cell>
               </Table.Row>
             )

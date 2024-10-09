@@ -41,14 +41,24 @@
   margin-top: 19px;
 }
 
+.readOnly .any,
+.readOnly .none,
+.readOnly .multiple {
+  margin-top: 0 !important;
+}
+
 /* Mapping type class */
 
 .mappingType :global(.ui.dropdown):global(> .text:not(.default) > img) {
-  margin-top: 3px;
+  margin-top: 1px;
 }
 
 .mappingType.compact {
   margin-top: 17px;
+}
+
+.readOnly .mappingType {
+  margin-top: 0 !important;
 }
 
 .mappingType.compact :global(.ui.selection.dropdown) {
@@ -56,7 +66,7 @@
 }
 
 .mappingType :global(.ui.dropdown .menu > .item > img) {
-  margin-top: 0px;
+  margin-top: 1px;
 }
 
 .mappingType :global(.default.text) {
@@ -134,4 +144,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* Read only */
+.readOnly p:global(.message) {
+  display: none;
 }
