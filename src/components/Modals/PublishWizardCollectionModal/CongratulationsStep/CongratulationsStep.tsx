@@ -5,15 +5,21 @@ import { Collection } from 'modules/collection/types'
 import CollectionImage from 'components/CollectionImage'
 import './CongratulationsStep.css'
 
-export const CongratulationsStep: React.FC<{ collection: Collection; onClose: () => void }> = props => {
-  const { collection, onClose } = props
+export const CongratulationsStep: React.FC<{ collection: Collection; onClose: () => void; itemsCount: number }> = props => {
+  const { collection, onClose, itemsCount } = props
 
   return (
     <Modal.Content className="CongratulationsStep">
       <Column>
         <Row className="details">
           <Column>
-            <CollectionImage className="collection-image" collectionId={collection.id} />
+            <div className="collection-info">
+              <CollectionImage className="collection-image" collectionId={collection.id} />
+              <span className="collection-name">{collection.name}</span>
+              <span className="collection-items-count">
+                {t('publish_wizard_collection_modal.pay_publication_fee_step.items', { count: itemsCount })}
+              </span>
+            </div>
             <div className="texts-container">
               <span className="title">{t('publish_wizard_collection_modal.congratulations_step.title')}</span>
               <div className="subtitle-container">

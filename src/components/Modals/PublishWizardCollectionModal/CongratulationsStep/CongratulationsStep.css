@@ -10,9 +10,16 @@
   height: 165px;
   width: 165px;
   margin-top: 18px;
-  margin-bottom: 38px;
+  margin-bottom: 18px;
   border-radius: 6px;
   overflow: hidden;
+}
+
+.CongratulationsStep .collection-items-count {
+  font-size: 14px;
+  font-weight: 700;
+  color: #a09ba8;
+  text-transform: uppercase;
 }
 
 .CongratulationsStep .texts-container {
@@ -33,19 +40,33 @@
 
 .CongratulationsStep .details .title {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 24px;
+  text-align: center;
+}
+
+.CongratulationsStep .collection-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.CongratulationsStep .collection-name {
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .CongratulationsStep .details .subtitle {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 24px;
   color: var(--clear-divider);
 }
 
 .CongratulationsStep .details .description {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 24px;
   color: var(--clear-divider);
