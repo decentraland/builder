@@ -523,7 +523,7 @@
           "title": "Uploading to the Metaverse"
         },
         "uploading_recording": {
-          "description": "Please wait while upload your Scene preview.",
+          "description": "Please wait while your Scene preview is uploaded.",
           "title": "Uploading Preview"
         }
       },
@@ -541,7 +541,7 @@
       },
       "not_enough_land": {
         "title": "This scene is bigger than your LAND",
-        "description": "This scene requires an area of {cols}x{rows} parcels. Ensure your LANDs are equal to or larger than this to acommodate this scene. Have in mind that this scene could be a perfect fit for a world.",
+        "description": "This scene requires an area of {cols}x{rows} parcels. Ensure your LANDs are equal to or larger than this to acommodate this scene. Keep in mind, this scene could be a perfect fit for a world.",
         "publish_world": "Publish to my world",
         "return_scenes": "Return to scenes",
         "claim_name": "Claim your unique name for a free World"
@@ -692,7 +692,7 @@
   },
   "edit_page": {
     "title": "Edit",
-    "subtitle": "Your are editing {name}."
+    "subtitle": "You are editing {name}."
   },
   "ens_list_page": {
     "title": "Your NAMEs",
@@ -763,7 +763,7 @@
     },
     "network": "Network",
     "ethereum": "Ethereum Mainnet Network",
-    "error_title": "An error occur while setting the address",
+    "error_title": "An error occurred while setting the address",
     "learn_more": "Learn more",
     "save": "Save",
     "set_resolver": {
@@ -785,7 +785,7 @@
   },
   "worlds_list_page": {
     "title": "Worlds",
-    "error_title": "An error occur while loading worlds",
+    "error_title": "An error occurred while loading worlds",
     "table": {
       "name": "NAME",
       "url": "URL",
