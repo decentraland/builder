@@ -128,7 +128,7 @@ import { takeLatestCancellable } from 'modules/common/utils'
 import { waitForTx } from 'modules/transaction/utils'
 import { getMethodData } from 'modules/wallet/utils'
 import { setItems } from 'modules/editor/actions'
-import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { getIsLinkedWearablesV2Enabled, getIsOffchainPublicItemOrdersEnabled } from 'modules/features/selectors'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
@@ -284,6 +284,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     const isFetchingMultiplePages = Array.isArray(page)
 
     try {
+      const isOffchainPublicItemOrdersEnabled: boolean = yield select(getIsOffchainPublicItemOrdersEnabled)
       const { items, paginationStats }: { items: Item[]; paginationStats?: PaginationStats } = yield call(
         fetchCollectionItemsWithBatch,
         collectionId,
@@ -291,24 +292,26 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         restOfOptions
       )
       let itemsToSave = items
-      let collection: Collection | undefined = yield select(getCollection, collectionId)
+      if (isOffchainPublicItemOrdersEnabled) {
+        let collection: Collection | undefined = yield select(getCollection, collectionId)
 
-      if (!collection) {
-        collection = yield call([legacyBuilder, 'fetchCollection'], collectionId)
-      }
+        if (!collection) {
+          collection = yield call([legacyBuilder, 'fetchCollection'], collectionId)
+        }
 
-      if (collection && collection.isPublished) {
-        const result: { data: DCLItem[] } = yield call([marketplace, 'fetchCollectionItems'], collection.contractAddress!)
-        itemsToSave = items.map(item => {
-          const publishedItem = result.data.find(publishedItem => publishedItem.id === `${collection?.contractAddress}-${item.tokenId}`)
-          return {
-            ...item,
-            tradeExpiresAt: publishedItem?.tradeExpiresAt,
-            tradeId: publishedItem?.tradeId,
-            beneficiary: publishedItem?.beneficiary || item.beneficiary,
-            price: publishedItem?.price || item.price
-          }
-        })
+        if (collection && collection.isPublished) {
+          const result: { data: DCLItem[] } = yield call([marketplace, 'fetchCollectionItems'], collection.contractAddress!)
+          itemsToSave = items.map(item => {
+            const publishedItem = result.data.find(publishedItem => publishedItem.id === `${collection?.contractAddress}-${item.tokenId}`)
+            return {
+              ...item,
+              tradeExpiresAt: publishedItem?.tradeExpiresAt,
+              tradeId: publishedItem?.tradeId,
+              beneficiary: publishedItem?.beneficiary || item.beneficiary,
+              price: publishedItem?.price || item.price
+            }
+          })
+        }
       }
       yield put(fetchCollectionItemsSuccess(collectionId, itemsToSave, overridePaginationData ? paginationStats : undefined))
     } catch (error) {
