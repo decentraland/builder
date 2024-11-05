@@ -10,13 +10,13 @@ import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { takeLatest, takeEvery, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
 import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
-import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
+import { Deployment, SceneDefinition, Placement, Coordinate } from 'modules/deployment/types'
 import { takeScreenshot } from 'modules/editor/actions'
 import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getIdentity } from 'modules/identity/utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
-import { getCoordsByEstateId } from 'modules/land/selectors'
+import { getCoordsByEstateId, getLandTiles } from 'modules/land/selectors'
 import { coordsToId, idToCoords } from 'modules/land/utils'
 import { LandType } from 'modules/land/types'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
@@ -400,6 +400,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     try {
       const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
       const deployment = deployments[deploymentId]
+      const lands = (yield select(getLandTiles)) as ReturnType<typeof getLandTiles>
 
       if (!deployment) {
         throw new Error('Unable to clear deployment: Invalid deployment')
@@ -423,11 +424,24 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       } else {
         const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
         const { placement } = deployment
+        // If deployment was done with a placement point not owned by the user, we need to find a point that is currently own by them.
+        // This could happen if a estate has a deployment, the estate gets dissolved and the lands sent to different users.
+        const landsBelongingToTheDeployment = deployments[deploymentId].parcels
+          .filter(parcel => lands[parcel])
+          .map(parcel => lands[parcel].land)
+        let placementPoint: Coordinate = placement.point
+        const isPlacementPointOwnedByUser = landsBelongingToTheDeployment.some(
+          land => land.id === placement.point.x + ',' + placement.point.y
+        )
+        if (!isPlacementPointOwnedByUser && landsBelongingToTheDeployment[0]) {
+          placementPoint = { x: landsBelongingToTheDeployment[0].x ?? 0, y: landsBelongingToTheDeployment[0].y ?? 0 }
+        }
+
         const [emptyProject, emptyScene] = getEmptyDeployment(deployment.projectId || UNPUBLISHED_PROJECT_ID)
         const files: UnwrapPromise<ReturnType<typeof createFiles>> = yield call(createFiles, {
           project: emptyProject,
           scene: emptyScene,
-          point: placement.point,
+          point: placementPoint,
           rotation: placement.rotation,
           thumbnail: getEmptySceneUrl(),
           author: null,
