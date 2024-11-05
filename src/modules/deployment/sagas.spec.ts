@@ -19,6 +19,7 @@ import { getData } from 'modules/project/selectors'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { createFiles } from 'modules/project/export'
 import { getSceneByProjectId } from 'modules/scene/utils'
+import { getLandTiles } from 'modules/land/selectors'
 import {
   clearDeploymentFailure,
   clearDeploymentRequest,
@@ -184,7 +185,10 @@ describe('when handling the clear deployment request action', () => {
   describe('when the stored deployments does not contain a deployment for the provided id', () => {
     it('should put a clear deployment failure action signaling that the deployment id is invalid', async () => {
       await expectSaga(deploymentSaga, builderAPI, catalystClient)
-        .provide([[select(getDeployments), deployments]])
+        .provide([
+          [select(getDeployments), deployments],
+          [select(getLandTiles), []]
+        ])
         .put(clearDeploymentFailure(deploymentId, 'Unable to clear deployment: Invalid deployment'))
         .dispatch(clearDeploymentRequest(deploymentId))
         .silentRun()
@@ -201,6 +205,7 @@ describe('when handling the clear deployment request action', () => {
         await expectSaga(deploymentSaga, builderAPI, catalystClient)
           .provide([
             [select(getDeployments), deployments],
+            [select(getLandTiles), []],
             [call(getIdentity), identity]
           ])
           .put(clearDeploymentFailure(deploymentId, 'Unable to clear deployment: Invalid identity'))
@@ -228,6 +233,7 @@ describe('when handling the clear deployment request action', () => {
             await expectSaga(deploymentSaga, builderAPI, catalystClient)
               .provide([
                 [select(getDeployments), deployments],
+                [select(getLandTiles), []],
                 [call(getIdentity), identity],
                 [
                   call(cryptoFetch, `${worldsContentServerUrl}/entities/world`, {
@@ -252,6 +258,7 @@ describe('when handling the clear deployment request action', () => {
             await expectSaga(deploymentSaga, builderAPI, catalystClient)
               .provide([
                 [select(getDeployments), deployments],
+                [select(getLandTiles), []],
                 [call(getIdentity), identity],
                 [
                   call(cryptoFetch, `${worldsContentServerUrl}/entities/world`, {
