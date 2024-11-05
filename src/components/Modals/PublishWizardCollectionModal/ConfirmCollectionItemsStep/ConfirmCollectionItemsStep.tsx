@@ -19,9 +19,10 @@ export const ConfirmCollectionItemsStep: React.FC<{
   onPrevStep: () => void
   isSigningCheque: boolean
   isThirdParty: boolean
+  isOffchainPublicItemOrdersEnabled: boolean
   collection: Collection
 }> = props => {
-  const { items, collection, onNextStep, onPrevStep, isSigningCheque, isThirdParty } = props
+  const { items, collection, onNextStep, onPrevStep, isSigningCheque, isThirdParty, isOffchainPublicItemOrdersEnabled } = props
   const isCollectionLinked = collection.linkedContractAddress && collection.linkedContractNetwork
 
   const renderPrice = (item: Item) => {
@@ -106,7 +107,7 @@ export const ConfirmCollectionItemsStep: React.FC<{
             <Table.HeaderCell width={7}>{t('collection_detail_page.table.item')}</Table.HeaderCell>
             <Table.HeaderCell>{t('collection_detail_page.table.rarity')}</Table.HeaderCell>
             <Table.HeaderCell>{t('collection_detail_page.table.category')}</Table.HeaderCell>
-            <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+            {isOffchainPublicItemOrdersEnabled ? null : <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -134,7 +135,7 @@ export const ConfirmCollectionItemsStep: React.FC<{
                   text={t(`${item.type}.category.${item.data.category!}`)}
                 ></IconBadge>
               </Table.Cell>
-              <Table.Cell className={styles.priceColumn}>{renderPrice(item)}</Table.Cell>
+              {isOffchainPublicItemOrdersEnabled ? null : <Table.Cell className={styles.priceColumn}>{renderPrice(item)}</Table.Cell>}
             </Table.Row>
           ))}
         </Table.Body>

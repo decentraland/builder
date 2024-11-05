@@ -35,6 +35,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
     isLoading,
     price: itemPrice,
     isPublishingFinished,
+    isOffchainPublicItemOrdersEnabled,
     onClose,
     onFetchPrice,
     onPublish,
@@ -42,6 +43,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
     onCloseAuthorization
   } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
+  console.log('currentStep: ', currentStep)
   const [emailAddress, setEmailAddress] = useState<string>('')
   const [cheque, setCheque] = useState<Cheque | undefined>(undefined)
   const [isSigningCheque, setIsSigningCheque] = useState<boolean>(false)
@@ -49,6 +51,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const allItems = useMemo(() => [...itemsToPublish, ...itemsWithChanges], [itemsToPublish, itemsWithChanges])
 
+  console.log('collection: ', collection)
   useEffect(() => {
     onFetchPrice()
   }, [onFetchPrice])
@@ -155,6 +158,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
             collection={collection}
             items={allItems}
             isThirdParty={isThirdParty}
+            isOffchainPublicItemOrdersEnabled={isOffchainPublicItemOrdersEnabled}
             onNextStep={handleOnConfirmItemsNextStep}
             onPrevStep={handleOnPrevStep}
           />

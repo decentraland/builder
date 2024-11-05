@@ -376,7 +376,9 @@ export default function CollectionDetailPage({
                     {tab === ItemType.EMOTE || hasOnlyEmotes ? (
                       <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell>
                     ) : null}
-                    <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+                    {isOffchainPublicItemOrdersEnabled && !collection.isPublished ? null : (
+                      <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
+                    )}
                     {collection.isPublished && collection.isApproved ? (
                       <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell>
                     ) : null}

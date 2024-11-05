@@ -21,7 +21,7 @@ import {
 import { publishCollectionRequest } from 'modules/collection/actions'
 import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
-import { getIsPublishCollectionsWertEnabled } from 'modules/features/selectors'
+import { getIsOffchainPublicItemOrdersEnabled, getIsPublishCollectionsWertEnabled } from 'modules/features/selectors'
 import { OwnProps } from './PublishWizardCollectionModal.types'
 import { AuthorizedPublishWizardThirdPartyCollectionModal, AuthorizedPublishWizardCollectionModal } from './PublishWizardCollectionModal'
 import { useCallback, useMemo } from 'react'
@@ -46,6 +46,7 @@ export default (props: OwnProps) => {
   const standardPublishingStatus = useSelector((state: RootState) => getPublishStatus(state), shallowEqual)
   const thirdPartyPublishingStatus = useSelector((state: RootState) => getThirdPartyPublishStatus(state), shallowEqual)
 
+  const isOffchainPublicItemOrdersEnabled = useSelector((state: RootState) => getIsOffchainPublicItemOrdersEnabled(state))
   const isPublishCollectionsWertEnabled = useSelector(getIsPublishCollectionsWertEnabled, shallowEqual)
   const wallet = useSelector(getWallet, shallowEqual)!
   const unsyncedCollectionError = useSelector(getUnsyncedCollectionError, shallowEqual)
@@ -147,6 +148,7 @@ export default (props: OwnProps) => {
       itemError={itemError}
       collectionError={collectionError || thirdPartyPublishingError}
       isPublishCollectionsWertEnabled={isPublishCollectionsWertEnabled}
+      isOffchainPublicItemOrdersEnabled={isOffchainPublicItemOrdersEnabled}
       onPublish={onPublish}
       onFetchPrice={isThirdParty ? fetchThirdPartyPrice : onFetchRarities}
       thirdParty={thirdParty}
