@@ -51,7 +51,6 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const allItems = useMemo(() => [...itemsToPublish, ...itemsWithChanges], [itemsToPublish, itemsWithChanges])
 
-  console.log('collection: ', collection)
   useEffect(() => {
     onFetchPrice()
   }, [onFetchPrice])
