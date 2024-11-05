@@ -224,7 +224,9 @@ export default function CollectionItem({
           {data.category ? <div>{t(`emote.play_mode.${data.loop ? 'loop' : 'simple'}.text`)}</div> : null}
         </Table.Cell>
       ) : null}
-      <Table.Cell className={styles.column}>{renderPrice()}</Table.Cell>
+      {isOffchainPublicItemOrdersEnabled && !collection.isPublished ? null : (
+        <Table.Cell className={styles.column}>{renderPrice()}</Table.Cell>
+      )}
       {item.isPublished && item.isApproved ? (
         <Table.Cell className={styles.column}>
           <div>
@@ -233,7 +235,7 @@ export default function CollectionItem({
         </Table.Cell>
       ) : null}
       <Table.Cell>{renderItemStatus()}</Table.Cell>
-      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId && (
+      {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId && item.isPublished && (
         <Table.Cell>
           <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace} onClick={handlePutForSale}>
             {t('collection_item.put_for_sale')}

@@ -14,7 +14,8 @@ export default class SellCollectionModal extends React.PureComponent<Props> {
       collection,
       isOffchainPublicItemOrdersEnabled && !isOnSale(collection, wallet)
         ? enableSaleOffchain(collection, wallet, !metadata.isOnSale)
-        : setOnSale(collection, wallet, !metadata.isOnSale)
+        : setOnSale(collection, wallet, !metadata.isOnSale),
+      !isOffchainPublicItemOrdersEnabled // if isOffchainPublicItemOrdersEnabled is on, send false to avoid redirecting to activity
     )
   }
 
