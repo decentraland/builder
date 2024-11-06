@@ -143,7 +143,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   render() {
-    const { name, error, isLoading, mountNode, item, withExpirationDate, onClose, onSkip } = this.props
+    const { name, error, isLoading, mountNode, item, withExpirationDate, isOffchain, onClose, onSkip } = this.props
     const { isFree, isOwnerBeneficiary, price = '', expirationDate } = this.state
     const beneficiary = this.getBeneficiary()
 
@@ -245,7 +245,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                 </Button>
               )}
               <NetworkButton primary disabled={this.isDisabled()} loading={isLoading} network={Network.MATIC}>
-                {t('global.save')}
+                {t(isOffchain ? 'collection_detail_page.put_for_sale' : 'global.save')}
               </NetworkButton>
             </ModalActions>
           </Form>
