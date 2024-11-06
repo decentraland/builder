@@ -65,6 +65,7 @@ export default function PutForSaleOffchainModal({
       onClose={onClose}
       onSave={() => undefined}
       withExpirationDate
+      isOffchain
     />
   )
 }
