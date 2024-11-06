@@ -616,7 +616,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
-    const { collection, accessList } = action.payload
+    const { collection, accessList, redirectToActivity = true } = action.payload
     const history: History = yield getContext('history')
 
     try {
@@ -642,7 +642,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const txHash: string = yield call(sendTransaction, contract, collection => collection.setMinters(addresses, values))
 
       yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
-      history.replace(locations.activity())
+      if (redirectToActivity) {
+        history.replace(locations.activity())
+      }
     } catch (error) {
       yield put(setCollectionMintersFailure(collection, accessList, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }

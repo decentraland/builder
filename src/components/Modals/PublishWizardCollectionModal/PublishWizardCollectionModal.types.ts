@@ -44,6 +44,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   isLoading: boolean
   isPublishingFinished: boolean
   isPublishCollectionsWertEnabled: boolean
+  isOffchainPublicItemOrdersEnabled: boolean
   publishingStatus: AuthorizationStepStatus
   onPublish: (
     email: string,
