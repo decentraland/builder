@@ -118,8 +118,8 @@ export const SET_COLLECTION_MINTERS_REQUEST = '[Request] Set collection minters'
 export const SET_COLLECTION_MINTERS_SUCCESS = '[Success] Set collection minters'
 export const SET_COLLECTION_MINTERS_FAILURE = '[Failure] Set collection minters'
 
-export const setCollectionMintersRequest = (collection: Collection, accessList: Access[]) =>
-  action(SET_COLLECTION_MINTERS_REQUEST, { collection, accessList })
+export const setCollectionMintersRequest = (collection: Collection, accessList: Access[], redirectToActivity?: boolean) =>
+  action(SET_COLLECTION_MINTERS_REQUEST, { collection, accessList, redirectToActivity })
 export const setCollectionMintersSuccess = (collection: Collection, minters: string[], chainId: ChainId, txHash: string) =>
   action(SET_COLLECTION_MINTERS_SUCCESS, {
     collection,

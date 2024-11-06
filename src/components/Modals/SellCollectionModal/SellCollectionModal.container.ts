@@ -22,7 +22,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetMinters: (collection, minters) => dispatch(setCollectionMintersRequest(collection, minters))
+  onSetMinters: (collection, minters, redirectToActivity) => dispatch(setCollectionMintersRequest(collection, minters, redirectToActivity))
 })
 
 export default connect(mapState, mapDispatch)(SellCollectionModal)
