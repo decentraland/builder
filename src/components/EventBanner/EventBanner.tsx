@@ -1,7 +1,7 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './EventBanner.types'
-import logo from './logo.gif'
+import logo from './logo.webp'
 import './EventBanner.css'
 
 const EventBanner = ({ isCampaignEnabled }: Props) => {

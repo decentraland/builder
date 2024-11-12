@@ -2,7 +2,7 @@
   width: 100%;
   padding: 40px;
   display: flex;
-  background-image: url('./banner.gif');
+  background-image: url('./banner.webp');
   background-size: cover;
   background-position: center;
   flex-direction: row;
@@ -12,6 +12,18 @@
   align-items: center;
   min-height: 200px;
   margin-bottom: 20px;
+}
+
+@media (max-width: 1400px) {
+  .EventBanner {
+    background-image: url(./banner-1400x300.webp);
+  }
+}
+
+@media (max-width: 1600px) {
+  .EventBanner {
+    background-image: url(./banner-1600x300.webp);
+  }
 }
 
 .EventBanner .event-banner-text {
@@ -40,11 +52,4 @@
   overflow-wrap: break-word;
   font-size: 18px;
   font-weight: 400;
-}
-
-@media (max-width: 1400px) {
-  .EventBanner {
-    grid-template-columns: 300px 1fr 300px;
-    gap: 20px;
-  }
 }
