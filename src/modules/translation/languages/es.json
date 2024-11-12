@@ -2337,7 +2337,7 @@
   "event_banner": {
     "small": {
       "title": "¡Crea para el Festival de Música Decentraland!",
-      "subtitle": "Agrega la etiqueta {event_tag} a tus wearables y emotes con temática espacial antes del 15 de noviembre y aparecerán en una pestaña especial del festival en el Marketplace."
+      "subtitle": "Agrega la etiqueta {event_tag} a tus wearables y emotes con temática espacial y aparecerán en una pestaña especial del festival en el Marketplace."
     },
     "event_tag": "DCLMF24"
   },

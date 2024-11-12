@@ -2319,7 +2319,7 @@
   "event_banner": {
     "small": {
       "title": "Create for Decentraland Music Festival!",
-      "subtitle": "Add the {event_tag} tag for your space-themed Wearables and Emotes before Nov 15 and they'll be featured in a special Festival Tab on the Marketplace!"
+      "subtitle": "Add the {event_tag} tag for your space-themed Wearables and Emotes and they'll be featured in a special Festival Tab on the Marketplace!"
     },
     "event_tag": "DCLMF24"
   },
