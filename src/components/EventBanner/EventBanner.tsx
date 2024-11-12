@@ -1,14 +1,12 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './EventBanner.types'
-import logo from './logo.png'
-import hat from './wings.png'
+import logo from './logo.webp'
 import './EventBanner.css'
 
 const EventBanner = ({ isCampaignEnabled }: Props) => {
   return isCampaignEnabled ? (
     <div className="EventBanner">
-      <img src={logo} alt={t('event_banner.event_tag')} className="event-banner-logo" />
       <div className="event-banner-text">
         <span className="title">{t('event_banner.small.title')}</span>
         <span className="subtitle">
@@ -18,7 +16,7 @@ const EventBanner = ({ isCampaignEnabled }: Props) => {
           })}
         </span>
       </div>
-      <img src={hat} alt={t('event_banner.event_tag')} className="event-banner-icon" />
+      <img src={logo} className="event-banner-logo" alt={t('event_banner.event_tag')} />
     </div>
   ) : null
 }
