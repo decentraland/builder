@@ -1,9 +1,8 @@
 .EventBanner {
   width: 100%;
-  padding: 25px 0;
-  display: grid;
-  grid-template-columns: 400px 1fr 450px;
-  background-image: url('./banner.png');
+  padding: 40px;
+  display: flex;
+  background-image: url('./banner.gif');
   background-size: cover;
   background-position: center;
   flex-direction: row;
@@ -11,29 +10,23 @@
   gap: 35px;
   text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   align-items: center;
-}
-
-.EventBanner::before {
-  background-color: rgba(0, 0, 0, 0.25);
+  min-height: 200px;
+  margin-bottom: 20px;
 }
 
 .EventBanner .event-banner-text {
   display: flex;
   flex-direction: column;
   color: white;
-  align-self: center;
   font-size: 15px;
   font-weight: 600;
   line-height: 26px;
   gap: 10px;
-  justify-content: center;
-  max-width: 750px;
-  justify-self: center;
+  max-width: 700px;
 }
 
 .EventBanner .event-banner-logo {
-  width: calc(100% - 50px);
-  margin-left: 50px;
+  width: 450px;
 }
 
 .EventBanner .title {
@@ -47,15 +40,6 @@
   overflow-wrap: break-word;
   font-size: 18px;
   font-weight: 400;
-}
-
-.EventBanner .event-banner-icon {
-  width: 100%;
-}
-
-.EventBanner .event-banner-pink {
-  color: #fd98ff;
-  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 1400px) {

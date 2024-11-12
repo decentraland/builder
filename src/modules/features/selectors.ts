@@ -16,7 +16,7 @@ export const getIsMaintenanceEnabled = (state: RootState) => {
 
 export const getIsCampaignEnabled = (state: RootState) => {
   try {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CAMPAIGN)
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CAMPAIGN) || true
   } catch (e) {
     return false
   }
