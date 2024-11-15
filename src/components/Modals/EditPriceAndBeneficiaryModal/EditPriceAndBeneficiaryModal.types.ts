@@ -16,6 +16,7 @@ export type Props = ModalProps & {
   itemSortedContents?: Record<string, Blob>
   mountNode?: HTMLDivElement | undefined
   withExpirationDate?: boolean
+  isOffchain?: boolean
   onSave: typeof saveItemRequest | ((item: Item) => void)
   onSetPriceAndBeneficiary:
     | typeof setPriceAndBeneficiaryRequest
