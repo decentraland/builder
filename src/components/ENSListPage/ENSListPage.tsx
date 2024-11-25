@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { Env } from '@dcl/ui-env'
 import { Link, useHistory } from 'react-router-dom'
 import { config } from 'config'
 import { Popup, Button, Dropdown, Icon as DCLIcon } from 'decentraland-ui'
@@ -22,6 +23,7 @@ const PAGE_SIZE = 12
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const MARKETPLACE_API = config.get('MARKETPLACE_API', '')
 const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
+const ENS_GATEWAY = config.get('ENS_GATEWAY')
 
 export default function ENSListPage(props: Props) {
   const { ensList, alias, hasProfileCreated, avatar, isLoading, error, onOpenModal } = props
@@ -30,6 +32,17 @@ export default function ENSListPage(props: Props) {
   const history = useHistory()
 
   const handleAssignENS = useCallback((ens: ENS) => history.push(locations.ensSelectLand(ens.subdomain)), [history])
+  const buildENSLink = useCallback(
+    (ens: ENS) => {
+      if (config.is(Env.DEVELOPMENT)) {
+        const splittedDomain = ens.subdomain.split('.')
+        splittedDomain.splice(splittedDomain.length - 1, 0, 'istest')
+        return `https://${splittedDomain.join('.')}.${ENS_GATEWAY}`
+      }
+      return `https://${ens.subdomain}.${ENS_GATEWAY}`
+    },
+    [ENS_GATEWAY]
+  )
 
   const handleOpenModal = useCallback(
     (newName: string) => {
@@ -119,13 +132,7 @@ export default function ENSListPage(props: Props) {
               <Icon name="pin" />
               {ens.landId}
             </span>
-            <Button
-              compact
-              className="ens-list-land-redirect"
-              target="_blank"
-              href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
-              rel="noopener noreferrer"
-            >
+            <Button compact className="ens-list-land-redirect" target="_blank" href={buildENSLink(ens)} rel="noopener noreferrer">
               <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
             </Button>
           </div>
@@ -137,13 +144,7 @@ export default function ENSListPage(props: Props) {
               <Icon name="pin" />
               {`Estate (${ens.landId})`}
             </span>
-            <Button
-              compact
-              className="ens-list-land-redirect"
-              target="_blank"
-              href={`https://${ens.subdomain}.${config.get('ENS_GATEWAY')}`}
-              rel="noopener noreferrer"
-            >
+            <Button compact className="ens-list-land-redirect" target="_blank" href={buildENSLink(ens)} rel="noopener noreferrer">
               <Icon name="right-round-arrow" className="ens-list-land-redirect-icon" />
             </Button>
           </div>

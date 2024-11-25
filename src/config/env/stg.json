@@ -25,7 +25,6 @@
   "RESOLVER_CONTRACT_ADDRESS": "0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41",
   "REGISTRAR_CONTRACT_ADDRESS": "0x2a187453064356c898cae034eaed119e1663acb8",
   "RENTALS_CONTRACT_ADDRESS": "0x3a1469499d0be105d4f77045ca403a5f6dc2f3f5",
-  "IPFS_URL": "https://ipfs.infura.io:5001/api/v0/add?pin=false",
   "EXPLORER_URL": "https://decentraland.org/play",
   "TRANSACTIONS_API_URL": "https://transactions-api.decentraland.today/v1",
   "ACCOUNT_URL": "https://decentraland.today/account",
