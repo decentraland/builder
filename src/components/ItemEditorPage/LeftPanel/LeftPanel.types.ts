@@ -29,6 +29,7 @@ export type Props = {
   selectedItem: Item | null
   selectedCollectionId: string | null
   visibleItems: Item[]
+  reviewedItems: Item[]
   isReviewing: boolean
   bodyShape: BodyShape
   isLoading: boolean
@@ -40,12 +41,14 @@ export type Props = {
   onFetchCollections: typeof fetchCollectionsRequest
   onSetReviewedItems: (itemIds: Item[]) => void
   onFetchOrphanItem: typeof fetchOrphanItemRequest
+  onResetReviewedItems: () => void
 }
 
 export type State = {
   currentTab: ItemEditorTabs
   pages: number[]
   initialPage: number
+  showSamplesModalAgain: boolean
 }
 
 export type MapStateProps = Pick<

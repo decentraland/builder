@@ -1,4 +1,5 @@
 import { BodyShape, IPreviewController } from '@dcl/schemas'
+import { Collection } from 'modules/collection/types'
 import { setItems } from 'modules/editor/actions'
 import { Item } from 'modules/item/types'
 
@@ -9,13 +10,11 @@ export enum ItemPanelTabs {
 }
 
 export type State = {
-  items: Item[]
-  reviewed: Item[]
   currentTab: ItemPanelTabs
   currentPages: Record<ItemPanelTabs, number>
   reviewedTabPage: number
   showGetMoreSamplesModal: boolean
-  doNotShowSamplesModalAgain: boolean
+  showAllItemsTabChangeModal: boolean
 }
 
 export type Props = {
@@ -23,16 +22,20 @@ export type Props = {
   isLoading: boolean
   totalItems: number | null
   selectedItemId: string | null
-  selectedCollectionId: string | null
+  collection: Collection | null
+  showSamplesModalAgain: boolean
+  onToggleShowSamplesModalAgain: () => void
+  onResetReviewedItems: () => void
   isReviewing: boolean
   isPlayingEmote: boolean
   visibleItems: Item[]
+  reviewedItems: Item[]
   hasHeader: boolean
   bodyShape: BodyShape
   wearableController: IPreviewController | null
   initialPage?: number
   onSetItems: typeof setItems
-  onLoadRandomPage: () => void
+  onReviewItems: () => void
   onLoadPage: (page: number) => void
   onSetReviewedItems: (itemIds: Item[]) => void
 }

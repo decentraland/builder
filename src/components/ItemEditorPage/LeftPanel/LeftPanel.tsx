@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Tabs } from 'decentraland-ui'
+import { Tabs } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { CurationStatus } from 'modules/curations/types'
@@ -31,11 +31,16 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     return {
       pages: [INITIAL_PAGE],
       currentTab,
-      initialPage: INITIAL_PAGE
+      initialPage: INITIAL_PAGE,
+      showSamplesModalAgain: true
     }
   }
 
-  fetchResource() {
+  handleToggleShowSamplesModalAgain = () => {
+    this.setState(prev => ({ showSamplesModalAgain: !prev.showSamplesModalAgain }))
+  }
+
+  fetchResource = () => {
     const { address, onFetchCollections, onFetchOrphanItems, isReviewing, selectedCollectionId } = this.props
     const { pages } = this.state
     // this is for the items editor base view, if a collection is selected, the logic will be handled in the collection provider
@@ -87,7 +92,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
         const page = pages[pages.length - 1]
         const nextPage = Math.min(totalPages, page + 1)
         if (!pages.includes(nextPage)) {
-          this.setState({ pages: [nextPage], initialPage: nextPage }, () => this.fetchResource())
+          this.setState({ pages: [nextPage], initialPage: nextPage }, this.fetchResource)
         }
       }
     } else if (prevProps.selectedItemId && selectedItemId && prevProps.selectedItemId !== selectedItemId) {
@@ -96,7 +101,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     } else {
       // fetch only if this was triggered by a connecting event or if th selectedCollection changes
       if (address && isConnected && (isConnected !== prevProps.isConnected || (prevProps.selectedCollectionId && !selectedCollectionId))) {
-        this.setState({ pages: [INITIAL_PAGE] }, () => this.fetchResource())
+        this.setState({ pages: [INITIAL_PAGE] }, this.fetchResource)
       }
       if (prevProps.selectedCollectionId !== selectedCollectionId) {
         this.setState({ pages: [INITIAL_PAGE] })
@@ -148,19 +153,25 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     const { totalItems, totalCollections, onSetReviewedItems } = this.props
     const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
     const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
-    let randomPage
-    while (!randomPage) {
-      randomPage = this.getRandomPage(1, totalPages)
-      if (pages.includes(randomPage)) {
-        randomPage = null
+    if (pages.length !== totalPages) {
+      let randomPage: number | undefined
+      while (randomPage !== undefined) {
+        randomPage = this.getRandomPage(1, totalPages)
+        if (pages.includes(randomPage)) {
+          randomPage = undefined
+        }
       }
+      onSetReviewedItems(currentItems)
+      if (randomPage !== undefined) {
+        this.setState(prevState => ({ pages: [...prevState.pages, randomPage] }), this.fetchResource)
+      }
+    } else {
+      onSetReviewedItems(currentItems)
     }
-    onSetReviewedItems(currentItems)
-    this.setState({ pages: [randomPage] }, () => this.fetchResource())
   }
 
   handleTabChange = (tab: ItemEditorTabs) => {
-    this.setState({ currentTab: tab, pages: [INITIAL_PAGE] }, () => this.fetchResource())
+    this.setState({ currentTab: tab, pages: [INITIAL_PAGE] }, this.fetchResource)
   }
 
   isCollectionTabActive = () => {
@@ -179,6 +190,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       selectedCollectionId,
       visibleItems,
       bodyShape,
+      reviewedItems,
       isReviewing,
       isPlayingEmote,
       isConnected,
@@ -186,9 +198,10 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       isLoading: isLoadingOrphanItems,
       hasUserOrphanItems,
       onSetItems,
-      onSetReviewedItems
+      onSetReviewedItems,
+      onResetReviewedItems
     } = this.props
-    const { pages } = this.state
+    const { pages, showSamplesModalAgain } = this.state
     const showTabs = !selectedCollectionId && hasUserOrphanItems
     const showCollections = this.isCollectionTabActive() && !selectedCollectionId
     const showItems = !this.isCollectionTabActive() || selectedCollectionId
@@ -214,35 +227,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
             }) => {
               const items = this.getItems(collection, collectionItems, itemCurations)
               const isCollectionTab = this.isCollectionTabActive()
-              const showLoader =
-                (isLoadingCollection || isLoadingCollectionItems) &&
-                ((isCollectionTab && collections.length === 0) || (!isCollectionTab && items.length === 0))
               const initialPage = selectedCollectionId && collection ? collectionInitialPage : this.state.initialPage
-              if (showLoader) {
-                return <Loader size="massive" active />
-              }
-
-              if (items.length === 0 && collections.length === 0) {
-                return (
-                  <>
-                    <Header />
-                    <div className="empty">
-                      <div className="subtitle">{t('collections_page.empty_description')}</div>
-                    </div>
-                  </>
-                )
-              } else if (items.length === 0 && selectedCollectionId) {
-                return (
-                  <>
-                    <Header />
-                    <div className="empty">
-                      <div className="subtitle">
-                        {isReviewing ? t('item_editor.left_panel.no_items_to_review') : t('item_editor.left_panel.empty_collection')}
-                      </div>
-                    </div>
-                  </>
-                )
-              }
 
               return (
                 <>
@@ -275,16 +260,20 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                         totalItems={totalItems || items.length}
                         hasHeader={!selectedCollectionId && collections.length > 0}
                         selectedItemId={selectedItemId}
-                        selectedCollectionId={selectedCollectionId}
+                        collection={collection}
                         isReviewing={isReviewing}
                         isPlayingEmote={isPlayingEmote}
                         visibleItems={visibleItems}
                         bodyShape={bodyShape}
+                        onResetReviewedItems={onResetReviewedItems}
+                        reviewedItems={reviewedItems}
                         onSetItems={onSetItems}
                         wearableController={wearableController}
                         initialPage={initialPage}
                         isLoading={isLoadingCollectionItems || isLoadingOrphanItems}
-                        onLoadRandomPage={() => this.loadRandomPage(items)}
+                        onToggleShowSamplesModalAgain={this.handleToggleShowSamplesModalAgain}
+                        showSamplesModalAgain={showSamplesModalAgain}
+                        onReviewItems={() => this.loadRandomPage(items)}
                         onLoadPage={this.loadPage}
                         onSetReviewedItems={onSetReviewedItems}
                       />
