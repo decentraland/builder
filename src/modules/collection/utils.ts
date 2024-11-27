@@ -74,7 +74,8 @@ export function getExplorerURL({
   }
   const EXPLORER_URL = config.get('EXPLORER_URL', '')
   const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
-  let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&NETWORK=sepolia&DEBUG_MODE=true`
+  const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
+  let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&CATALYST=${PEER_TESTING_URL}&DEBUG_MODE=true`
 
   if (collectionId) {
     URL += `&WITH_COLLECTIONS=${collectionId}`

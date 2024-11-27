@@ -19,6 +19,7 @@ import './DeploymentDetail.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
+const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
   getHighlightLayer =
@@ -59,7 +60,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
 
   getExplorerUrl = (world: string) => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&CATALYST=${PEER_TESTING_URL}`
     }
     return `${EXPLORER_URL}/world/${world}`
   }
