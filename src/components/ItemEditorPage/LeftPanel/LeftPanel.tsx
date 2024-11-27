@@ -154,15 +154,17 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     const totalResources = this.isCollectionTabActive() ? totalCollections : totalItems
     const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
     if (pages.length !== totalPages) {
-      let randomPage
-      while (!randomPage) {
+      let randomPage: number | undefined
+      while (randomPage !== undefined) {
         randomPage = this.getRandomPage(1, totalPages)
         if (pages.includes(randomPage)) {
-          randomPage = null
+          randomPage = undefined
         }
       }
       onSetReviewedItems(currentItems)
-      this.setState(prevState => ({ pages: [...prevState.pages, randomPage] }), this.fetchResource)
+      if (randomPage !== undefined) {
+        this.setState(prevState => ({ pages: [...prevState.pages, randomPage] }), this.fetchResource)
+      }
     } else {
       onSetReviewedItems(currentItems)
     }
