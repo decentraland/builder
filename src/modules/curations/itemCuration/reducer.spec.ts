@@ -72,6 +72,7 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
   let collection: Collection
   let items: Item[]
   let itemCurations: ItemCuration[]
+
   beforeEach(() => {
     collection = { id: 'collectionId' } as Collection
     thirdParty = {
@@ -88,7 +89,9 @@ describe('when an action of type PUBLISH_THIRD_PARTY_ITEMS_SUCCESS is called', (
       isProgrammatic: false
     }
     itemCurations = [getMockItemCuration()]
+    items = [{ id: 'itemId' } as Item]
   })
+
   it('should merge the old item curations with the new ones', () => {
     const state = {
       ...INITIAL_STATE,

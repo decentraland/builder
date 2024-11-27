@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation'
 import { Loader, Pagination, PaginationProps, Section } from 'decentraland-ui'
 import { LEFT_PANEL_PAGE_SIZE } from 'components/ItemEditorPage/constants'
 import SidebarCollection from './SidebarCollection'
@@ -22,9 +23,12 @@ export default class Collections extends React.PureComponent<Props, State> {
     if (collections.length === 0) return null
 
     const totalPages = Math.ceil(totalCollections / LEFT_PANEL_PAGE_SIZE)
-
     return isLoading ? (
       <Loader size="small" active />
+    ) : !isLoading && items.length === 0 && collections.length === 0 ? (
+      <div className="empty">
+        <div className="subtitle">{t('collections_page.empty_description')}</div>
+      </div>
     ) : (
       <>
         <Section className="Collections">

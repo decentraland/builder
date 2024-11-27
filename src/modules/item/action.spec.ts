@@ -30,6 +30,7 @@ beforeEach(() => {
       fileName: 'someFileName.zip'
     }
   ]
+  savedItems = []
 })
 
 describe('when creating the action to request the saving of multiple items', () => {

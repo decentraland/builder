@@ -83,3 +83,18 @@
 .Items > .Collapsable .label > .Icon {
   margin-right: 8px;
 }
+
+.Items > .empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 32px;
+}
+
+.Items > .empty .subtitle {
+  color: var(--secondary-text);
+}
