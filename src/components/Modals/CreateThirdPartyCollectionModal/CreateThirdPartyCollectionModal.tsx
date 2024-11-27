@@ -95,7 +95,9 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
     debounce(async (contractAddress: string, network: ContractNetwork) => {
       setIsCheckingContract(true)
       setContractError(undefined)
-      const jsonRpcProvider = new providers.JsonRpcProvider(getRpcUrls(ProviderType.NETWORK)[fromContractNetworkToChainId(network)])
+      const jsonRpcProvider = new providers.JsonRpcProvider(
+        getRpcUrls(ProviderType.NETWORK)[fromContractNetworkToChainId(network) as keyof ReturnType<typeof getRpcUrls>]
+      )
       const erc165Contract = new Contract(
         contractAddress,
         ['function supportsInterface(bytes4) external view returns (bool)'],
