@@ -45,8 +45,10 @@ export default function TopBar({ currentProject, metrics, limits, areEntitiesOut
     url.searchParams.set('realm', `${BUILDER_SERVER_URL}/projects/${currentProject.id}`)
     url.searchParams.set('DEBUG_MODE', 'true')
     if (config.is(Env.DEVELOPMENT)) {
-      url.searchParams.set('CATALYST', PEER_TESTING_URL)
+      url.searchParams.set('NETWORK', 'sepolia')
       url.searchParams.set('DEBUG_SCENE_LOG', '')
+    } else {
+      url.searchParams.set('CATALYST', PEER_TESTING_URL)
     }
 
     return url.toString()

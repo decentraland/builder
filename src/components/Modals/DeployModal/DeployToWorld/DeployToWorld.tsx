@@ -24,7 +24,6 @@ import Profile from 'components/Profile'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
-const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
@@ -161,7 +160,7 @@ export default function DeployToWorld({
 
   const getExplorerUrl = useMemo(() => {
     if (isDevelopment) {
-      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&CATALYST=${PEER_TESTING_URL}`
+      return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
     }
     return `${EXPLORER_URL}/world/${world}`
   }, [world])

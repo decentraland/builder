@@ -10,7 +10,6 @@ export const fromBytesToMegabytes = (bytes: number) => {
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
-const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
 
 export const BLOCK_DELAY_IN_MILLISECONDS = 48 * 60 * 60 * 1000 // 48 hours
 
@@ -67,7 +66,7 @@ export const isWorldDeployed = (deploymentsByWorlds: Record<string, Deployment>,
 
 export const getExplorerUrl = (world: string) => {
   if (isDevelopment) {
-    return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&CATALYST=${PEER_TESTING_URL}`
+    return `${EXPLORER_URL}/?realm=${WORLDS_CONTENT_SERVER_URL}/world/${world}&NETWORK=sepolia`
   }
   return `${EXPLORER_URL}/world/${world}`
 }

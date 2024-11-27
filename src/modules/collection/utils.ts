@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { ChainId } from '@dcl/schemas'
+import { Env } from '@dcl/ui-env'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
@@ -74,8 +75,14 @@ export function getExplorerURL({
   }
   const EXPLORER_URL = config.get('EXPLORER_URL', '')
   const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
-  const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
-  let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&CATALYST=${PEER_TESTING_URL}&DEBUG_MODE=true`
+  let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&DEBUG_MODE=true`
+
+  if (config.is(Env.DEVELOPMENT)) {
+    URL += '&NETWORK=sepolia'
+  } else {
+    const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
+    URL += `&CATALYST=${PEER_TESTING_URL}`
+  }
 
   if (collectionId) {
     URL += `&WITH_COLLECTIONS=${collectionId}`

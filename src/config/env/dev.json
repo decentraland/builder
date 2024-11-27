@@ -44,5 +44,6 @@
   "INSPECTOR_SEGMENT_APP_ID": "web-editor",
   "AUTH_URL": "/auth",
   "MARKETPLACE_SERVER_URL": "https://marketplace-api.decentraland.zone/v1",
-  "WERT_PUBLISH_FEES_ENV": "dev"
+  "WERT_PUBLISH_FEES_ENV": "dev",
+  "PEER_TESTING_URL": "https://peer-testing.decentraland.org"
 }
