@@ -24,8 +24,8 @@ export type Props = {
   selectedItemId: string | null
   collection: Collection | null
   showSamplesModalAgain: boolean
-  onToggleShowSamplesModalAgain: () => unknown
-  onResetReviewedItems: () => unknown
+  onToggleShowSamplesModalAgain: () => void
+  onResetReviewedItems: () => void
   isReviewing: boolean
   isPlayingEmote: boolean
   visibleItems: Item[]

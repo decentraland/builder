@@ -85,10 +85,6 @@ export default class Items extends React.PureComponent<Props, State> {
     const { currentPages, currentTab } = this.state
 
     if (targetTab === ItemPanelTabs.ALL_ITEMS) {
-      onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS])
-    }
-
-    if (targetTab === ItemPanelTabs.ALL_ITEMS) {
       this.setState({ showAllItemsTabChangeModal: false }, () => onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS]))
     } else if (targetTab === ItemPanelTabs.TO_REVIEW && currentTab === ItemPanelTabs.ALL_ITEMS) {
       onResetReviewedItems()
