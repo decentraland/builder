@@ -1,4 +1,5 @@
 import * as React from 'react'
+import equal from 'fast-deep-equal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import {
@@ -42,23 +43,11 @@ export default class Items extends React.PureComponent<Props, State> {
 
   analytics = getAnalytics()
 
-  componentDidMount() {
-    this.handleReviewItemsTrigger()
-  }
+  componentDidUpdate(prevProps: Props) {
+    const { items, onReviewItems } = this.props
+    const { currentTab } = this.state
 
-  componentDidUpdate(_prevProps: Props, prevState: State) {
-    this.handleReviewItemsTrigger(prevState)
-  }
-
-  handleReviewItemsTrigger = (prevState?: State) => {
-    const { onReviewItems } = this.props
-    const { currentPages, currentTab } = this.state
-
-    if (
-      this.getIsReviewingTPItems() &&
-      currentTab === ItemPanelTabs.TO_REVIEW &&
-      (!prevState || currentPages[currentTab] !== prevState.currentPages[currentTab])
-    ) {
+    if (this.getIsReviewingTPItems() && currentTab === ItemPanelTabs.TO_REVIEW && !equal(items, prevProps.items)) {
       onReviewItems()
     }
   }
