@@ -1,4 +1,5 @@
 import * as React from 'react'
+import equal from 'fast-deep-equal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import {
@@ -42,6 +43,23 @@ export default class Items extends React.PureComponent<Props, State> {
 
   analytics = getAnalytics()
 
+  componentDidMount() {
+    this.handleReviewItemsTrigger()
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    this.handleReviewItemsTrigger(prevProps)
+  }
+
+  handleReviewItemsTrigger = (prevProps?: Props) => {
+    const { items, onReviewItems } = this.props
+    const { currentTab } = this.state
+
+    if (this.getIsReviewingTPItems() && currentTab === ItemPanelTabs.TO_REVIEW && !equal(items, prevProps?.items)) {
+      onReviewItems()
+    }
+  }
+
   isVisible = (item: Item) => {
     const { visibleItems } = this.props
     return visibleItems.some(_item => _item.id === item.id)
@@ -81,30 +99,32 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   handleTabChange = (targetTab: ItemPanelTabs) => {
-    const { onLoadPage, onResetReviewedItems } = this.props
-    const { currentPages, currentTab } = this.state
+    const { onLoadPage, onReviewItems, onResetReviewedItems } = this.props
+    const { currentPages } = this.state
 
     if (targetTab === ItemPanelTabs.ALL_ITEMS) {
-      this.setState({ showAllItemsTabChangeModal: false }, () => onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS]))
-    } else if (targetTab === ItemPanelTabs.TO_REVIEW && currentTab === ItemPanelTabs.ALL_ITEMS) {
-      onResetReviewedItems()
-      onLoadPage(1)
+      this.setState({ showAllItemsTabChangeModal: false }, () => {
+        onResetReviewedItems()
+        onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS])
+      })
+    } else if (targetTab === ItemPanelTabs.TO_REVIEW) {
+      onReviewItems()
     }
     this.setState({ currentTab: targetTab })
   }
 
   handleGetRandomSampleClick = () => {
-    const { showSamplesModalAgain, onReviewItems } = this.props
+    const { showSamplesModalAgain, onLoadRandomPage } = this.props
     if (!showSamplesModalAgain) {
-      onReviewItems()
+      onLoadRandomPage()
     } else {
       this.setState({ showGetMoreSamplesModal: true })
     }
   }
 
   handleModalProceed = () => {
-    const { onReviewItems } = this.props
-    onReviewItems()
+    const { onLoadRandomPage } = this.props
+    onLoadRandomPage()
     this.setState({ showGetMoreSamplesModal: false })
   }
 

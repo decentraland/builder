@@ -155,7 +155,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
     const totalPages = Math.ceil(totalResources! / LEFT_PANEL_PAGE_SIZE)
     if (pages.length !== totalPages) {
       let randomPage: number | undefined
-      while (randomPage !== undefined) {
+      while (randomPage === undefined) {
         randomPage = this.getRandomPage(1, totalPages)
         if (pages.includes(randomPage)) {
           randomPage = undefined
@@ -163,7 +163,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       }
       onSetReviewedItems(currentItems)
       if (randomPage !== undefined) {
-        this.setState(prevState => ({ pages: [...prevState.pages, randomPage] }), this.fetchResource)
+        this.setState(prevState => ({ pages: [...prevState.pages, randomPage as number] }), this.fetchResource)
       }
     } else {
       onSetReviewedItems(currentItems)
@@ -273,9 +273,9 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
                         isLoading={isLoadingCollectionItems || isLoadingOrphanItems}
                         onToggleShowSamplesModalAgain={this.handleToggleShowSamplesModalAgain}
                         showSamplesModalAgain={showSamplesModalAgain}
-                        onReviewItems={() => this.loadRandomPage(items)}
+                        onReviewItems={() => onSetReviewedItems(items)}
+                        onLoadRandomPage={() => this.loadRandomPage(items)}
                         onLoadPage={this.loadPage}
-                        onSetReviewedItems={onSetReviewedItems}
                       />
                       <ItemAddedToast collectionId={selectedCollectionId} />
                     </>
