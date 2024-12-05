@@ -37,5 +37,5 @@ export type Props = {
   onSetItems: typeof setItems
   onReviewItems: () => void
   onLoadPage: (page: number) => void
-  onSetReviewedItems: (itemIds: Item[]) => void
+  onLoadRandomPage: () => void
 }

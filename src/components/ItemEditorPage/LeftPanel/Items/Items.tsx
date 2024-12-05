@@ -1,4 +1,5 @@
 import * as React from 'react'
+import equal from 'fast-deep-equal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import {
@@ -42,15 +43,19 @@ export default class Items extends React.PureComponent<Props, State> {
 
   analytics = getAnalytics()
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const { isLoading, onReviewItems } = this.props
-    const { currentPages, currentTab } = this.state
+  componentDidMount() {
+    this.handleReviewItemsTrigger()
+  }
 
-    if (
-      this.getIsReviewingTPItems() &&
-      currentTab === ItemPanelTabs.TO_REVIEW &&
-      (isLoading != prevProps.isLoading || currentPages[currentTab] !== prevState.currentPages[currentTab])
-    ) {
+  componentDidUpdate(prevProps: Props) {
+    this.handleReviewItemsTrigger(prevProps)
+  }
+
+  handleReviewItemsTrigger = (prevProps?: Props) => {
+    const { items, onReviewItems } = this.props
+    const { currentTab } = this.state
+
+    if (this.getIsReviewingTPItems() && currentTab === ItemPanelTabs.TO_REVIEW && !equal(items, prevProps?.items)) {
       onReviewItems()
     }
   }
@@ -109,17 +114,17 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   handleGetRandomSampleClick = () => {
-    const { showSamplesModalAgain, onReviewItems } = this.props
+    const { showSamplesModalAgain, onLoadRandomPage } = this.props
     if (!showSamplesModalAgain) {
-      onReviewItems()
+      onLoadRandomPage()
     } else {
       this.setState({ showGetMoreSamplesModal: true })
     }
   }
 
   handleModalProceed = () => {
-    const { onReviewItems } = this.props
-    onReviewItems()
+    const { onLoadRandomPage } = this.props
+    onLoadRandomPage()
     this.setState({ showGetMoreSamplesModal: false })
   }
 
