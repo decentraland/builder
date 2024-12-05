@@ -1,5 +1,4 @@
 import * as React from 'react'
-import equal from 'fast-deep-equal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import {
@@ -43,11 +42,15 @@ export default class Items extends React.PureComponent<Props, State> {
 
   analytics = getAnalytics()
 
-  componentDidUpdate(prevProps: Props) {
-    const { items, onReviewItems } = this.props
-    const { currentTab } = this.state
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { isLoading, onReviewItems } = this.props
+    const { currentPages, currentTab } = this.state
 
-    if (this.getIsReviewingTPItems() && currentTab === ItemPanelTabs.TO_REVIEW && !equal(items, prevProps.items)) {
+    if (
+      this.getIsReviewingTPItems() &&
+      currentTab === ItemPanelTabs.TO_REVIEW &&
+      (isLoading != prevProps.isLoading || currentPages[currentTab] !== prevState.currentPages[currentTab])
+    ) {
       onReviewItems()
     }
   }
@@ -91,14 +94,16 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   handleTabChange = (targetTab: ItemPanelTabs) => {
-    const { onLoadPage, onResetReviewedItems } = this.props
-    const { currentPages, currentTab } = this.state
+    const { onLoadPage, onReviewItems, onResetReviewedItems } = this.props
+    const { currentPages } = this.state
 
     if (targetTab === ItemPanelTabs.ALL_ITEMS) {
-      this.setState({ showAllItemsTabChangeModal: false }, () => onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS]))
-    } else if (targetTab === ItemPanelTabs.TO_REVIEW && currentTab === ItemPanelTabs.ALL_ITEMS) {
-      onResetReviewedItems()
-      onLoadPage(1)
+      this.setState({ showAllItemsTabChangeModal: false }, () => {
+        onResetReviewedItems()
+        onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS])
+      })
+    } else if (targetTab === ItemPanelTabs.TO_REVIEW) {
+      onReviewItems()
     }
     this.setState({ currentTab: targetTab })
   }

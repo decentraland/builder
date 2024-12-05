@@ -163,7 +163,7 @@ export default class LeftPanel extends React.PureComponent<Props, State> {
       }
       onSetReviewedItems(currentItems)
       if (randomPage !== undefined) {
-        this.setState(prevState => ({ pages: [...prevState.pages, randomPage] }), this.fetchResource)
+        this.setState(prevState => ({ pages: [...prevState.pages, randomPage as number] }), this.fetchResource)
       }
     } else {
       onSetReviewedItems(currentItems)
