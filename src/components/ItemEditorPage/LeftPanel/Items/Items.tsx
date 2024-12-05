@@ -42,6 +42,27 @@ export default class Items extends React.PureComponent<Props, State> {
 
   analytics = getAnalytics()
 
+  componentDidMount() {
+    this.handleReviewItemsTrigger()
+  }
+
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    this.handleReviewItemsTrigger(prevState)
+  }
+
+  handleReviewItemsTrigger = (prevState?: State) => {
+    const { onReviewItems } = this.props
+    const { currentPages, currentTab } = this.state
+
+    if (
+      this.getIsReviewingTPItems() &&
+      currentTab === ItemPanelTabs.TO_REVIEW &&
+      (!prevState || currentPages[currentTab] !== prevState.currentPages[currentTab])
+    ) {
+      onReviewItems()
+    }
+  }
+
   isVisible = (item: Item) => {
     const { visibleItems } = this.props
     return visibleItems.some(_item => _item.id === item.id)
