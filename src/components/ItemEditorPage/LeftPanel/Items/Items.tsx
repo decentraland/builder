@@ -278,7 +278,7 @@ export default class Items extends React.PureComponent<Props, State> {
     const { isLoading, totalItems, reviewedItems } = this.props
     const { currentTab } = this.state
     let headerInnerContent
-    const notEnoughItemsToAskMore = !!totalItems && (totalItems < LEFT_PANEL_PAGE_SIZE || reviewedItems.length === totalItems)
+    const notEnoughItemsToAskMore = !totalItems || totalItems < LEFT_PANEL_PAGE_SIZE || reviewedItems.length === totalItems
 
     switch (currentTab) {
       case ItemPanelTabs.TO_REVIEW:
