@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import IntercomWidget from 'decentraland-dapps/dist/components/Intercom'
+import { EnhancedIntercom } from 'decentraland-dapps/dist/containers/EnhancedIntercom'
 import { getAnalytics, getAnonymousId } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { config } from 'config'
 import { IntercomUserData } from './Intercom.types'
@@ -21,7 +21,7 @@ export const Intercom: React.FC = () => {
     analytics.ready(analyticsReadyCallback)
   }, [analyticsReadyCallback])
 
-  return <IntercomWidget appId={APP_ID} data={intercomUserData} settings={{ alignment: 'right' }} />
+  return <EnhancedIntercom appId={APP_ID} data={intercomUserData} settings={{ alignment: 'right' }} />
 }
 
 export default Intercom
