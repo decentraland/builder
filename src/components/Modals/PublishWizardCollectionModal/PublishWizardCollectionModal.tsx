@@ -43,7 +43,6 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
     onCloseAuthorization
   } = props
   const [currentStep, setCurrentStep] = useState<number>(PublishWizardCollectionSteps.CONFIRM_COLLECTION_NAME)
-  console.log('currentStep: ', currentStep)
   const [emailAddress, setEmailAddress] = useState<string>('')
   const [cheque, setCheque] = useState<Cheque | undefined>(undefined)
   const [isSigningCheque, setIsSigningCheque] = useState<boolean>(false)
