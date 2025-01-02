@@ -5,6 +5,7 @@
 .EditPriceAndBeneficiaryModal.ui.modal .modalContainer {
   display: grid;
   grid-template-columns: 200px 1fr;
+  margin-top: 30px;
   gap: 40px;
 }
 

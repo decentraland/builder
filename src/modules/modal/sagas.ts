@@ -6,11 +6,18 @@ import { closeAllModals } from 'decentraland-dapps/dist/modules/modal/actions'
 import { RESET_ITEM_SUCCESS, SET_PRICE_AND_BENEFICIARY_SUCCESS } from 'modules/item/actions'
 import { PUSH_COLLECTION_CURATION_SUCCESS } from 'modules/curations/collectionCuration/actions'
 import { EXPORT_PROJECT_SUCCESS } from 'modules/project/actions'
+import { SET_COLLECTION_MINTERS_SUCCESS } from 'modules/collection/actions'
 
 export function* modalSaga() {
   yield takeEvery(LOCATION_CHANGE, handleLocationChange)
   yield takeEvery(
-    [PUSH_COLLECTION_CURATION_SUCCESS, RESET_ITEM_SUCCESS, SET_PRICE_AND_BENEFICIARY_SUCCESS, EXPORT_PROJECT_SUCCESS],
+    [
+      PUSH_COLLECTION_CURATION_SUCCESS,
+      RESET_ITEM_SUCCESS,
+      SET_PRICE_AND_BENEFICIARY_SUCCESS,
+      EXPORT_PROJECT_SUCCESS,
+      SET_COLLECTION_MINTERS_SUCCESS
+    ],
     handleCloseAllModals
   )
 }
