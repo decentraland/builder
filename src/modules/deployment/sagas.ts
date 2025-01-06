@@ -400,7 +400,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     try {
       const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
       const deployment = deployments[deploymentId]
-      const lands = (yield select(getLandTiles)) as ReturnType<typeof getLandTiles>
+      const landsOperatedByTheUser = (yield select(getLandTiles)) as ReturnType<typeof getLandTiles>
 
       if (!deployment) {
         throw new Error('Unable to clear deployment: Invalid deployment')
@@ -424,14 +424,25 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       } else {
         const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
         const { placement } = deployment
+
         // If deployment was done with a placement point not owned by the user, we need to find a point that is currently own by them.
         // This could happen if a estate has a deployment, the estate gets dissolved and the lands sent to different users.
         const landsBelongingToTheDeployment = deployments[deploymentId].parcels
-          .filter(parcel => lands[parcel])
-          .map(parcel => lands[parcel].land)
+          .filter(landId => landsOperatedByTheUser[landId])
+          .map(landId => {
+            // LandTiles can be either parcels or estates.
+            // Parcels can be used as is, but estates need to be converted to a structure with the parcel information.
+            if (landsOperatedByTheUser[landId].land.type === LandType.PARCEL) {
+              return landsOperatedByTheUser[landId].land
+            } else {
+              // Craft a land object with the same structure as a parcel
+              const [x, y] = landId.split(',').map(Number)
+              return { id: landId, x, y }
+            }
+          })
         let placementPoint: Coordinate = placement.point
         const isPlacementPointOwnedByUser = landsBelongingToTheDeployment.some(
-          land => land.id === placement.point.x + ',' + placement.point.y
+          land => land.x === placement.point.x && land.y === placement.point.y
         )
         if (!isPlacementPointOwnedByUser && landsBelongingToTheDeployment[0]) {
           placementPoint = { x: landsBelongingToTheDeployment[0].x ?? 0, y: landsBelongingToTheDeployment[0].y ?? 0 }
