@@ -8,6 +8,7 @@ import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
 import ToastProvider from 'decentraland-dapps/dist/providers/ToastProvider'
 import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
+import { CssBaseline, Experimental_CssVarsProvider as CssVarsProvider, darkTheme } from 'decentraland-ui2'
 
 import { store, history } from 'modules/common/store'
 import * as modals from 'components/Modals'
@@ -25,11 +26,14 @@ ReactDOM.render(
       <TranslationProvider locales={Object.keys(languages)}>
         <WalletProvider>
           <ConnectedRouter history={history}>
-            <ModalProvider components={modals}>
+            <CssVarsProvider theme={darkTheme}>
+              <CssBaseline />
               <ToastProvider>
-                <Routes />
+                <ModalProvider components={modals}>
+                  <Routes />
+                </ModalProvider>
               </ToastProvider>
-            </ModalProvider>
+            </CssVarsProvider>
           </ConnectedRouter>
         </WalletProvider>
       </TranslationProvider>
