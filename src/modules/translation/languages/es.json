@@ -2083,6 +2083,10 @@
         "understood": "Comprendido",
         "dont_show_again": "No volver a mostrar este mensaje."
       },
+      "all_items_check": {
+        "title": "¿Estás seguro de que quieres cambiar la vista?",
+        "content": "Tienes elementos que están en proceso de revisión, si cambias de pestaña, los elementos se eliminarán del proceso de revisión."
+      },
       "to_review": "A revisar",
       "reviewed": "Revisado",
       "all_items": "Todos los items",

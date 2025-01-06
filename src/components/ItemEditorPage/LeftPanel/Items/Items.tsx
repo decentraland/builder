@@ -1,4 +1,5 @@
 import * as React from 'react'
+import equal from 'fast-deep-equal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import {
@@ -17,7 +18,7 @@ import {
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { Item, ItemType } from 'modules/item/types'
 import { hasBodyShape, isEmote, isWearable } from 'modules/item/utils'
-import { TP_TRESHOLD_TO_REVIEW } from 'modules/collection/constants'
+import { getTPThresholdToReview } from 'modules/collection/utils'
 import { LEFT_PANEL_PAGE_SIZE } from '../../constants'
 import Collapsable from 'components/Collapsable'
 import Icon from 'components/Icon'
@@ -33,36 +34,29 @@ const INITIAL_PAGE_STATE = {
 
 export default class Items extends React.PureComponent<Props, State> {
   state: State = {
-    items: this.props.items,
-    reviewed: [],
     currentTab: ItemPanelTabs.TO_REVIEW,
     currentPages: INITIAL_PAGE_STATE,
     reviewedTabPage: 1,
     showGetMoreSamplesModal: false,
-    doNotShowSamplesModalAgain: false
+    showAllItemsTabChangeModal: false
   }
 
   analytics = getAnalytics()
 
   componentDidMount() {
-    const { items, onSetReviewedItems } = this.props
-    onSetReviewedItems(items)
+    this.handleReviewItemsTrigger()
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { items, selectedCollectionId, initialPage } = this.props
+    this.handleReviewItemsTrigger(prevProps)
+  }
+
+  handleReviewItemsTrigger = (prevProps?: Props) => {
+    const { items, onReviewItems } = this.props
     const { currentTab } = this.state
-    const prevItemIds = prevProps.items.map(prevItem => prevItem.id)
-    if (currentTab === ItemPanelTabs.TO_REVIEW && items.some(item => !prevItemIds.includes(item.id))) {
-      this.setState({ items })
-    }
-    // initialPage only change when a new created item redirects to the item editor
-    else if (currentTab === ItemPanelTabs.TO_REVIEW && initialPage && prevProps.initialPage !== initialPage) {
-      this.setState({ items, currentPages: { ...this.state.currentPages, [currentTab]: initialPage } })
-    }
-    // if selectedCollectionId changes, lets clear the items in the state
-    else if (selectedCollectionId !== prevProps.selectedCollectionId) {
-      this.setState({ items })
+
+    if (this.getIsReviewingTPItems() && currentTab === ItemPanelTabs.TO_REVIEW && !equal(items, prevProps?.items)) {
+      onReviewItems()
     }
   }
 
@@ -105,42 +99,60 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   handleTabChange = (targetTab: ItemPanelTabs) => {
-    const { onLoadPage } = this.props
+    const { onLoadPage, onReviewItems, onResetReviewedItems } = this.props
     const { currentPages } = this.state
+
     if (targetTab === ItemPanelTabs.ALL_ITEMS) {
-      onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS])
+      this.setState({ showAllItemsTabChangeModal: false }, () => {
+        onResetReviewedItems()
+        onLoadPage(currentPages[ItemPanelTabs.ALL_ITEMS])
+      })
+    } else if (targetTab === ItemPanelTabs.TO_REVIEW) {
+      onReviewItems()
     }
     this.setState({ currentTab: targetTab })
   }
 
   handleGetRandomSampleClick = () => {
-    const { doNotShowSamplesModalAgain, items } = this.state
-    if (doNotShowSamplesModalAgain) {
-      const { onLoadRandomPage } = this.props
-      this.setState(prevState => ({ reviewed: [...prevState.reviewed, ...items] }), onLoadRandomPage)
+    const { showSamplesModalAgain, onLoadRandomPage } = this.props
+    if (!showSamplesModalAgain) {
+      onLoadRandomPage()
     } else {
       this.setState({ showGetMoreSamplesModal: true })
     }
   }
 
-  handleReviewedPageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
-    this.setState({ reviewedTabPage: +props.activePage! })
+  handleModalProceed = () => {
+    const { onLoadRandomPage } = this.props
+    onLoadRandomPage()
+    this.setState({ showGetMoreSamplesModal: false })
   }
 
   handlePageChange = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, props: PaginationProps) => {
     const { currentTab } = this.state
     const { onLoadPage } = this.props
     this.setState(prevState => ({ currentPages: { ...prevState.currentPages, [currentTab]: +props.activePage! } }))
-    onLoadPage(+props.activePage!)
+    if (currentTab !== ItemPanelTabs.REVIEWED) {
+      onLoadPage(+props.activePage!)
+    }
+  }
+
+  handleSwitchToAllItemsTab = () => {
+    const { reviewedItems } = this.props
+    if (reviewedItems.length > 0) {
+      this.setState({ showAllItemsTabChangeModal: true })
+    } else {
+      this.handleTabChange(ItemPanelTabs.ALL_ITEMS)
+    }
   }
 
   getIsReviewingTPItems = () => {
-    const { items, isReviewing } = this.props
-    return items[0] ? isThirdParty(items[0].urn) && isReviewing : false
+    const { collection, isReviewing } = this.props
+    return collection ? isThirdParty(collection.urn) && isReviewing : false
   }
 
   renderSidebarItem = (item: Item) => {
-    const { selectedCollectionId, selectedItemId, bodyShape, isPlayingEmote } = this.props
+    const { collection, selectedItemId, bodyShape, isPlayingEmote } = this.props
     return (
       <SidebarItem
         key={item.id}
@@ -148,7 +160,7 @@ export default class Items extends React.PureComponent<Props, State> {
         isSelected={selectedItemId === item.id}
         isVisible={this.isVisible(item)}
         isPlayingEmote={isPlayingEmote}
-        selectedCollectionId={selectedCollectionId}
+        selectedCollectionId={collection?.id ?? null}
         bodyShape={bodyShape}
         onClick={this.handleClick}
       />
@@ -167,6 +179,14 @@ export default class Items extends React.PureComponent<Props, State> {
   renderSidebarCategory = (items: Item[]) => {
     const wearableItems = items.filter(isWearable)
     const emoteItems = items.filter(isEmote)
+
+    if (items.length === 0) {
+      return (
+        <div className="empty">
+          <div className="subtitle">{t('item_editor.left_panel.empty_collection')}</div>
+        </div>
+      )
+    }
 
     if (wearableItems.length === 0 || emoteItems.length === 0) {
       return items.map(this.renderSidebarItem)
@@ -213,8 +233,8 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   renderTabContent = () => {
-    const { items: propItems, isLoading, totalItems } = this.props
-    const { items: stateItems, reviewed, currentTab, currentPages } = this.state
+    const { items: propItems, isLoading, totalItems, reviewedItems } = this.props
+    const { currentTab, currentPages } = this.state
     const areTPItems = this.getIsReviewingTPItems()
     const currentPage = currentPages[currentTab]
 
@@ -226,17 +246,17 @@ export default class Items extends React.PureComponent<Props, State> {
       case ItemPanelTabs.TO_REVIEW:
         return (
           <>
-            {this.renderSidebarCategory(areTPItems ? stateItems : propItems)}
+            {this.renderSidebarCategory(propItems)}
             {!areTPItems && totalItems ? this.renderTabPagination(totalItems) : null}
           </>
         )
       case ItemPanelTabs.REVIEWED: {
-        const paginatedItems = reviewed.slice((currentPage - 1) * LEFT_PANEL_PAGE_SIZE, currentPage * LEFT_PANEL_PAGE_SIZE)
+        const paginatedItems = reviewedItems.slice((currentPage - 1) * LEFT_PANEL_PAGE_SIZE, currentPage * LEFT_PANEL_PAGE_SIZE)
         return (
           <>
-            {reviewed.length ? this.renderPaginationStats(reviewed.length) : null}
+            {reviewedItems.length ? this.renderPaginationStats(reviewedItems.length) : null}
             {this.renderSidebarCategory(paginatedItems)}
-            {reviewed.length ? this.renderTabPagination(reviewed.length) : null}
+            {reviewedItems.length ? this.renderTabPagination(reviewedItems.length) : null}
           </>
         )
       }
@@ -254,16 +274,12 @@ export default class Items extends React.PureComponent<Props, State> {
     }
   }
 
-  getThresholdToReview = () => {
-    const { totalItems } = this.props
-    return Math.floor(totalItems! * TP_TRESHOLD_TO_REVIEW)
-  }
-
   renderTabHeader = () => {
-    const { isLoading, totalItems } = this.props
-    const { currentTab, reviewed } = this.state
+    const { isLoading, totalItems, reviewedItems } = this.props
+    const { currentTab } = this.state
     let headerInnerContent
-    const notEnoughItemsToAskMore = !!totalItems && (totalItems < LEFT_PANEL_PAGE_SIZE || reviewed.length === totalItems)
+    const notEnoughItemsToAskMore = !totalItems || totalItems < LEFT_PANEL_PAGE_SIZE || reviewedItems.length === totalItems
+
     switch (currentTab) {
       case ItemPanelTabs.TO_REVIEW:
         headerInnerContent = (
@@ -296,8 +312,8 @@ export default class Items extends React.PureComponent<Props, State> {
           <T
             id="item_editor.left_panel.reviewed_samples"
             values={{
-              reviewed_samples_bold: <b>{t('item_editor.left_panel.reviewed_samples_bold', { count: reviewed.length })}</b>,
-              total: this.getThresholdToReview()
+              reviewed_samples_bold: <b>{t('item_editor.left_panel.reviewed_samples_bold', { count: reviewedItems.length })}</b>,
+              total: getTPThresholdToReview(totalItems ?? 1)
             }}
           />
         )
@@ -309,8 +325,8 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   renderModal = () => {
-    const { onLoadRandomPage } = this.props
-    const { showGetMoreSamplesModal, doNotShowSamplesModalAgain, items } = this.state
+    const { onToggleShowSamplesModalAgain, showSamplesModalAgain } = this.props
+    const { showGetMoreSamplesModal } = this.state
     return (
       <Modal open={showGetMoreSamplesModal} size="small" className="ConfirmNewSampleModal">
         <Modal.Header>{t('item_editor.left_panel.get_more_samples_modal.title')}</Modal.Header>
@@ -322,25 +338,31 @@ export default class Items extends React.PureComponent<Props, State> {
               tabName: <b>{ItemPanelTabs.REVIEWED}</b>
             }}
           />
-          <div
-            className="checkbox-container"
-            onClick={() => this.setState(prevState => ({ doNotShowSamplesModalAgain: !prevState.doNotShowSamplesModalAgain }))}
-          >
-            <Checkbox checked={doNotShowSamplesModalAgain} />
+          <div className="checkbox-container" onClick={onToggleShowSamplesModalAgain}>
+            <Checkbox checked={!showSamplesModalAgain} />
             {t('item_editor.left_panel.get_more_samples_modal.dont_show_again')}
           </div>
         </Modal.Content>
         <Modal.Actions>
           <Button onClick={() => this.setState({ showGetMoreSamplesModal: false })}>{t('global.cancel')}</Button>
-          <Button
-            primary
-            onClick={() =>
-              this.setState(
-                prevState => ({ showGetMoreSamplesModal: false, reviewed: [...prevState.reviewed, ...items] }),
-                onLoadRandomPage
-              )
-            }
-          >
+          <Button primary onClick={this.handleModalProceed}>
+            {t('item_editor.left_panel.get_more_samples_modal.understood')}
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    )
+  }
+
+  renderAllItemsTabChangeModal = () => {
+    const { showAllItemsTabChangeModal } = this.state
+
+    return (
+      <Modal open={showAllItemsTabChangeModal} size="small" className="ConfirmNewSampleModal">
+        <Modal.Header>{t('item_editor.left_panel.all_items_check.title')}</Modal.Header>
+        <Modal.Content>{t('item_editor.left_panel.all_items_check.content')}</Modal.Content>
+        <Modal.Actions>
+          <Button onClick={() => this.setState({ showAllItemsTabChangeModal: false })}>{t('global.cancel')}</Button>
+          <Button primary onClick={() => this.handleTabChange(ItemPanelTabs.ALL_ITEMS)}>
             {t('item_editor.left_panel.get_more_samples_modal.understood')}
           </Button>
         </Modal.Actions>
@@ -359,7 +381,7 @@ export default class Items extends React.PureComponent<Props, State> {
         <Tabs.Tab active={currentTab === ItemPanelTabs.REVIEWED} onClick={() => this.handleTabChange(ItemPanelTabs.REVIEWED)}>
           {t('item_editor.left_panel.reviewed')}
         </Tabs.Tab>
-        <Tabs.Tab active={currentTab === ItemPanelTabs.ALL_ITEMS} onClick={() => this.handleTabChange(ItemPanelTabs.ALL_ITEMS)}>
+        <Tabs.Tab active={currentTab === ItemPanelTabs.ALL_ITEMS} onClick={this.handleSwitchToAllItemsTab}>
           {t('item_editor.left_panel.all_items')}
         </Tabs.Tab>
       </Tabs>
@@ -367,10 +389,6 @@ export default class Items extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { items } = this.state
-    const { totalItems, isLoading } = this.props
-    if ((items.length === 0 || !totalItems) && isLoading) return <Loader active size="large" />
-
     return (
       <Section className="Items">
         {this.getIsReviewingTPItems() ? (
@@ -381,6 +399,7 @@ export default class Items extends React.PureComponent<Props, State> {
         ) : null}
         {this.renderTabContent()}
         {this.renderModal()}
+        {this.renderAllItemsTabChangeModal()}
       </Section>
     )
   }

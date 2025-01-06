@@ -11,6 +11,20 @@ export default class ItemEditorPage extends React.PureComponent<Props, State> {
   state: State = {
     reviewedItems: []
   }
+
+  handleOnSetReviewedItems = (items: Item[]) => {
+    this.setState(prevState => ({
+      reviewedItems: [
+        ...prevState.reviewedItems,
+        ...items.filter(item => !prevState.reviewedItems.some(prevStateItem => prevStateItem.id === item.id))
+      ]
+    }))
+  }
+
+  handleResetReviewedItems = () => {
+    this.setState({ reviewedItems: [] })
+  }
+
   render() {
     const { reviewedItems } = this.state
     return (
@@ -19,9 +33,9 @@ export default class ItemEditorPage extends React.PureComponent<Props, State> {
           <TopPanel reviewedItems={reviewedItems} />
           <div className="content">
             <LeftPanel
-              onSetReviewedItems={(items: Item[]) =>
-                this.setState(prevState => ({ reviewedItems: [...prevState.reviewedItems, ...items] }))
-              }
+              reviewedItems={reviewedItems}
+              onResetReviewedItems={this.handleResetReviewedItems}
+              onSetReviewedItems={this.handleOnSetReviewedItems}
             />
             <CenterPanel />
             <RightPanel />

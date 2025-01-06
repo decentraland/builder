@@ -2064,6 +2064,10 @@
         "understood": "明白了",
         "dont_show_again": "不再显示此消息。"
       },
+      "all_items_check": {
+        "title": "您确实要更改视图吗？",
+        "content": "您有一些项目正在审核中，如果您切换标签，这些项目将从审核过程中删除。"
+      },
       "to_review": "回顾",
       "reviewed": "已审核",
       "all_items": "所有项目",

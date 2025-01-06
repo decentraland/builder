@@ -14,6 +14,7 @@ import styles from './TopBar.module.css'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
+const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
 
 export default function TopBar({ currentProject, metrics, limits, areEntitiesOutOfBoundaries, isUploading, onOpenModal }: Props) {
   const history = useHistory()
@@ -46,6 +47,8 @@ export default function TopBar({ currentProject, metrics, limits, areEntitiesOut
     if (config.is(Env.DEVELOPMENT)) {
       url.searchParams.set('NETWORK', 'sepolia')
       url.searchParams.set('DEBUG_SCENE_LOG', '')
+    } else {
+      url.searchParams.set('CATALYST', PEER_TESTING_URL)
     }
 
     return url.toString()

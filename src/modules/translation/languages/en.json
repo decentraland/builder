@@ -2065,6 +2065,10 @@
         "understood": "Understood",
         "dont_show_again": "Don't show this message again."
       },
+      "all_items_check": {
+        "title": "Are you sure you want to change the view?",
+        "content": "You have items that are in the process of being reviewed, if you switch tabs, the items will be removed from the review process."
+      },
       "to_review": "To review",
       "reviewed": "Reviewed",
       "all_items": "All items",
