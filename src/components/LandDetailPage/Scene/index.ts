@@ -1,2 +1,2 @@
-import Scene from './Scene'
-export default Scene
+export { Scene } from './Scene'
+export type { Props } from './Scene.types'
