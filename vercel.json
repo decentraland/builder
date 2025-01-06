@@ -6,7 +6,8 @@
       "NODE_ENV": "development",
       "GEN_STATIC_LOCAL": "true",
       "VITE_BASE_URL": "/",
-      "VITE_REACT_APP_DCL_DEFAULT_ENV": "dev"
+      "VITE_REACT_APP_DCL_DEFAULT_ENV": "dev",
+      "NODE_OPTIONS": "--max_old_space_size=8192"
     }
   },
   "rewrites": [
