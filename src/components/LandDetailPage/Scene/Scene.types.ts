@@ -3,6 +3,7 @@ import { ProjectState } from 'modules/project/reducer'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
+  disabled?: boolean
   deployment: Deployment
   projects: ProjectState['data']
   onNavigate: (path: string) => void

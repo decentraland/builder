@@ -12,7 +12,7 @@ import Profile from 'components/Profile'
 import JumpIn from 'components/JumpIn'
 import RentalPeriod from 'components/RentalPeriod'
 import ENSChip from './ENSChip'
-import Scene from './Scene'
+import { Scene } from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
 
@@ -114,6 +114,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = this.computeOccupiedLand(land, deployments)
     const landOwner = rental && (land.roles.includes(RoleType.LESSOR) || land.roles.includes(RoleType.TENANT)) ? rental.lessor : land.owner
+    const isRentingLand = land.roles.includes(RoleType.LESSOR)
 
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
     const isAtlasClickable = showTooltip && hovered && hovered.projectId && hovered.projectId in projects
@@ -257,6 +258,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                 <div className="deployments">
                   {deployments.map(deployment => (
                     <Scene
+                      disabled={isRentingLand}
                       key={deployment.id}
                       deployment={deployment}
                       onMouseEnter={this.handleMouseEnter}
