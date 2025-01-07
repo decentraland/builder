@@ -10,6 +10,16 @@
       "NODE_OPTIONS": "--max_old_space_size=8192"
     }
   },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "buildCommand": "npm run build"
+      }
+    }
+  ],
   "rewrites": [
     {
       "source": "/auth/:match*",
