@@ -27,9 +27,9 @@ const Navbar: React.FC<Props> = ({ hasPendingTransactions, address, isNavbar2Ena
       <BaseNavbar2
         {...props}
         withNotifications
-        activePage={NavbarPages.MARKETPLACE}
+        activePage={NavbarPages.CREATE}
         hasActivity={hasPendingTransactions}
-        identity={props.identity}
+        identity={identity}
         onSignIn={onSignIn}
       />
     )
