@@ -169,6 +169,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
+  handleAllowOutlineCompatible = (_event: React.FormEvent, { checked }: CheckboxProps) => {
+    const data = {
+      ...this.state.data,
+      outlineCompatible: checked
+    } as WearableData
+    this.setState({ data, isDirty: this.isDirty({ data }) })
+  }
+
   handleChangeCategory = (category: HideableWearableCategory | EmoteCategory) => {
     let data
     if (isEmoteData(this.state.data!)) {
@@ -262,7 +270,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             itemData.category === WearableCategory.UPPER_BODY || itemData.hides?.includes(WearableCategory.UPPER_BODY)
               ? [BodyPartCategory.HANDS]
               : [],
-          ...('blockVrmExport' in itemData ? { blockVrmExport: itemData.blockVrmExport } : {})
+          ...('blockVrmExport' in itemData ? { blockVrmExport: itemData.blockVrmExport } : {}),
+          ...('outlineCompatible' in itemData ? { outlineCompatible: itemData.outlineCompatible } : {})
         }
       }
       const itemContents = {
@@ -684,6 +693,33 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               checked={!(data as WearableData)?.blockVrmExport}
                               onChange={this.handleAllowVrmExport}
                               aria-label={t('item_editor.right_panel.copyright.vrm_export')}
+                            />
+                          </div>
+                        </div>
+                      </Collapsable>
+                    )}
+                    {item?.type === ItemType.WEARABLE && (
+                      <Collapsable
+                        label={
+                          <>
+                            <span className="overrides-label-panel">{t('item_editor.right_panel.outline_compatible.title')}</span>
+                            <Info content={t('item_editor.right_panel.outline_compatible.info')} className="info" />
+                          </>
+                        }
+                      >
+                        <div className="right-panel-copyright-section">
+                          <div className="right-panel-export-protection">
+                            <span>{t('item_editor.right_panel.outline_compatible.title')}</span>
+                            <Checkbox
+                              toggle
+                              label={
+                                (data as WearableData)?.outlineCompatible
+                                  ? t('item_editor.right_panel.copyright.enabled')
+                                  : t('item_editor.right_panel.copyright.disabled')
+                              }
+                              checked={(data as WearableData)?.outlineCompatible}
+                              onChange={this.handleAllowOutlineCompatible}
+                              aria-label={t('item_editor.right_panel.outline_compatible.title')}
                             />
                           </div>
                         </div>

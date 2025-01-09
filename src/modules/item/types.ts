@@ -80,6 +80,7 @@ export type WearableData = {
   requiredPermissions?: string[]
   isSmart?: boolean
   blockVrmExport?: boolean
+  outlineCompatible?: boolean
 }
 
 type BaseItem = {

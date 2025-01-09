@@ -2116,6 +2116,10 @@
       "description_placeholder": "What makes your Item special?",
       "utility_placeholder": "Describe your Item functionality",
       "utility_tooltip": "Describe the in-world utility of the Wearable. E.g: Increase damage by 5%",
+      "outline_compatible": {
+        "title": "Is outline compatible",
+        "info": "Most wearables automatically support outlines. If you've created custom outline modeling, you can optionally disable the default outline behavior."
+      },
       "copyright": {
         "title": "VRM Export Permission",
         "vrm_export": "Allow VRM Export",
