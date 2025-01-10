@@ -315,7 +315,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         tags: tags || [],
         representations: [...representations],
         requiredPermissions: requiredPermissions || [],
-        blockVrmExport: blockVrmExport ?? false
+        blockVrmExport: blockVrmExport ?? false,
+        outlineCompatible: true // it's going to be true for all the items. It can be deactivated later in the editor view
       } as WearableData
     } else {
       data = {
@@ -398,7 +399,8 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           removesDefaultHiding: removesDefaultHiding,
           tags: [...editedItem.data.tags],
           requiredPermissions: requiredPermissions || [],
-          blockVrmExport: editedItem.data.blockVrmExport
+          blockVrmExport: editedItem.data.blockVrmExport,
+          outlineCompatible: editedItem.data.outlineCompatible || true // it's going to be true for all the items. It can be deactivated later in the editor view
         },
         contents: {
           ...editedItem.contents,

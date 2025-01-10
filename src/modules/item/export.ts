@@ -148,7 +148,8 @@ function buildTPItemEntityMetadata(item: Item, itemHash: string, tree: MerkleDis
       tags: item.data.tags,
       category: item.data.category as WearableCategory,
       representations: item.data.representations as WearableRepresentation[],
-      ...('blockVrmExport' in item.data ? { blockVrmExport: item.data.blockVrmExport } : {})
+      ...('blockVrmExport' in item.data ? { blockVrmExport: item.data.blockVrmExport } : {}),
+      ...('outlineCompatible' in item.data ? { outlineCompatible: item.data.outlineCompatible } : {})
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
@@ -183,7 +184,8 @@ function buildWearableEntityMetadata(collection: Collection, item: Item): Wearab
       tags: item.data.tags,
       category: item.data.category!,
       representations: item.data.representations,
-      ...('blockVrmExport' in item.data ? { blockVrmExport: item.data.blockVrmExport } : {})
+      ...('blockVrmExport' in item.data ? { blockVrmExport: item.data.blockVrmExport } : {}),
+      ...('outlineCompatible' in item.data ? { outlineCompatible: item.data.outlineCompatible } : {})
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
