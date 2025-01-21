@@ -11,6 +11,8 @@ import { toastSaga } from 'decentraland-dapps/dist/modules/toast/sagas'
 import { featuresSaga } from 'decentraland-dapps/dist/modules/features/sagas'
 import { createIdentitySaga } from 'decentraland-dapps/dist/modules/identity/sagas'
 import { FiatGateway, createGatewaySaga } from 'decentraland-dapps/dist/modules/gateway'
+import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
+import { ContentfulClient, campaignSagas } from 'decentraland-dapps/dist/modules/campaign'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -53,7 +55,6 @@ import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
-import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
 const newIdentitySaga = createIdentitySaga({
   authURL: config.get('AUTH_URL')
@@ -70,6 +71,7 @@ export function* rootSaga(
   builderAPI: BuilderAPI,
   newBuilderClient: BuilderClient,
   catalystClient: CatalystClient,
+  contentfulClient: ContentfulClient,
   getIdentity: () => AuthIdentity | undefined,
   store: RootStore,
   ensApi: ENSApi,
@@ -78,6 +80,12 @@ export function* rootSaga(
 ) {
   yield all([
     analyticsSaga(),
+    campaignSagas(contentfulClient, {
+      space: config.get('CONTENTFUL_SPACE_ID'),
+      environment: config.get('CONTENTFUL_ENVIRONMENT'),
+      id: config.get('CONTENTFUL_ADMIN_ENTITY_ID'),
+      token: config.get('CONTENTFUL_ACCESS_TOKEN')
+    }),
     assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
     authorizationSaga(),

@@ -38,7 +38,6 @@ import './CurationPage.css'
 
 const PAGE_SIZE = 12
 const ALL_ASSIGNEES_KEY = 'all'
-const CAMPAIGN_TAG = 'DCLMF24'
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -120,11 +119,16 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   handleOnCampaignToggleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
+    const { campaignTag } = this.props
     const { checked } = checkboxProps
+    if (!campaignTag) {
+      return
+    }
+
     if (checked) {
-      this.updateParam({ filterByTags: [...this.state.filterByTags, CAMPAIGN_TAG] })
+      this.updateParam({ filterByTags: [...this.state.filterByTags, campaignTag] })
     } else {
-      this.updateParam({ filterByTags: [...this.state.filterByTags.filter(tag => tag !== CAMPAIGN_TAG)] })
+      this.updateParam({ filterByTags: [...this.state.filterByTags.filter(tag => tag !== campaignTag)] })
     }
   }
 
@@ -212,21 +216,21 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderCampaignFilterToggle = () => {
+    const { isCampaignEnabled, campaignName, campaignTag } = this.props
     const { filterByTags } = this.state
-    return (
+    return isCampaignEnabled && campaignName && campaignTag ? (
       <Radio
         toggle
         className="filterByCampaignTag"
-        checked={filterByTags.includes(CAMPAIGN_TAG)}
+        checked={filterByTags.includes(campaignTag)}
         onChange={this.handleOnCampaignToggleChange}
-        label={t('campaign.name')}
+        label={campaignName}
       />
-    )
+    ) : null
   }
 
   renderPage() {
-    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData, isCampaignEnabled } =
-      this.props
+    const { isLoadingCollectionsData, isLoadingCommittee, collections, curationsByCollectionId, paginationData } = this.props
     const { page, searchText } = this.state
     const totalCurations = paginationData?.total
     const totalPages = paginationData?.totalPages
@@ -252,7 +256,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right" shrink={false}>
                 <Row>
-                  {isCampaignEnabled ? this.renderCampaignFilterToggle() : null}
+                  {this.renderCampaignFilterToggle()}
                   {this.renderAssigneeFilterDropdown()}
                   {this.renderTypesFilterDropdown()}
                   {this.renderStatusFilterDropdown()}

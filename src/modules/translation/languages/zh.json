@@ -2323,17 +2323,6 @@
       "subtitle": "感谢您查看此合集"
     }
   },
-  "event_banner": {
-    "small": {
-      "title": "为 Decentraland 音乐节创作！",
-      "subtitle": "为您的太空主题可穿戴设备和表情添加 {event_tag} 标签，它们将在市场上的特殊节日标签中展示！"
-    },
-    "event_tag": "DCLMF24"
-  },
-  "campaign": {
-    "name": "Decentraland 音乐节",
-    "tag": "DCLMF24"
-  },
   "logged_in_detail_page": {
     "error_title": "加载详细信息页面时出错"
   },

@@ -2342,17 +2342,6 @@
       "subtitle": "Gracias por revisar esta colleción"
     }
   },
-  "event_banner": {
-    "small": {
-      "title": "¡Crea para el Festival de Música Decentraland!",
-      "subtitle": "Agrega la etiqueta {event_tag} a tus wearables y emotes con temática espacial y aparecerán en una pestaña especial del festival en el Marketplace."
-    },
-    "event_tag": "DCLMF24"
-  },
-  "campaign": {
-    "name": "Festival de Música Decentraland",
-    "tag": "DCLMF24"
-  },
   "logged_in_detail_page": {
     "error_title": "Ocurrió un error al cargar la página de detalles"
   },

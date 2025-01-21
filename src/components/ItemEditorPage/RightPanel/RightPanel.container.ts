@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getCampaignName, getContentfulNormalizedLocale, getMainTag } from 'decentraland-dapps/dist/modules/campaign'
 import { RootState } from 'modules/common/types'
 import { getItem, getError as getItemError, getStatusByItemId, isDownloading } from 'modules/item/selectors'
 import { deleteItemRequest, downloadItemRequest, saveItemRequest } from 'modules/item/actions'
@@ -35,6 +36,8 @@ const mapState = (state: RootState): MapStateProps => {
     isDownloading: isDownloading(state),
     isCommitteeMember: isWalletCommitteeMember(state),
     isCampaignEnabled: getIsCampaignEnabled(state),
+    campaignTag: getMainTag(state),
+    campaignName: getCampaignName(state)?.[getContentfulNormalizedLocale(state)],
     isVrmOptOutEnabled: getIsVrmOptOutEnabled(state),
     isWearableUtilityEnabled: getIsWearableUtilityEnabled(state)
   }

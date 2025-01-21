@@ -34,6 +34,8 @@ export type Props = {
   isLoadingCollectionsData: boolean
   isLoadingCommittee: boolean
   isCampaignEnabled: boolean
+  campaignTag?: string
+  campaignName?: string
   onNavigate: (path: string) => void
   onFetchCollections: (params?: FetchCollectionsParams) => ReturnType<Dispatch<FetchCollectionsRequestAction>>
 }
@@ -60,6 +62,8 @@ export type MapStateProps = Pick<
   | 'isLoadingCollectionsData'
   | 'isLoadingCommittee'
   | 'isCampaignEnabled'
+  | 'campaignTag'
+  | 'campaignName'
 >
 
 export type MapDispatchProps = Pick<Props, 'onFetchCollections'>

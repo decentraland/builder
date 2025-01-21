@@ -3,20 +3,20 @@ import { useHistory } from 'react-router-dom'
 import classNames from 'classnames'
 import { Button, Card, Container, Page } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
+import { Banner } from 'decentraland-dapps/dist/containers/Banner'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import Navigation from 'components/Navigation'
-import EventBannerContainer from 'components/EventBanner/EventBanner.container'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
 import { Props } from './HomePage.types'
 import './HomePage.css'
 
 export const LOCALSTORAGE_LAST_VISITED_SECTION_KEY = 'builder-last-visited-section'
-
+const BUILDER_BANNER_ID = 'builderCampaignBanner'
 const localStorage = getLocalStorage()
 const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LAND, NavigationTab.NAMES]
 
@@ -80,7 +80,7 @@ export const HomePage: React.FC<Props> = props => {
         <Navigation activeTab={NavigationTab.OVERVIEW}>
           <SyncToast />
         </Navigation>
-        <EventBannerContainer />
+        <Banner id={BUILDER_BANNER_ID} />
         <Container>
           <h1 className="title">{t('home_page.title')}</h1>
           <Card.Group itemsPerRow={4} centered>

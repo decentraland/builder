@@ -20,11 +20,11 @@ import {
   Icon as UIIcon
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Banner } from 'decentraland-dapps/dist/containers/Banner'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
-import EventBanner from 'components/EventBanner'
 import { locations } from 'routing/locations'
 import { CollectionPageView } from 'modules/ui/collection/types'
 import { CurationSortOptions } from 'modules/curations/types'
@@ -38,6 +38,7 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
+const BUILDER_BANNER_ID = 'builderCampaignBanner'
 const PAGE_SIZE = 20
 export const LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT = 'builder-emotes-2.0-announcement'
 
@@ -296,7 +297,9 @@ export default function CollectionsPage(props: Props) {
 
     return (
       <>
-        <EventBanner />
+        <div className="banner-container">
+          <Banner id={BUILDER_BANNER_ID} />
+        </div>
         <div className="filters">
           <Container>
             {(hasUserOrphanItems || isThirdPartyManager || isLinkedWearablesPaymentsEnabled) && (
