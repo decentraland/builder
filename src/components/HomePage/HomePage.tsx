@@ -11,12 +11,12 @@ import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import { BUILDER_BANNER_ID } from 'modules/common/banners'
 import { locations } from 'routing/locations'
 import { Props } from './HomePage.types'
 import './HomePage.css'
 
 export const LOCALSTORAGE_LAST_VISITED_SECTION_KEY = 'builder-last-visited-section'
-const BUILDER_BANNER_ID = 'builderCampaignBanner'
 const localStorage = getLocalStorage()
 const cards = [NavigationTab.COLLECTIONS, NavigationTab.SCENES, NavigationTab.LAND, NavigationTab.NAMES]
 

@@ -30,6 +30,7 @@ import { CollectionPageView } from 'modules/ui/collection/types'
 import { CurationSortOptions } from 'modules/curations/types'
 import { usePagination } from 'lib/pagination'
 import { CollectionType } from 'modules/collection/types'
+import { BUILDER_BANNER_ID } from 'modules/common/banners'
 import collectionsIcon from 'icons/collections.svg'
 import ItemCard from './ItemCard'
 import ItemRow from './ItemRow'
@@ -38,7 +39,6 @@ import CollectionRow from './CollectionRow'
 import { Props, TABS } from './CollectionsPage.types'
 import './CollectionsPage.css'
 
-const BUILDER_BANNER_ID = 'builderCampaignBanner'
 const PAGE_SIZE = 20
 export const LOCALSTORAGE_EMOTES_V2_ANNOUCEMENT = 'builder-emotes-2.0-announcement'
 
