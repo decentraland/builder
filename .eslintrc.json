@@ -28,7 +28,7 @@
     "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }]
   },
   "parserOptions": {
-    "project": ["./tsconfig.node.json"]
+    "project": ["./tsconfig.json"]
   },
   "overrides": [
     {
@@ -47,7 +47,7 @@
         "@typescript-eslint/no-unsafe-enum-comparison": "off"
       },
       "parserOptions": {
-        "project": ["./tsconfig.node.json"]
+        "project": ["./tsconfig.json"]
       }
     },
     {
