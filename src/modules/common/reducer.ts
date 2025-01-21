@@ -11,6 +11,7 @@ import { translationReducer as translation } from 'decentraland-dapps/dist/modul
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { featuresReducer as features } from 'decentraland-dapps/dist/modules/features/reducer'
 import { gatewayReducer as gateway } from 'decentraland-dapps/dist/modules/gateway/reducer'
+import { campaignReducer as campaign } from 'decentraland-dapps/dist/modules/campaign'
 
 import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
@@ -43,6 +44,7 @@ export function createRootReducer(history: History) {
   return storageReducerWrapper(
     combineReducers<RootState>({
       asset,
+      campaign,
       assetPack,
       authorization,
       collection,

@@ -16,6 +16,7 @@ import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { ContentfulClient, fetchCampaignRequest } from 'decentraland-dapps/dist/modules/campaign'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -175,9 +176,21 @@ const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthor
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
 const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getState())))
+const contentfulClient = new ContentfulClient()
 
 const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
-sagasMiddleware.run(rootSaga, builderAPI, newBuilderClient, catalystClient, getClientAuthAuthority, store, ensApi, worldsAPI, tradeService)
+sagasMiddleware.run(
+  rootSaga,
+  builderAPI,
+  newBuilderClient,
+  catalystClient,
+  contentfulClient,
+  getClientAuthAuthority,
+  store,
+  ensApi,
+  worldsAPI,
+  tradeService
+)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {
@@ -192,5 +205,6 @@ window.onbeforeunload = function () {
 }
 
 store.dispatch(fetchTilesRequest())
+store.dispatch(fetchCampaignRequest())
 
 export { store, history }

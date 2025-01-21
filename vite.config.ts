@@ -1,14 +1,14 @@
 import react from '@vitejs/plugin-react-swc'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import path from 'path'
-import { defineConfig, loadEnv, splitVendorChunkPlugin } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const envVariables = loadEnv(mode, process.cwd())
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
-    plugins: [react(), nodePolyfills(), splitVendorChunkPlugin()],
+    plugins: [react(), nodePolyfills()],
     // Required because the CatalystClient tries to access it
     define: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -62,7 +62,7 @@ export default defineConfig(({ mode }) => {
       commonjsOptions: {
         transformMixedEsModules: true
       },
-      sourcemap: true
+      sourcemap: false
     },
     base: envVariables.VITE_BASE_URL
   }

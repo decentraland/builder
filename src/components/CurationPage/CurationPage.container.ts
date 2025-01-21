@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getMainTag, getContentfulNormalizedLocale, getCampaignName } from 'decentraland-dapps/dist/modules/campaign'
 import { getData as getWallet, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getIsCampaignEnabled } from 'modules/features/selectors'
@@ -29,7 +30,9 @@ const mapState = (state: RootState): MapStateProps => {
     isLoadingCollectionsData:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCuration(state), FETCH_COLLECTION_CURATION_REQUEST),
-    isCampaignEnabled: getIsCampaignEnabled(state)
+    isCampaignEnabled: getIsCampaignEnabled(state),
+    campaignTag: getMainTag(state),
+    campaignName: getCampaignName(state)?.[getContentfulNormalizedLocale(state)]
   }
 }
 

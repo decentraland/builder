@@ -2324,17 +2324,6 @@
       "subtitle": "Thank you for revieweing this collection"
     }
   },
-  "event_banner": {
-    "small": {
-      "title": "Create for Decentraland Music Festival!",
-      "subtitle": "Add the {event_tag} tag for your space-themed Wearables and Emotes and they'll be featured in a special Festival Tab on the Marketplace!"
-    },
-    "event_tag": "DCLMF24"
-  },
-  "campaign": {
-    "name": "Decentraland Music Festival",
-    "tag": "DCLMF24"
-  },
   "logged_in_detail_page": {
     "error_title": "An error ocurred while loading the detail page"
   },
@@ -2342,7 +2331,7 @@
     "title": "Introducing Handwear",
     "subtitle": "A new Wearable category for all your hand-enhancing creations",
     "img_alt": "New Handwear category",
-    "description": "Update your hand Wearables to the new category in the Editor once you’ve modified them accordingly. Please note, the Handwear category is for hand accessories or Wearables that replace hands with other functionally similar ones, not for items that are held.",
+    "description": "Update your hand Wearables to the new category in the Editor once you've modified them accordingly. Please note, the Handwear category is for hand accessories or Wearables that replace hands with other functionally similar ones, not for items that are held.",
     "action": "Learn more"
   },
   "migrate_to_sdk7_modal": {

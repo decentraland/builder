@@ -24,6 +24,8 @@ export type Props = {
   isDownloading: boolean
   isCommitteeMember: boolean
   isCampaignEnabled: boolean
+  campaignTag?: string
+  campaignName?: string
   isVrmOptOutEnabled: boolean
   isWearableUtilityEnabled: boolean
   onSaveItem: typeof saveItemRequest
@@ -58,6 +60,8 @@ export type MapStateProps = Pick<
   | 'isCommitteeMember'
   | 'canEditSelectedItem'
   | 'isCampaignEnabled'
+  | 'campaignTag'
+  | 'campaignName'
   | 'isVrmOptOutEnabled'
   | 'isWearableUtilityEnabled'
 >

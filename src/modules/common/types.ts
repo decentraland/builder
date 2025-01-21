@@ -11,6 +11,7 @@ import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { FeaturesState } from 'decentraland-dapps/dist/modules/features/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 import { GatewayState } from 'decentraland-dapps/dist/modules/gateway'
+import { CampaignState } from 'decentraland-dapps/dist/modules/campaign'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
@@ -44,6 +45,7 @@ export type StorageLoadAction = ReturnType<typeof storageLoad>
 
 export type RootState = {
   asset: AssetState
+  campaign: CampaignState
   assetPack: AssetPackState
   authorization: AuthorizationState
   collection: CollectionState

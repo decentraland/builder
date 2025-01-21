@@ -52,8 +52,6 @@ import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
-const CAMPAIGN_TAG = 'DCLMF24'
-
 export default class RightPanel extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
   state: State = this.getInitialState()
@@ -522,7 +520,17 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isWearableUtilityEnabled, isConnected, error, isCampaignEnabled, isVrmOptOutEnabled } = this.props
+    const {
+      selectedItemId,
+      address,
+      isWearableUtilityEnabled,
+      isConnected,
+      error,
+      isCampaignEnabled,
+      isVrmOptOutEnabled,
+      campaignName,
+      campaignTag
+    } = this.props
     const { name, description, utility, rarity, data, isDirty, hasItem } = this.state
     const rarities = Rarity.getRarities()
     const playModes = getEmotePlayModes()
@@ -660,11 +668,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       {item ? (
                         <>
                           <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
-                          {isCampaignEnabled && canEditItemMetadata && (
+                          {isCampaignEnabled && campaignName && campaignTag && canEditItemMetadata && (
                             <p className="event-tag">
                               {t('item_editor.right_panel.event_tag', {
-                                event_tag: <span>{CAMPAIGN_TAG}</span>,
-                                event_name: <span>{t('campaign.name')}</span>
+                                event_tag: <span>{campaignTag}</span>,
+                                event_name: <span>{campaignName}</span>
                               })}
                             </p>
                           )}
