@@ -3,8 +3,23 @@
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
+    "jsx": "react-jsx",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "src",
+    "paths": {
+      "components/*": ["components/*"],
+      "config/*": ["config/*"],
+      "contracts/*": ["contracts/*"],
+      "ecsScene/*": ["ecsScene/*"],
+      "experiments/*": ["experiments/*"],
+      "icons/*": ["icons/*"],
+      "images/*": ["images/*"],
+      "lib/*": ["lib/*"],
+      "modules/*": ["modules/*"],
+      "routing/*": ["routing/*"],
+      "specs/*": ["specs/*"]
+    }
   },
   "include": ["vite.config.ts", "src"]
 }
