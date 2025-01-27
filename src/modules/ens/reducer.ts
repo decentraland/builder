@@ -69,6 +69,7 @@ export type ENSState = {
   loading: LoadingState
   error: ENSError | null
   contributableNamesError: ENSError | null
+  total: number
 }
 
 export const INITIAL_STATE: ENSState = {
@@ -77,7 +78,8 @@ export const INITIAL_STATE: ENSState = {
   contributableNames: {},
   loading: [],
   error: null,
-  contributableNamesError: null
+  contributableNamesError: null,
+  total: 0
 }
 
 export type ENSReducerAction =
@@ -140,16 +142,14 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        data: {
-          ...state.data,
-          ...action.payload.ensList.reduce(
-            (obj, ens) => {
-              obj[ens.subdomain] = { ...obj[ens.subdomain], ...ens }
-              return obj
-            },
-            { ...state.data }
-          )
-        }
+        total: action.payload.total,
+        data: action.payload.ensList.reduce(
+          (obj, ens) => {
+            obj[ens.subdomain] = ens
+            return obj
+          },
+          {} as Record<string, ENS>
+        )
       }
     }
 

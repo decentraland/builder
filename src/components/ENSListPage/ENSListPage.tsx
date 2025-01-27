@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import { Env } from '@dcl/ui-env'
 import { Link, useHistory } from 'react-router-dom'
 import { config } from 'config'
@@ -26,10 +26,34 @@ const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
 const ENS_GATEWAY = config.get('ENS_GATEWAY')
 
 export default function ENSListPage(props: Props) {
-  const { ensList, alias, hasProfileCreated, avatar, isLoading, error, onOpenModal } = props
+  const { ensList, alias, hasProfileCreated, avatar, isLoading, error, onOpenModal, total, onFetchENSList } = props
   const [sortBy, setSortBy] = React.useState(SortBy.ASC)
   const [page, setPage] = React.useState(1)
   const history = useHistory()
+
+  useEffect(() => {
+    onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
+  }, [onFetchENSList, page])
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+  }, [])
+
+  const sortedEnsList = useMemo(() => {
+    return [...ensList].sort((a: ENS, b: ENS) => {
+      switch (sortBy) {
+        case SortBy.ASC: {
+          return a.subdomain.toLowerCase() < b.subdomain.toLowerCase() ? -1 : 1
+        }
+        case SortBy.DESC: {
+          return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? -1 : 1
+        }
+        default: {
+          return 0
+        }
+      }
+    })
+  }, [ensList, sortBy])
 
   const handleAssignENS = useCallback((ens: ENS) => history.push(locations.ensSelectLand(ens.subdomain)), [history])
   const buildENSLink = useCallback(
@@ -67,7 +91,7 @@ export default function ENSListPage(props: Props) {
     [onOpenModal]
   )
 
-  const renderSortDropdown = () => {
+  const renderSortDropdown = useCallback(() => {
     return (
       <Dropdown
         direction="left"
@@ -79,25 +103,7 @@ export default function ENSListPage(props: Props) {
         onChange={(_event, { value }) => setSortBy(value as SortBy)}
       />
     )
-  }
-
-  const paginate = useCallback(() => {
-    return ensList
-      .sort((a: ENS, b: ENS) => {
-        switch (sortBy) {
-          case SortBy.ASC: {
-            return a.subdomain.toLowerCase() < b.subdomain.toLowerCase() ? 1 : -1
-          }
-          case SortBy.DESC: {
-            return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
-          }
-          default: {
-            return 0
-          }
-        }
-      })
-      .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  }, [ensList, sortBy, page])
+  }, [sortBy])
 
   const isAlias = useCallback(
     (ens: ENS) => {
@@ -268,16 +274,14 @@ export default function ENSListPage(props: Props) {
   }, [])
 
   const renderEnsList = useCallback(() => {
-    const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
-    const paginatedItems = paginate()
 
     return (
       <div className="ens-page-content">
         <div className="ens-page-header">
           <div className="ens-page-title">
             <h1>{t('ens_list_page.title')}</h1>
-            {t('ens_list_page.result', { count: ensList.length })}
+            {t('ens_list_page.result', { count: total })}
           </div>
           <div className="ens-page-actions">
             {ensList.length > 1 ? (
@@ -293,13 +297,14 @@ export default function ENSListPage(props: Props) {
         <TableContainer
           children={
             <TableContent
-              data={formatToTable(paginatedItems)}
+              data={formatToTable(sortedEnsList)}
               isLoading={isLoading}
               activePage={page}
-              setPage={page => setPage(page)}
+              setPage={handlePageChange}
               totalPages={totalPages}
               empty={renderEmptyEnsList}
-              total={PAGE_SIZE}
+              total={total}
+              rowsPerPage={PAGE_SIZE}
               hasHeaders
               customHeaders={{
                 name: <span className="ens-list-page-table-headers">{t('ens_list_page.table.name')}</span>,
@@ -329,7 +334,7 @@ export default function ENSListPage(props: Props) {
         />
       </div>
     )
-  }, [ensList, page, isLoading, renderSortDropdown, renderEmptyEnsList, formatToTable])
+  }, [sortedEnsList, isLoading, page, total, handlePageChange, formatToTable, renderEmptyEnsList, renderSortDropdown, ensList.length])
 
   return (
     <LoggedInDetailPage

@@ -19,7 +19,9 @@ export type Props = {
   isLoggedIn: boolean
   isLoading: boolean
   avatar: Avatar | null
+  total: number
   onOpenModal: typeof openModal
+  onFetchENSList: (first: number, skip: number) => void
 }
 
 export type State = {
@@ -29,7 +31,7 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'address' | 'alias' | 'ensList' | 'lands' | 'hasProfileCreated' | 'isLoading' | 'error' | 'isLoggedIn' | 'avatar'
+  'address' | 'alias' | 'ensList' | 'lands' | 'hasProfileCreated' | 'isLoading' | 'error' | 'isLoggedIn' | 'avatar' | 'total'
 >
-export type MapDispatchProps = Pick<Props, 'onOpenModal'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchENSList'>
 export type MapDispatch = Dispatch

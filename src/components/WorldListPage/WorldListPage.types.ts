@@ -29,6 +29,7 @@ export type Props = {
   getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
   onFetchContributableNames: () => void
+  ensTotal: number
 }
 
 export type State = {
@@ -49,6 +50,7 @@ export type MapStateProps = Pick<
   | 'worldsPermissions'
   | 'isConnected'
   | 'isWorldContributorEnabled'
+  | 'ensTotal'
 >
 export type MapDispatchProps = Pick<
   Props,

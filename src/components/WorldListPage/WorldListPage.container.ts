@@ -9,7 +9,8 @@ import {
   getENSByWallet,
   getError as getENSError,
   getExternalNamesForConnectedWallet,
-  getLoading as getLoadingENS
+  getLoading as getLoadingENS,
+  getTotal as getTotalENS
 } from 'modules/ens/selectors'
 import { FETCH_WORLD_DEPLOYMENTS_REQUEST, clearDeploymentRequest } from 'modules/deployment/actions'
 import { getDeploymentsByWorlds, getError as getDeploymentsError, getLoading as getDeploymentsLoading } from 'modules/deployment/selectors'
@@ -38,7 +39,8 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoggedIn: isLoggedIn(state),
   worldsWalletStats: getConnectedWalletStats(state),
   isConnected: isConnected(state),
-  isWorldContributorEnabled: getIsWorldContributorEnabled(state)
+  isWorldContributorEnabled: getIsWorldContributorEnabled(state),
+  ensTotal: getTotalENS(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

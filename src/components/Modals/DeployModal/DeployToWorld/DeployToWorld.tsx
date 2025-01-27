@@ -21,6 +21,7 @@ import styles from './DeployToWorld.module.css'
 import { ModelMetrics } from 'modules/models/types'
 import { ENS } from 'modules/ens/types'
 import Profile from 'components/Profile'
+import { marketplace } from 'lib/api/marketplace'
 
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
@@ -28,12 +29,13 @@ const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
+const ENS_LIST_PAGE_SIZE = 2000 // TODO: see how to paginate this in the future
+
 export default function DeployToWorld({
   name,
   project,
   scene,
   metrics,
-  ensList,
   externalNames,
   deployments,
   isLoading,
@@ -41,6 +43,7 @@ export default function DeployToWorld({
   claimedName,
   contributableNames,
   isWorldContributorEnabled,
+  wallet,
   onPublish,
   onRecord,
   onClose,
@@ -48,6 +51,16 @@ export default function DeployToWorld({
   onFetchContributableNames
 }: Props) {
   const analytics = getAnalytics()
+
+  const [ensList, setEnsList] = useState<ENS[]>([])
+
+  useEffect(() => {
+    const fetchENSList = async () => {
+      const ensList = await marketplace.fetchENSList(wallet?.address ?? '', ENS_LIST_PAGE_SIZE, 0)
+      setEnsList(ensList.map(ens => ({ subdomain: ens, name: ens } as ENS)))
+    }
+    void fetchENSList()
+  }, [])
 
   const [view, setView] = useState<string>('')
   const [world, setWorld] = useState<string>(claimedName ?? '')

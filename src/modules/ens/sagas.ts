@@ -352,7 +352,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     }
   }
 
-  function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
+  function* handleFetchENSListRequest(action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
       const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
@@ -365,7 +365,10 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         REGISTRAR_ADDRESS,
         signer
       )
-      let domains: string[] = yield call([marketplace, 'fetchENSList'], address)
+      const defaultPageSize = 12
+      const { first = defaultPageSize, skip = 0 } = action.payload
+      let domains: string[] = yield call([marketplace, 'fetchENSList'], address, first, skip)
+      const totalDomains: number = yield call([marketplace, 'fetchENSListCount'], address)
       const bannedDomains: string[] = yield call(fetchBannedDomains)
       domains = domains.filter(domain => !bannedDomains.includes(domain))
 
@@ -453,7 +456,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         yield put(fetchWorldDeploymentsRequest(worldsDeployed))
       }
 
-      yield put(fetchENSListSuccess(ensList))
+      yield put(fetchENSListSuccess(ensList, totalDomains))
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchENSListFailure(ensError))
