@@ -40,13 +40,14 @@ const WorldListPage: React.FC<Props> = props => {
     worldsWalletStats,
     isConnected,
     isWorldContributorEnabled,
+    ensTotal,
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
     onOpenPermissionsModal,
     onFetchContributableNames
   } = props
-  const [sortBy, setSortBy] = useState(SortBy.ASC)
+  const [sortBy, setSortBy] = useState(SortBy.DESC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
   const history = useHistory()
@@ -167,8 +168,7 @@ const WorldListPage: React.FC<Props> = props => {
   }, [])
 
   const renderList = useCallback(() => {
-    const total = tab === TabType.DCL ? ensList.length : externalNames.length
-    const totalPages = Math.ceil(total / PAGE_SIZE)
+    const totalPages = Math.ceil(props.ensTotal / PAGE_SIZE)
     const paginatedItems = paginate()
 
     return (
@@ -179,7 +179,7 @@ const WorldListPage: React.FC<Props> = props => {
               <Column>
                 <Row>
                   <Header sub className="items-count">
-                    {t('ens_list_page.items', { count: total.toLocaleString() })}
+                    {t('ens_list_page.items', { count: props.ensTotal.toLocaleString() })}
                   </Header>
                 </Row>
               </Column>
@@ -261,7 +261,7 @@ const WorldListPage: React.FC<Props> = props => {
         </Container>
       </>
     )
-  }, [tab, ensList, externalNames, handleClaimENS, paginate, renderSortDropdown, renderWorldSize, renderWorldStatus, setPage])
+  }, [tab, ensList, externalNames, handleClaimENS, paginate, renderSortDropdown, renderWorldSize, renderWorldStatus, setPage, ensTotal])
 
   const renderEmptyPage = useCallback(() => {
     return (

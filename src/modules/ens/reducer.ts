@@ -143,13 +143,10 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...state,
         loading: loadingReducer(state.loading, action),
         total: action.payload.total,
-        data: action.payload.ensList.reduce(
-          (obj, ens) => {
-            obj[ens.subdomain] = ens
-            return obj
-          },
-          {} as Record<string, ENS>
-        )
+        data: action.payload.ensList.reduce((obj, ens) => {
+          obj[ens.subdomain] = ens
+          return obj
+        }, {} as Record<string, ENS>)
       }
     }
 
