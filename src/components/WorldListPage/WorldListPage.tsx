@@ -60,7 +60,9 @@ const WorldListPage: React.FC<Props> = props => {
   }, [isConnected, isWorldContributorEnabled])
 
   useEffect(() => {
-    onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
+    if (tab === TabType.DCL) {
+      onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
+    }
   }, [onFetchENSList, page])
 
   const handleClaimENS = useCallback(() => {
@@ -175,7 +177,8 @@ const WorldListPage: React.FC<Props> = props => {
   }, [])
 
   const renderList = useCallback(() => {
-    const totalPages = Math.ceil(props.ensTotal / PAGE_SIZE)
+    const total = tab === TabType.DCL ? ensTotal : externalNames.length
+    const totalPages = Math.ceil(total / PAGE_SIZE)
     const paginatedItems = paginate()
 
     return (
