@@ -29,6 +29,7 @@ export type Props = {
   getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
   onFetchContributableNames: () => void
+  onFetchENSList: (first: number, skip: number) => void
   ensTotal: number
 }
 
@@ -59,5 +60,6 @@ export type MapDispatchProps = Pick<
   | 'onOpenWorldsForENSOwnersAnnouncementModal'
   | 'onUnpublishWorld'
   | 'onFetchContributableNames'
+  | 'onFetchENSList'
 >
 export type MapDispatch = Dispatch
