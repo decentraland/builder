@@ -69,6 +69,8 @@ import { getContributableNamesList, getENSBySubdomain, getExternalNames } from '
 import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
 import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
 
+const DEFAULT_ENS_PAGE_SIZE = 12
+
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
@@ -352,7 +354,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     }
   }
 
-  function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
+  function* handleFetchENSListRequest(action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
       const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
@@ -365,15 +367,19 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         REGISTRAR_ADDRESS,
         signer
       )
-      let domains: string[] = yield call([marketplace, 'fetchENSList'], address)
-      const bannedDomains: string[] = yield call(fetchBannedDomains)
-      domains = domains.filter(domain => !bannedDomains.includes(domain))
+      const { first = DEFAULT_ENS_PAGE_SIZE, skip = 0 } = action.payload
+      const [fetchedDomains, totalDomains, bannedDomains]: [string[], number, string[]] = yield all([
+        call([marketplace, 'fetchENSList'], address, first, skip),
+        call([marketplace, 'fetchENSListCount'], address),
+        call(fetchBannedDomains)
+      ])
+      const domains = fetchedDomains.filter((domain: string) => !bannedDomains.includes(domain))
 
       const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const worldsDeployed: string[] = []
 
-      const promisesOfENS: (() => Promise<ENS>)[] = domains.map(data => {
+      const promisesOfENS: (() => Promise<ENS>)[] = domains.map((data: string) => {
         return async () => {
           const name = data
           const subdomain = `${data.toLowerCase()}.dcl.eth`
@@ -453,7 +459,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         yield put(fetchWorldDeploymentsRequest(worldsDeployed))
       }
 
-      yield put(fetchENSListSuccess(ensList))
+      yield put(fetchENSListSuccess(ensList, totalDomains))
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
       yield put(fetchENSListFailure(ensError))

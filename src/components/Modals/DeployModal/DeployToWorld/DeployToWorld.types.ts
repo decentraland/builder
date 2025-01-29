@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { deployToWorldRequest, DeployToWorldRequestAction } from 'modules/deployment/actions'
 import { recordMediaRequest, RecordMediaRequestAction } from 'modules/media/actions'
 import { ENS } from 'modules/ens/types'
@@ -25,6 +26,7 @@ export type Props = {
   isLoading: boolean
   claimedName: string | null
   isWorldContributorEnabled: boolean
+  wallet: Wallet | null
   onClose: () => void
   onBack: () => void
   onPublish: typeof deployToWorldRequest
@@ -45,6 +47,7 @@ export type MapStateProps = Pick<
   | 'scene'
   | 'contributableNames'
   | 'isWorldContributorEnabled'
+  | 'wallet'
 >
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onRecord' | 'onFetchContributableNames'>
 export type MapDispatch = Dispatch<

@@ -17,6 +17,7 @@ import { Project } from 'modules/project/types'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './DeployToWorld.types'
 
 import DeployToWorld from './DeployToWorld'
+import { getWallet } from 'modules/wallet/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -28,6 +29,7 @@ const mapState = (state: RootState): MapStateProps => {
     metrics: getCurrentMetrics(state),
     deployments: getDeploymentsByWorlds(state),
     deploymentProgress: getUploadProgress(state),
+    wallet: getWallet(state),
     error: getError(state),
     isLoading: isLoading(state) || isLoadingENS(state),
     isWorldContributorEnabled: getIsWorldContributorEnabled(state)

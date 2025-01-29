@@ -2,9 +2,9 @@ import { connect } from 'react-redux'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { getENSByWallet, getError as getENSError, getLoading } from 'modules/ens/selectors'
+import { getENSByWallet, getError as getENSError, getLoading, getTotal } from 'modules/ens/selectors'
 import { isLoggingIn, isLoggedIn } from 'modules/identity/selectors'
-import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
+import { FETCH_ENS_LIST_REQUEST, fetchENSListRequest } from 'modules/ens/actions'
 import { getLands, getLoading as getLandsLoading, getError as getLandsError } from 'modules/land/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getAvatar, getName } from 'modules/profile/selectors'
@@ -24,11 +24,13 @@ const mapState = (state: RootState): MapStateProps => ({
     isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
     isLoggingIn(state),
   isLoggedIn: isLoggedIn(state),
-  avatar: getAvatar(state)
+  avatar: getAvatar(state),
+  total: getTotal(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onFetchENSList: (first, skip) => dispatch(fetchENSListRequest(first, skip))
 })
 
 export default connect(mapState, mapDispatch)(ENSListPage)

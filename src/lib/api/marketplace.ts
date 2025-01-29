@@ -8,8 +8,8 @@ const marketplaceGraphClient = createClient(MARKETPLACE_GRAPH_URL)
 const BATCH_SIZE = 1000
 
 const getSubdomainQuery = () => gql`
-  query getUserNames($owner: String, $offset: Int) {
-    nfts(first: ${BATCH_SIZE}, skip: $offset, where: { owner_: { id: $owner }, category: ens }) {
+  query getUserNames($owner: String, $first: Int, $skip: Int) {
+    nfts(first: $first, skip: $skip, where: { owner_: { id: $owner }, category: ens }) {
       ens {
         subdomain
       }
@@ -78,29 +78,39 @@ export class MarketplaceAPI extends BaseAPI {
     return results
   }
 
-  public async fetchENSList(address: string | undefined): Promise<string[]> {
+  public async fetchENSList(address: string | undefined, first: number = 20, skip: number = 0): Promise<string[]> {
     if (!address) {
       return []
     }
     const owner: string = address.toLowerCase()
-    let results: string[] = []
-    let page: string[] = []
+    const { data } = await marketplaceGraphClient.query<SubdomainQueryResult>({
+      query: getSubdomainQuery(),
+      variables: { owner, first, skip }
+    })
+    return data.nfts.map(ntf => ntf.ens.subdomain.toString())
+  }
+
+  public async fetchENSListCount(address: string | undefined): Promise<number> {
+    if (!address) {
+      return 0
+    }
+    const owner: string = address.toLowerCase()
+    let count = 0
     let offset = 0
     let nextPage = true
     while (nextPage) {
       const { data } = await marketplaceGraphClient.query<SubdomainQueryResult>({
         query: getSubdomainQuery(),
-        variables: { owner, offset }
+        variables: { owner, first: BATCH_SIZE, skip: offset }
       })
-      page = data.nfts.map(ntf => ntf.ens.subdomain.toString())
-      results = [...results, ...page]
-      if (page.length === BATCH_SIZE) {
+      count += data.nfts.length
+      if (data.nfts.length === BATCH_SIZE) {
         offset += BATCH_SIZE
       } else {
         nextPage = false
       }
     }
-    return results
+    return count
   }
 
   public async fetchCollectionItems(collectionAddress: string) {

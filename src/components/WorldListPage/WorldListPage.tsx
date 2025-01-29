@@ -40,13 +40,15 @@ const WorldListPage: React.FC<Props> = props => {
     worldsWalletStats,
     isConnected,
     isWorldContributorEnabled,
+    ensTotal,
     onOpenYourStorageModal,
     onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
     onOpenPermissionsModal,
-    onFetchContributableNames
+    onFetchContributableNames,
+    onFetchENSList
   } = props
-  const [sortBy, setSortBy] = useState(SortBy.ASC)
+  const [sortBy, setSortBy] = useState(SortBy.DESC)
   const [page, setPage] = useState(1)
   const { tab } = useCurrentlySelectedTab()
   const history = useHistory()
@@ -56,6 +58,12 @@ const WorldListPage: React.FC<Props> = props => {
       onFetchContributableNames()
     }
   }, [isConnected, isWorldContributorEnabled])
+
+  useEffect(() => {
+    if (tab === TabType.DCL) {
+      onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
+    }
+  }, [onFetchENSList, page])
 
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
@@ -89,6 +97,10 @@ const WorldListPage: React.FC<Props> = props => {
     [deploymentsByWorlds, onUnpublishWorld]
   )
 
+  const handlePageChange = useCallback((_event: any, props: any) => {
+    setPage(+props.activePage)
+  }, [])
+
   const renderSortDropdown = useCallback(() => {
     return (
       <Dropdown
@@ -102,26 +114,6 @@ const WorldListPage: React.FC<Props> = props => {
       />
     )
   }, [sortBy, setSortBy])
-
-  const paginate = useCallback((): ENS[] => {
-    const list = tab === TabType.DCL ? ensList : externalNames
-
-    return list
-      .sort((a: ENS, b: ENS) => {
-        switch (sortBy) {
-          case SortBy.ASC: {
-            return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
-          }
-          case SortBy.DESC: {
-            return a.subdomain.toLowerCase() < b.subdomain.toLowerCase() ? 1 : -1
-          }
-          default: {
-            return 0
-          }
-        }
-      })
-      .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  }, [ensList, externalNames, page, sortBy, tab])
 
   const renderWorldStatus = useCallback(
     (ens: ENS) => {
@@ -167,9 +159,9 @@ const WorldListPage: React.FC<Props> = props => {
   }, [])
 
   const renderList = useCallback(() => {
-    const total = tab === TabType.DCL ? ensList.length : externalNames.length
+    const total = tab === TabType.DCL ? ensTotal : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
-    const paginatedItems = paginate()
+    const paginatedItems = tab === TabType.DCL ? ensList : externalNames
 
     return (
       <>
@@ -179,7 +171,7 @@ const WorldListPage: React.FC<Props> = props => {
               <Column>
                 <Row>
                   <Header sub className="items-count">
-                    {t('ens_list_page.items', { count: total.toLocaleString() })}
+                    {t('ens_list_page.items', { count: props.ensTotal.toLocaleString() })}
                   </Header>
                 </Row>
               </Column>
@@ -249,19 +241,13 @@ const WorldListPage: React.FC<Props> = props => {
             </Table>
 
             {totalPages > 1 && (
-              <Pagination
-                firstItem={null}
-                lastItem={null}
-                totalPages={totalPages}
-                activePage={page}
-                onPageChange={(_event, props) => setPage(+props.activePage!)}
-              />
+              <Pagination firstItem={null} lastItem={null} totalPages={totalPages} activePage={page} onPageChange={handlePageChange} />
             )}
           </Section>
         </Container>
       </>
     )
-  }, [tab, ensList, externalNames, handleClaimENS, paginate, renderSortDropdown, renderWorldSize, renderWorldStatus, setPage])
+  }, [tab, ensList, externalNames, handleClaimENS, renderSortDropdown, renderWorldSize, renderWorldStatus, handlePageChange, ensTotal])
 
   const renderEmptyPage = useCallback(() => {
     return (

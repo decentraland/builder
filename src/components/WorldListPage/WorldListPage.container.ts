@@ -4,12 +4,13 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { isConnected } from 'decentraland-dapps/dist/modules/wallet'
 import { RootState } from 'modules/common/types'
 import { getIsWorldContributorEnabled } from 'modules/features/selectors'
-import { FETCH_ENS_LIST_REQUEST, FETCH_EXTERNAL_NAMES_REQUEST, fetchContributableNamesRequest } from 'modules/ens/actions'
+import { FETCH_ENS_LIST_REQUEST, FETCH_EXTERNAL_NAMES_REQUEST, fetchContributableNamesRequest, fetchENSListRequest } from 'modules/ens/actions'
 import {
   getENSByWallet,
   getError as getENSError,
   getExternalNamesForConnectedWallet,
-  getLoading as getLoadingENS
+  getLoading as getLoadingENS,
+  getTotal as getTotalENS
 } from 'modules/ens/selectors'
 import { FETCH_WORLD_DEPLOYMENTS_REQUEST, clearDeploymentRequest } from 'modules/deployment/actions'
 import { getDeploymentsByWorlds, getError as getDeploymentsError, getLoading as getDeploymentsLoading } from 'modules/deployment/selectors'
@@ -38,7 +39,8 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoggedIn: isLoggedIn(state),
   worldsWalletStats: getConnectedWalletStats(state),
   isConnected: isConnected(state),
-  isWorldContributorEnabled: getIsWorldContributorEnabled(state)
+  isWorldContributorEnabled: getIsWorldContributorEnabled(state),
+  ensTotal: getTotalENS(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
@@ -47,7 +49,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
     dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),
   onOpenWorldsForENSOwnersAnnouncementModal: () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
   onUnpublishWorld: deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
-  onFetchContributableNames: () => dispatch(fetchContributableNamesRequest())
+  onFetchContributableNames: () => dispatch(fetchContributableNamesRequest()),
+  onFetchENSList: (first, skip) => dispatch(fetchENSListRequest(first, skip))
 })
 
 export default connect(mapState, mapDispatch)(WorldListPage)

@@ -98,8 +98,8 @@ export const FETCH_ENS_LIST_REQUEST = '[Request] Fetch ENS List'
 export const FETCH_ENS_LIST_SUCCESS = '[Success] Fetch ENS List'
 export const FETCH_ENS_LIST_FAILURE = '[Failure] Fetch ENS List'
 
-export const fetchENSListRequest = () => action(FETCH_ENS_LIST_REQUEST, {})
-export const fetchENSListSuccess = (ensList: ENS[]) => action(FETCH_ENS_LIST_SUCCESS, { ensList })
+export const fetchENSListRequest = (first?: number, skip?: number) => action(FETCH_ENS_LIST_REQUEST, { first, skip })
+export const fetchENSListSuccess = (ensList: ENS[], total: number) => action(FETCH_ENS_LIST_SUCCESS, { ensList, total })
 export const fetchENSListFailure = (error: ENSError) => action(FETCH_ENS_LIST_FAILURE, { error })
 
 export type FetchENSListRequestAction = ReturnType<typeof fetchENSListRequest>
