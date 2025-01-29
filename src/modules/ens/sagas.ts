@@ -69,6 +69,8 @@ import { getContributableNamesList, getENSBySubdomain, getExternalNames } from '
 import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
 import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
 
+const DEFAULT_ENS_PAGE_SIZE = 12
+
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
@@ -365,8 +367,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         REGISTRAR_ADDRESS,
         signer
       )
-      const defaultPageSize = 12
-      const { first = defaultPageSize, skip = 0 } = action.payload
+      const { first = DEFAULT_ENS_PAGE_SIZE, skip = 0 } = action.payload
       const [fetchedDomains, totalDomains, bannedDomains]: [string[], number, string[]] = yield all([
         call([marketplace, 'fetchENSList'], address, first, skip),
         call([marketplace, 'fetchENSListCount'], address),
