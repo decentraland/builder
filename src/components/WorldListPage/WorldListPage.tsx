@@ -115,24 +115,6 @@ const WorldListPage: React.FC<Props> = props => {
     )
   }, [sortBy, setSortBy])
 
-  const paginate = useCallback((): ENS[] => {
-    const list = tab === TabType.DCL ? ensList : externalNames
-
-    return list.sort((a: ENS, b: ENS) => {
-      switch (sortBy) {
-        case SortBy.ASC: {
-          return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
-        }
-        case SortBy.DESC: {
-          return a.subdomain.toLowerCase() < b.subdomain.toLowerCase() ? 1 : -1
-        }
-        default: {
-          return 0
-        }
-      }
-    })
-  }, [ensList, externalNames, sortBy, tab])
-
   const renderWorldStatus = useCallback(
     (ens: ENS) => {
       let status = isWorldDeployed(deploymentsByWorlds, ens) ? 'active' : 'inactive'
@@ -179,7 +161,7 @@ const WorldListPage: React.FC<Props> = props => {
   const renderList = useCallback(() => {
     const total = tab === TabType.DCL ? ensTotal : externalNames.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
-    const paginatedItems = paginate()
+    const paginatedItems = tab === TabType.DCL ? ensList : externalNames
 
     return (
       <>
@@ -265,18 +247,7 @@ const WorldListPage: React.FC<Props> = props => {
         </Container>
       </>
     )
-  }, [
-    tab,
-    ensList,
-    externalNames,
-    handleClaimENS,
-    paginate,
-    renderSortDropdown,
-    renderWorldSize,
-    renderWorldStatus,
-    handlePageChange,
-    ensTotal
-  ])
+  }, [tab, ensList, externalNames, handleClaimENS, renderSortDropdown, renderWorldSize, renderWorldStatus, handlePageChange, ensTotal])
 
   const renderEmptyPage = useCallback(() => {
     return (

@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
+import { fetchENSListRequest } from 'modules/ens/actions'
 import { Project } from 'modules/project/types'
 import { WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 import { WorldsYourStorageModalMetadata } from 'components/Modals/WorldsYourStorageModal/WorldsYourStorageModal.types'
@@ -29,7 +30,7 @@ export type Props = {
   getProfiles: (worldName: string) => void
   onUnpublishWorld: typeof clearDeploymentRequest
   onFetchContributableNames: () => void
-  onFetchENSList: (first: number, skip: number) => void
+  onFetchENSList: typeof fetchENSListRequest
   ensTotal: number
 }
 

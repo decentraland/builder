@@ -367,16 +367,18 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       )
       const defaultPageSize = 12
       const { first = defaultPageSize, skip = 0 } = action.payload
-      let domains: string[] = yield call([marketplace, 'fetchENSList'], address, first, skip)
-      const totalDomains: number = yield call([marketplace, 'fetchENSListCount'], address)
-      const bannedDomains: string[] = yield call(fetchBannedDomains)
-      domains = domains.filter(domain => !bannedDomains.includes(domain))
+      const [fetchedDomains, totalDomains, bannedDomains]: [string[], number, string[]] = yield all([
+        call([marketplace, 'fetchENSList'], address, first, skip),
+        call([marketplace, 'fetchENSListCount'], address),
+        call(fetchBannedDomains)
+      ])
+      const domains = fetchedDomains.filter((domain: string) => !bannedDomains.includes(domain))
 
       const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const worldsDeployed: string[] = []
 
-      const promisesOfENS: (() => Promise<ENS>)[] = domains.map(data => {
+      const promisesOfENS: (() => Promise<ENS>)[] = domains.map((data: string) => {
         return async () => {
           const name = data
           const subdomain = `${data.toLowerCase()}.dcl.eth`

@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { ENS } from 'modules/ens/types'
 import { Land } from 'modules/land/types'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { fetchENSListRequest } from 'modules/ens/actions'
 import { Avatar } from '@dcl/schemas'
 
 export enum SortBy {
@@ -21,7 +22,7 @@ export type Props = {
   avatar: Avatar | null
   total: number
   onOpenModal: typeof openModal
-  onFetchENSList: (first: number, skip: number) => void
+  onFetchENSList: typeof fetchENSListRequest
 }
 
 export type State = {
