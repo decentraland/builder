@@ -104,7 +104,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                 </Button>
                 <a
                   className="learn-more-link"
-                  href="https://docs.decentraland.org/creator/builder/builder-101/"
+                  href="https://docs.decentraland.org/creator/editor/about-scene-editor/"
                   target="_blank"
                   rel="noreferrer"
                 >
