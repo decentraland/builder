@@ -721,11 +721,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <Checkbox
                               toggle
                               label={
-                                (data as WearableData)?.outlineCompatible
+                                (data as WearableData)?.outlineCompatible !== false
                                   ? t('item_editor.right_panel.copyright.enabled')
                                   : t('item_editor.right_panel.copyright.disabled')
                               }
-                              checked={(data as WearableData)?.outlineCompatible}
+                              checked={(data as WearableData)?.outlineCompatible !== false}
                               onChange={this.handleAllowOutlineCompatible}
                               aria-label={t('item_editor.right_panel.outline_compatible.title')}
                             />
