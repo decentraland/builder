@@ -1910,7 +1910,8 @@
       "total_in_mana": "Total in MANA",
       "pay_card": "pay by card",
       "pay_card_info": "A 5% transaction fee will be added to your total by the payment processor, as well as an additional 0.5% to cover possible currency fluctuations.",
-      "pay_mana": "pay with mana"
+      "pay_mana": "pay with mana",
+      "submitting_for_review": "Submitting for review"
     },
     "congratulations_step": {
       "title": "Your collection is now available for curators to review",

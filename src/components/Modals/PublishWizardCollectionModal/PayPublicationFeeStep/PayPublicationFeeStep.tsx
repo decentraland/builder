@@ -147,15 +147,14 @@ export const PayPublicationFeeStep: React.FC<
     <Modal.Content>
       <Column>
         <Row className={styles.details}>
-          {isLoading ||
-            (isLoadingAuthorization && (
-              <div className={styles.loadingOverlay}>
-                <Loader inline size="massive" />
-                {publishingStatus === AuthorizationStepStatus.PROCESSING || (isUsingMagic && isMagicAutoSignEnabled)
-                  ? 'Submitting for review'
-                  : t('publish_wizard_collection_modal.accept_in_wallet')}
-              </div>
-            ))}
+          {isLoading || isLoadingAuthorization ? (
+            <div className={styles.loadingOverlay}>
+              <Loader inline size="massive" />
+              {publishingStatus === AuthorizationStepStatus.PROCESSING || (isUsingMagic && isMagicAutoSignEnabled)
+                ? t('publish_wizard_collection_modal.pay_publication_fee_step.submitting_for_review')
+                : t('publish_wizard_collection_modal.accept_in_wallet')}
+            </div>
+          ) : null}
           <Column grow={true}>
             <span className={styles.title}>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
             <span className={styles.subtitle}>
