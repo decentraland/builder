@@ -35,7 +35,7 @@ export default function CollectionItem({
   loadingTradeIds,
   isCancellingItemOrder
 }: Props) {
-  analytics = getAnalytics()
+  const analytics = getAnalytics()
   const history = useHistory()
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
@@ -58,7 +58,7 @@ export default function CollectionItem({
   const handleNavigateToEditor = useCallback(() => {
     onSetItems([item])
     history.push(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), { fromParam: FromParam.COLLECTIONS })
-    analytics.track('Preview Item', {
+    analytics?.track('Preview Item', {
       ITEM_ID: item?.urn ? (isThirdParty(item.urn) ? extractThirdPartyTokenId(item.urn) : extractTokenId(item.urn)) : null,
       ITEM_TYPE: item.type,
       ITEM_NAME: item.name,

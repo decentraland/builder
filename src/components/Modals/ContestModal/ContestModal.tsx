@@ -59,7 +59,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
       this.setState({ hasEthAddressError: true })
     } else {
       if (ethAddress) {
-        this.analytics.identify(ethAddress)
+        this.analytics?.identify(ethAddress)
         localStorage.setItem(ETH_ADDRESS_KEY, ethAddress)
       }
 

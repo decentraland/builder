@@ -22,7 +22,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
 
   handleCreateAssetPack = () => {
     const { onOpenModal } = this.props
-    this.analytics.track('Create Asset Pack Sidebar Bottom')
+    this.analytics?.track('Create Asset Pack Sidebar Bottom')
     onOpenModal('CreateAssetPackModal')
   }
 

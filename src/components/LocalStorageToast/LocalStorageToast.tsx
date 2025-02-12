@@ -35,7 +35,7 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
   handleLogin = () => {
     const { project, onOpenModal } = this.props
     if (project) {
-      this.analytics.track(LOCAL_STORAGE_SIGN_IN_EVENT)
+      this.analytics?.track(LOCAL_STORAGE_SIGN_IN_EVENT)
       onOpenModal('WalletLoginModal')
     }
   }

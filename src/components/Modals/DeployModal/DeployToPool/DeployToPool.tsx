@@ -18,7 +18,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
 
   componentDidMount() {
-    this.analytics.track('Publish to Pool')
+    this.analytics?.track('Publish to Pool')
   }
 
   componentWillReceiveProps(nextProps: Props) {

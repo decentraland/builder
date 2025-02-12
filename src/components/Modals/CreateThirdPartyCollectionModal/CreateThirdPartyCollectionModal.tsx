@@ -211,7 +211,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
         linkedContractNetwork: selectedNetwork as ContractNetwork
       }
       onSubmit(collection)
-      analytics.track('Create TP Collection', {
+      analytics?.track('Create TP Collection', {
         collectionId: collection.id,
         thirdPartyId: thirdPartyId,
         linkedContractAddress: selectedContract,

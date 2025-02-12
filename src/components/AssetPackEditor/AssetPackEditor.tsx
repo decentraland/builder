@@ -68,7 +68,7 @@ export default class AssetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
   handleRemove = (id: string) => {
     const { assetPack, onChange } = this.props
 
-    this.analytics.track('Asset Pack Editor Remove Asset', {
+    this.analytics?.track('Asset Pack Editor Remove Asset', {
       assetId: id
     })
 
@@ -107,7 +107,7 @@ export default class AssetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
       }
       const url = URL.createObjectURL(file)
 
-      this.analytics.track('Asset Pack Editor Change Thumbnail')
+      this.analytics?.track('Asset Pack Editor Change Thumbnail')
 
       onChange({
         ...assetPack,
@@ -157,7 +157,7 @@ export default class AssetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
   handleEditAsset = (asset: T['assets'][number]) => {
     const { onEditAsset } = this.props
     if (onEditAsset) {
-      this.analytics.track('Asset Pack Editor Edit Asset', {
+      this.analytics?.track('Asset Pack Editor Edit Asset', {
         assetId: asset.id
       })
       onEditAsset(asset)

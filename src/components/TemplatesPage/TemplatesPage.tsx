@@ -28,7 +28,7 @@ export const TemplatesPage: React.FC<Props> = ({ templates, onLoadTemplates }) =
 
   const handleGoToTemplate = useCallback(
     (template: Project) => {
-      analytics.track('Go to template detail', {
+      analytics?.track('Go to template detail', {
         id: template.id,
         name: template.title,
         description: template.description

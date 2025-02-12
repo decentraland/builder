@@ -33,11 +33,11 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
 
   componentWillMount = () => {
-    this.analytics.track(TUTORIAL_STEP_EVENT, { step: 0 })
+    this.analytics?.track(TUTORIAL_STEP_EVENT, { step: 0 })
   }
 
   handleSkip = () => {
-    this.analytics.track(TUTORIAL_SKIP_EVENT)
+    this.analytics?.track(TUTORIAL_SKIP_EVENT)
     localStorage.setItem(LOCALSTORAGE_TUTORIAL_KEY, '1')
     this.props.onClose()
   }
@@ -87,12 +87,12 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     if (index === this.slides.length) {
       localStorage.setItem(LOCALSTORAGE_TUTORIAL_KEY, '1')
       this.props.onClose()
-      this.analytics.track(TUTORIAL_COMPLETE, { suscribed: false })
+      this.analytics?.track(TUTORIAL_COMPLETE, { suscribed: false })
       return
     }
     this.setState({ step: index })
 
-    this.analytics.track(TUTORIAL_STEP_EVENT, { step: index })
+    this.analytics?.track(TUTORIAL_STEP_EVENT, { step: index })
   }
 
   handleNextStep = () => {

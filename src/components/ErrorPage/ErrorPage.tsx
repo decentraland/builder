@@ -17,7 +17,7 @@ export default function ErrorPage(props: Props) {
 
   useEffect(() => {
     document.body.classList.add('error-body')
-    analytics.track('Error page', {})
+    analytics?.track('Error page', {})
     return () => {
       document.body.classList.remove('error-body')
     }

@@ -292,7 +292,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
       onSaveItem(item, contents)
       if (isThirdParty(item.urn)) {
-        this.analytics.track('Edit Item', { contents })
+        this.analytics?.track('Edit Item', { contents })
       }
       this.setState({ isDirty: false })
       this.handleOnResetItem()

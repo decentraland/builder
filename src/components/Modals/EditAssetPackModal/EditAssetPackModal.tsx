@@ -76,12 +76,12 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleAssetImportSubmit = (assetPack: MixedAssetPack) => {
-    this.analytics.track('Edit Asset Pack Assets Review')
+    this.analytics?.track('Edit Asset Pack Assets Review')
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSETS, isDirty: true })
   }
 
   handleAssetEditorSubmit = (assetPack: MixedAssetPack) => {
-    this.analytics.track('Edit Asset Pack Review')
+    this.analytics?.track('Edit Asset Pack Review')
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null, isDirty: true })
   }
 

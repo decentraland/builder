@@ -135,11 +135,11 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         }
         importedFile.manifest!.project.sceneId = sceneId
 
-        this.analytics.track('Import project', { name: file.name })
+        this.analytics?.track('Import project', { name: file.name })
 
         projects.push(importedFile)
       } catch (e) {
-        this.analytics.track('Import project failure', {
+        this.analytics?.track('Import project failure', {
           fileName: file.name
         })
 

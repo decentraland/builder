@@ -45,7 +45,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
   }
 
   const handleDownloadClick = useCallback(() => {
-    analytics.track('Download Template', eventInfo)
+    analytics?.track('Download Template', eventInfo)
     onOpenModal('ExportModal', { project: template })
   }, [analytics, template, eventInfo, onOpenModal])
 
@@ -55,7 +55,7 @@ const TemplateDetailPage: React.FC<Props> = props => {
 
   const handleSelectTemplateClick = useCallback(() => {
     if (template) {
-      analytics.track('Select Template', eventInfo)
+      analytics?.track('Select Template', eventInfo)
       onOpenModal('CloneTemplateModal', { template })
     }
   }, [analytics, template, eventInfo, onOpenModal])

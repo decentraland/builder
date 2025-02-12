@@ -124,7 +124,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const newRotation =
       (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
 
-    this.analytics.track('Publish to LAND atlas rotate', { direction })
+    this.analytics?.track('Publish to LAND atlas rotate', { direction })
 
     this.setState({ rotation: ROTATION_ORDER[newRotation] })
   }
@@ -134,7 +134,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { currentLandId } = this.state
     const nextLand = locateNextLand(landTiles, currentLandId || '')
 
-    this.analytics.track('Publish to LAND atlas locate')
+    this.analytics?.track('Publish to LAND atlas locate')
 
     this.setState({
       currentLandId: nextLand.id

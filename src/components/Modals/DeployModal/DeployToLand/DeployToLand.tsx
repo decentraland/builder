@@ -46,7 +46,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   componentWillUpdate(_: Props, nextState: State) {
     if (nextState.view !== this.state.view) {
-      this.analytics.track('Publish to LAND step', { step: nextState.view })
+      this.analytics?.track('Publish to LAND step', { step: nextState.view })
     }
   }
 

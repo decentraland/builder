@@ -333,7 +333,7 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
   const handleFilesUpload = useCallback((): void => {
     onSaveMultipleItems(validFiles)
     setView(ItemCreationView.UPLOADING)
-    analytics.track(`${isCreating ? 'Create' : 'Edit'} TP Items`, {
+    analytics?.track(`${isCreating ? 'Create' : 'Edit'} TP Items`, {
       items: validFiles.map(file => file.item.id),
       collectionId: collection?.id
     })

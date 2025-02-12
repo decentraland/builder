@@ -37,7 +37,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
     for (const metric of metricsExceeded) {
       if (!this.metricsExceeded.includes(metric)) {
-        this.analytics.track('Metrics exceeded', { metric, count: metrics[metric], limit: limits[metric] })
+        this.analytics?.track('Metrics exceeded', { metric, count: metrics[metric], limit: limits[metric] })
       }
     }
     this.metricsExceeded = metricsExceeded
@@ -47,7 +47,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
     const isBubbleVisible = !this.state.isBubbleVisible
 
     if (isBubbleVisible) {
-      this.analytics.track('Show metrics')
+      this.analytics?.track('Show metrics')
     }
     this.setState({ isBubbleVisible })
   }
