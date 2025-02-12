@@ -16,7 +16,7 @@ export default function NotFoundPage() {
 
   useEffect(() => {
     const analytics = getAnalytics()
-    analytics.track('Not found page', {})
+    analytics?.track('Not found page', {})
 
     setIsLoading(false)
   }, [])

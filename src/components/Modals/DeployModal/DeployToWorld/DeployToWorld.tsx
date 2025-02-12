@@ -76,10 +76,10 @@ export default function DeployToWorld({
   useEffect(() => {
     if (ensList.length === 0 && externalNames.length === 0 && contributableNames.length === 0) {
       setView(DeployToWorldView.EMPTY)
-      analytics.track('Publish to World step', { step: DeployToWorldView.EMPTY })
+      analytics?.track('Publish to World step', { step: DeployToWorldView.EMPTY })
     } else if (!currentDeployment.current) {
       setView(DeployToWorldView.FORM)
-      analytics.track('Publish to World step', { step: DeployToWorldView.FORM })
+      analytics?.track('Publish to World step', { step: DeployToWorldView.FORM })
       onRecord()
     }
   }, [ensList, externalNames, contributableNames, onRecord, analytics])
@@ -88,7 +88,7 @@ export default function DeployToWorld({
     if (view === DeployToWorldView.FORM && loading && error) {
       setView(DeployToWorldView.ERROR)
       setLoading(false)
-      analytics.track('Publish to World step', { step: DeployToWorldView.ERROR })
+      analytics?.track('Publish to World step', { step: DeployToWorldView.ERROR })
     } else if (
       view === DeployToWorldView.FORM &&
       world &&
@@ -97,13 +97,13 @@ export default function DeployToWorld({
     ) {
       setView(DeployToWorldView.SUCCESS)
       setLoading(false)
-      analytics.track('Publish to World step', { step: DeployToWorldView.SUCCESS })
+      analytics?.track('Publish to World step', { step: DeployToWorldView.SUCCESS })
     }
   }, [view, world, loading, error, deployments, analytics])
 
   useEffect(() => {
     if (claimedName) {
-      analytics.track('Publish to World - Minted Name', { name: claimedName })
+      analytics?.track('Publish to World - Minted Name', { name: claimedName })
     }
   }, [claimedName, analytics])
 
@@ -133,9 +133,9 @@ export default function DeployToWorld({
   const handleClaimName = useCallback(() => {
     if (nameType === NameType.DCL) {
       window.open(`${MARKETPLACE_WEB_URL}/names/claim`, '_blank', 'noopener,noreferrer')
-      analytics.track('Publish to World - Claim Name')
+      analytics?.track('Publish to World - Claim Name')
     } else {
-      analytics.track('Publish to World - Claim ENS Domain')
+      analytics?.track('Publish to World - Claim ENS Domain')
       window.open(ENS_DOMAINS_URL, '_blank', 'noopener,noreferrer')
     }
   }, [nameType, analytics])

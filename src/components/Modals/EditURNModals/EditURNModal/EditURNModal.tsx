@@ -23,7 +23,7 @@ export default class EditURNModal extends React.PureComponent<Props, State> {
     const urn = this.getUpdatedURN()
     if (isThirdParty(urn)) {
       const metric = this.decodedURN.thirdPartyCollectionId ? 'Change TP Item URN' : 'Change TP Collection URN'
-      this.analytics.track(metric, { oldURN, newURN: urn })
+      this.analytics?.track(metric, { oldURN, newURN: urn })
     }
 
     onSave(urn)

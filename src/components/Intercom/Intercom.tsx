@@ -18,7 +18,7 @@ export const Intercom: React.FC = () => {
   }, [intercomUserData])
 
   useEffect(() => {
-    analytics.ready(analyticsReadyCallback)
+    analytics?.ready(analyticsReadyCallback)
   }, [analyticsReadyCallback])
 
   return <EnhancedIntercom appId={APP_ID} data={intercomUserData} settings={{ alignment: 'right' }} />

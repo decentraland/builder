@@ -23,14 +23,14 @@ export default class SidebarHeader extends React.PureComponent<Props> {
   handleEditAssetPack = () => {
     const { selectedAssetPack, onEditAssetPack } = this.props
     if (selectedAssetPack) {
-      this.analytics.track('Edit Asset Pack Sidebar Header')
+      this.analytics?.track('Edit Asset Pack Sidebar Header')
       onEditAssetPack(selectedAssetPack.id)
     }
   }
 
   handleCreateAssetPack = () => {
     const { onCreateAssetPack } = this.props
-    this.analytics.track('Create Asset Pack Sidebar Header')
+    this.analytics?.track('Create Asset Pack Sidebar Header')
     onCreateAssetPack()
   }
 

@@ -136,7 +136,7 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
     const isLast = currentAsset === assets.length - 1
 
     if (!isLast) {
-      this.analytics.track('Asset Review Skip')
+      this.analytics?.track('Asset Review Skip')
     }
 
     this.setState({

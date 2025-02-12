@@ -80,12 +80,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   handleAssetImportSubmit = (assetPack: RawAssetPack) => {
-    this.analytics.track('Create Asset Pack Assets Review')
+    this.analytics?.track('Create Asset Pack Assets Review')
     this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSETS })
   }
 
   handleAssetEditorSubmit = (assetPack: RawAssetPack) => {
-    this.analytics.track('Create Asset Pack Review')
+    this.analytics?.track('Create Asset Pack Review')
     this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSET_PACK })
   }
 

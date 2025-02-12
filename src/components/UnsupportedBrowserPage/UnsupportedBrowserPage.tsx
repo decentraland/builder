@@ -8,7 +8,7 @@ export default function UnsupportedBrowserPage() {
   useEffect(() => {
     const analytics = getAnalytics()
     document.body.classList.add('notfound-body')
-    analytics.track('Not found page', {})
+    analytics?.track('Not found page', {})
     return () => {
       document.body.classList.remove('notfound-body')
     }

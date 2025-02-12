@@ -18,7 +18,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
 
   componentDidMount() {
-    this.analytics.track('Unpublish Scene')
+    this.analytics?.track('Unpublish Scene')
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {

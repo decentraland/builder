@@ -21,12 +21,12 @@ export default function SceneCreationSelector({ onOpenModal }: Props) {
   const analytics = getAnalytics()
   const history = useHistory()
   const handleOpenCreateFromScratchModal = useCallback(() => {
-    analytics.track('Create scene from scratch')
+    analytics?.track('Create scene from scratch')
     onOpenModal('CustomLayoutModal')
   }, [analytics, onOpenModal])
 
   const handleCreateFromTemplate = useCallback(() => {
-    analytics.track('Create scene from template')
+    analytics?.track('Create scene from template')
     history.push(locations.templates())
   }, [analytics, history])
 

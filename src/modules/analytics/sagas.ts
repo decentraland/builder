@@ -76,7 +76,7 @@ export function* analyticsSaga() {
   yield all([baseAnalyticsSaga(), builderAnalyticsSaga()])
 }
 
-export const track = (event: string, params: any) => getAnalytics().track(event, params)
+export const track = (event: string, params: any) => getAnalytics()?.track(event, params)
 
 function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload
@@ -183,7 +183,7 @@ function handleLoginSuccess(action: LoginSuccessAction) {
   const { address } = action.payload.wallet
   const analytics = getAnalytics()
 
-  analytics.identify(address)
+  analytics?.identify(address)
 }
 
 function* handleSaveAssetPackSuccess(action: SaveAssetPackSuccessAction) {

@@ -109,7 +109,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
     zip.forEach(fileName => {
       if (fileName === EXPORT_PATH.MANIFEST_FILE) {
-        this.analytics.track('Asset Importer Error Scene File')
+        this.analytics?.track('Asset Importer Error Scene File')
         throw new Error(
           t('asset_pack.import.errors.scene_file', {
             name: fileName
@@ -130,7 +130,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           const blob = await file.async('blob')
 
           if (blob.size > MAX_FILE_SIZE) {
-            this.analytics.track('Asset Importer Error Max File Size')
+            this.analytics?.track('Asset Importer Error Max File Size')
             throw new Error(
               t('asset_pack.import.errors.max_file_size', {
                 name: truncateFileName(file.name),
@@ -164,7 +164,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
       contents = await prepareScript(script, id, contents)
     }
 
-    this.analytics.track('Asset Importer File Success')
+    this.analytics?.track('Asset Importer File Success')
 
     let asset: RawAsset = {
       id,
@@ -205,7 +205,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const id = uuidv4()
 
     if (file.size > MAX_FILE_SIZE) {
-      this.analytics.track('Asset Importer Error Max File Size')
+      this.analytics?.track('Asset Importer Error Max File Size')
       throw new Error(
         t('asset_pack.import.errors.max_file_size', {
           name: truncateFileName(file.name),
@@ -230,7 +230,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
       try {
         if (!extension) {
-          this.analytics.track('Asset Importer Error Missing Extension')
+          this.analytics?.track('Asset Importer Error Missing Extension')
           throw new Error(
             t('asset_pack.import.errors.missing_extension', {
               name: truncateFileName(file.name)
@@ -260,7 +260,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           const existingAsset = assetPack.assets.find(asset => asset.id === outFile!.asset.id)
 
           if (existingAsset) {
-            this.analytics.track('Asset Importer Error Duplicated Asset')
+            this.analytics?.track('Asset Importer Error Duplicated Asset')
             throw new Error(
               t('asset_pack.import.errors.duplicated_asset', {
                 name: truncateFileName(file.name),

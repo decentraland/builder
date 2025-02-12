@@ -91,7 +91,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
     newVisibleItems.forEach(item => {
-      this.analytics.track('Play Emote', {
+      this.analytics?.track('Play Emote', {
         EMOTE_PLAYED_BASE: !emote,
         EMOTE_PLAYED_ITEM_ID: emote?.urn ? extractTokenId(emote.urn) : null,
         EMOTE_PLAYED_NAME: emote ? emote.name : value,
@@ -289,9 +289,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           hair={toHex(hairColor)}
           urns={
             selectedBaseWearables
-              ? (Object.values(selectedBaseWearables)
+              ? Object.values(selectedBaseWearables)
                   .map(wearable => (wearable ? wearable.id : null))
-                  .filter(urn => urn !== null) as string[])
+                  .filter(urn => urn !== null)
               : []
           }
           base64s={visibleItems.map(toBase64)}
