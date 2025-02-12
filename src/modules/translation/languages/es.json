@@ -1919,7 +1919,8 @@
       "total_in_mana": "Total en MANA",
       "pay_card": "pagar con tarjeta",
       "pay_card_info": "Un 5% de tarifa de transacción será añadido a su total por el procesador de pagos, además de un 0.5% adicional para cubrir posibles fluctuaciones de moneda.",
-      "pay_mana": "pagar con mana"
+      "pay_mana": "pagar con mana",
+      "submitting_for_review": "Enviando para revisión"
     },
     "congratulations_step": {
       "title": "Su colección ya esta disponible para ser verificada por los curadores",

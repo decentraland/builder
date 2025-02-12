@@ -6,6 +6,7 @@ import { config } from 'config'
 import { AuthorizationStepStatus, Button, Column, Icon, InfoTooltip, Loader, Mana, Modal, Row, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { Currency, Item } from 'modules/item/types'
 import { isTPCollection } from 'modules/collection/utils'
@@ -23,12 +24,17 @@ const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }
 )
 
 export const PayPublicationFeeStep: React.FC<
-  Props & { onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string) => void; onPrevStep: () => void }
+  Props &
+    WithAuthorizedActionProps & { onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string) => void; onPrevStep: () => void }
 > = props => {
   const {
     collection,
     itemsToPublish,
     itemsWithChanges,
+    authorizationError,
+    isLoadingAuthorization,
+    isMagicAutoSignEnabled,
+    isUsingMagic,
     price,
     wallet,
     collectionError,
@@ -116,6 +122,8 @@ export const PayPublicationFeeStep: React.FC<
       content = <small className={styles.error}>{t('publish_collection_modal_with_oracle.unsynced_collection')}</small>
     } else if (collectionError && !isLoading) {
       content = <small className={styles.error}>{collectionError}</small>
+    } else if (authorizationError) {
+      content = <small className={styles.error}>{authorizationError}</small>
     }
 
     return content ? <div className={styles.errorContainer}>{content}</div> : null
@@ -139,14 +147,14 @@ export const PayPublicationFeeStep: React.FC<
     <Modal.Content>
       <Column>
         <Row className={styles.details}>
-          {isLoading && (
+          {isLoading || isLoadingAuthorization ? (
             <div className={styles.loadingOverlay}>
               <Loader inline size="massive" />
-              {publishingStatus === AuthorizationStepStatus.PROCESSING
-                ? 'Submitting for review'
+              {publishingStatus === AuthorizationStepStatus.PROCESSING || (isUsingMagic && isMagicAutoSignEnabled)
+                ? t('publish_wizard_collection_modal.pay_publication_fee_step.submitting_for_review')
                 : t('publish_wizard_collection_modal.accept_in_wallet')}
             </div>
-          )}
+          ) : null}
           <Column grow={true}>
             <span className={styles.title}>{t('publish_wizard_collection_modal.pay_publication_fee_step.title')}</span>
             <span className={styles.subtitle}>
@@ -237,7 +245,7 @@ export const PayPublicationFeeStep: React.FC<
         </Row>
         {renderErrorMessage()}
         <Row className={styles.actions}>
-          <Button className="back" secondary onClick={onPrevStep} disabled={isLoading}>
+          <Button className="back" secondary onClick={onPrevStep} disabled={isLoading || isLoadingAuthorization}>
             {t('global.back')}
           </Button>
           <div className={styles.actionsRight}>
@@ -258,7 +266,12 @@ export const PayPublicationFeeStep: React.FC<
                 )}
               </>
             ) : null}
-            <Button primary onClick={handleBuyWithMana} disabled={hasInsufficientMANA || isLoading} loading={isLoading}>
+            <Button
+              primary
+              onClick={handleBuyWithMana}
+              disabled={hasInsufficientMANA || isLoading || isLoadingAuthorization}
+              loading={isLoading || isLoadingAuthorization}
+            >
               {ethers.BigNumber.from(totalPriceMANA).gt(0) ? (
                 <>
                   <Mana inline size="small" network={Network.MATIC} />
