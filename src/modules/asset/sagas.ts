@@ -68,7 +68,7 @@ export function* assetSaga(client: BuilderClient) {
 
     const { next, nfts } = response
 
-    if (next) {
+    if (next && next !== cursor) {
       const nextNFTs = await getNFTs(owner, next)
 
       return [...nfts, ...nextNFTs]
