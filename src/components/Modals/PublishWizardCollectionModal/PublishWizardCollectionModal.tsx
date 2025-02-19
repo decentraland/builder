@@ -115,6 +115,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
       const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, contractName)
 
       onAuthorizedAction({
+        manual: wallet.network === Network.MATIC,
         authorizedAddress: authorization.authorizedAddress,
         authorizedContractLabel: contractName,
         targetContract: {
