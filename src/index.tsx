@@ -7,6 +7,7 @@ import HTML5Backend from 'react-dnd-html5-backend'
 import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
 import ToastProvider from 'decentraland-dapps/dist/providers/ToastProvider'
 import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
+import { Web2TransactionModal } from 'decentraland-dapps/dist/containers'
 import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
 import { darkTheme, DclThemeProvider } from 'decentraland-ui2'
 
@@ -32,6 +33,7 @@ ReactDOM.render(
                   <Routes />
                 </ModalProvider>
               </ToastProvider>
+              <Web2TransactionModal />
             </DclThemeProvider>
           </ConnectedRouter>
         </WalletProvider>
