@@ -78,14 +78,18 @@ export function getExplorerURL({
   let URL = `${EXPLORER_URL}?BUILDER_SERVER_URL=${BUILDER_SERVER_URL}&DEBUG_MODE=true`
 
   if (config.is(Env.DEVELOPMENT)) {
-    URL += '&NETWORK=sepolia'
+    URL += '&NETWORK=sepolia&dclenv=zone'
   } else {
     const PEER_TESTING_URL = config.get('PEER_TESTING_URL', '')
     URL += `&CATALYST=${PEER_TESTING_URL}`
   }
 
+  if (config.is(Env.STAGING)) {
+    URL += `&dclenv=today`
+  }
+
   if (collectionId) {
-    URL += `&WITH_COLLECTIONS=${collectionId}`
+    URL += `&WITH_COLLECTIONS=${collectionId}&self-preview-builder-collections=${collectionId}`
   } else if (item_ids) {
     URL += `&WITH_ITEMS=${item_ids.join(',')}`
   }
