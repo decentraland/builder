@@ -83,7 +83,8 @@ export function* rootSaga(
     campaignSagas(contentfulClient, {
       space: config.get('CONTENTFUL_SPACE_ID'),
       environment: config.get('CONTENTFUL_ENVIRONMENT'),
-      id: config.get('CONTENTFUL_ADMIN_ENTITY_ID')
+      id: config.get('CONTENTFUL_ADMIN_ENTITY_ID'),
+      token: config.get('CONTENTFUL_ACCESS_TOKEN')
     }),
     assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
