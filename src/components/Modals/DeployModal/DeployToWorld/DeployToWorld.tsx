@@ -57,7 +57,7 @@ export default function DeployToWorld({
   useEffect(() => {
     const fetchENSList = async () => {
       const ensList = await marketplace.fetchENSList(wallet?.address ?? '', ENS_LIST_PAGE_SIZE, 0)
-      setEnsList(ensList.map(ens => ({ subdomain: ens, name: ens } as ENS)))
+      setEnsList(ensList.map(ens => ({ subdomain: ens + '.dcl.eth', name: ens } as ENS)))
     }
     void fetchENSList()
   }, [])
