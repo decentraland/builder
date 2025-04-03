@@ -747,7 +747,7 @@
     "tooltips": {
       "alias": "You can only assign one NAME per avatar",
       "address": "Use your Decentraland NAME across Web3 thanks to a partnership with ENS.",
-      "land": "When you assign a LAND parcel or estate a NAME it can be easily navigated to with a dedicated URL (e.g. https://name.dcl.eth)."
+      "land": "When you assign a LAND parcel or estate a NAME it can be easily navigated to with a dedicated URL (e.g. https://name.dcl.eth or https://name.dcl.eth.limo)."
     },
     "unclaimed": "Unclaimed",
     "reclaim_name": "Reclaim name",
