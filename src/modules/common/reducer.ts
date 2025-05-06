@@ -12,6 +12,7 @@ import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/
 import { featuresReducer as features } from 'decentraland-dapps/dist/modules/features/reducer'
 import { gatewayReducer as gateway } from 'decentraland-dapps/dist/modules/gateway/reducer'
 import { campaignReducer as campaign } from 'decentraland-dapps/dist/modules/campaign'
+import { creditsReducer as credits } from 'decentraland-dapps/dist/modules/credits/reducer'
 
 import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
@@ -79,7 +80,8 @@ export function createRootReducer(history: History) {
       features,
       inspector,
       worlds,
-      gateway
+      gateway,
+      credits
     })
   )
 }

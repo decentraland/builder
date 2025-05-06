@@ -12,6 +12,7 @@ import { FeaturesState } from 'decentraland-dapps/dist/modules/features/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 import { GatewayState } from 'decentraland-dapps/dist/modules/gateway'
 import { CampaignState } from 'decentraland-dapps/dist/modules/campaign'
+import { CreditsState } from 'decentraland-dapps/dist/modules/credits/reducer'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
@@ -81,6 +82,7 @@ export type RootState = {
   inspector: InspectorState
   worlds: WorldsState
   gateway: GatewayState
+  credits: CreditsState
 }
 
 export type RootStore = Store<RootState>
