@@ -17,6 +17,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ContentfulClient, fetchCampaignRequest } from 'decentraland-dapps/dist/modules/campaign'
+import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -179,6 +180,8 @@ const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getStat
 const contentfulClient = new ContentfulClient()
 
 const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
+const creditsClient = new CreditsClient(config.get('CREDITS_SERVER_URL'))
+
 sagasMiddleware.run(
   rootSaga,
   builderAPI,
@@ -189,8 +192,10 @@ sagasMiddleware.run(
   store,
   ensApi,
   worldsAPI,
-  tradeService
+  tradeService,
+  creditsClient
 )
+
 loadStorageMiddleware(store)
 
 if (isDevelopment) {

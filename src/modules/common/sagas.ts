@@ -13,6 +13,8 @@ import { createIdentitySaga } from 'decentraland-dapps/dist/modules/identity/sag
 import { FiatGateway, createGatewaySaga } from 'decentraland-dapps/dist/modules/gateway'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 import { ContentfulClient, campaignSagas } from 'decentraland-dapps/dist/modules/campaign'
+import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
+import { creditsSaga } from 'decentraland-dapps/dist/modules/credits/sagas'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -76,7 +78,8 @@ export function* rootSaga(
   store: RootStore,
   ensApi: ENSApi,
   worldsApi: WorldsAPI,
-  tradeService: TradeService
+  tradeService: TradeService,
+  creditsClient: CreditsClient
 ) {
   yield all([
     analyticsSaga(),
@@ -119,11 +122,14 @@ export function* rootSaga(
     walletSaga(),
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),
-    featuresSaga({ polling: { apps: [ApplicationName.BUILDER, ApplicationName.DAPPS], delay: 60000 /** 60 seconds */ } }),
+    featuresSaga({
+      polling: { apps: [ApplicationName.BUILDER, ApplicationName.DAPPS, ApplicationName.MARKETPLACE], delay: 60000 /** 60 seconds */ }
+    }),
     inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
     worldsSaga(worldsApi),
-    gatewaySaga()
+    gatewaySaga(),
+    creditsSaga({ creditsClient })
   ])
 }
