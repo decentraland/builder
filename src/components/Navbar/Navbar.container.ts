@@ -6,13 +6,11 @@ import { RootState } from 'modules/common/types'
 import { getTransactions } from 'modules/transaction/selectors'
 import { MapStateProps, MapDispatchProps, OwnProps } from './Navbar.types'
 import Navbar from './Navbar'
-import { getIsNavbar2Enabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   hasPendingTransactions: getTransactions(state).some(tx => isPending(tx.status)),
   address: getAddress(state),
-  isSignedIn: isLoggedIn(state),
-  isNavbar2Enabled: getIsNavbar2Enabled(state)
+  isSignedIn: isLoggedIn(state)
 })
 
 const mergeProps = (mapStateProps: MapStateProps, mapDispatchProps: MapDispatchProps, ownProps: OwnProps) => ({
