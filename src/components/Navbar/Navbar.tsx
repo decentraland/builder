@@ -1,16 +1,16 @@
-import React, { useMemo } from 'react'
-import { useHistory } from 'react-router-dom'
-import { locations } from 'routing/locations'
-import { Navbar as BaseNavbar } from 'decentraland-dapps/dist/containers/'
-import { Navbar2 as BaseNavbar2 } from 'decentraland-dapps/dist/containers/Navbar'
+import React, { useCallback, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import { Navbar2 as BaseNavbar } from 'decentraland-dapps/dist/containers/Navbar'
 import { NavbarPages } from 'decentraland-ui/dist/components/Navbar/Navbar.types'
 import { localStorageGetIdentity } from '@dcl/single-sign-on-client'
+import { config } from 'config/index'
 import { Props } from './Navbar.types'
 
 import './Navbar.css'
 
-const Navbar: React.FC<Props> = ({ hasPendingTransactions, address, isNavbar2Enabled, ...props }: Props) => {
-  const history = useHistory()
+const Navbar: React.FC<Props> = ({ hasPendingTransactions, address, ...props }: Props) => {
+  const { pathname, search } = useLocation()
+
   const identity = useMemo(() => {
     if (address) {
       return localStorageGetIdentity(address)
@@ -18,31 +18,23 @@ const Navbar: React.FC<Props> = ({ hasPendingTransactions, address, isNavbar2Ena
     return undefined
   }, [address])
 
-  const onSignIn = () => {
-    history.push(locations.signIn())
-  }
+  const handleOnSignIn = useCallback(() => {
+    const searchParams = new URLSearchParams(search)
+    const currentRedirectTo = searchParams.get('redirectTo')
+    const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : ''
+    const redirectTo = !currentRedirectTo ? `${basename}${pathname}${search}` : `${basename}${currentRedirectTo}`
 
-  if (isNavbar2Enabled) {
-    return (
-      <BaseNavbar2
-        {...props}
-        withNotifications
-        activePage={NavbarPages.CREATE}
-        hasActivity={hasPendingTransactions}
-        identity={identity}
-        onSignIn={onSignIn}
-      />
-    )
-  }
+    window.location.replace(`${config.get('AUTH_URL')}/login?redirectTo=${redirectTo}`)
+  }, [])
 
   return (
     <BaseNavbar
-      activePage={NavbarPages.CREATE}
       {...props}
-      onSignIn={onSignIn}
-      hasActivity={hasPendingTransactions}
       withNotifications
+      activePage={NavbarPages.CREATE}
+      hasActivity={hasPendingTransactions}
       identity={identity}
+      onSignIn={handleOnSignIn}
     />
   )
 }
