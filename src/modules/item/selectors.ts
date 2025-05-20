@@ -7,7 +7,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
-import { getEntities } from 'modules/entity/selectors'
+import { getEntities, getMissingEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
@@ -134,7 +134,12 @@ const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStat
   return SyncStatus.UNPUBLISHED
 }
 
-const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration | null, entity: Entity): SyncStatus => {
+const getStatusForStandard = (
+  item: Item,
+  collectionCuration: CollectionCuration | null,
+  entity: Entity,
+  isMissingEntity: boolean
+): SyncStatus => {
   let status: SyncStatus
   if (entity) {
     if (areSynced(item, entity)) {
@@ -151,6 +156,9 @@ const getStatusForStandard = (item: Item, collectionCuration: CollectionCuration
       status = SyncStatus.UNPUBLISHED
     } else if (!item.isApproved) {
       status = SyncStatus.UNDER_REVIEW
+    } else if (isMissingEntity) {
+      // Item is published and approved but has missing entities
+      status = SyncStatus.UNSYNCED
     } else {
       status = SyncStatus.LOADING
     }
@@ -164,18 +172,28 @@ export const getStatusByItemId = createSelector<
   EntityState['data'],
   Record<string, CollectionCuration>,
   Record<string, ItemCuration>,
+  Record<string, string[]>,
   Record<string, SyncStatus>
 >(
   getItems,
   getEntityByItemId,
   getCurationsByCollectionId,
   getItemCurationsByItemId,
-  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId) => {
+  state => getMissingEntities(state),
+  (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId, missingEntities) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
+      // Check if this item has a missing entity by checking if its URN is in any of the missingEntities lists
+      const isMissingEntity = !!item.urn && Object.values(missingEntities).some(pointers => pointers.includes(item.urn!))
+
       statusByItemId[item.id] = isThirdParty(item.urn)
         ? getStatusForTP(item, itemCurationByItemId[item.id])
-        : getStatusForStandard(item, item.collectionId ? curationsByCollectionId[item.collectionId] : null, entitiesByItemId[item.id])
+        : getStatusForStandard(
+            item,
+            item.collectionId ? curationsByCollectionId[item.collectionId] : null,
+            entitiesByItemId[item.id],
+            isMissingEntity
+          )
     }
     return statusByItemId
   }

@@ -25,12 +25,14 @@ export type EntityState = {
   data: Record<string, Entity>
   loading: LoadingState
   error: string | null
+  missingEntities: Record<string, string[]> // Maps entity type to list of pointers with no entities
 }
 
 const INITIAL_STATE: EntityState = {
   data: {},
   loading: [],
-  error: null
+  error: null,
+  missingEntities: {}
 }
 
 type EntityReducerAction =
@@ -56,7 +58,30 @@ export function entityReducer(state: EntityState = INITIAL_STATE, action: Entity
         error: null
       }
     }
-    case FETCH_ENTITIES_BY_POINTERS_SUCCESS:
+    case FETCH_ENTITIES_BY_POINTERS_SUCCESS: {
+      const { entities, pointers, type } = action.payload
+
+      // Find pointers that don't have corresponding entities
+      const entityPointers = entities.flatMap(entity => entity.pointers)
+      const missingPointers = pointers.filter(pointer => !entityPointers.includes(pointer))
+
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null,
+        data: {
+          ...state.data,
+          ...entities.reduce((obj, entity) => {
+            obj[entity.id] = entity
+            return obj
+          }, {} as EntityState['data'])
+        },
+        missingEntities: {
+          ...state.missingEntities,
+          [type]: [...(state.missingEntities[type] || []), ...missingPointers]
+        }
+      }
+    }
     case FETCH_ENTITIES_BY_IDS_SUCCESS: {
       return {
         ...state,

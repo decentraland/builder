@@ -1,4 +1,4 @@
-import { ChainId, Rarity, Entity } from '@dcl/schemas'
+import { ChainId, Rarity, Entity, EntityType } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CollectionState } from 'modules/collection/reducer'
 import { Collection } from 'modules/collection/types'
@@ -71,6 +71,12 @@ describe('Item selectors', () => {
           { id: Rarity.COMMON, name: Rarity.COMMON, price: '100', maxSupply: 100 },
           { id: Rarity.EXOTIC, name: Rarity.EXOTIC, price: '100', maxSupply: 50 }
         ]
+      },
+      entity: {
+        data: {},
+        loading: [],
+        error: null,
+        missingEntities: {}
       }
     } as any
   })
@@ -237,7 +243,8 @@ describe('Item selectors', () => {
         entity: {
           data: {},
           loading: [],
-          error: null
+          error: null,
+          missingEntities: {}
         } as EntityState
       } as RootState
     })
@@ -476,6 +483,24 @@ describe('Item selectors', () => {
 
             it('should return a map where the item id of the tested item is set as synced', () => {
               expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.SYNCED })
+            })
+          })
+
+          describe('and there is no entity but it is tracked as missing', () => {
+            beforeEach(() => {
+              // Set up a published and approved item
+              state.item.data[itemId].isPublished = true
+              state.item.data[itemId].isApproved = true
+
+              // Add URN to the item
+              state.item.data[itemId].urn = 'urn:decentraland:matic:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+
+              // Add the URN to missingEntities to mark it as explicitly missing
+              state.entity.missingEntities[EntityType.WEARABLE] = [state.item.data[itemId].urn]
+            })
+
+            it('should return a map where the item id of the tested item is set as UNSYNCED', () => {
+              expect(getStatusByItemId(state)).toEqual({ [itemId]: SyncStatus.UNSYNCED })
             })
           })
         })
