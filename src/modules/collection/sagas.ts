@@ -1149,10 +1149,10 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const deployResult: { type?: 'failure' | 'cancel' | 'success'; error?: string } = yield call(deployEntities, collection)
 
       // If failure show error and exit flow
-      if (deployResult.type === 'failure') {
+      if (deployResult?.type === 'failure') {
         throw new Error(deployResult.error)
         // If cancel exit flow
-      } else if (deployResult.type === 'cancel') {
+      } else if (deployResult?.type === 'cancel') {
         return
       }
 
@@ -1269,7 +1269,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       deployResult = { type: 'failure', error: isErrorWithMessage(error) ? error.message : 'Unknown error' }
     }
 
-    if (deployResult.type === 'cancel') {
+    if (!deployResult || deployResult?.type === 'cancel') {
+      yield put(deployMissingEntitiesSuccess())
       return
     }
 
