@@ -75,17 +75,19 @@ describe('when reducing the FETCH_ENTITIES_BY_POINTERS_SUCCESS action', () => {
     const newState = entityReducer(state, action)
     expect(newState.data).toEqual({ [entityWithPointer1.id]: entityWithPointer1 })
     expect(newState.missingEntities).toEqual({
-      [EntityType.WEARABLE]: ['pointer2', 'pointer3']
+      pointer2: true,
+      pointer3: true
     })
   })
 
-  it('should append to existing missingEntities list for the same entity type', () => {
+  it('should preserve existing missing pointers when adding new ones', () => {
     const state: EntityState = {
       data: {},
       loading: [fetchEntitiesByPointersRequest(EntityType.WEARABLE, ['pointer4'])],
       error: null,
       missingEntities: {
-        [EntityType.WEARABLE]: ['pointer2', 'pointer3']
+        pointer2: true,
+        pointer3: true
       }
     }
 
@@ -94,7 +96,9 @@ describe('when reducing the FETCH_ENTITIES_BY_POINTERS_SUCCESS action', () => {
 
     const newState = entityReducer(state, action)
     expect(newState.missingEntities).toEqual({
-      [EntityType.WEARABLE]: ['pointer2', 'pointer3', 'pointer4']
+      pointer2: true,
+      pointer3: true,
+      pointer4: true
     })
   })
 })

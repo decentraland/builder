@@ -1,4 +1,4 @@
-import { ChainId, Rarity, Entity, EntityType } from '@dcl/schemas'
+import { ChainId, Rarity, Entity } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CollectionState } from 'modules/collection/reducer'
 import { Collection } from 'modules/collection/types'
@@ -496,7 +496,7 @@ describe('Item selectors', () => {
               state.item.data[itemId].urn = 'urn:decentraland:matic:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
 
               // Add the URN to missingEntities to mark it as explicitly missing
-              state.entity.missingEntities[EntityType.WEARABLE] = [state.item.data[itemId].urn]
+              state.entity.missingEntities[state.item.data[itemId].urn] = true
             })
 
             it('should return a map where the item id of the tested item is set as UNSYNCED', () => {

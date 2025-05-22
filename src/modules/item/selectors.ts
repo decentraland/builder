@@ -172,7 +172,7 @@ export const getStatusByItemId = createSelector<
   EntityState['data'],
   Record<string, CollectionCuration>,
   Record<string, ItemCuration>,
-  Record<string, string[]>,
+  Record<string, boolean>,
   Record<string, SyncStatus>
 >(
   getItems,
@@ -183,8 +183,7 @@ export const getStatusByItemId = createSelector<
   (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId, missingEntities) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
-      // Check if this item has a missing entity by checking if its URN is in any of the missingEntities lists
-      const isMissingEntity = !!item.urn && Object.values(missingEntities).some(pointers => pointers.includes(item.urn!))
+      const isMissingEntity = !!item.urn && missingEntities[item.urn]
 
       statusByItemId[item.id] = isThirdParty(item.urn)
         ? getStatusForTP(item, itemCurationByItemId[item.id])
