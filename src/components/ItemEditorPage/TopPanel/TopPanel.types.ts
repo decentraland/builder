@@ -5,7 +5,9 @@ import {
   initiateApprovalFlow,
   InitiateApprovalFlowAction,
   initiateTPApprovalFlow,
-  InitiateTPApprovalFlowAction
+  InitiateTPApprovalFlowAction,
+  deployMissingEntitiesRequest,
+  DeployMissingEntitiesRequestAction
 } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
 import {
@@ -32,11 +34,13 @@ export type Props = {
   isConnected: boolean
   isReviewing: boolean
   isCommitteeMember: boolean
+  hasCollectionMissingEntities: boolean
   selectedCollectionId: string | null
   onNavigate: (path: string) => void
   onInitiateApprovalFlow: typeof initiateApprovalFlow
   onInitiateTPApprovalFlow: typeof initiateTPApprovalFlow
   onSetAssignee: typeof setCollectionCurationAssigneeRequest
+  onDeployMissingEntities: typeof deployMissingEntitiesRequest
 }
 
 export type State = {
@@ -49,7 +53,8 @@ export enum ButtonType {
   APPROVE,
   REJECT,
   ENABLE,
-  DISABLE
+  DISABLE,
+  DEPLOY_MISSING_ENTITIES
 }
 
 export type MapStateProps = Pick<
@@ -66,9 +71,18 @@ export type MapStateProps = Pick<
   | 'isConnected'
   | 'isReviewing'
   | 'isCommitteeMember'
-  | 'selectedCollectionId'
+  | 'hasCollectionMissingEntities'
 >
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee'>
+
+export type MapDispatchProps = Pick<
+  Props,
+  'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee' | 'onDeployMissingEntities'
+>
+
 export type MapDispatch = Dispatch<
-  CallHistoryMethodAction | InitiateApprovalFlowAction | InitiateTPApprovalFlowAction | SetCollectionCurationAssigneeRequestAction
+  | CallHistoryMethodAction
+  | InitiateApprovalFlowAction
+  | InitiateTPApprovalFlowAction
+  | SetCollectionCurationAssigneeRequestAction
+  | DeployMissingEntitiesRequestAction
 >

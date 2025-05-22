@@ -77,7 +77,11 @@ import {
   ApproveCollectionSuccessAction,
   ApproveCollectionFailureAction,
   InitiateTPApprovalFlowAction,
-  INITIATE_TP_APPROVAL_FLOW
+  INITIATE_TP_APPROVAL_FLOW,
+  DeployMissingEntitiesRequestAction,
+  deployMissingEntitiesSuccess,
+  deployMissingEntitiesFailure,
+  DEPLOY_MISSING_ENTITIES_REQUEST
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -191,6 +195,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
   yield takeLatest(INITIATE_TP_APPROVAL_FLOW, handleInitiateTPItemsApprovalFlow)
+  yield takeLatest(DEPLOY_MISSING_ENTITIES_REQUEST, handleDeployMissingEntitiesRequest)
 
   function isPaginated(response: PaginatedResource<Collection> | Collection[]): response is PaginatedResource<Collection> {
     return (response as PaginatedResource<Collection>).results !== undefined
@@ -1006,6 +1011,49 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
     }
   }
 
+  /**
+   * Deploys entities for items that need to be deployed (steps 4-5 of the approval flow)
+   * @param collection The collection containing the items to deploy
+   * @returns Result of the deployment operation: 'success', 'failure', or 'cancel'
+   */
+  function* deployEntities(collection: Collection) {
+    // Step 4: Find items that need to be deployed
+    const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
+      getStandardItemsAndEntitiesToDeploy,
+      collection
+    )
+
+    // If no items to deploy, return immediately
+    if (itemsToDeploy.length === 0) {
+      return
+    }
+
+    // Step 5: Open the modal and wait for actions
+    const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
+      view: ApprovalFlowModalView.DEPLOY,
+      collection,
+      items: itemsToDeploy,
+      entities: entitiesToDeploy
+    }
+    yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+    // Wait for actions...
+    const { failure, cancel }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } =
+      yield race({
+        success: take(DEPLOY_ENTITIES_SUCCESS),
+        failure: take(DEPLOY_ENTITIES_FAILURE),
+        cancel: take(CLOSE_MODAL)
+      })
+
+    if (failure) {
+      return { type: 'failure', error: failure.payload.error }
+    } else if (cancel) {
+      return { type: 'cancel' }
+    } else {
+      return { type: 'success' }
+    }
+  }
+
   function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {
     const { collection } = action.payload
 
@@ -1097,40 +1145,15 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
       }
 
-      // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
-      const { itemsToDeploy, entitiesToDeploy }: { itemsToDeploy: Item[]; entitiesToDeploy: DeploymentPreparationData[] } = yield call(
-        getStandardItemsAndEntitiesToDeploy,
-        collection
-      )
+      // Find items that need to be deployed and if any, open the modal in the DEPLOY step and wait for actions
+      const deployResult: { type?: 'failure' | 'cancel' | 'success'; error?: string } = yield call(deployEntities, collection)
 
-      // 5. If any, open the modal in the DEPLOY step and wait for actions
-      if (itemsToDeploy.length > 0) {
-        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
-          view: ApprovalFlowModalView.DEPLOY,
-          collection,
-          items: itemsToDeploy,
-          entities: entitiesToDeploy
-        }
-        yield put(openModal('ApprovalFlowModal', modalMetadata))
-
-        // Wait for actions...
-        const {
-          failure,
-          cancel
-        }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
-          success: take(DEPLOY_ENTITIES_SUCCESS),
-          failure: take(DEPLOY_ENTITIES_FAILURE),
-          cancel: take(CLOSE_MODAL)
-        })
-
-        // If failure show error and exit flow
-        if (failure) {
-          throw new Error(failure.payload.error)
-
-          // If cancel exit flow
-        } else if (cancel) {
-          return
-        }
+      // If failure show error and exit flow
+      if (deployResult.type === 'failure') {
+        throw new Error(deployResult.error)
+        // If cancel exit flow
+      } else if (deployResult.type === 'cancel') {
+        return
       }
 
       // 6. If the collection needs to be approved, show the approve modal
@@ -1233,6 +1256,45 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const expectedContentHash = contentHashByItemId.get(id)
         return indexedContentHash === expectedContentHash
       })
+    }
+  }
+
+  function* handleDeployMissingEntitiesRequest(action: DeployMissingEntitiesRequestAction) {
+    const { collection } = action.payload
+    let deployResult: { type?: 'failure' | 'cancel' | 'success'; error?: string } = {}
+
+    try {
+      deployResult = yield call(deployEntities, collection)
+    } catch (error) {
+      deployResult = { type: 'failure', error: isErrorWithMessage(error) ? error.message : 'Unknown error' }
+    }
+
+    if (deployResult.type === 'cancel') {
+      return
+    }
+
+    yield put(closeModal('ApprovalFlowModal'))
+
+    if (deployResult.type === 'failure') {
+      const error = deployResult?.error || 'Unknown error'
+      yield put(deployMissingEntitiesFailure(error))
+      yield put(
+        openModal('DeployEntitiesModal', {
+          view: 'error',
+          collection,
+          error: error
+        })
+      )
+    } else {
+      yield put(deployMissingEntitiesSuccess())
+      // Re-fetch collection items to update the entities state
+      yield put(fetchCollectionItemsRequest(collection.id))
+      yield put(
+        openModal('DeployEntitiesModal', {
+          view: 'success',
+          collection
+        })
+      )
     }
   }
 }

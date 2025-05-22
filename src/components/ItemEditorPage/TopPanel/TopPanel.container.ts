@@ -5,9 +5,14 @@ import { RootState } from 'modules/common/types'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { setCollectionCurationAssigneeRequest } from 'modules/curations/collectionCuration/actions'
-import { FETCH_COLLECTION_REQUEST, initiateApprovalFlow, initiateTPApprovalFlow } from 'modules/collection/actions'
+import {
+  FETCH_COLLECTION_REQUEST,
+  initiateApprovalFlow,
+  initiateTPApprovalFlow,
+  deployMissingEntitiesRequest
+} from 'modules/collection/actions'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getCollection } from 'modules/collection/selectors'
+import { getCollection, hasCollectionMissingEntities } from 'modules/collection/selectors'
 import { FETCH_ITEM_CURATIONS_REQUEST } from 'modules/curations/itemCuration/actions'
 import { FETCH_COLLECTION_ITEMS_REQUEST } from 'modules/item/actions'
 import { getCollectionItems, getLoading as getLoadingItems, getPaginationData } from 'modules/item/selectors'
@@ -27,6 +32,9 @@ const mapState = (state: RootState): MapStateProps => {
   const itemsPaginationData = selectedCollectionId ? getPaginationData(state, selectedCollectionId) : undefined
   const thirdParty = collection && isTPCollection(collection) ? getCollectionThirdParty(state, collection) : null
 
+  // Default to false if no collection is selected
+  const hasMissingEntities = selectedCollectionId ? hasCollectionMissingEntities(state, selectedCollectionId) : false
+
   return {
     address: getAddress(state),
     items,
@@ -39,7 +47,7 @@ const mapState = (state: RootState): MapStateProps => {
     isConnected: isConnected(state),
     isReviewing: isReviewing(state),
     isCommitteeMember: isWalletCommitteeMember(state),
-    selectedCollectionId: getSelectedCollectionId(state),
+    hasCollectionMissingEntities: hasMissingEntities,
     isLoading:
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItemCurations(state), FETCH_ITEM_CURATIONS_REQUEST) ||
@@ -51,7 +59,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
   onSetAssignee: (collectionId, assignee, curation) => dispatch(setCollectionCurationAssigneeRequest(collectionId, assignee, curation)),
   onInitiateTPApprovalFlow: collection => dispatch(initiateTPApprovalFlow(collection)),
-  onInitiateApprovalFlow: collection => dispatch(initiateApprovalFlow(collection))
+  onInitiateApprovalFlow: collection => dispatch(initiateApprovalFlow(collection)),
+  onDeployMissingEntities: collection => dispatch(deployMissingEntitiesRequest(collection))
 })
 
 export default connect(mapState, mapDispatch)(TopPanel)

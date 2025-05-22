@@ -88,7 +88,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButton = (type: ButtonType, collection: Collection, curation: CollectionCuration | null) => {
-    const { address, thirdParty, onInitiateApprovalFlow, onInitiateTPApprovalFlow, reviewedItems, totalItems } = this.props
+    const { address, thirdParty, onInitiateApprovalFlow, onInitiateTPApprovalFlow, onDeployMissingEntities, reviewedItems, totalItems } =
+      this.props
 
     const onClickMap = {
       [ButtonType.APPROVE]: () =>
@@ -106,17 +107,19 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         } else {
           this.setShowRejectionModal(RejectionType.REJECT_COLLECTION)
         }
-      }
+      },
+      [ButtonType.DEPLOY_MISSING_ENTITIES]: () => onDeployMissingEntities(collection)
     }
 
     const i18nKeyByButtonType = {
       [ButtonType.APPROVE]: 'approve',
       [ButtonType.ENABLE]: 'enable',
       [ButtonType.DISABLE]: 'disable',
-      [ButtonType.REJECT]: 'reject'
+      [ButtonType.REJECT]: 'reject',
+      [ButtonType.DEPLOY_MISSING_ENTITIES]: 'deploy_missing_entities'
     }
 
-    const isPrimary = type === ButtonType.APPROVE || type === ButtonType.ENABLE
+    const isPrimary = type === ButtonType.APPROVE || type === ButtonType.ENABLE || type === ButtonType.DEPLOY_MISSING_ENTITIES
     const isApproveButtonPopupDisabled =
       !isTPCollection(collection) || (!!totalItems && reviewedItems.length >= getTPThresholdToReview(totalItems))
     return (
@@ -168,29 +171,42 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderButtons = (collection: Collection, curation: CollectionCuration | null) => {
-    if (curation && collection.isApproved) {
-      switch (curation.status) {
-        case 'pending':
-          return (
-            <>
-              {this.renderButton(ButtonType.APPROVE, collection, curation)}
-              {this.renderButton(ButtonType.REJECT, collection, curation)}
-            </>
-          )
-        case 'approved':
-        case 'rejected':
-          return this.renderButton(ButtonType.DISABLE, collection, curation)
-      }
+    // Case 1: Collection has an approved curation with pending status
+    if (curation && collection.isApproved && curation.status === 'pending') {
+      return (
+        <>
+          {this.renderButton(ButtonType.APPROVE, collection, curation)}
+          {this.renderButton(ButtonType.REJECT, collection, curation)}
+        </>
+      )
     }
 
+    // Case 2: Collection has an approved curation with approved/rejected status
+    if (curation && collection.isApproved && (curation.status === 'approved' || curation.status === 'rejected')) {
+      return (
+        <>
+          {this.renderButton(ButtonType.DISABLE, collection, curation)}
+          {this.props.hasCollectionMissingEntities && this.renderButton(ButtonType.DEPLOY_MISSING_ENTITIES, collection, curation)}
+        </>
+      )
+    }
+
+    // Case 3: Collection has reviews and is approved
+    if (hasReviews(collection) && collection.isApproved) {
+      return (
+        <>
+          {this.renderButton(ButtonType.DISABLE, collection, curation)}
+          {this.props.hasCollectionMissingEntities && this.renderButton(ButtonType.DEPLOY_MISSING_ENTITIES, collection, curation)}
+        </>
+      )
+    }
+
+    // Case 4: Collection has reviews but is not approved
     if (hasReviews(collection)) {
-      if (collection.isApproved) {
-        return this.renderButton(ButtonType.DISABLE, collection, curation)
-      } else {
-        return this.renderButton(ButtonType.ENABLE, collection, curation)
-      }
+      return this.renderButton(ButtonType.ENABLE, collection, curation)
     }
 
+    // Default case: Collection has no reviews and no active curation
     return (
       <>
         {this.renderButton(ButtonType.APPROVE, collection, curation)}
