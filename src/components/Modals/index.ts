@@ -12,6 +12,7 @@ export { default as CreateThirdPartyCollectionModal } from './CreateThirdPartyCo
 export { default as CustomLayoutModal } from './CustomLayoutModal'
 export { default as CloneTemplateModal } from './CloneTemplateModal'
 export { default as DeleteItemModal } from './DeleteItemModal'
+export { default as DeployEntitiesModal } from './DeployEntitiesModal'
 export { default as DeployModal } from './DeployModal'
 export { default as DissolveModal } from './DissolveModal'
 export { default as EditAssetPackModal } from './EditAssetPackModal'

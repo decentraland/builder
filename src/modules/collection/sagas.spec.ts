@@ -86,7 +86,10 @@ import {
   initiateTPApprovalFlow,
   fetchCollectionsRequest,
   fetchCollectionsSuccess,
-  approveCollectionSuccess
+  approveCollectionSuccess,
+  deployMissingEntitiesRequest,
+  deployMissingEntitiesSuccess,
+  deployMissingEntitiesFailure
 } from './actions'
 import { collectionSaga } from './sagas'
 import { Collection, PaymentMethod } from './types'
@@ -2270,6 +2273,107 @@ describe('when handling the successful save of an item', () => {
         .then(({ effects }) => {
           expect(effects.put).toBeUndefined()
         })
+    })
+  })
+})
+
+describe('when handling a deploy missing entities', () => {
+  let collection: Collection
+  let items: Item[]
+  let deployData: DeploymentPreparationData
+
+  beforeEach(() => {
+    collection = getCollectionMock()
+    items = [
+      getItemMock(collection, {
+        id: 'anItem',
+        currentContentHash: 'QmNewContentHash',
+        blockchainContentHash: 'QmOldContentHash'
+      })
+    ]
+    deployData = getDeployDataMock()
+  })
+
+  describe('and there are items to upload', () => {
+    describe('and the upload succeeds', () => {
+      it('should dispatch openModal DeployEntitiesModal with a success view', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .provide([
+            [select(getItems), items],
+            [select(getEntityByItemId), {}],
+            [call(buildItemEntity, mockBuilder, collection, items[0], undefined, undefined), deployData]
+          ])
+          .dispatch(deployMissingEntitiesRequest(collection))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.DEPLOY,
+              collection,
+              items,
+              entities: [deployData]
+            } as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>)
+          )
+          .dispatch(deployEntitiesSuccess([deployData]))
+          .put(closeModal('ApprovalFlowModal'))
+          .put(deployMissingEntitiesSuccess())
+          .put(fetchCollectionItemsRequest(collection.id))
+          .put(
+            openModal('DeployEntitiesModal', {
+              view: 'success',
+              collection
+            })
+          )
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the upload fails', () => {
+      const deployError = 'Deployment failed'
+
+      it('should dispatch openModal DeployEntitiesModal with an error view', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          .provide([
+            [select(getItems), items],
+            [select(getEntityByItemId), {}],
+            [call(buildItemEntity, mockBuilder, collection, items[0], undefined, undefined), deployData]
+          ])
+          .dispatch(deployMissingEntitiesRequest(collection))
+          .put(
+            openModal('ApprovalFlowModal', {
+              view: ApprovalFlowModalView.DEPLOY,
+              collection,
+              items,
+              entities: [deployData]
+            } as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>)
+          )
+          .dispatch(deployEntitiesFailure([deployData], deployError))
+          .put(closeModal('ApprovalFlowModal'))
+          .put(deployMissingEntitiesFailure(deployError))
+          .put(
+            openModal('DeployEntitiesModal', {
+              view: 'error',
+              collection,
+              error: deployError
+            })
+          )
+          .run({ silenceTimeout: true })
+      })
+    })
+  })
+
+  describe('and there are no items to upload', () => {
+    it('should end the flow without showing any modal', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        .provide([
+          [select(getItems), []],
+          [select(getEntityByItemId), {}]
+        ])
+        .dispatch(deployMissingEntitiesRequest(collection))
+        .not.put(openModal('ApprovalFlowModal', expect.any(Object)))
+        .not.put(closeModal('ApprovalFlowModal'))
+        .not.put(fetchCollectionItemsRequest(collection.id))
+        .not.put(openModal('DeployEntitiesModal', expect.any(Object)))
+        .put(deployMissingEntitiesSuccess())
+        .run({ silenceTimeout: true })
     })
   })
 })

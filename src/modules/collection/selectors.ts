@@ -8,7 +8,8 @@ import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
-import { getItems, getStatusByItemId } from 'modules/item/selectors'
+import { getItems, getStatusByItemId, getCollectionItems } from 'modules/item/selectors'
+import { getMissingEntities } from 'modules/entity/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
@@ -183,4 +184,25 @@ export const getPublishStatus = (state: RootState) => {
   }
 
   return AuthorizationStepStatus.PENDING
+}
+
+/**
+ * Checks if a specific collection has any items with missing entities
+ * @param state - The Redux state
+ * @param collectionId - The ID of the collection to check
+ * @returns True if the collection has any items with missing entities, false otherwise
+ */
+export const hasCollectionMissingEntities = (state: RootState, collectionId: string): boolean => {
+  const collection = getCollection(state, collectionId)
+
+  // Only consider published and approved collections
+  if (!collection || !collection.isPublished || !collection.isApproved) {
+    return false
+  }
+
+  const items = getCollectionItems(state, collectionId)
+  const missingEntities = getMissingEntities(state)
+
+  // Check if any items in this collection have missing entities
+  return items.some((item: Item) => item.urn && missingEntities[item.urn])
 }

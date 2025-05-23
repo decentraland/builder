@@ -2,7 +2,7 @@ import { ChainId, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { RootState } from 'modules/common/types'
-import { ItemType, SyncStatus } from 'modules/item/types'
+import { Item, ItemType, SyncStatus } from 'modules/item/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 import {
   getAuthorizedCollections,
@@ -11,7 +11,8 @@ import {
   getRaritiesContract,
   getStatusByCollectionId,
   getUnsyncedCollectionError,
-  hasViewAndEditRights
+  hasViewAndEditRights,
+  hasCollectionMissingEntities
 } from './selectors'
 import { Collection } from './types'
 import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
@@ -536,6 +537,97 @@ describe('when getting the rarities contract', () => {
 
     it('should return the RaritiesWithOracle contract for matic mainnet', () => {
       expect(getRaritiesContract(providedChainId)).toEqual(getContract(ContractName.RaritiesWithOracle, ChainId.MATIC_MAINNET))
+    })
+  })
+})
+
+describe('when getting a collection with missing entities', () => {
+  const mockCollection: Collection = {
+    id: 'collection-id',
+    name: 'Test Collection',
+    owner: '0x123',
+    isPublished: true,
+    isApproved: true
+  } as Collection
+
+  const mockItems: Item[] = [
+    { id: 'item1', name: 'Item 1', collectionId: 'collection-id', urn: 'urn:decentraland:item1' } as Item,
+    { id: 'item2', name: 'Item 2', collectionId: 'collection-id', urn: 'urn:decentraland:item2' } as Item,
+    { id: 'item3', name: 'Item 3', collectionId: 'collection-id', urn: 'urn:decentraland:item3' } as Item
+  ]
+
+  let mockState: RootState
+
+  beforeEach(() => {
+    mockState = {
+      collection: {
+        data: {
+          '0': { ...mockCollection }
+        }
+      },
+      item: {
+        data: { ...mockItems }
+      },
+      entity: {
+        data: {},
+        missingEntities: {}
+      },
+      wallet: {
+        data: {
+          address: '0x123'
+        }
+      }
+    } as unknown as RootState
+  })
+
+  describe('and the collection is not published', () => {
+    beforeEach(() => {
+      mockState.collection.data['0'].isPublished = false
+    })
+
+    it('should return false', () => {
+      expect(hasCollectionMissingEntities(mockState, 'collection-id')).toBe(false)
+    })
+  })
+
+  describe('and the collection is not approved', () => {
+    beforeEach(() => {
+      mockState.collection.data['0'].isApproved = false
+    })
+
+    it('should return false', () => {
+      expect(hasCollectionMissingEntities(mockState, 'collection-id')).toBe(false)
+    })
+  })
+
+  describe('and the collection has no items with missing entities', () => {
+    it('should return false', () => {
+      expect(hasCollectionMissingEntities(mockState, 'collection-id')).toBe(false)
+    })
+  })
+
+  describe('and at least one item has a missing entity', () => {
+    beforeEach(() => {
+      mockState.entity.missingEntities = {
+        'urn:decentraland:item1': true
+      }
+    })
+
+    it('should return true', () => {
+      expect(hasCollectionMissingEntities(mockState, 'collection-id')).toBe(true)
+    })
+  })
+
+  describe('and multiple items have missing entities', () => {
+    beforeEach(() => {
+      mockState.entity.missingEntities = {
+        'urn:decentraland:item1': true,
+        'urn:decentraland:item3': true
+      }
+    })
+
+    it('should return true', () => {
+      expect(hasCollectionMissingEntities(mockState, 'collection-id')).toBe(true)
     })
   })
 })
