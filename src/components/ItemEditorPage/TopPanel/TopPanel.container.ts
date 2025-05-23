@@ -47,6 +47,7 @@ const mapState = (state: RootState): MapStateProps => {
     isConnected: isConnected(state),
     isReviewing: isReviewing(state),
     isCommitteeMember: isWalletCommitteeMember(state),
+    selectedCollectionId,
     hasCollectionMissingEntities: hasMissingEntities,
     isLoading:
       isLoadingType(getLoading(state), FETCH_COLLECTION_REQUEST) ||

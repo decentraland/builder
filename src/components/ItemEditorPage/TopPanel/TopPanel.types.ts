@@ -71,6 +71,7 @@ export type MapStateProps = Pick<
   | 'isConnected'
   | 'isReviewing'
   | 'isCommitteeMember'
+  | 'selectedCollectionId'
   | 'hasCollectionMissingEntities'
 >
 
