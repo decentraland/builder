@@ -1,4 +1,4 @@
-import { ChainId, WearableCategory } from '@dcl/schemas'
+import { ChainId, WearableCategory, Entity, EntityType } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { RootState } from 'modules/common/types'
@@ -200,7 +200,8 @@ describe('when getting status by item id', () => {
               }
             }
           }
-        }
+        },
+        loading: []
       }
     }
     expect(getStatusByCollectionId(mockState as unknown as RootState)).toEqual({
@@ -556,21 +557,37 @@ describe('when getting a collection with missing entities', () => {
     { id: 'item3', name: 'Item 3', collectionId: 'collection-id', urn: 'urn:decentraland:item3' } as Item
   ]
 
+  const createMockEntity = (id: string, pointer: string): Entity => ({
+    id,
+    type: EntityType.WEARABLE,
+    version: 'v3',
+    timestamp: Date.now(),
+    pointers: [pointer],
+    content: [],
+    metadata: {}
+  })
+
+  const mockEntities: Entity[] = [
+    createMockEntity('entity1', 'urn:decentraland:item1'),
+    createMockEntity('entity2', 'urn:decentraland:item2')
+  ]
+
   let mockState: RootState
 
   beforeEach(() => {
     mockState = {
       collection: {
         data: {
-          '0': { ...mockCollection }
+          'collection-id': { ...mockCollection }
         }
       },
       item: {
-        data: { ...mockItems }
+        data: mockItems.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
       },
       entity: {
-        data: {},
-        missingEntities: {}
+        data: mockEntities.reduce((acc, entity) => ({ ...acc, [entity.id]: entity }), {}),
+        loading: [],
+        error: null
       },
       wallet: {
         data: {
@@ -582,7 +599,7 @@ describe('when getting a collection with missing entities', () => {
 
   describe('and the collection is not published', () => {
     beforeEach(() => {
-      mockState.collection.data['0'].isPublished = false
+      mockState.collection.data['collection-id'].isPublished = false
     })
 
     it('should return false', () => {
@@ -592,7 +609,7 @@ describe('when getting a collection with missing entities', () => {
 
   describe('and the collection is not approved', () => {
     beforeEach(() => {
-      mockState.collection.data['0'].isApproved = false
+      mockState.collection.data['collection-id'].isApproved = false
     })
 
     it('should return false', () => {
@@ -601,6 +618,11 @@ describe('when getting a collection with missing entities', () => {
   })
 
   describe('and the collection has no items with missing entities', () => {
+    beforeEach(() => {
+      // Add entity for the last item so all items have entities
+      mockState.entity.data['entity3'] = createMockEntity('entity3', 'urn:decentraland:item3')
+    })
+
     it('should return false', () => {
       expect(hasCollectionMissingEntities(mockState, 'collection-id')).toBe(false)
     })
@@ -608,8 +630,10 @@ describe('when getting a collection with missing entities', () => {
 
   describe('and at least one item has a missing entity', () => {
     beforeEach(() => {
-      mockState.entity.missingEntities = {
-        'urn:decentraland:item1': true
+      // Only add entities for items 1 and 2, leaving item3 without an entity
+      mockState.entity.data = {
+        entity1: createMockEntity('entity1', 'urn:decentraland:item1'),
+        entity2: createMockEntity('entity2', 'urn:decentraland:item2')
       }
     })
 
@@ -620,9 +644,9 @@ describe('when getting a collection with missing entities', () => {
 
   describe('and multiple items have missing entities', () => {
     beforeEach(() => {
-      mockState.entity.missingEntities = {
-        'urn:decentraland:item1': true,
-        'urn:decentraland:item3': true
+      // Only add entity for item2, leaving items 1 and 3 without entities
+      mockState.entity.data = {
+        entity2: createMockEntity('entity2', 'urn:decentraland:item2')
       }
     })
 

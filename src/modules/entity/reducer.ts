@@ -25,14 +25,12 @@ export type EntityState = {
   data: Record<string, Entity>
   loading: LoadingState
   error: string | null
-  missingEntities: Record<string, boolean>
 }
 
 const INITIAL_STATE: EntityState = {
   data: {},
   loading: [],
-  error: null,
-  missingEntities: {}
+  error: null
 }
 
 type EntityReducerAction =
@@ -59,30 +57,17 @@ export function entityReducer(state: EntityState = INITIAL_STATE, action: Entity
       }
     }
     case FETCH_ENTITIES_BY_POINTERS_SUCCESS: {
-      const { entities, pointers } = action.payload
-
-      const entityPointersSet = new Set(entities.flatMap(entity => entity.pointers))
-
-      const newMissingEntities = { ...state.missingEntities }
-
-      for (const pointer of pointers) {
-        if (!entityPointersSet.has(pointer)) {
-          newMissingEntities[pointer] = true
-        }
-      }
-
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error: null,
         data: {
           ...state.data,
-          ...entities.reduce((obj, entity) => {
+          ...action.payload.entities.reduce((obj, entity) => {
             obj[entity.id] = entity
             return obj
           }, {} as EntityState['data'])
-        },
-        missingEntities: newMissingEntities
+        }
       }
     }
     case FETCH_ENTITIES_BY_IDS_SUCCESS: {

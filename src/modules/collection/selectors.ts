@@ -8,8 +8,7 @@ import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
-import { getItems, getStatusByItemId, getCollectionItems } from 'modules/item/selectors'
-import { getMissingEntities } from 'modules/entity/selectors'
+import { getItems, getStatusByItemId, getCollectionItems, getMissingEntities } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
@@ -26,7 +25,6 @@ import {
   PUBLISH_COLLECTION_REQUEST,
   PUBLISH_COLLECTION_SUCCESS
 } from './actions'
-import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
 import {
   canSeeCollection,
@@ -36,6 +34,7 @@ import {
   sortCollectionByCreatedAt,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
+import { Collection, CollectionType } from './types'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data

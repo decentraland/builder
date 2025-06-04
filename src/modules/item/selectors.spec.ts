@@ -7,6 +7,7 @@ import { CollectionCurationState } from 'modules/curations/collectionCuration/re
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCurationState } from 'modules/curations/itemCuration/reducer'
 import { CurationStatus } from 'modules/curations/types'
+import { FETCH_ENTITIES_BY_POINTERS_REQUEST } from 'modules/entity/actions'
 import { EntityState } from 'modules/entity/reducer'
 import { ThirdParty } from 'modules/thirdParty/types'
 import { mockedItem } from 'specs/item'
@@ -24,7 +25,8 @@ import {
   getWalletItems,
   getWalletOrphanItems,
   hasUserOrphanItems,
-  hasViewAndEditRights
+  hasViewAndEditRights,
+  getMissingEntities
 } from './selectors'
 import { Item, ItemType, SyncStatus, VIDEO_PATH } from './types'
 import { saveItemRequest } from './actions'
@@ -75,8 +77,7 @@ describe('Item selectors', () => {
       entity: {
         data: {},
         loading: [],
-        error: null,
-        missingEntities: {}
+        error: null
       }
     } as any
   })
@@ -243,8 +244,7 @@ describe('Item selectors', () => {
         entity: {
           data: {},
           loading: [],
-          error: null,
-          missingEntities: {}
+          error: null
         } as EntityState
       } as RootState
     })
@@ -425,9 +425,10 @@ describe('Item selectors', () => {
             state.collectionCuration.data[collectionId].status = CurationStatus.APPROVED
           })
 
-          describe('and the entity is not found', () => {
+          describe('and the entity is being fetched', () => {
             beforeEach(() => {
               state.collectionCuration.data = {}
+              state.entity.loading = [{ type: FETCH_ENTITIES_BY_POINTERS_REQUEST }]
             })
 
             it('should return a map where the item id of the tested item is set as loading', () => {
@@ -450,7 +451,8 @@ describe('Item selectors', () => {
                     representations: state.item.data[itemId].data.representations,
                     tags: state.item.data[itemId].data.tags
                   }
-                }
+                },
+                pointers: [state.item.data[itemId].urn!]
               } as Entity
             })
 
@@ -477,7 +479,8 @@ describe('Item selectors', () => {
                     representations: state.item.data[itemId].data.representations,
                     tags: state.item.data[itemId].data.tags
                   }
-                }
+                },
+                pointers: [state.item.data[itemId].urn!]
               } as Entity
             })
 
@@ -486,7 +489,7 @@ describe('Item selectors', () => {
             })
           })
 
-          describe('and there is no entity but it is tracked as missing', () => {
+          describe('and there is no entity', () => {
             beforeEach(() => {
               // Set up a published and approved item
               state.item.data[itemId].isPublished = true
@@ -495,8 +498,8 @@ describe('Item selectors', () => {
               // Add URN to the item
               state.item.data[itemId].urn = 'urn:decentraland:matic:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
 
-              // Add the URN to missingEntities to mark it as explicitly missing
-              state.entity.missingEntities[state.item.data[itemId].urn] = true
+              // Clear entities data to simulate missing entity
+              state.entity.data = {}
             })
 
             it('should return a map where the item id of the tested item is set as UNSYNCED', () => {
@@ -802,6 +805,81 @@ describe('Item selectors', () => {
 
       it('should return the ids of the items being saved', () => {
         expect(getIdsOfItemsBeingSaved(state)).toEqual({ [item.id]: true })
+      })
+    })
+  })
+
+  describe('when getting items with missing entities', () => {
+    let items: Item[]
+    let entities: Entity[]
+
+    beforeEach(() => {
+      items = [
+        { id: '1', urn: 'urn:decentraland:item1' },
+        { id: '2', urn: 'urn:decentraland:item2' },
+        { id: '3', urn: 'urn:decentraland:item3' }
+      ] as Item[]
+
+      entities = [
+        { id: 'entity1', pointers: ['urn:decentraland:item1'] },
+        { id: 'entity2', pointers: ['urn:decentraland:item2'] }
+      ] as Entity[]
+
+      state = {
+        ...state,
+        item: {
+          ...state.item,
+          data: items.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
+        },
+        entity: {
+          ...state.entity,
+          data: entities.reduce((acc, entity) => ({ ...acc, [entity.id]: entity }), {})
+        }
+      } as RootState
+    })
+
+    describe('when an item does not have a corresponding entity', () => {
+      it('should mark the item as missing', () => {
+        const result = getMissingEntities(state)
+        expect(result).toEqual({
+          'urn:decentraland:item3': true
+        })
+      })
+    })
+
+    describe('when all items have corresponding entities', () => {
+      beforeEach(() => {
+        entities.push({ id: 'entity3', pointers: ['urn:decentraland:item3'] } as Entity)
+        state = {
+          ...state,
+          entity: {
+            ...state.entity,
+            data: entities.reduce((acc, entity) => ({ ...acc, [entity.id]: entity }), {})
+          }
+        } as RootState
+      })
+
+      it('should return an empty object', () => {
+        const result = getMissingEntities(state)
+        expect(result).toEqual({})
+      })
+    })
+
+    describe('when an item has no URN', () => {
+      beforeEach(() => {
+        items.push({ id: '4' } as Item)
+        state = {
+          ...state,
+          item: {
+            ...state.item,
+            data: items.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
+          }
+        } as RootState
+      })
+
+      it('should not include the item in missing entities', () => {
+        const result = getMissingEntities(state)
+        expect(result).not.toHaveProperty('4')
       })
     })
   })

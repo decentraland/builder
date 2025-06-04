@@ -7,7 +7,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections, getData as getCollectionData } from 'modules/collection/selectors'
-import { getEntities, getMissingEntities } from 'modules/entity/selectors'
+import { getEntities, isFetchingEntities } from 'modules/entity/selectors'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
@@ -120,6 +120,25 @@ export const getEntityByItemId = createSelector<RootState, Entity[], Record<stri
     }, {} as Record<string, Entity>)
 )
 
+export const getMissingEntities = createSelector(
+  [getItems, getEntities, isFetchingEntities],
+  (items, entities, isFetchingEntities): Record<string, boolean> => {
+    const missingEntities: Record<string, boolean> = {}
+
+    if (isFetchingEntities) {
+      return missingEntities
+    }
+
+    items.forEach(item => {
+      if (item.urn && !entities.some(entity => entity.pointers.includes(item.urn!))) {
+        missingEntities[item.urn] = true
+      }
+    })
+
+    return missingEntities
+  }
+)
+
 const getStatusForTP = (item: Item, itemCuration: ItemCuration | null): SyncStatus => {
   if (!item.isPublished && !itemCuration) {
     return SyncStatus.UNPUBLISHED
@@ -179,7 +198,7 @@ export const getStatusByItemId = createSelector<
   getEntityByItemId,
   getCurationsByCollectionId,
   getItemCurationsByItemId,
-  state => getMissingEntities(state),
+  getMissingEntities,
   (items, entitiesByItemId, curationsByCollectionId, itemCurationByItemId, missingEntities) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
