@@ -56,20 +56,7 @@ export function entityReducer(state: EntityState = INITIAL_STATE, action: Entity
         error: null
       }
     }
-    case FETCH_ENTITIES_BY_POINTERS_SUCCESS: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null,
-        data: {
-          ...state.data,
-          ...action.payload.entities.reduce((obj, entity) => {
-            obj[entity.id] = entity
-            return obj
-          }, {} as EntityState['data'])
-        }
-      }
-    }
+    case FETCH_ENTITIES_BY_POINTERS_SUCCESS:
     case FETCH_ENTITIES_BY_IDS_SUCCESS: {
       return {
         ...state,
