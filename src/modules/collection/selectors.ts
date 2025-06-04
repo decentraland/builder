@@ -8,7 +8,7 @@ import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { getType } from 'decentraland-dapps/dist/modules/loading/utils'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
-import { getItems, getStatusByItemId } from 'modules/item/selectors'
+import { getItems, getStatusByItemId, getCollectionItems, getMissingEntities } from 'modules/item/selectors'
 import { Item, SyncStatus } from 'modules/item/types'
 import { getCurationsByCollectionId } from 'modules/curations/collectionCuration/selectors'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
@@ -25,7 +25,6 @@ import {
   PUBLISH_COLLECTION_REQUEST,
   PUBLISH_COLLECTION_SUCCESS
 } from './actions'
-import { Collection, CollectionType } from './types'
 import { CollectionState } from './reducer'
 import {
   canSeeCollection,
@@ -35,6 +34,7 @@ import {
   sortCollectionByCreatedAt,
   UNSYNCED_COLLECTION_ERROR_PREFIX
 } from './utils'
+import { Collection, CollectionType } from './types'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -183,4 +183,25 @@ export const getPublishStatus = (state: RootState) => {
   }
 
   return AuthorizationStepStatus.PENDING
+}
+
+/**
+ * Checks if a specific collection has any items with missing entities
+ * @param state - The Redux state
+ * @param collectionId - The ID of the collection to check
+ * @returns True if the collection has any items with missing entities, false otherwise
+ */
+export const hasCollectionMissingEntities = (state: RootState, collectionId: string): boolean => {
+  const collection = getCollection(state, collectionId)
+
+  // Only consider published and approved collections
+  if (!collection || !collection.isPublished || !collection.isApproved) {
+    return false
+  }
+
+  const items = getCollectionItems(state, collectionId)
+  const missingEntities = getMissingEntities(state)
+
+  // Check if any items in this collection have missing entities
+  return items.some((item: Item) => item.urn && missingEntities[item.urn])
 }

@@ -204,3 +204,16 @@ export const FINISH_TP_APPROVAL_FLOW = 'Finish TP Approval Flow'
 export const initiateTPApprovalFlow = (collection: Collection) => action(INITIATE_TP_APPROVAL_FLOW, { collection })
 
 export type InitiateTPApprovalFlowAction = ReturnType<typeof initiateTPApprovalFlow>
+
+// Deploy Missing Entities flow
+export const DEPLOY_MISSING_ENTITIES_REQUEST = '[Request] Deploy Missing Entities'
+export const DEPLOY_MISSING_ENTITIES_SUCCESS = '[Success] Deploy Missing Entities'
+export const DEPLOY_MISSING_ENTITIES_FAILURE = '[Failure] Deploy Missing Entities'
+
+export const deployMissingEntitiesRequest = (collection: Collection) => action(DEPLOY_MISSING_ENTITIES_REQUEST, { collection })
+export const deployMissingEntitiesSuccess = () => action(DEPLOY_MISSING_ENTITIES_SUCCESS)
+export const deployMissingEntitiesFailure = (error: string) => action(DEPLOY_MISSING_ENTITIES_FAILURE, { error })
+
+export type DeployMissingEntitiesRequestAction = ReturnType<typeof deployMissingEntitiesRequest>
+export type DeployMissingEntitiesSuccessAction = ReturnType<typeof deployMissingEntitiesSuccess>
+export type DeployMissingEntitiesFailureAction = ReturnType<typeof deployMissingEntitiesFailure>
