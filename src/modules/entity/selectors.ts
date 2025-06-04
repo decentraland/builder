@@ -10,8 +10,5 @@ export const getData = (state: RootState) => getState(state).data
 export const getError = (state: RootState) => getState(state).error
 export const getLoading = (state: RootState) => getState(state).loading
 export const getEntities = createSelector<RootState, EntityState['data'], Entity[]>(getData, entityData => Object.values(entityData))
-export const isFetchingEntities = createSelector([getLoading], loading => {
-  return loading.some(
-    _action => isLoadingType(loading, FETCH_ENTITIES_BY_POINTERS_REQUEST) || isLoadingType(loading, FETCH_ENTITIES_BY_IDS_REQUEST)
-  )
-})
+export const isFetchingEntities = (state: RootState) =>
+  isLoadingType(getLoading(state), FETCH_ENTITIES_BY_POINTERS_REQUEST) || isLoadingType(getLoading(state), FETCH_ENTITIES_BY_IDS_REQUEST)
