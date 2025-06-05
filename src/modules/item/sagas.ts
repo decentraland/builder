@@ -108,7 +108,9 @@ import {
   cancelItemOrderTradeSuccess,
   cancelItemOrderTradeFailure,
   CancelItemOrderTradeRequestAction,
-  cancelItemOrderTradeTxSuccess
+  cancelItemOrderTradeTxSuccess,
+  FETCH_COLLECTION_THUMBNAILS_SUCCESS,
+  FetchCollectionThumbnailsSuccessAction
 } from './actions'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { isThirdParty } from 'lib/urn'
@@ -751,9 +753,10 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
   function* fetchItemEntities() {
     while (true) {
-      const result: FetchItemsSuccessAction | FetchCollectionItemsSuccessAction = yield take([
+      const result: FetchItemsSuccessAction | FetchCollectionItemsSuccessAction | FetchCollectionThumbnailsSuccessAction = yield take([
         FETCH_ITEMS_SUCCESS,
-        FETCH_COLLECTION_ITEMS_SUCCESS
+        FETCH_COLLECTION_ITEMS_SUCCESS,
+        FETCH_COLLECTION_THUMBNAILS_SUCCESS
       ])
 
       const { items } = result.payload
