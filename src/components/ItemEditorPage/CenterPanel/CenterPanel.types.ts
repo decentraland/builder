@@ -48,6 +48,7 @@ export type Props = {
   isPlayingEmote: boolean
   isImportFilesModalOpen: boolean
   hasUserOrphanItems: boolean | undefined
+  isUnityWearablePreviewEnabled: boolean
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setEmote
   onSetSkinColor: typeof setSkinColor
@@ -84,6 +85,7 @@ export type MapStateProps = Pick<
   | 'isPlayingEmote'
   | 'isImportFilesModalOpen'
   | 'hasUserOrphanItems'
+  | 'isUnityWearablePreviewEnabled'
 >
 export type MapDispatchProps = Pick<
   Props,

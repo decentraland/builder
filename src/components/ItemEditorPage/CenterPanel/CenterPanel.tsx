@@ -15,6 +15,7 @@ import {
 } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
 import { Color4 } from 'lib/colors'
 import { isDevelopment } from 'lib/environment'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
@@ -67,7 +68,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       }
     }
 
-    // Setting the editor as loading as soon as it mounts. It will be turned of by the WearablePreview component once it's ready.
     this.setState({ isLoading: true })
   }
 
@@ -160,6 +160,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
     }
 
+    // Set loading to false when the WearablePreview is loaded
     this.setState({ isLoading: false })
   }
 
@@ -241,7 +242,63 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     )
   }
 
+  renderEmoteDropdownUnity = () => {
+    const { collection, emotes, emote, visibleItems } = this.props
+    const areEmotesFromCollection = !!collection
+    const hasEmotes = emotes.length > 0
+
+    // Find the current emote display name
+    let currentEmoteName = t('item_editor.center_panel.play_emote') // Default to "Play Emote"
+
+    // First check if there's a custom emote in visibleItems
+    const visibleEmote = visibleItems.find(item => item.type === ItemType.EMOTE)
+    if (visibleEmote) {
+      currentEmoteName = visibleEmote.name
+    } else if (emote && emote !== PreviewEmote.IDLE) {
+      // If no custom emote in visibleItems, check the emote prop for default emotes
+      // Check if it's a custom emote from the user's emotes
+      if (hasEmotes) {
+        const customEmote = emotes.find(e => e.id === emote)
+        if (customEmote) {
+          currentEmoteName = customEmote.name
+        } else {
+          // It's a default emote
+          currentEmoteName = t(`emotes.${emote}`)
+        }
+      } else {
+        // It's a default emote
+        currentEmoteName = t(`emotes.${emote}`)
+      }
+    }
+
+    return (
+      <Dropdown className="avatar-animation button icon unity-emote-dropdown" floating scrolling text={currentEmoteName}>
+        <Dropdown.Menu>
+          {hasEmotes && (
+            <>
+              <Dropdown.Header
+                content={areEmotesFromCollection ? t('item_editor.center_panel.from_collection') : t('item_editor.center_panel.from_items')}
+              />
+              <Dropdown.Divider />
+              {emotes.map(value => (
+                <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
+              ))}
+              <Dropdown.Divider />
+              <Dropdown.Header content={t('item_editor.center_panel.default')} />
+              <Dropdown.Divider />
+            </>
+          )}
+          {PreviewEmote.schema.enum.map((value: PreviewEmote) => (
+            <Dropdown.Item key={value} value={value} text={t(`emotes.${value}`)} onClick={this.handleAnimationChange} />
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
   renderEmoteSelector = () => {
+    const { isUnityWearablePreviewEnabled } = this.props
+
     return (
       <Popup
         content={t('item_editor.center_panel.disabled_animation_dropdown')}
@@ -250,8 +307,14 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         trigger={
           <div className="avatar-animation-dropdown-wrapper option">
             <Button.Group>
-              {this.renderEmotePlayButton()}
-              {this.renderEmoteDropdownButton()}
+              {isUnityWearablePreviewEnabled ? (
+                this.renderEmoteDropdownUnity()
+              ) : (
+                <>
+                  {this.renderEmotePlayButton()}
+                  {this.renderEmoteDropdownButton()}
+                </>
+              )}
             </Button.Group>
           </div>
         }
@@ -269,8 +332,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       selectedBaseWearables,
       selectedItem,
       visibleItems,
+      wearableController,
       isImportFilesModalOpen,
-      wearableController
+      isUnityWearablePreviewEnabled
     } = this.props
     const { isShowingAvatarAttributes, showSceneBoundaries, isLoading } = this.state
     const isRenderingAnEmote = visibleItems.some(isEmote) && selectedItem?.type === ItemType.EMOTE
@@ -280,6 +344,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
           id="wearable-editor"
+          baseUrl={config.get('WEARABLE_PREVIEW_URL')}
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
@@ -304,8 +369,10 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
+          unity={isUnityWearablePreviewEnabled}
+          unityMode={'builder'}
         />
-        {isRenderingAnEmote ? (
+        {isRenderingAnEmote && !isUnityWearablePreviewEnabled ? (
           <div className="zoom-controls">
             <Button className="zoom-control zoom-in-control" onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}>
               <Icon name="plus" />
@@ -321,7 +388,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           </Center>
         )}
         <div className="footer">
-          {isRenderingAnEmote && !isLoading && wearableController ? (
+          {isRenderingAnEmote && !isLoading && wearableController && !isUnityWearablePreviewEnabled ? (
             <div className="emote-controls-container">
               <EmoteControls
                 className="emote-controls"
@@ -335,12 +402,14 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               <Icon name="user" />
             </div>
             {isRenderingAnEmote ? null : this.renderEmoteSelector()}
-            <div className={`option ${showSceneBoundaries ? 'active' : ''}`}>
-              <BuilderIcon
-                name="cylinder"
-                onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
-              />
-            </div>
+            {!isUnityWearablePreviewEnabled ? (
+              <div className={`option show-scene-boundaries-option ${showSceneBoundaries ? 'active' : ''}`}>
+                <BuilderIcon
+                  name="cylinder"
+                  onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
+                />
+              </div>
+            ) : null}
           </div>
           <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
             <div className="dropdown-container">
