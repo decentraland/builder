@@ -22,7 +22,11 @@ export default class DissolveModal extends React.PureComponent<Props> {
       <Modal name={name} onClose={onClose}>
         <ModalHeader>{t('dissolve_modal.title')}</ModalHeader>
         <ModalContent>
-          <T id="dissolve_modal.confirm" values={{ name: <strong>{land.name}</strong> }} />)
+          {isTooBig ? (
+            <T id="dissolve_modal.too_big" values={{ max: MAX_PARCELS_PER_TX }} />
+          ) : (
+            <T id="dissolve_modal.confirm" values={{ name: <strong>{land.name}</strong> }} />
+          )}
         </ModalContent>
         <ModalActions>
           <Button onClick={onClose}>{t('global.cancel')}</Button>
