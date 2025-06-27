@@ -49,5 +49,6 @@
   "CONTENTFUL_ENVIRONMENT": "master",
   "CONTENTFUL_SPACE_ID": "ea2ybdmmn1kv",
   "CONTENTFUL_ADMIN_ENTITY_ID": "7FJAHnPOiCEHMJhrZ3sRmG",
-  "CREDITS_SERVER_URL": "https://credits.decentraland.zone"
+  "CREDITS_SERVER_URL": "https://credits.decentraland.zone",
+  "WEARABLE_PREVIEW_URL": "https://wearable-preview-l48siny9h-decentraland1.vercel.app"
 }

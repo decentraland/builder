@@ -33,6 +33,7 @@ import { isEmote } from 'modules/item/utils'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
+import { getIsUnityWearablePreviewEnabled } from 'modules/features/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   const address = getAddress(state)
@@ -75,7 +76,8 @@ const mapState = (state: RootState): MapStateProps => {
     emotes,
     isPlayingEmote: isPLayingIdleEmote ? false : isPlayingEmote(state),
     isImportFilesModalOpen,
-    hasUserOrphanItems: hasUserOrphanItems(state)
+    hasUserOrphanItems: hasUserOrphanItems(state),
+    isUnityWearablePreviewEnabled: getIsUnityWearablePreviewEnabled(state)
   }
 }
 

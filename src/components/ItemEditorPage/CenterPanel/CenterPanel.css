@@ -20,7 +20,6 @@
   margin-bottom: 16px;
   display: inline-flex;
   width: 100%;
-  /* justify-content: space-between; */
 }
 
 .CenterPanel .footer .option {
@@ -40,7 +39,7 @@
   margin-left: 2px;
 }
 
-.CenterPanel .footer .option:last-of-type {
+.CenterPanel .footer .option.show-scene-boundaries-option {
   margin-right: 16px;
   margin-left: auto;
 }
@@ -63,7 +62,25 @@
 }
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
   background-color: var(--light-gray);
+  font-size: 15px;
+  line-height: 17px;
+  min-width: 29.5px;
+  transform: translateY(0px);
+  padding: 6px 12px;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.unity-emote-dropdown {
+  color: transparent;
+}
+
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.unity-emote-dropdown .text {
   font-size: 15px;
   line-height: 17px;
   min-width: 29.5px;
