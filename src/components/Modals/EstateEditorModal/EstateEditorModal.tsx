@@ -4,16 +4,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas } from 'components/Atlas'
 import Info from 'components/Info'
-import {
-  getCenter,
-  getSelection,
-  getCoordMatcher,
-  areConnected,
-  coordsToId,
-  getCoordsToAdd,
-  getCoordsToRemove,
-  MAX_PARCELS_PER_TX
-} from 'modules/land/utils'
+import { getCenter, getSelection, getCoordMatcher, areConnected, coordsToId, getCoordsToAdd, getCoordsToRemove } from 'modules/land/utils'
 import { LandType, Land, RoleType } from 'modules/land/types'
 import { Props, State } from './EstateEditorModal.types'
 import './EstateEditorModal.css'
@@ -167,9 +158,7 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
     const isTooSmall = this.isTooSmall()
     const coordsToAdd = this.getCoordsToAdd()
     const coordsToRemove = this.getCoordsToRemove()
-    const hasReachedAddLimit = coordsToAdd.length > MAX_PARCELS_PER_TX
-    const hasReachedRemoveLimit = coordsToRemove.length > MAX_PARCELS_PER_TX
-    const isValidSelection = !isTooSmall && !hasReachedAddLimit && !hasReachedRemoveLimit
+    const isValidSelection = !isTooSmall
     const isValidForm = !showCreationForm || name.length > 0
     const isEditing = land.type === LandType.ESTATE
     const isDisabled = !isValidSelection || !isValidForm
@@ -220,18 +209,6 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
         )}
         <div className="messages-container">
           <div className="messages">
-            {hasReachedAddLimit ? (
-              <div className="message warning">
-                <div className="icon" />
-                {t('estate_editor.add_limit_reached', { max: MAX_PARCELS_PER_TX })}
-              </div>
-            ) : null}
-            {hasReachedRemoveLimit ? (
-              <div className="message warning">
-                <div className="icon" />
-                {t('estate_editor.remove_limit_reached', { max: MAX_PARCELS_PER_TX })}
-              </div>
-            ) : null}
             {needsTwoTxs ? (
               <div className="message info">
                 <Info className="info" />
