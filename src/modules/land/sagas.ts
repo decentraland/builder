@@ -1,4 +1,4 @@
-import { takeLatest, call, put, takeEvery, all, getContext } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all, getContext, take, race } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { History } from 'history'
 import {
@@ -56,6 +56,12 @@ import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization, RoleType } from './types'
+import {
+  FETCH_TRANSACTION_FAILURE,
+  FETCH_TRANSACTION_SUCCESS,
+  FetchTransactionFailureAction,
+  FetchTransactionSuccessAction
+} from 'decentraland-dapps/dist/modules/transaction/actions'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
@@ -93,6 +99,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
       }
     }
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, from)
   } catch (error) {
     yield put(setUpdateManagerFailure(address, type, isApproved, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -116,6 +123,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     yield put(dissolveEstateSuccess(land, wallet.chainId, transaction.hash))
     yield put(closeModal('DissolveModal'))
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, from)
   } catch (error) {
     yield put(dissolveEstateFailure(land, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -136,6 +144,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
     yield put(createEstateSuccess(name, description, coords, wallet.chainId, transaction.hash))
     yield put(closeModal('EstateEditorModal'))
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, from)
   } catch (error) {
     yield put(createEstateFailure(name, description, coords, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -164,6 +173,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
     }
     yield put(closeModal('EstateEditorModal'))
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, from)
   } catch (error) {
     yield put(editEstateFailure(land, toAdd, toRemove, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -210,6 +220,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
         throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, wallet.address)
   } catch (error) {
     yield put(setOperatorFailure(land, address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -242,6 +253,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
         throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, wallet.address)
   } catch (error) {
     yield put(editLandFailure(land, name, description, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -275,6 +287,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
         throw new Error(`Unknown Land Type: ${land.type as unknown as string}`)
     }
     history.push(locations.activity())
+    yield call(refreshLandsAfterTransaction, wallet.address)
   } catch (error) {
     yield put(transferLandFailure(land, address, isErrorWithMessage(error) ? error.message : 'Unknown error'))
   }
@@ -298,4 +311,18 @@ function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction)
   const { address } = action.payload.wallet
 
   yield put(fetchLandsRequest(address))
+}
+
+function* refreshLandsAfterTransaction(from: string) {
+  const dissolveEstateTxn: {
+    success: FetchTransactionSuccessAction
+    failure: FetchTransactionFailureAction
+  } = yield race({
+    success: take(FETCH_TRANSACTION_SUCCESS),
+    failure: take(FETCH_TRANSACTION_FAILURE)
+  })
+
+  if (dissolveEstateTxn.success) {
+    yield put(fetchLandsRequest(from))
+  }
 }
