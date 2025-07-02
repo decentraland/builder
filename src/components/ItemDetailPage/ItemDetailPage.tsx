@@ -331,7 +331,7 @@ export default function ItemDetailPage(props: Props) {
                     ) : item.price ? (
                       <Section className="price-container">
                         <div className="subtitle">{t('item.price')}</div>
-                        {item.price ? (
+                        {item.price && item.price !== ethers.constants.MaxUint256.toString() ? (
                           <Mana showTooltip network={Network.MATIC}>
                             {(() => {
                               const price = ethers.utils.formatEther(item.price)
@@ -346,10 +346,12 @@ export default function ItemDetailPage(props: Props) {
                                   flowing
                                 />
                               ) : (
-                                <span>{price}</span>
+                                <div className="value">{price}</div>
                               )
                             })()}
                           </Mana>
+                        ) : item.price === ethers.constants.MaxUint256.toString() ? (
+                          <div className="value">{t('item.not_for_sale')}</div>
                         ) : (
                           '-'
                         )}

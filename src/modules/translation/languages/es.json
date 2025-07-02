@@ -1772,6 +1772,7 @@
     "rarity": "Rareza",
     "representation": "Representación",
     "price": "Precio",
+    "not_for_sale": "No está en venta",
     "beneficiary": "Beneficiario",
     "supply": "Suministro",
     "collection": "Colección",
