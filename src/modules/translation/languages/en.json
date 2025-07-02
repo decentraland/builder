@@ -1763,6 +1763,7 @@
     "rarity": "Rarity",
     "representation": "Representation",
     "price": "Price",
+    "not_for_sale": "Not for sale",
     "beneficiary": "Beneficiary",
     "supply": "Supply",
     "collection": "Collection",
