@@ -371,7 +371,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
     this.setState({
       item,
       itemSortedContents: sortedContents.all,
-      view: hasScreenshotTaken || type !== ItemType.EMOTE ? CreateItemView.SET_PRICE : CreateItemView.THUMBNAIL,
+      view: CreateItemView.THUMBNAIL,
       fromView: CreateItemView.THUMBNAIL
     })
   }
@@ -521,7 +521,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         } catch (error) {
           this.setState({ error: isErrorWithMessage(error) ? error.message : 'Unknown error' })
         }
-      } else if (this.state.view === CreateItemView.SET_PRICE && !!this.state.item && !!this.state.itemSortedContents) {
+      } else if (!!this.state.item && !!this.state.itemSortedContents) {
         onSave(this.state.item as Item, this.state.itemSortedContents)
       }
     }
@@ -1348,7 +1348,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   handleOnScreenshotTaken = async (screenshot: string) => {
     const { fromView, itemSortedContents, item } = this.state
-    const view = fromView === CreateItemView.DETAILS ? CreateItemView.DETAILS : CreateItemView.SET_PRICE
 
     if (item && itemSortedContents) {
       const blob = dataURLToBlob(screenshot)
@@ -1356,9 +1355,19 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       itemSortedContents[THUMBNAIL_PATH] = blob!
       item.contents = await computeHashes(itemSortedContents)
 
-      this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => this.setState({ view }))
+      this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => {
+        if (fromView === CreateItemView.DETAILS) {
+          this.setState({ view: CreateItemView.DETAILS })
+        } else {
+          void this.handleSubmit()
+        }
+      })
     } else {
-      this.setState({ thumbnail: screenshot, hasScreenshotTaken: true }, () => this.setState({ view }))
+      this.setState({ thumbnail: screenshot, hasScreenshotTaken: true }, () => {
+        if (fromView === CreateItemView.DETAILS) {
+          this.setState({ view: CreateItemView.DETAILS })
+        }
+      })
     }
   }
 
