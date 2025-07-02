@@ -470,7 +470,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   }
 
   handleSubmit = async () => {
-    const { metadata, onSave } = this.props
+    const { metadata } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -522,7 +522,13 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
           this.setState({ error: isErrorWithMessage(error) ? error.message : 'Unknown error' })
         }
       } else if (!!this.state.item && !!this.state.itemSortedContents) {
-        onSave(this.state.item as Item, this.state.itemSortedContents)
+        const sortedContents = {
+          male: this.state.itemSortedContents,
+          female: this.state.itemSortedContents,
+          all: this.state.itemSortedContents
+        }
+        const representations = this.buildRepresentations(this.state.bodyShape!, this.state.model!, sortedContents)
+        await this.createItem(sortedContents, representations)
       }
     }
   }
