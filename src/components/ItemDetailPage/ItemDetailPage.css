@@ -57,7 +57,6 @@
 }
 
 .ItemDetailPage .item-data .value {
-  margin-top: 5px;
   font-size: 21px;
   text-transform: capitalize;
 }
@@ -158,6 +157,7 @@
   padding: 24px;
   margin-left: 24px;
   margin-bottom: 12px;
+  max-width: 900px;
 }
 
 .ItemDetailPage .card .title {
@@ -188,6 +188,10 @@
   line-height: 30px;
 }
 
+.ItemDetailPage .data .price-container {
+  width: 40%;
+}
+
 .ItemDetailPage .data:not(:last-child) {
   margin-bottom: 24px;
 }
@@ -204,7 +208,6 @@
 
 .ItemDetailPage .card .dcl.section.medium {
   margin-bottom: 0;
-  margin-right: 120px;
 }
 
 .ItemDetailPage input[type='file'] {
