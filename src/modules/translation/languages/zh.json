@@ -1751,6 +1751,7 @@
     "rarity": "稀有度",
     "representation": "表示",
     "price": "价钱",
+    "not_for_sale": "不出售",
     "beneficiary": "受益人",
     "supply": "供应",
     "collection": "采集",
