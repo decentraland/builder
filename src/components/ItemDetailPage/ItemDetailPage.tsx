@@ -324,23 +324,38 @@ export default function ItemDetailPage(props: Props) {
                   <div className="title">{t('item_detail_page.selling.title')}</div>
                   <div className="data">
                     {isFree(item) ? (
-                      <Section>
+                      <Section className="price-container">
                         <div className="subtitle">{t('item.price')}</div>
                         <div className="value">{t('global.free')}</div>
                       </Section>
                     ) : item.price ? (
-                      <Section>
+                      <Section className="price-container">
                         <div className="subtitle">{t('item.price')}</div>
                         {item.price ? (
                           <Mana showTooltip network={Network.MATIC}>
-                            {ethers.utils.formatEther(item.price)}
+                            {(() => {
+                              const price = ethers.utils.formatEther(item.price)
+                              return price.length > 10 ? (
+                                <Popup
+                                  content={price}
+                                  position="top center"
+                                  trigger={<span>{`${price.slice(0, 3)}...${price.slice(-4)}`}</span>}
+                                  hideOnScroll
+                                  on="hover"
+                                  inverted
+                                  flowing
+                                />
+                              ) : (
+                                <span>{price}</span>
+                              )
+                            })()}
                           </Mana>
                         ) : (
                           '-'
                         )}
                       </Section>
                     ) : null}
-                    <Section>
+                    <Section className="beneficiary-container">
                       <div className="subtitle">{t('item.beneficiary')}</div>
                       {item.beneficiary ? <div className="value">{shorten(item.beneficiary)}</div> : '-'}
                     </Section>
