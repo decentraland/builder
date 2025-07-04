@@ -362,7 +362,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return onSave(item as Item, sortedContents.all)
     }
 
-    if ((hasScreenshotTaken || type !== ItemType.EMOTE) && isOffchainPublicItemOrdersEnabled) {
+    if (hasScreenshotTaken && isOffchainPublicItemOrdersEnabled) {
       item.price = ethers.constants.MaxUint256.toString()
       item.beneficiary = item.beneficiary || address
       return onSave(item as Item, sortedContents.all)
@@ -666,7 +666,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
   handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { contents } = this.state
     const { files } = event.target
-
     if (files && files.length > 0) {
       const file = files[0]
       const imageType = await getImageType(file)
