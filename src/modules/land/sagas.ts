@@ -7,6 +7,12 @@ import {
   ConnectWalletSuccessAction,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
+import {
+  FETCH_TRANSACTION_FAILURE,
+  FETCH_TRANSACTION_SUCCESS,
+  FetchTransactionFailureAction,
+  FetchTransactionSuccessAction
+} from 'decentraland-dapps/dist/modules/transaction/actions'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -56,12 +62,6 @@ import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization, RoleType } from './types'
-import {
-  FETCH_TRANSACTION_FAILURE,
-  FETCH_TRANSACTION_SUCCESS,
-  FetchTransactionFailureAction,
-  FetchTransactionSuccessAction
-} from 'decentraland-dapps/dist/modules/transaction/actions'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
@@ -314,7 +314,7 @@ function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction)
 }
 
 function* refreshLandsAfterTransaction(from: string) {
-  const dissolveEstateTxn: {
+  const txnStatus: {
     success: FetchTransactionSuccessAction
     failure: FetchTransactionFailureAction
   } = yield race({
@@ -322,7 +322,7 @@ function* refreshLandsAfterTransaction(from: string) {
     failure: take(FETCH_TRANSACTION_FAILURE)
   })
 
-  if (dissolveEstateTxn.success) {
+  if (txnStatus.success) {
     yield put(fetchLandsRequest(from))
   }
 }
