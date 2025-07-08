@@ -7,9 +7,19 @@ import {
   ConnectWalletSuccessAction,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { waitForTx } from 'modules/transaction/utils'
+import { getWallet } from 'modules/wallet/utils'
+import { locations } from 'routing/locations'
+import { manager } from 'lib/api/manager'
+import { rental } from 'lib/api/rentals'
+import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
+import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
+import { Rentals__factory } from 'contracts/factories/Rentals__factory'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS, RENTALS_ADDRESS } from 'modules/common/contracts'
 import {
   FETCH_LANDS_REQUEST,
   FetchLandsRequestAction,
@@ -45,18 +55,8 @@ import {
   setUpdateManagerSuccess,
   setUpdateManagerFailure
 } from './actions'
-import { locations } from 'routing/locations'
-import { manager } from 'lib/api/manager'
-import { rental } from 'lib/api/rentals'
-import { LANDRegistry__factory } from 'contracts/factories/LANDRegistry__factory'
-import { EstateRegistry__factory } from 'contracts/factories/EstateRegistry__factory'
-import { Rentals__factory } from 'contracts/factories/Rentals__factory'
-import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS, RENTALS_ADDRESS } from 'modules/common/contracts'
-import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization, RoleType } from './types'
-import { waitForTx } from 'modules/transaction/utils'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
