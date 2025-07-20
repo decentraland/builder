@@ -38,7 +38,7 @@ describe('when clicking on the create collection button', () => {
       userEvent.click(createButton)
     })
 
-    it('should call the the onCreateCollection prop method', () => {
+    it('should call the onCreateCollection prop method', () => {
       expect(onCreateCollection).toHaveBeenCalled()
     })
   })
