@@ -332,7 +332,7 @@ export default function ItemDetailPage(props: Props) {
                       <Section className="price-container">
                         <div className="subtitle">{t('item.price')}</div>
                         {item.price && item.price !== ethers.constants.MaxUint256.toString() ? (
-                          <Mana showTooltip network={Network.MATIC}>
+                          <Mana showTooltip network={Network.MATIC} className="mana-price-container">
                             {(() => {
                               const price = ethers.utils.formatEther(item.price)
                               return price.length > 10 ? (
