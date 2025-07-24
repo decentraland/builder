@@ -192,6 +192,11 @@
   width: 40%;
 }
 
+.ItemDetailPage .mana-price-container {
+  display: flex;
+  margin-top: 0;
+}
+
 .ItemDetailPage .data:not(:last-child) {
   margin-bottom: 24px;
 }
