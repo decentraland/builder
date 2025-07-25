@@ -362,7 +362,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
       return onSave(item as Item, sortedContents.all)
     }
 
-    if (hasScreenshotTaken) {
+    if (hasScreenshotTaken || type !== ItemType.EMOTE) {
       item.price = ethers.constants.MaxUint256.toString()
       item.beneficiary = item.beneficiary || address
       return onSave(item as Item, sortedContents.all)
@@ -1359,7 +1359,6 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
       itemSortedContents[THUMBNAIL_PATH] = blob!
       item.contents = await computeHashes(itemSortedContents)
-
       this.setState({ itemSortedContents, item, hasScreenshotTaken: true }, () => {
         if (fromView === CreateItemView.DETAILS) {
           this.setState({ view: CreateItemView.DETAILS })
