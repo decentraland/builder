@@ -1949,7 +1949,7 @@ describe('when handling the setItemCollection action', () => {
   })
 
   describe("and the item's collections fails to be updated", () => {
-    it('should not not the toast message nor close the modal nor close the modal', () => {
+    it('should not the toast message nor close the modal nor close the modal', () => {
       return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
         .provide([
           [select(getOpenModals), { MoveItemToAnotherCollectionModal: true }],
