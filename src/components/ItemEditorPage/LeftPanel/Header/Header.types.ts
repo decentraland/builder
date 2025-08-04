@@ -1,21 +1,16 @@
-import { Dispatch } from 'redux'
 import { Collection } from 'modules/collection/types'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
-import { deleteCollectionRequest, DeleteCollectionRequestAction } from 'modules/collection/actions'
-import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { deleteCollectionRequest } from 'modules/collection/actions'
+import { deleteItemRequest } from 'modules/item/actions'
 
 export type Props = {
   address?: string
   collection?: Collection
   isLoggedIn: boolean
   isReviewing: boolean
-  onOpenModal: typeof openModal
-  onDeleteCollection: typeof deleteCollectionRequest
-  onDeleteItem: typeof deleteItemRequest
+  onOpenModal: ActionFunction<typeof openModal>
+  onDeleteCollection: ActionFunction<typeof deleteCollectionRequest>
+  onDeleteItem: ActionFunction<typeof deleteItemRequest>
   hasEditRights: boolean
   hasUserOrphanItems: boolean | undefined
 }
-
-export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn' | 'isReviewing' | 'hasEditRights' | 'hasUserOrphanItems'>
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onDeleteCollection' | 'onDeleteItem'>
-export type MapDispatch = Dispatch<OpenModalAction | DeleteCollectionRequestAction | DeleteItemRequestAction>
