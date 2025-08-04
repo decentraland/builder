@@ -12,8 +12,8 @@ export type Props = {
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   projects: ProjectState['data']
-  onOpenModal: typeof openModal
-} & RouteComponentProps
+  onOpenModal: ActionFunction<typeof openModal>
+} & Pick<RouteComponentProps, 'history'>
 
 export type State = {
   hovered: Deployment | null
