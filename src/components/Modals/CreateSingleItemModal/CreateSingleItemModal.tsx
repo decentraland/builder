@@ -1306,10 +1306,11 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
 
   renderDetailsView() {
     const { onClose, metadata, error, isLoading, collection } = this.props
-    const { isRepresentation, error: stateError, type, contents, isLoading: isStateLoading } = this.state
+    const { isRepresentation, error: stateError, type, contents, isLoading: isStateLoading, hasScreenshotTaken } = this.state
     const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
     const isDisabled = this.isDisabled()
     const title = this.renderModalTitle()
+    const hasFinishSteps = (type === ItemType.EMOTE && hasScreenshotTaken) || type === ItemType.WEARABLE
 
     return (
       <>
@@ -1328,7 +1329,7 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
                 ) : null}
                 <Column align="right">
                   <Button primary disabled={isDisabled} loading={isLoading || isStateLoading}>
-                    {(metadata && metadata.changeItemFile) || isRepresentation || belongsToAThirdPartyCollection
+                    {(metadata && metadata.changeItemFile) || isRepresentation || belongsToAThirdPartyCollection || hasFinishSteps
                       ? t('global.save')
                       : t('global.next')}
                   </Button>
