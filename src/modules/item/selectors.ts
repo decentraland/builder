@@ -1,7 +1,6 @@
 import { Entity } from '@dcl/schemas'
 import { AnyAction } from 'redux-saga'
 import { createSelector } from 'reselect'
-import { getSearch } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
@@ -240,8 +239,6 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
     (collection !== null ? canSeeItem(collection, item, address) : isOwner(item, address))
   )
 }
-
-export const getNewItemName = (state: RootState) => new URLSearchParams(getSearch(state)).get('newItem')
 
 export const getIdsOfItemsBeingSaved = createSelector<RootState, AnyAction[], Record<string, boolean>>(getLoading, (actions: AnyAction[]) =>
   actions.reduce((acc, action) => {
