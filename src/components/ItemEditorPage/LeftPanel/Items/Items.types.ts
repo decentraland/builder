@@ -34,7 +34,7 @@ export type Props = {
   bodyShape: BodyShape
   wearableController: IPreviewController | null
   initialPage?: number
-  onSetItems: typeof setItems
+  onSetItems: ActionFunction<typeof setItems>
   onReviewItems: () => void
   onLoadPage: (page: number) => void
   onLoadRandomPage: () => void
