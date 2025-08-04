@@ -5,9 +5,11 @@ import {
   getENSNameFromPath,
   getItemIdFromPath,
   getLandIdFromPath,
+  getPageFromSearchParams,
   getProjectIdFromPath,
   getSelectedCollectionIdFromSearchParams,
   getSelectedItemIdFromSearchParams,
+  getSortByFromSearchParams,
   getTemplateIdFromPath,
   isReviewingFromSearchParams
 } from './url-parsers'
@@ -63,4 +65,16 @@ export const useGetItemIdFromCurrentUrl = (): string | null => {
   const location = useLocation()
   const itemId = useMemo(() => getItemIdFromPath(location.pathname), [location.pathname])
   return itemId
+}
+
+export const useGetCurrentPageFromCurrentUrl = (totalPages?: number): number => {
+  const location = useLocation()
+  const currentPage = useMemo(() => getPageFromSearchParams(location.search, totalPages), [location.search, totalPages])
+  return currentPage
+}
+
+export const useGetSortByFromCurrentUrl = <T extends string>(values: T[], defaultValue: T): T => {
+  const location = useLocation()
+  const sortBy = useMemo(() => getSortByFromSearchParams(location.search, values, defaultValue), [location.search, values, defaultValue])
+  return sortBy
 }

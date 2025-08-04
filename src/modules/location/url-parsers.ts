@@ -59,3 +59,25 @@ export const getItemIdFromPath = (url: string): string | null => {
   const result = matchPath<{ itemId: string }>(url, { path: locations.itemDetail() })
   return result ? result.params.itemId : null
 }
+
+export const getPageFromSearchParams = (search: string, totalPages?: number): number => {
+  const pageParameter = parseInt(new URLSearchParams(search).get('page') ?? '1', 10)
+  if (!pageParameter || pageParameter < 1) {
+    return 1
+  }
+  if (totalPages && pageParameter > totalPages) {
+    return totalPages
+  }
+  return pageParameter
+}
+
+export const getSortByFromSearchParams = <T extends string>(search: string, values: T[], defaultValue: T): T => {
+  const params = new URLSearchParams(search)
+  const sortBy = params.get('sort_by')?.toLowerCase()
+  for (const value of values) {
+    if (sortBy === value.toLowerCase()) {
+      return value
+    }
+  }
+  return defaultValue
+}

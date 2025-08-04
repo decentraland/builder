@@ -5,9 +5,11 @@ import {
   getENSNameFromPath,
   getItemIdFromPath,
   getLandIdFromPath,
+  getPageFromSearchParams,
   getProjectIdFromPath,
   getSelectedCollectionIdFromSearchParams,
   getSelectedItemIdFromSearchParams,
+  getSortByFromSearchParams,
   getTemplateIdFromPath,
   isReviewingFromSearchParams
 } from './url-parsers'
@@ -20,7 +22,9 @@ import {
   useGetTemplateIdFromCurrentUrl,
   useGetCollectionIdFromCurrentUrl,
   useGetENSNameFromCurrentUrl,
-  useGetItemIdFromCurrentUrl
+  useGetItemIdFromCurrentUrl,
+  useGetCurrentPageFromCurrentUrl,
+  useGetSortByFromCurrentUrl
 } from './hooks'
 
 // Mock the dependencies
@@ -41,6 +45,8 @@ const mockGetTemplateIdFromPath = getTemplateIdFromPath as jest.MockedFunction<t
 const mockGetCollectionIdFromUrl = getCollectionIdFromUrl as jest.MockedFunction<typeof getCollectionIdFromUrl>
 const mockGetENSNameFromPath = getENSNameFromPath as jest.MockedFunction<typeof getENSNameFromPath>
 const mockGetItemIdFromPath = getItemIdFromPath as jest.MockedFunction<typeof getItemIdFromPath>
+const mockGetPageFromSearchParams = getPageFromSearchParams as jest.MockedFunction<typeof getPageFromSearchParams>
+const mockGetSortByFromSearchParams = getSortByFromSearchParams as jest.MockedFunction<typeof getSortByFromSearchParams>
 
 let mockLocationData: {
   search: string
@@ -345,6 +351,134 @@ describe('when getting the item id from current url', () => {
 
       expect(result.current).toBeNull()
       expect(mockGetItemIdFromPath).toHaveBeenCalledWith(mockLocationData.pathname)
+    })
+  })
+})
+
+describe('when getting the current page from current url', () => {
+  describe('when page parameter is present in search params', () => {
+    beforeEach(() => {
+      mockLocationData.search = '?page=3'
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetPageFromSearchParams.mockReturnValueOnce(3)
+    })
+
+    it('should return current page from search params', () => {
+      const { result } = renderHook(() => useGetCurrentPageFromCurrentUrl())
+
+      expect(result.current).toBe(3)
+      expect(mockGetPageFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, undefined)
+    })
+  })
+
+  describe('when page parameter is present with totalPages limit', () => {
+    beforeEach(() => {
+      mockLocationData.search = '?page=5'
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetPageFromSearchParams.mockReturnValueOnce(3)
+    })
+
+    it('should return current page limited by totalPages', () => {
+      const { result } = renderHook(() => useGetCurrentPageFromCurrentUrl(3))
+
+      expect(result.current).toBe(3)
+      expect(mockGetPageFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, 3)
+    })
+  })
+
+  describe('when no page parameter is present in search params', () => {
+    beforeEach(() => {
+      mockLocationData.search = ''
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetPageFromSearchParams.mockReturnValueOnce(1)
+    })
+
+    it('should return default page 1', () => {
+      const { result } = renderHook(() => useGetCurrentPageFromCurrentUrl())
+
+      expect(result.current).toBe(1)
+      expect(mockGetPageFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, undefined)
+    })
+  })
+
+  describe('when invalid page parameter is present in search params', () => {
+    beforeEach(() => {
+      mockLocationData.search = '?page=invalid'
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetPageFromSearchParams.mockReturnValueOnce(1)
+    })
+
+    it('should return default page 1', () => {
+      const { result } = renderHook(() => useGetCurrentPageFromCurrentUrl())
+
+      expect(result.current).toBe(1)
+      expect(mockGetPageFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, undefined)
+    })
+  })
+})
+
+describe('when getting the sort by from current url', () => {
+  describe('when sort_by parameter is present in search params', () => {
+    beforeEach(() => {
+      mockLocationData.search = '?sort_by=newest'
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetSortByFromSearchParams.mockReturnValueOnce('NEWEST')
+    })
+
+    it('should return sort by value from search params', () => {
+      const sortOptions = ['NEWEST', 'OLDEST', 'NAME']
+      const { result } = renderHook(() => useGetSortByFromCurrentUrl(sortOptions, 'NEWEST'))
+
+      expect(result.current).toBe('NEWEST')
+      expect(mockGetSortByFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, sortOptions, 'NEWEST')
+    })
+  })
+
+  describe('when sort_by parameter matches valid option with different case', () => {
+    beforeEach(() => {
+      mockLocationData.search = '?sort_by=OLDEST'
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetSortByFromSearchParams.mockReturnValueOnce('OLDEST')
+    })
+
+    it('should return matching sort by value', () => {
+      const sortOptions = ['NEWEST', 'OLDEST', 'NAME']
+      const { result } = renderHook(() => useGetSortByFromCurrentUrl(sortOptions, 'NEWEST'))
+
+      expect(result.current).toBe('OLDEST')
+      expect(mockGetSortByFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, sortOptions, 'NEWEST')
+    })
+  })
+
+  describe('when sort_by parameter is invalid', () => {
+    beforeEach(() => {
+      mockLocationData.search = '?sort_by=invalid'
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetSortByFromSearchParams.mockReturnValueOnce('NEWEST')
+    })
+
+    it('should return default value', () => {
+      const sortOptions = ['NEWEST', 'OLDEST', 'NAME']
+      const { result } = renderHook(() => useGetSortByFromCurrentUrl(sortOptions, 'NEWEST'))
+
+      expect(result.current).toBe('NEWEST')
+      expect(mockGetSortByFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, sortOptions, 'NEWEST')
+    })
+  })
+
+  describe('when no sort_by parameter is present in search params', () => {
+    beforeEach(() => {
+      mockLocationData.search = ''
+      mockUseLocation.mockReturnValueOnce(mockLocationData)
+      mockGetSortByFromSearchParams.mockReturnValueOnce('OLDEST')
+    })
+
+    it('should return default value', () => {
+      const sortOptions = ['NEWEST', 'OLDEST', 'NAME']
+      const { result } = renderHook(() => useGetSortByFromCurrentUrl(sortOptions, 'OLDEST'))
+
+      expect(result.current).toBe('OLDEST')
+      expect(mockGetSortByFromSearchParams).toHaveBeenCalledWith(mockLocationData.search, sortOptions, 'OLDEST')
     })
   })
 })

@@ -10,7 +10,9 @@ import {
   getThirdPartyCollectionIdFromPath,
   getCollectionIdFromUrl,
   getENSNameFromPath,
-  getItemIdFromPath
+  getItemIdFromPath,
+  getPageFromSearchParams,
+  getSortByFromSearchParams
 } from './url-parsers'
 
 describe('when getting the selected item id from search params', () => {
@@ -387,6 +389,222 @@ describe('when getting the item id from path', () => {
 
     it('should return null', () => {
       expect(getItemIdFromPath(url)).toBeNull()
+    })
+  })
+})
+
+describe('when getting the page from search params', () => {
+  let search: string
+
+  describe('when page param is a valid positive number', () => {
+    beforeEach(() => {
+      search = '?page=5'
+    })
+
+    it('should return the page number', () => {
+      expect(getPageFromSearchParams(search)).toBe(5)
+    })
+  })
+
+  describe('when page param is not present', () => {
+    beforeEach(() => {
+      search = '?other=value'
+    })
+
+    it('should return 1', () => {
+      expect(getPageFromSearchParams(search)).toBe(1)
+    })
+  })
+
+  describe('when page param is an empty string', () => {
+    beforeEach(() => {
+      search = '?page='
+    })
+
+    it('should return 1', () => {
+      expect(getPageFromSearchParams(search)).toBe(1)
+    })
+  })
+
+  describe('when page param is zero', () => {
+    beforeEach(() => {
+      search = '?page=0'
+    })
+
+    it('should return 1', () => {
+      expect(getPageFromSearchParams(search)).toBe(1)
+    })
+  })
+
+  describe('when page param is negative', () => {
+    beforeEach(() => {
+      search = '?page=-5'
+    })
+
+    it('should return 1', () => {
+      expect(getPageFromSearchParams(search)).toBe(1)
+    })
+  })
+
+  describe('when page param is not a valid number', () => {
+    beforeEach(() => {
+      search = '?page=abc'
+    })
+
+    it('should return 1', () => {
+      expect(getPageFromSearchParams(search)).toBe(1)
+    })
+  })
+
+  describe('when page param is a decimal number', () => {
+    beforeEach(() => {
+      search = '?page=3.7'
+    })
+
+    it('should return the integer part', () => {
+      expect(getPageFromSearchParams(search)).toBe(3)
+    })
+  })
+
+  describe('when totalPages is provided and page is within bounds', () => {
+    beforeEach(() => {
+      search = '?page=3'
+    })
+
+    it('should return the page number', () => {
+      expect(getPageFromSearchParams(search, 10)).toBe(3)
+    })
+  })
+
+  describe('when totalPages is provided and page exceeds totalPages', () => {
+    beforeEach(() => {
+      search = '?page=15'
+    })
+
+    it('should return totalPages', () => {
+      expect(getPageFromSearchParams(search, 10)).toBe(10)
+    })
+  })
+
+  describe('when totalPages is provided and page equals totalPages', () => {
+    beforeEach(() => {
+      search = '?page=10'
+    })
+
+    it('should return the page number', () => {
+      expect(getPageFromSearchParams(search, 10)).toBe(10)
+    })
+  })
+
+  describe('when totalPages is provided and page is invalid', () => {
+    beforeEach(() => {
+      search = '?page=invalid'
+    })
+
+    it('should return 1', () => {
+      expect(getPageFromSearchParams(search, 10)).toBe(1)
+    })
+  })
+})
+
+describe('when getting the sort by from search params', () => {
+  let search: string
+  const validValues = ['name', 'created_at', 'updated_at']
+  const defaultValue = 'created_at'
+
+  describe('when sort_by param matches a valid value exactly', () => {
+    beforeEach(() => {
+      search = '?sort_by=name'
+    })
+
+    it('should return the matching value', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe('name')
+    })
+  })
+
+  describe('when sort_by param matches a valid value with different case', () => {
+    beforeEach(() => {
+      search = '?sort_by=NAME'
+    })
+
+    it('should return the original case value from the array', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe('name')
+    })
+  })
+
+  describe('when sort_by param matches a valid value with mixed case', () => {
+    beforeEach(() => {
+      search = '?sort_by=Created_At'
+    })
+
+    it('should return the original case value from the array', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe('created_at')
+    })
+  })
+
+  describe('when sort_by param does not match any valid value', () => {
+    beforeEach(() => {
+      search = '?sort_by=invalid_sort'
+    })
+
+    it('should return the default value', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe(defaultValue)
+    })
+  })
+
+  describe('when sort_by param is not present', () => {
+    beforeEach(() => {
+      search = '?other=value'
+    })
+
+    it('should return the default value', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe(defaultValue)
+    })
+  })
+
+  describe('when sort_by param is an empty string', () => {
+    beforeEach(() => {
+      search = '?sort_by='
+    })
+
+    it('should return the default value', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe(defaultValue)
+    })
+  })
+
+  describe('when multiple params are present', () => {
+    beforeEach(() => {
+      search = '?page=2&sort_by=updated_at&other=value'
+    })
+
+    it('should return the matching sort_by value', () => {
+      expect(getSortByFromSearchParams(search, validValues, defaultValue)).toBe('updated_at')
+    })
+  })
+
+  describe('when values array contains mixed case values', () => {
+    const mixedCaseValues = ['Name', 'CREATED_AT', 'updated_at']
+    const mixedCaseDefault = 'CREATED_AT'
+
+    beforeEach(() => {
+      search = '?sort_by=name'
+    })
+
+    it('should match case-insensitively and return the original case from array', () => {
+      expect(getSortByFromSearchParams(search, mixedCaseValues, mixedCaseDefault)).toBe('Name')
+    })
+  })
+
+  describe('when values array is empty', () => {
+    const emptyValues: string[] = []
+    const emptyDefault = 'fallback'
+
+    beforeEach(() => {
+      search = '?sort_by=anything'
+    })
+
+    it('should return the default value', () => {
+      expect(getSortByFromSearchParams(search, emptyValues, emptyDefault)).toBe(emptyDefault)
     })
   })
 })

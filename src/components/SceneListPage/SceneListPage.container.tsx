@@ -7,8 +7,9 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { loadPoolsRequest } from 'modules/pool/actions'
 import { getAllPoolGroups } from 'modules/poolGroup/selectors'
 import { SortBy } from 'modules/pool/types'
+import { getSortByFromSearchParams } from 'modules/location/url-parsers'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { getPage, getSortBy, getSortOrder, getValue } from 'routing/utils'
+import { getPage, getSortOrder, getValue } from 'routing/utils'
 import SceneListPage from './SceneListPage'
 
 const SceneListPageContainer: React.FC = () => {
@@ -28,8 +29,8 @@ const SceneListPageContainer: React.FC = () => {
       group: getValue<string>(params.get('group')) as string | undefined,
       ethAddress: getValue<string>(params.get('eth_address')) as string | undefined,
       page: getPage(params.get('page'), 1),
-      sortBy: getSortBy(
-        params.get('sort_by'),
+      sortBy: getSortByFromSearchParams(
+        params.get('sort_by') ?? '',
         [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE, SortBy.ITEMS, SortBy.SMART_ITEMS],
         SortBy.NEWEST
       ),
