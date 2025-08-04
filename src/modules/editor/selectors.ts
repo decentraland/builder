@@ -12,11 +12,9 @@ import { LOAD_MANIFEST_REQUEST } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { getSelectedCollectionIdFromSearchParams, isReviewingFromSearchParams } from 'modules/location/url-parsers'
 import { Asset } from 'modules/asset/types'
-import { ItemState } from 'modules/item/reducer'
 import { getData } from 'modules/item/selectors'
-import { Item } from 'modules/item/types'
-import { getSelectedCollectionId, isReviewing } from 'modules/location/selectors'
 import { SelectedBaseWearablesByBodyShape } from './types'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 
@@ -114,26 +112,26 @@ export const isFetching = createSelector<RootState, Project | null, boolean, Loa
   }
 )
 
-export const getVisibleItems = createSelector<RootState, string | null, boolean, string[], ItemState['data'], Item[]>(
-  getSelectedCollectionId,
-  isReviewing,
-  getVisibleItemIds,
-  getData,
-  (selectedCollectionId, reviewing, itemIds, itemData) =>
-    itemIds
-      .map(id => itemData[id])
-      .filter(item => {
-        if (!item) {
-          return false
-        }
-        if (reviewing) {
-          if (selectedCollectionId) {
-            return selectedCollectionId === item.collectionId
-          } else {
-            return !item.collectionId
-          }
+export const getVisibleItemsFromUrl = (state: RootState, search: string) => {
+  const itemIds = getVisibleItemIds(state)
+  const itemData = getData(state)
+  const selectedCollectionId = getSelectedCollectionIdFromSearchParams(search)
+  const reviewing = isReviewingFromSearchParams(search)
+
+  return itemIds
+    .map(id => itemData[id])
+    .filter(item => {
+      if (!item) {
+        return false
+      }
+      if (reviewing) {
+        if (selectedCollectionId) {
+          return selectedCollectionId === item.collectionId
         } else {
-          return true
+          return !item.collectionId
         }
-      })
-)
+      } else {
+        return true
+      }
+    })
+}

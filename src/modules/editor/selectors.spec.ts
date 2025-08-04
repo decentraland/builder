@@ -1,11 +1,9 @@
 import { BodyShape, WearableCategory } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
-import { ItemState } from 'modules/item/reducer'
-import { Item } from 'modules/item/types'
 import { wearable } from 'specs/editor'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 import { INITIAL_STATE } from './reducer'
-import { getFetchingBaseWearablesError, getSelectedBaseWearablesByBodyShape, isLoadingBaseWearables, getVisibleItems } from './selectors'
+import { getFetchingBaseWearablesError, getSelectedBaseWearablesByBodyShape, isLoadingBaseWearables } from './selectors'
 
 let state: RootState
 const originalLocation = window.location
@@ -144,66 +142,5 @@ describe('when getting the fetching base wearable error', () => {
 
   it('should return the fetching base wearable error', () => {
     expect(getFetchingBaseWearablesError(state)).toEqual('someError')
-  })
-})
-
-describe('when getting the visible items', () => {
-  beforeEach(() => {
-    state = {
-      ...state,
-      item: {
-        data: {
-          someId: { id: 'someId' } as Item,
-          otherId: { id: 'otherId' } as Item
-        }
-      } as unknown as ItemState,
-      editor: {
-        ...state.editor,
-        visibleItemIds: ['someId', 'otherId']
-      }
-    }
-  })
-  it('should return a list of all the visible items', () => {
-    expect(getVisibleItems(state)).toEqual([{ id: 'someId' }, { id: 'otherId' }])
-  })
-  describe('when there are ids that are not present in the data record', () => {
-    beforeEach(() => {
-      state = {
-        ...state,
-        item: {
-          data: {
-            someId: { id: 'someId' } as Item
-          }
-        } as unknown as ItemState,
-        editor: {
-          ...state.editor,
-          visibleItemIds: ['someId', 'doesNotExist']
-        }
-      }
-    })
-    it('should return only the items that exist in the data record regardless of the visible ids', () => {
-      expect(getVisibleItems(state)).toEqual([{ id: 'someId' }])
-    })
-  })
-  describe('when the curator is reviewing a collection', () => {
-    beforeEach(() => {
-      window.location.search = '?reviewing=true&collection=aCollection'
-      state = {
-        ...state,
-        item: {
-          data: {
-            someId: { id: 'someId', collectionId: 'aCollection' } as Item,
-            otherId: { id: 'otherId', collectionId: 'otherCollection' } as Item
-          }
-        } as unknown as ItemState,
-        editor: {
-          ...state.editor,
-          visibleItemIds: ['someId', 'otherId']
-        }
-      }
-    })
-    it('should return only items of that collection regardless of the ids in the visible items list', () => {
-      expect(getVisibleItems(state)).toEqual([{ id: 'someId', collectionId: 'aCollection' }])
-    })
   })
 })
