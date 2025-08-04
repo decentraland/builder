@@ -14,7 +14,7 @@ import { getIsCampaignEnabled, getIsVrmOptOutEnabled, getIsWearableUtilityEnable
 import { RightPanelContainerProps } from './RightPanel.types'
 import RightPanel from './RightPanel'
 
-const RightPanelContainer: React.FC<RightPanelContainerProps> = props => {
+const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   const dispatch = useDispatch()
   const selectedItemId = useGetSelectedItemIdFromCurrentUrl()
 
@@ -56,7 +56,6 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = props => {
 
   return (
     <RightPanel
-      {...props}
       address={address}
       collection={collection}
       selectedItem={selectedItem}
