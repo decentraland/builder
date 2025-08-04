@@ -11,9 +11,6 @@ export type Props = {
   alias: string | null
   avatar: Avatar | null
   wallet: Wallet | null
-  onOpenModal: typeof openModal
-  onFetchENS: typeof fetchENSRequest
+  onOpenModal: ActionFunction<typeof openModal>
+  onFetchENS: ActionFunction<typeof fetchENSRequest>
 }
-
-export type MapStateProps = Pick<Props, 'ens' | 'isLoading' | 'alias' | 'avatar' | 'name' | 'wallet'>
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchENS'>
