@@ -3,24 +3,25 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { RootState } from 'modules/common/types'
-import { useGetCollectionIdFromCurrentUrl } from 'modules/location/hooks'
+import { useGetCollectionIdFromCurrentUrl, useGetCurrentPageFromCurrentUrl } from 'modules/location/hooks'
 import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getCollectionItems, getPaginationData } from 'modules/item/selectors'
 import { DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionThirdParty, isFetchingAvailableSlots, isLoadingThirdParties, isLoadingThirdParty } from 'modules/thirdParty/selectors'
 import { fetchThirdPartyAvailableSlotsRequest, fetchThirdPartyRequest } from 'modules/thirdParty/actions'
 import { isThirdPartyCollection } from 'modules/collection/utils'
 import { getIsLinkedWearablesPaymentsEnabled, getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
 import { getLastLocation } from 'modules/ui/location/selector'
-import ThirdPartyCollectionDetailPage from './ThirdPartyCollectionDetailPage'
 import { extractThirdPartyId } from 'lib/urn'
 import { Collection } from 'modules/collection/types'
+import ThirdPartyCollectionDetailPage from './ThirdPartyCollectionDetailPage'
 
 const ThirdPartyCollectionDetailPageContainer: React.FC = () => {
   const dispatch = useDispatch()
   const collectionId = useGetCollectionIdFromCurrentUrl() || ''
+  const currentPage = useGetCurrentPageFromCurrentUrl()
 
   const collection = useSelector((state: RootState) => getCollection(state, collectionId))
   const isThirdParty = useMemo(() => (collection ? isThirdPartyCollection(collection) : false), [collection])
@@ -42,11 +43,6 @@ const ThirdPartyCollectionDetailPageContainer: React.FC = () => {
   )
   const isLoadingAvailableSlots = useSelector((state: RootState) => isFetchingAvailableSlots(state))
   const lastLocation = useSelector((state: RootState) => getLastLocation(state))
-
-  const currentPage = useMemo(() => {
-    const queryParams = new URLSearchParams(window.location.search)
-    return Number(queryParams.get('page') ?? 1)
-  }, [])
 
   const onNewItem = useCallback((collectionId: string) => dispatch(openModal('CreateItemsModal', { collectionId })), [dispatch])
   const onEditName = useCallback((collection: Collection) => dispatch(openModal('EditCollectionNameModal', { collection })), [dispatch])
