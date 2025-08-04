@@ -12,9 +12,8 @@ export type Props = {
   items: Item[]
   status: SyncStatus
   lastLocation?: string
-  isOffchainPublicItemOrdersEnabled: boolean
-  onOpenModal: typeof openModal
-  onFetchCollectionForumPostReply: typeof fetchCollectionForumPostReplyRequest
+  onOpenModal: ActionFunction<typeof openModal>
+  onFetchCollectionForumPostReply: ActionFunction<typeof fetchCollectionForumPostReplyRequest>
 }
 
 export type State = {

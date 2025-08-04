@@ -9,7 +9,6 @@ import { DELETE_COLLECTION_REQUEST, SET_COLLECTION_MINTERS_REQUEST } from 'modul
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getCollectionItems } from 'modules/item/selectors'
 import { getLastLocation } from 'modules/ui/location/selector'
-import { getIsOffchainPublicItemOrdersEnabled } from 'modules/features/selectors'
 import { fetchCollectionForumPostReplyRequest, FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST } from 'modules/forum/actions'
 import CollectionDetailPage from './CollectionDetailPage'
 
@@ -24,7 +23,6 @@ const CollectionDetailPageContainer: React.FC = () => {
   const loadingCollection = useSelector(getLoadingCollection)
   const items = useSelector((state: RootState) => getCollectionItems(state, collectionId))
   const lastLocation = useSelector(getLastLocation)
-  const isOffchainPublicItemOrdersEnabled = useSelector(getIsOffchainPublicItemOrdersEnabled)
 
   const isOnSaleLoadingComputed = useMemo(
     () => isOnSaleLoadingSelector || isLoadingType(loadingCollection, SET_COLLECTION_MINTERS_REQUEST),
@@ -35,9 +33,11 @@ const CollectionDetailPageContainer: React.FC = () => {
     isLoadingType(loadingCollection, DELETE_COLLECTION_REQUEST) ||
     isLoadingType(loadingCollection, FETCH_COLLECTION_FORUM_POST_REPLY_REQUEST)
 
-  const onOpenModal = useCallback((name: string, metadata?: any) => dispatch(openModal(name, metadata)), [dispatch])
-
-  const onFetchCollectionForumPostReply = useCallback((id: string) => dispatch(fetchCollectionForumPostReplyRequest(id)), [dispatch])
+  const onOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
+  const onFetchCollectionForumPostReply: ActionFunction<typeof fetchCollectionForumPostReplyRequest> = useCallback(
+    id => dispatch(fetchCollectionForumPostReplyRequest(id)),
+    [dispatch]
+  )
 
   return (
     <CollectionDetailPage
@@ -48,7 +48,6 @@ const CollectionDetailPageContainer: React.FC = () => {
       items={items}
       status={status}
       lastLocation={lastLocation}
-      isOffchainPublicItemOrdersEnabled={isOffchainPublicItemOrdersEnabled}
       onOpenModal={onOpenModal}
       onFetchCollectionForumPostReply={onFetchCollectionForumPostReply}
     />
