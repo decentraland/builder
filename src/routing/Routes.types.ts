@@ -6,6 +6,8 @@ export type Props = RouteComponentProps & {
 
 export type MapStateProps = Pick<Props, 'inMaintenance'>
 
+export type RoutesContainerProps = Omit<Props, 'inMaintenance'>
+
 export type State = {
   hasError: boolean
   stackTrace: string

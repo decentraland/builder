@@ -184,7 +184,7 @@ export default function ThirdPartyCollectionDetailPage({
   }, [collection, thirdParty, wallet])
 
   const handleSelectAllItems = useCallback(
-    (onFetchAllCollectionItems: typeof fetchCollectionItemsRequest) => {
+    (onFetchAllCollectionItems: ActionFunction<typeof fetchCollectionItemsRequest>) => {
       setShouldFetchAllPages(true)
       if (collection) {
         const totalPages = Math.ceil(totalItems! / PAGE_SIZE)
@@ -238,7 +238,7 @@ export default function ThirdPartyCollectionDetailPage({
       allItems: Item[],
       paginatedItems: Item[],
       isLoadingCollectionItems: boolean,
-      onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
+      onFetchCollectionItemsPages: ActionFunction<typeof fetchCollectionItemsRequest>
     ) => {
       const allSelectedItems = allItems.filter(item => selectedItems[item.id])
       const selectedItemsCount = allSelectedItems.length

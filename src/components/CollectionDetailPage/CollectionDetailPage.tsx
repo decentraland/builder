@@ -42,7 +42,6 @@ export default function CollectionDetailPage({
   status,
   onOpenModal,
   isLoading,
-  isOffchainPublicItemOrdersEnabled,
   onFetchCollectionForumPostReply
 }: Props) {
   const location = useLocation()
@@ -185,7 +184,7 @@ export default function CollectionDetailPage({
     const isOnSaleLegacy = isCollectionOnSale(collection, wallet)
     const isEnableForSaleOffchainMarketplace = isEnableForSaleOffchain(collection, wallet)
 
-    if (isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy) {
+    if (!isOnSaleLegacy) {
       return !isEnableForSaleOffchainMarketplace ? (
         <NetworkCheck network={Network.MATIC}>
           {isEnabled => (
@@ -217,7 +216,7 @@ export default function CollectionDetailPage({
         )}
       </NetworkCheck>
     )
-  }, [collection, isOffchainPublicItemOrdersEnabled, handleOnSaleChange])
+  }, [collection, handleOnSaleChange])
 
   const renderForumRepliesBadge = useCallback(
     (size: SemanticSIZES = 'tiny') => {
@@ -376,16 +375,12 @@ export default function CollectionDetailPage({
                     {tab === ItemType.EMOTE || hasOnlyEmotes ? (
                       <Table.HeaderCell>{t('collection_detail_page.table.play_mode')}</Table.HeaderCell>
                     ) : null}
-                    {isOffchainPublicItemOrdersEnabled && !collection.isPublished ? null : (
-                      <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>
-                    )}
+                    {!collection.isPublished ? null : <Table.HeaderCell>{t('collection_detail_page.table.price')}</Table.HeaderCell>}
                     {collection.isPublished && collection.isApproved ? (
                       <Table.HeaderCell>{t('collection_detail_page.table.supply')}</Table.HeaderCell>
                     ) : null}
                     <Table.HeaderCell>{t('collection_detail_page.table.status')}</Table.HeaderCell>
-                    {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && (
-                      <Table.HeaderCell>{t('collection_detail_page.table.actions')}</Table.HeaderCell>
-                    )}
+                    {!isOnSaleLegacy && <Table.HeaderCell>{t('collection_detail_page.table.actions')}</Table.HeaderCell>}
                     <Table.HeaderCell />
                   </Table.Row>
                 </Table.Header>

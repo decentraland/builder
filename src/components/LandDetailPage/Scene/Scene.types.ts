@@ -7,7 +7,7 @@ export type Props = {
   deployment: Deployment
   projects: ProjectState['data']
   onNavigate: (path: string) => void
-  onOpenModal: typeof openModal
+  onOpenModal: ActionFunction<typeof openModal>
   onMouseEnter: (deployment: Deployment) => void
   onMouseLeave: (deployment: Deployment) => void
 }

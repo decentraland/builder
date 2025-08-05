@@ -1,9 +1,8 @@
-import { Dispatch } from 'redux'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { deleteItemRequest, DeleteItemRequestAction, saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
+import { deleteItemRequest, saveItemRequest } from 'modules/item/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type State = {
   thumbnail: string
@@ -18,15 +17,8 @@ export type Props = {
   status: SyncStatus | null
   isLoading: boolean
   isWearableUtilityEnabled: boolean
-  onOpenModal: typeof openModal
-  onDelete: typeof deleteItemRequest
-  onSaveItem: typeof saveItemRequest
+  onOpenModal: ActionFunction<typeof openModal>
+  onDelete: ActionFunction<typeof deleteItemRequest>
+  onSaveItem: ActionFunction<typeof saveItemRequest>
   hasAccess: boolean
 }
-
-export type MapStateProps = Pick<
-  Props,
-  'wallet' | 'itemId' | 'item' | 'collection' | 'status' | 'isLoading' | 'hasAccess' | 'isWearableUtilityEnabled'
->
-export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDelete' | 'onOpenModal'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction>

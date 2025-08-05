@@ -112,7 +112,6 @@ import {
 } from 'modules/item/actions'
 import { areSynced, isEmote, isValidText, isWearable, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
-import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI, FetchCollectionsParams, TermsOfServiceEvent } from 'lib/api/builder'
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
@@ -155,6 +154,7 @@ import {
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
 import { subscribeToNewsletterRequest } from 'modules/newsletter/action'
+import { getCollectionIdFromUrl } from 'modules/location/url-parsers'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { getCollection, getData, getLastFetchParams, getPaginationData, getRaritiesContract, getWalletCollections } from './selectors'
 import {
@@ -339,7 +339,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       yield call(() => legacyBuilderClient.deleteCollection(collection.id))
       yield put(deleteCollectionSuccess(collection))
 
-      const collectionIdInUriParam: string = yield select(getCollectionId)
+      const collectionIdInUriParam: string = yield call(getCollectionIdFromUrl, history.location.pathname)
       if (collectionIdInUriParam === collection.id) {
         history.replace(locations.collections())
       }

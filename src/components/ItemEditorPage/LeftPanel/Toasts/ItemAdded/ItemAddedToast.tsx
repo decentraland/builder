@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button, Toast, ToastType } from 'decentraland-ui'
 import { Link, useHistory, useLocation } from 'react-router-dom'
+import { getNewItemNameFromSearchParams } from 'modules/location/url-parsers'
 import { locations } from 'routing/locations'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -10,11 +11,12 @@ import { Props } from './ItemAddedToast.types'
 import './ItemAddedToast.css'
 
 const ItemAddedToast: React.FC<Props> = props => {
-  const { collectionId, itemName } = props
+  const { collectionId } = props
   const [shouldShowToast, setShouldShowToast] = useState(false)
   const [item, setItem] = useState<string | null>(null)
   const history = useHistory()
   const location = useLocation()
+  const itemName = useMemo(() => getNewItemNameFromSearchParams(location.search), [location.search])
 
   useEffect(() => {
     if (itemName) {

@@ -1,31 +1,19 @@
-import { Dispatch } from 'redux'
-import { Location } from 'history'
-import { CallHistoryMethodAction } from 'connected-react-router'
+import { RouteComponentProps } from 'react-router'
 
 import { Pool, PoolsRequestFilters } from 'modules/pool/types'
-import { LikePoolRequestAction, LoadPoolsRequestAction, loadPoolsRequest } from 'modules/pool/actions'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
+import { loadPoolsRequest } from 'modules/pool/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { PoolGroup } from 'modules/poolGroup/types'
 
-export type Props = PoolsRequestFilters & {
-  location: Location
-  pools: Pool[] | null
-  poolGroups: PoolGroup[]
-  total: number | null
-  totalPages: number | null
-  isLoggedIn: boolean
-  onNavigateToScenes: () => void
-  onNavegateToViewPool: (poolId: string) => void
-  onPageChange: (filters: PoolsRequestFilters) => void
-  onLoadPools: typeof loadPoolsRequest
-  onOpenModal: typeof openModal
-}
-
-export type MapStateProps = Pick<
-  Props,
-  'location' | 'pools' | 'poolGroups' | 'total' | 'totalPages' | 'page' | 'sortBy' | 'sortOrder' | 'group' | 'ethAddress' | 'isLoggedIn'
->
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPageChange' | 'onNavigateToScenes' | 'onNavegateToViewPool' | 'onLoadPools'>
-export type MapDispatch = Dispatch<LikePoolRequestAction | OpenModalAction | LoadPoolsRequestAction | CallHistoryMethodAction>
+export type Props = PoolsRequestFilters &
+  Pick<RouteComponentProps, 'history' | 'location'> & {
+    pools: Pool[] | null
+    poolGroups: PoolGroup[]
+    total: number | null
+    totalPages: number | null
+    isLoggedIn: boolean
+    onLoadPools: ActionFunction<typeof loadPoolsRequest>
+    onOpenModal: ActionFunction<typeof openModal>
+  }
 
 export const filterAttributes = ['page', 'sortBy', 'sortOrder', 'group', 'ethAddress'] as (keyof PoolsRequestFilters)[]

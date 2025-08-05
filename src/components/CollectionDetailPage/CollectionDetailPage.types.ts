@@ -1,9 +1,8 @@
-import { Dispatch } from 'redux'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, ItemType, SyncStatus } from 'modules/item/types'
-import { fetchCollectionForumPostReplyRequest, FetchCollectionForumPostReplyRequestAction } from 'modules/forum/actions'
+import { fetchCollectionForumPostReplyRequest } from 'modules/forum/actions'
 
 export type Props = {
   wallet: Wallet
@@ -13,18 +12,10 @@ export type Props = {
   items: Item[]
   status: SyncStatus
   lastLocation?: string
-  isOffchainPublicItemOrdersEnabled: boolean
-  onOpenModal: typeof openModal
-  onFetchCollectionForumPostReply: typeof fetchCollectionForumPostReplyRequest
+  onOpenModal: ActionFunction<typeof openModal>
+  onFetchCollectionForumPostReply: ActionFunction<typeof fetchCollectionForumPostReplyRequest>
 }
 
 export type State = {
   tab: ItemType
 }
-
-export type MapStateProps = Pick<
-  Props,
-  'wallet' | 'collection' | 'isOnSaleLoading' | 'isLoading' | 'items' | 'status' | 'lastLocation' | 'isOffchainPublicItemOrdersEnabled'
->
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onFetchCollectionForumPostReply'>
-export type MapDispatch = Dispatch<OpenModalAction | FetchCollectionForumPostReplyRequestAction>

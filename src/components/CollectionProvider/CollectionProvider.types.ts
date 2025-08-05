@@ -1,9 +1,8 @@
-import { Dispatch } from 'redux'
 import { FetchCollectionItemsParams } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
-import { fetchCollectionRequest, FetchCollectionRequestAction } from 'modules/collection/actions'
+import { fetchCollectionRequest } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
-import { fetchCollectionItemsRequest, FetchCollectionItemsRequestAction } from 'modules/item/actions'
+import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 
@@ -11,7 +10,7 @@ export const DEFAULT_ITEMS_PAGE = 1
 export const DEFAULT_ITEMS_PAGE_SIZE = 50
 
 export type Props = {
-  id: string | null
+  id: string | null | undefined
   collection: Collection | null
   paginatedCollections: Collection[]
   items: Item[]
@@ -45,26 +44,14 @@ export type Props = {
     initialPage: number
     isLoadingCollection: boolean
     isLoadingCollectionItems: boolean
-    onFetchCollectionItemsPages: typeof fetchCollectionItemsRequest
+    onFetchCollectionItemsPages: ActionFunction<typeof fetchCollectionItemsRequest>
   }) => React.ReactNode
-  onFetchCollection: typeof fetchCollectionRequest
-  onFetchCollectionItems: typeof fetchCollectionItemsRequest
+  onFetchCollection: ActionFunction<typeof fetchCollectionRequest>
+  onFetchCollectionItems: ActionFunction<typeof fetchCollectionItemsRequest>
   onChangePage?: (page: number) => void
 }
 
-export type MapStateProps = Pick<
+export type CollectionProviderContainerProps = Pick<
   Props,
-  | 'id'
-  | 'collection'
-  | 'items'
-  | 'isLoadingCollection'
-  | 'isLoadingCollectionItems'
-  | 'isConnected'
-  | 'curation'
-  | 'itemCurations'
-  | 'paginatedItems'
-  | 'paginatedCollections'
+  'id' | 'itemSelected' | 'itemsPage' | 'itemsPageSize' | 'onChangePage' | 'children' | 'fetchCollectionItemsOptions'
 >
-export type MapDispatchProps = Pick<Props, 'onFetchCollection' | 'onFetchCollectionItems'>
-export type MapDispatch = Dispatch<FetchCollectionRequestAction | FetchCollectionItemsRequestAction>
-export type OwnProps = Partial<Pick<Props, 'id' | 'itemSelected' | 'itemsPage' | 'itemsPageSize' | 'onChangePage'>>

@@ -13,6 +13,7 @@ import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/moda
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { RENDER_TOAST, hideToast, showToast, RenderToastAction } from 'decentraland-dapps/dist/modules/toast/actions'
 import { ToastType } from 'decentraland-ui'
@@ -121,9 +122,10 @@ import { locations } from 'routing/locations'
 import { BuilderAPI as LegacyBuilderAPI, FetchCollectionsParams } from 'lib/api/builder'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, PaginatedResource, PaginationStats } from 'lib/api/pagination'
 import { getCollection, getCollections } from 'modules/collection/selectors'
-import { getItemId } from 'modules/location/selectors'
 import { FromParam } from 'modules/location/types'
 import { Collection } from 'modules/collection/types'
+import { marketplace } from 'lib/api/marketplace'
+import { getItemIdFromPath } from 'modules/location/url-parsers'
 import { MAX_ITEMS } from 'modules/collection/constants'
 import { fetchEntitiesByPointersRequest } from 'modules/entity/actions'
 import { takeLatestCancellable } from 'modules/common/utils'
@@ -163,8 +165,6 @@ import {
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
-import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
-import { marketplace } from 'lib/api/marketplace'
 
 export const SAVE_AND_EDIT_FILES_BATCH_SIZE = 8
 
@@ -624,7 +624,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     try {
       yield call(() => legacyBuilder.deleteItem(item.id))
       yield put(deleteItemSuccess(item))
-      const itemIdInUriParam: string = yield select(getItemId)
+      const itemIdInUriParam: string = yield call(getItemIdFromPath, history.location.pathname)
       if (itemIdInUriParam === item.id) {
         history.replace(locations.collections())
       }

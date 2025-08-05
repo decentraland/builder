@@ -28,10 +28,10 @@ export type Props = {
   campaignName?: string
   isVrmOptOutEnabled: boolean
   isWearableUtilityEnabled: boolean
-  onSaveItem: typeof saveItemRequest
-  onDeleteItem: typeof deleteItemRequest
-  onOpenModal: typeof openModal
-  onDownload: typeof downloadItemRequest
+  onSaveItem: ActionFunction<typeof saveItemRequest>
+  onDeleteItem: ActionFunction<typeof deleteItemRequest>
+  onOpenModal: ActionFunction<typeof openModal>
+  onDownload: ActionFunction<typeof downloadItemRequest>
 }
 
 export type State = {
@@ -67,3 +67,6 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onDownload'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | DownloadItemRequestAction>
+
+// New type for the functional component container
+export type RightPanelContainerProps = Omit<Props, keyof MapStateProps | keyof MapDispatchProps>

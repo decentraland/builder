@@ -1,8 +1,7 @@
-import { Dispatch } from 'redux'
 import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { ENS } from 'modules/ens/types'
-import { fetchENSListRequest } from 'modules/ens/actions'
+import { fetchContributableNamesRequest, fetchENSListRequest } from 'modules/ens/actions'
 import { Project } from 'modules/project/types'
 import { WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 import { WorldsYourStorageModalMetadata } from 'components/Modals/WorldsYourStorageModal/WorldsYourStorageModal.types'
@@ -27,10 +26,9 @@ export type Props = {
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
   onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
   onOpenWorldsForENSOwnersAnnouncementModal: () => void
-  getProfiles: (worldName: string) => void
-  onUnpublishWorld: typeof clearDeploymentRequest
-  onFetchContributableNames: () => void
-  onFetchENSList: typeof fetchENSListRequest
+  onUnpublishWorld: ActionFunction<typeof clearDeploymentRequest>
+  onFetchContributableNames: ActionFunction<typeof fetchContributableNamesRequest>
+  onFetchENSList: ActionFunction<typeof fetchENSListRequest>
   ensTotal: number
 }
 
@@ -38,29 +36,3 @@ export type State = {
   page: number
   sortBy: SortBy
 }
-
-export type MapStateProps = Pick<
-  Props,
-  | 'ensList'
-  | 'externalNames'
-  | 'deploymentsByWorlds'
-  | 'isLoading'
-  | 'error'
-  | 'projects'
-  | 'isLoggedIn'
-  | 'worldsWalletStats'
-  | 'worldsPermissions'
-  | 'isConnected'
-  | 'isWorldContributorEnabled'
-  | 'ensTotal'
->
-export type MapDispatchProps = Pick<
-  Props,
-  | 'onOpenYourStorageModal'
-  | 'onOpenPermissionsModal'
-  | 'onOpenWorldsForENSOwnersAnnouncementModal'
-  | 'onUnpublishWorld'
-  | 'onFetchContributableNames'
-  | 'onFetchENSList'
->
-export type MapDispatch = Dispatch
