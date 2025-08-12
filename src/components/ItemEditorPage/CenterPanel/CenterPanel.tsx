@@ -279,6 +279,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
+          baseUrl="https://wearable-preview-git-feat-configutaror-decentraland1.vercel.app"
           id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}
