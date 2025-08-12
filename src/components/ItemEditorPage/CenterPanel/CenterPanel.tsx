@@ -305,6 +305,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
+          unity={true}
+          unityMode="builder"
         />
         {isRenderingAnEmote ? (
           <div className="zoom-controls">
