@@ -886,6 +886,9 @@ export default class CreateSingleItemModal extends React.PureComponent<Props, St
         {...wearablePreviewExtraOptions}
         onUpdate={() => this.setState({ weareblePreviewUpdated: true })}
         onLoad={this.handleFileLoad}
+        baseUrl="https://wearable-preview-git-feat-configutaror-decentraland1.vercel.app"
+        unity={true}
+        unityMode="builder"
       />
     )
   }
