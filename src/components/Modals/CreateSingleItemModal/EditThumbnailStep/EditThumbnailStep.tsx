@@ -96,6 +96,9 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               wheelZoom={2}
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
+              baseUrl="https://wearable-preview-git-feat-update-unity-ren-aade4d-decentraland1.vercel.app"
+              unity={true}
+              unityMode="builder"
             />
             {hasBeenUpdated ? (
               <>
