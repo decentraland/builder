@@ -21,7 +21,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
 import { isThirdParty } from 'lib/urn'
-import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
+import { EngineType, getEmoteData, getIsEmote } from 'lib/getModelData'
 import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
 import {
   FileTooBigError,
@@ -145,8 +145,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const { model, contents: proccessedContent, type } = await this.processModel(modelPath, contents)
 
     if (type === ItemType.EMOTE) {
-      const info: AnimationMetrics = await getEmoteMetrics(contents[model])
-      if (info.duration > MAX_EMOTE_DURATION) {
+      const { metrics }: { metrics: AnimationMetrics } = await getEmoteData(URL.createObjectURL(contents[model]))
+      if (metrics.duration > MAX_EMOTE_DURATION) {
         throw new EmoteDurationTooLongError()
       }
     }
