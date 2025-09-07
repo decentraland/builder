@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Row, Column, Section, Header, Icon } from 'decentraland-ui'
+import { Row, Column, Section, Header, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { BodyShapeType, ItemType, Item } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
