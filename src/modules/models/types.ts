@@ -13,6 +13,7 @@ export type AnimationMetrics = {
   frames: number
   fps: number
   props: number
+  secondaryArmature: number
 }
 
 export type Metrics = ModelMetrics | AnimationMetrics
