@@ -83,6 +83,18 @@ export type WearableData = {
   outlineCompatible?: boolean
 }
 
+export type EmoteOutcome = {
+  animation: string
+  loop: boolean
+  randomize: boolean
+}
+
+export type EmoteDataADR287 = EmoteDataADR74 & {
+  outcomes: EmoteOutcome[]
+}
+
+export type EmoteData = EmoteDataADR74 | EmoteDataADR287
+
 type BaseItem = {
   id: string // uuid
   name: string
@@ -121,7 +133,7 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   blockchainContentHash: string | null
   currentContentHash: string | null
   catalystContentHash: string | null
-  data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
   metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
   mappings: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | null
   isMappingComplete?: boolean
@@ -132,7 +144,8 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
 export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>
   (item as Item<ItemType.EMOTE>).type === ItemType.EMOTE
 
-export const isEmoteData = (data: WearableData | EmoteDataADR74): data is EmoteDataADR74 => (data as EmoteDataADR74).loop !== undefined
+export const isEmoteDataADR287 = (data: EmoteData): data is EmoteDataADR287 => (data as EmoteDataADR287).outcomes !== undefined
+export const isEmoteData = (data: WearableData | EmoteData): data is EmoteData => (data as EmoteData).loop !== undefined
 
 export enum Currency {
   MANA = 'MANA',
