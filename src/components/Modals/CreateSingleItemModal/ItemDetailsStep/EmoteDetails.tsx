@@ -1,20 +1,21 @@
 import React, { useCallback } from 'react'
-import { Row, Column, SelectField, Message, DropdownProps, Field, Checkbox, Button, Box } from 'decentraland-ui'
+import { Row, Column, SelectField, Message, DropdownProps, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EmotePlayMode } from '@dcl/schemas'
 import { getBackgroundStyle } from 'modules/item/utils'
-import { EmoteOutcome, Item } from 'modules/item/types'
+import { Item } from 'modules/item/types'
 import Icon from 'components/Icon'
 import ItemProperties from 'components/ItemProperties'
 import { useCreateSingleItemModal } from '../CreateSingleItemModal.context'
 import { createItemActions } from '../CreateSingleItemModal.reducer'
 import CommonFields from '../CommonFields'
 import { CreateItemView } from '../CreateSingleItemModal.types'
+import { areEmoteMetrics } from 'modules/models/types'
 
 /**
  * Gets play mode options for emotes
  */
-export const getPlayModeOptions = () => {
+const getPlayModeOptions = () => {
   const playModes: string[] = [EmotePlayMode.SIMPLE, EmotePlayMode.LOOP]
 
   return playModes.map(value => ({
@@ -42,99 +43,6 @@ const PlayModeSelectField: React.FC<{
   )
 }
 
-const OutcomeHeader: React.FC<{
-  outcomeIndex: number
-  onDeleteOutcome: (outcomeIndex: number) => () => void
-}> = ({ outcomeIndex, onDeleteOutcome }) => {
-  const canDelete = outcomeIndex > 0
-  return (
-    <div className="outcome-header">
-      <span>Outcome {outcomeIndex + 1}</span>
-      {canDelete ? (
-        <Button basic onClick={onDeleteOutcome(outcomeIndex)}>
-          <Icon name="delete" />
-        </Button>
-      ) : null}
-    </div>
-  )
-}
-
-const OutcomeField: React.FC<{
-  outcome: EmoteOutcome
-  outcomeIndex: number
-  isLoading: boolean
-  shouldShowRandomizeOutcome: boolean
-  onAnimationChange: (outcomeIndex: number) => (event: React.ChangeEvent<HTMLInputElement>, props: any) => void
-  onPlayModeChange: (outcomeIndex: number) => (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void
-  onToggleRandom: (outcomeIndex: number) => () => void
-  onDeleteOutcome: (outcomeIndex: number) => () => void
-}> = ({
-  outcome,
-  outcomeIndex,
-  shouldShowRandomizeOutcome,
-  isLoading,
-  onAnimationChange,
-  onPlayModeChange,
-  onToggleRandom,
-  onDeleteOutcome
-}) => {
-  return (
-    <Box className="outcome-box" header={<OutcomeHeader outcomeIndex={outcomeIndex} onDeleteOutcome={onDeleteOutcome} />} borderless>
-      <Column>
-        <Field
-          className="animation"
-          label={'Animation'}
-          value={outcome.animation}
-          disabled={isLoading}
-          onChange={onAnimationChange(outcomeIndex)}
-        />
-        <PlayModeSelectField value={outcome.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE} onChange={onPlayModeChange(outcomeIndex)} />
-        {shouldShowRandomizeOutcome ? (
-          <Checkbox checked={!!outcome.randomize} label="Random" onClick={onToggleRandom(outcomeIndex)} />
-        ) : null}
-      </Column>
-    </Box>
-  )
-}
-
-const OutcomesSection: React.FC<{
-  outcomes: EmoteOutcome[]
-  isLoading: boolean
-  onAnimationChange: (outcomeIndex: number) => (event: React.ChangeEvent<HTMLInputElement>, props: any) => void
-  onPlayModeChange: (outcomeIndex: number) => (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void
-  onToggleRandom: (outcomeIndex: number) => () => void
-  onAddOutcome: () => void
-  onDeleteOutcome: (outcomeIndex: number) => () => void
-}> = ({ outcomes, isLoading, onAnimationChange, onPlayModeChange, onToggleRandom, onAddOutcome, onDeleteOutcome }) => {
-  const canAddMore = outcomes.length < 4
-  const shouldShowRandomizeOutcome = outcomes.length > 1
-  return (
-    <div className="outcomes-section">
-      <h5 style={{ marginTop: 0 }}>Outcomes</h5>
-      {outcomes.map((outcome, index) => (
-        <OutcomeField
-          key={`outcome-${index}`}
-          outcome={outcome}
-          outcomeIndex={index}
-          isLoading={isLoading}
-          shouldShowRandomizeOutcome={shouldShowRandomizeOutcome}
-          onAnimationChange={onAnimationChange}
-          onPlayModeChange={onPlayModeChange}
-          onToggleRandom={onToggleRandom}
-          onDeleteOutcome={onDeleteOutcome}
-        />
-      ))}
-      {canAddMore && (
-        <Row className="add-outcome-button" align="right">
-          <Button secondary size="small" onClick={onAddOutcome} disabled={isLoading}>
-            Add Outcome ({outcomes.length}/4)
-          </Button>
-        </Row>
-      )}
-    </div>
-  )
-}
-
 export const EmoteDetails: React.FC = () => {
   const {
     state,
@@ -147,7 +55,7 @@ export const EmoteDetails: React.FC = () => {
     handleSubmit,
     isDisabled
   } = useCreateSingleItemModal()
-  const { contents, metrics, thumbnail, rarity, playMode = '', outcomes = [], hasScreenshotTaken } = state
+  const { contents, metrics, thumbnail, rarity, playMode = '', hasScreenshotTaken } = state
   const title = renderModalTitle()
   const thumbnailStyle = getBackgroundStyle(rarity)
 
@@ -155,74 +63,6 @@ export const EmoteDetails: React.FC = () => {
     (_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
       const value = data.value as EmotePlayMode
       dispatch(createItemActions.setPlayMode(value))
-    },
-    [dispatch]
-  )
-
-  const handleOutcomeAnimationNameChange = useCallback(
-    (outcomeIndex: number) => (_event: React.ChangeEvent<HTMLInputElement>, props: any) => {
-      dispatch(
-        createItemActions.setOutcomes(prevOutcomes => {
-          const newOutcomes = [...prevOutcomes]
-          newOutcomes[outcomeIndex] = { ...newOutcomes[outcomeIndex], animation: props.value }
-          return newOutcomes
-        })
-      )
-    },
-    [dispatch]
-  )
-
-  const handleOutcomePlayModeChange = useCallback(
-    (outcomeIndex: number) => (_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
-      dispatch(
-        createItemActions.setOutcomes(prevOutcomes => {
-          const newOutcomes = [...prevOutcomes]
-          newOutcomes[outcomeIndex] = { ...newOutcomes[outcomeIndex], loop: data.value === EmotePlayMode.LOOP }
-          return newOutcomes
-        })
-      )
-    },
-    [dispatch]
-  )
-
-  const handleToggleRandomOutcome = useCallback(
-    (outcomeIndex: number) => () => {
-      dispatch(
-        createItemActions.setOutcomes(prevOutcomes => {
-          const newOutcomes = [...prevOutcomes]
-          newOutcomes[outcomeIndex] = { ...newOutcomes[outcomeIndex], randomize: !newOutcomes[outcomeIndex].randomize }
-          return newOutcomes
-        })
-      )
-    },
-    [dispatch]
-  )
-
-  const handleAddOutcome = useCallback(() => {
-    dispatch(
-      createItemActions.setOutcomes(prevOutcomes => {
-        if (prevOutcomes.length < 4) {
-          const newOutcome: EmoteOutcome = {
-            animation: '',
-            loop: false,
-            randomize: false
-          }
-          return [...prevOutcomes, newOutcome]
-        }
-        return prevOutcomes
-      })
-    )
-  }, [dispatch])
-
-  const handleDeleteOutcome = useCallback(
-    (outcomeIndex: number) => () => {
-      dispatch(
-        createItemActions.setOutcomes(prevOutcomes => {
-          const newOutcomes = [...prevOutcomes]
-          newOutcomes.splice(outcomeIndex, 1)
-          return newOutcomes
-        })
-      )
     },
     [dispatch]
   )
@@ -251,19 +91,9 @@ export const EmoteDetails: React.FC = () => {
             </Column>
             <Column className="data" grow={true}>
               <CommonFields />
-              {outcomes.length > 0 ? (
-                <OutcomesSection
-                  outcomes={outcomes}
-                  isLoading={isLoading}
-                  onAnimationChange={handleOutcomeAnimationNameChange}
-                  onPlayModeChange={handleOutcomePlayModeChange}
-                  onToggleRandom={handleToggleRandomOutcome}
-                  onAddOutcome={handleAddOutcome}
-                  onDeleteOutcome={handleDeleteOutcome}
-                />
-              ) : (
+              {metrics && areEmoteMetrics(metrics) && !metrics.additionalArmatures ? (
                 <PlayModeSelectField value={playMode} onChange={handlePlayModeChange} />
-              )}
+              ) : null}
             </Column>
           </Row>
           <div className="notice">

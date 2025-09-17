@@ -2,6 +2,7 @@ import { BuiltItem, Content } from '@dcl/builder-client'
 import {
   BodyShape,
   EmoteDataADR74,
+  EmoteDataADR287,
   Wearable,
   WearableCategory,
   Rarity,
@@ -44,6 +45,12 @@ export enum ItemMetadataType {
   EMOTE = 'e'
 }
 
+export enum EmoteOutcomeMetadataType {
+  SIMPLE_OUTCOME = 'so',
+  MULTIPLE_OUTCOME = 'mo',
+  RANDOM_OUTCOME = 'ro'
+}
+
 export const BODY_SHAPE_CATEGORY = 'body_shape'
 
 export enum BodyShapeType {
@@ -81,16 +88,6 @@ export type WearableData = {
   isSmart?: boolean
   blockVrmExport?: boolean
   outlineCompatible?: boolean
-}
-
-export type EmoteOutcome = {
-  animation: string
-  loop: boolean
-  randomize: boolean
-}
-
-export type EmoteDataADR287 = EmoteDataADR74 & {
-  outcomes: EmoteOutcome[]
 }
 
 export type EmoteData = EmoteDataADR74 | EmoteDataADR287

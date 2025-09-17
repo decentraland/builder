@@ -136,4 +136,4 @@ export const WearableDetails: React.FC = () => {
   )
 }
 
-export default WearableDetails
+export default React.memo(WearableDetails)
