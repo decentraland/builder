@@ -182,7 +182,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
                     loop: false
                   },
                   {
-                    armature: 'Armature',
+                    armature: 'Armature_Other',
                     animation: 'HighFive_AvatarOther',
                     loop: false
                   }
@@ -713,12 +713,18 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         if (areEmoteMetrics(data.metrics) && data.metrics.additionalArmatures) {
           // required?
           // dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
+          // TODO: Remove this once the RightPanel is updated
           dispatch(
             createItemActions.setOutcomes([
               {
-                animation: 'Start_Loop',
-                loop: true,
-                randomize: false
+                title: 'Test',
+                clips: [
+                  {
+                    armature: 'Armature',
+                    animation: 'Test_Start',
+                    loop: true
+                  }
+                ]
               }
             ])
           )
