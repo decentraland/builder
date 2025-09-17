@@ -1,15 +1,6 @@
 import React, { useReducer, useRef, useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
-import {
-  BodyPartCategory,
-  BodyShape,
-  EmoteCategory,
-  Rarity,
-  PreviewProjection,
-  WearableCategory,
-  IPreviewController,
-  EmoteDataADR287
-} from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, Rarity, PreviewProjection, WearableCategory, IPreviewController } from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
@@ -33,7 +24,8 @@ import {
   VIDEO_PATH,
   WearableData,
   SyncStatus,
-  EmoteData
+  EmoteData,
+  EmoteDataADR287
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
