@@ -2,7 +2,6 @@ import { BuiltItem, Content } from '@dcl/builder-client'
 import {
   BodyShape,
   EmoteDataADR74,
-  EmoteDataADR287,
   Wearable,
   WearableCategory,
   Rarity,
@@ -88,6 +87,25 @@ export type WearableData = {
   isSmart?: boolean
   blockVrmExport?: boolean
   outlineCompatible?: boolean
+}
+
+// TODO: Replace these types using the ones from @dcl/schemas
+
+export type EmoteClip = {
+  armature: string
+  animation: string
+  loop: boolean
+}
+
+export type OutcomeGroup = {
+  title: string
+  clips: EmoteClip[]
+}
+
+export type EmoteDataADR287 = EmoteDataADR74 & {
+  startAnimation: EmoteClip[]
+  randomizeOutcomes: boolean
+  outcomes: OutcomeGroup[]
 }
 
 export type EmoteData = EmoteDataADR74 | EmoteDataADR287
