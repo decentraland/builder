@@ -134,10 +134,10 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             )}
           </div>
           <Row className="thumbnail-actions">
-            <Button disabled={!hasBeenUpdated} onClick={onBack}>
+            <Button disabled={!hasBeenUpdated || isLoading} onClick={onBack}>
               {t('global.back')}
             </Button>
-            <Button disabled={!hasBeenUpdated} primary loading={isLoading} onClick={this.handleSave}>
+            <Button disabled={!hasBeenUpdated || isLoading} primary loading={isLoading} onClick={this.handleSave}>
               {t('global.save')}
             </Button>
           </Row>
