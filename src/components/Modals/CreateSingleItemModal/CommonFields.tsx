@@ -18,7 +18,7 @@ const RARITIES_LINK = 'https://docs.decentraland.org/creator/wearables-and-emote
 
 const defaultMapping: Mapping = { type: MappingType.ANY }
 
-export const CommonFields: React.FC = () => {
+export const CommonFields = () => {
   const { state, collection, isThirdPartyV2Enabled, isLoading, dispatch } = useCreateSingleItemModal()
 
   // Field handlers - moved from main modal to here since they're only used in CommonFields
@@ -169,4 +169,4 @@ export const CommonFields: React.FC = () => {
   )
 }
 
-export default CommonFields
+export default React.memo(CommonFields)
