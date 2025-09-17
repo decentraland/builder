@@ -1,6 +1,15 @@
 import React, { useReducer, useRef, useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
-import { BodyPartCategory, BodyShape, EmoteCategory, Rarity, PreviewProjection, WearableCategory, IPreviewController } from '@dcl/schemas'
+import {
+  BodyPartCategory,
+  BodyShape,
+  EmoteCategory,
+  Rarity,
+  PreviewProjection,
+  WearableCategory,
+  IPreviewController,
+  EmoteDataADR287
+} from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
@@ -24,8 +33,7 @@ import {
   VIDEO_PATH,
   WearableData,
   SyncStatus,
-  EmoteData,
-  EmoteDataADR287
+  EmoteData
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -70,7 +78,7 @@ import {
 import { createItemReducer, createItemActions, createInitialState } from './CreateSingleItemModal.reducer'
 import { Props, State, CreateItemView, StateData, SortedContent, AcceptedFileProps } from './CreateSingleItemModal.types'
 import { Steps } from './Steps'
-import { CreateSingleItemModalProvider } from './CreateSingleItemModal.context'
+import { CreateSingleItemModalProvider } from './CreateSingleItemModalProvider'
 import './CreateSingleItemModal.css'
 
 export const CreateSingleItemModal: React.FC<Props> = props => {
@@ -145,8 +153,36 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         } as EmoteData
 
         // ADR 287 - Social Emotes
+        // Hardcoded for testing purposes but should be removed later
         if (outcomes && outcomes.length > 0) {
-          ;(data as EmoteDataADR287).outcomes = outcomes
+          data = {
+            ...data,
+            startAnimation: [
+              {
+                armature: 'Armature',
+                animation: 'HighFive_Start',
+                loop: true
+              }
+            ],
+            randomizeOutcomes: false,
+            outcomes: [
+              {
+                title: 'High Five',
+                clips: [
+                  {
+                    armature: 'Armature',
+                    animation: 'HighFive_Avatar',
+                    loop: false
+                  },
+                  {
+                    armature: 'Armature',
+                    animation: 'HighFive_AvatarOther',
+                    loop: false
+                  }
+                ]
+              }
+            ]
+          }
         }
       }
 
@@ -667,7 +703,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         dispatch(createItemActions.setMetrics(data.metrics))
         dispatch(createItemActions.setThumbnail(thumbnail ?? data.image))
         dispatch(createItemActions.setView(view))
-        if (areEmoteMetrics(data.metrics) && data.metrics.secondaryArmature) {
+        if (areEmoteMetrics(data.metrics) && data.metrics.additionalArmatures) {
           // required?
           // dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
           dispatch(
@@ -736,7 +772,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     return (
       <WearablePreview
         id="thumbnail-picker"
-        blob={blob}
+        blob={blob as any} // TODO: Remove any
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}

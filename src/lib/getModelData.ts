@@ -235,7 +235,11 @@ export async function getEmoteData(url: string, options: Partial<Options> = {}) 
     throw new EmoteWithMeshError()
   }
 
-  if (propsAnimation && propsAnimation.duration !== animation.duration) {
+  // For social emotes, we need to count the number of additional armatures, currently only one additional armature is supported
+  const additionalArmatures = armatures.some(({ name }) => name === ARMATURES.OTHER) ? 1 : 0
+
+  // For social emotes, we don't need to check the duration of the props animation
+  if (!additionalArmatures && propsAnimation && propsAnimation.duration !== animation.duration) {
     throw new EmoteAnimationsSyncError()
   }
 
@@ -255,7 +259,7 @@ export async function getEmoteData(url: string, options: Partial<Options> = {}) 
       frames,
       fps: frames / animation.duration,
       props: armatures.some(({ name }) => name === ARMATURES.PROP) ? 1 : 0,
-      secondaryArmature: armatures.some(({ name }) => name === ARMATURES.OTHER) ? 1 : 0
+      additionalArmatures
     }
   }
 }

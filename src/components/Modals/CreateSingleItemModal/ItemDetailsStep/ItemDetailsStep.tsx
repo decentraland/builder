@@ -44,4 +44,4 @@ export const ItemDetailsStep: React.FC = () => {
   )
 }
 
-export default ItemDetailsStep
+export default React.memo(ItemDetailsStep)

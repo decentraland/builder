@@ -1,10 +1,10 @@
-import React, { createContext, useContext, ReactNode } from 'react'
+import React, { createContext, useContext } from 'react'
 import { Item, SyncStatus } from 'modules/item/types'
 import { State, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { CreateItemAction } from './CreateSingleItemModal.reducer'
 import { Collection } from 'modules/collection/types'
 
-interface CreateSingleItemModalContextValue {
+export interface CreateSingleItemModalContextValue {
   // State
   state: State
   collection: Collection | null
@@ -42,16 +42,7 @@ interface CreateSingleItemModalContextValue {
   isAddingRepresentation: boolean
 }
 
-const CreateSingleItemModalContext = createContext<CreateSingleItemModalContextValue | undefined>(undefined)
-
-interface CreateSingleItemModalProviderProps {
-  children: ReactNode
-  value: CreateSingleItemModalContextValue
-}
-
-export const CreateSingleItemModalProvider: React.FC<CreateSingleItemModalProviderProps> = ({ children, value }) => {
-  return <CreateSingleItemModalContext.Provider value={value}>{children}</CreateSingleItemModalContext.Provider>
-}
+export const CreateSingleItemModalContext = createContext<CreateSingleItemModalContextValue | undefined>(undefined)
 
 export const useCreateSingleItemModal = (): CreateSingleItemModalContextValue => {
   const context = useContext(CreateSingleItemModalContext)
@@ -60,5 +51,3 @@ export const useCreateSingleItemModal = (): CreateSingleItemModalContextValue =>
   }
   return context
 }
-
-export default CreateSingleItemModalContext

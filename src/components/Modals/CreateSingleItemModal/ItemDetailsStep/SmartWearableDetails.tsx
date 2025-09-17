@@ -143,4 +143,4 @@ export const SmartWearableDetails: React.FC = () => {
   )
 }
 
-export default SmartWearableDetails
+export default React.memo(SmartWearableDetails)
