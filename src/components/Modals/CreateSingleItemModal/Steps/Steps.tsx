@@ -103,7 +103,7 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
       default:
         return null
     }
-  }, [view, state, modalContainer, handleDropAccepted, handleOnScreenshotTaken])
+  }, [view, state, modalContainer, isLoading, handleDropAccepted, handleOnScreenshotTaken])
 
   return renderView()
 }
