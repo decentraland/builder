@@ -1,6 +1,6 @@
 import { AnimationClip, Object3D } from 'three'
 import { EmotePlayMode, Rarity, WearableCategory, Mapping, ContractNetwork, ContractAddress } from '@dcl/schemas'
-import { Item, BodyShapeType, ItemType, EmoteOutcome } from 'modules/item/types'
+import { Item, BodyShapeType, ItemType, OutcomeGroup } from 'modules/item/types'
 import { Metrics } from 'modules/models/types'
 import { CreateItemView, State, AcceptedFileProps, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { Collection } from 'modules/collection/types'
@@ -120,7 +120,7 @@ export type CreateItemAction =
       payload: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | undefined
     }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_REQUIRED_PERMISSIONS; payload: string[] }
-  | { type: typeof CREATE_ITEM_ACTIONS.SET_OUTCOMES; payload: EmoteOutcome[] | ((prevOutcomes: EmoteOutcome[]) => EmoteOutcome[]) }
+  | { type: typeof CREATE_ITEM_ACTIONS.SET_OUTCOMES; payload: OutcomeGroup[] | ((prevOutcomes: OutcomeGroup[]) => OutcomeGroup[]) }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_EMOTE_DATA; payload: { animations: AnimationClip[]; armatures: Object3D[] } }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_TAGS; payload: string[] }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_BLOCK_VRM_EXPORT; payload: boolean }
@@ -242,7 +242,7 @@ export const createItemActions = {
     payload: requiredPermissions
   }),
 
-  setOutcomes: (outcomes: EmoteOutcome[] | ((prevOutcomes: EmoteOutcome[]) => EmoteOutcome[])): CreateItemAction => ({
+  setOutcomes: (outcomes: OutcomeGroup[] | ((prevOutcomes: OutcomeGroup[]) => OutcomeGroup[])): CreateItemAction => ({
     type: CREATE_ITEM_ACTIONS.SET_OUTCOMES,
     payload: outcomes
   }),

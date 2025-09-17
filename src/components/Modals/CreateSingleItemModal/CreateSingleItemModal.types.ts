@@ -5,7 +5,7 @@ import { IPreviewController, Mappings, Rarity } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
-import { BodyShapeType, EmoteOutcome, Item, ItemType, SyncStatus } from 'modules/item/types'
+import { BodyShapeType, Item, ItemType, OutcomeGroup, SyncStatus } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
@@ -56,7 +56,7 @@ export type StateData = {
   modelSize?: number
   mappings: Mappings
   blockVrmExport?: boolean
-  outcomes?: EmoteOutcome[]
+  outcomes?: OutcomeGroup[]
   emoteData?: {
     animations: AnimationClip[]
     armatures: Object3D[]
