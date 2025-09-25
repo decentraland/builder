@@ -42,11 +42,11 @@ export const defaults: Options = {
   thumbnailType: ThumbnailType.DEFAULT
 }
 
-const ARMATURE_PREFIX = 'Armature_'
+const ARMATURE_PREFIX = 'Armature'
 
 enum ARMATURES {
-  PROP = ARMATURE_PREFIX + 'Prop',
-  OTHER = ARMATURE_PREFIX + 'Other'
+  PROP = ARMATURE_PREFIX + '_Prop',
+  OTHER = ARMATURE_PREFIX + '_Other'
 }
 
 async function loadGltf(url: string, options: Partial<Options> = {}) {
