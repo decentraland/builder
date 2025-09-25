@@ -1,6 +1,16 @@
 import React, { useReducer, useRef, useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
-import { BodyPartCategory, BodyShape, EmoteCategory, Rarity, PreviewProjection, WearableCategory, IPreviewController } from '@dcl/schemas'
+import {
+  BodyPartCategory,
+  BodyShape,
+  EmoteCategory,
+  Rarity,
+  PreviewProjection,
+  WearableCategory,
+  IPreviewController,
+  ArmatureId,
+  EmoteDataADR287
+} from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
   MAX_SKIN_FILE_SIZE,
@@ -24,8 +34,7 @@ import {
   VIDEO_PATH,
   WearableData,
   SyncStatus,
-  EmoteData,
-  EmoteDataADR287
+  EmoteData
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -59,6 +68,7 @@ import { areMappingsValid } from 'modules/thirdParty/utils'
 import { Authorization } from 'lib/api/auth'
 import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
 import {
+  autocompleteEmoteData,
   buildRepresentations,
   buildRepresentationsZipBothBodyshape,
   getLinkedContract,
@@ -68,7 +78,15 @@ import {
   toWearableWithBlobs
 } from './utils'
 import { createItemReducer, createItemActions, createInitialState } from './CreateSingleItemModal.reducer'
-import { Props, State, CreateItemView, StateData, SortedContent, AcceptedFileProps } from './CreateSingleItemModal.types'
+import {
+  Props,
+  State,
+  CreateItemView,
+  StateData,
+  SortedContent,
+  AcceptedFileProps,
+  CreateSingleItemModalMetadata
+} from './CreateSingleItemModal.types'
 import { Steps } from './Steps'
 import { CreateSingleItemModalProvider } from './CreateSingleItemModalProvider'
 import './CreateSingleItemModal.css'
@@ -149,29 +167,26 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         if (outcomes && outcomes.length > 0) {
           data = {
             ...data,
-            startAnimation: [
-              {
-                armature: 'Armature',
+            startAnimation: {
+              [ArmatureId.Armature]: {
                 animation: 'HighFive_Start',
                 loop: true
               }
-            ],
+            },
             randomizeOutcomes: false,
             outcomes: [
               {
                 title: 'High Five',
-                clips: [
-                  {
-                    armature: 'Armature',
+                clips: {
+                  [ArmatureId.Armature]: {
                     animation: 'HighFive_Avatar',
                     loop: false
                   },
-                  {
-                    armature: 'Armature_Other',
+                  [ArmatureId.Armature_Other]: {
                     animation: 'HighFive_AvatarOther',
                     loop: false
                   }
-                ]
+                }
               }
             ]
           }
@@ -396,7 +411,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   /**
    * Gets the modal title based on state and metadata
    */
-  const getModalTitle = (state: State, metadata: any, isAddingRepresentation: boolean): string => {
+  const getModalTitle = (state: State, metadata: CreateSingleItemModalMetadata, isAddingRepresentation: boolean): string => {
     const { type, view, contents } = state
 
     if (isAddingRepresentation) {
@@ -697,22 +712,17 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         dispatch(createItemActions.setView(view))
         if (areEmoteMetrics(data.metrics) && data.metrics.additionalArmatures) {
           // required?
-          // dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
-          // TODO: Remove this once the RightPanel is updated
-          dispatch(
-            createItemActions.setOutcomes([
-              {
-                title: 'Test',
-                clips: [
-                  {
-                    armature: 'Armature',
-                    animation: 'Test_Start',
-                    loop: true
-                  }
-                ]
-              }
-            ])
-          )
+          dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
+
+          // Extract animation names from AnimationClip objects
+          const animationNames = (data.animations ?? []).map(clip => clip.name)
+
+          // Autocomplete emote data based on animation naming conventions
+          const autocompletedData = autocompleteEmoteData(animationNames)
+
+          if (autocompletedData.outcomes) {
+            dispatch(createItemActions.setOutcomes(autocompletedData.outcomes))
+          }
         }
         dispatch(createItemActions.setLoading(false))
       }
