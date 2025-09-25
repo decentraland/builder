@@ -288,3 +288,114 @@ export const getLinkedContract = (collection: Collection | undefined | null): Li
     network: collection.linkedContractNetwork
   }
 }
+
+/**
+ * Maps animation suffixes to their corresponding armature names
+ */
+const ANIMATION_TO_ARMATURE_MAP = {
+  Avatar: 'Armature',
+  AvatarOther: 'Armature_Other',
+  Prop: 'Armature_Prop'
+} as const
+
+/**
+ * Extracts the base name from an animation name by removing the suffix
+ */
+const getBaseAnimationName = (animationName: string): string => {
+  // Remove common suffixes to get the base name
+  const suffixes = ['_Start', '_Avatar', '_AvatarOther', '_Prop', '_Prop_Start']
+
+  for (const suffix of suffixes) {
+    if (animationName.endsWith(suffix)) {
+      return animationName.slice(0, -suffix.length)
+    }
+  }
+
+  return animationName
+}
+
+/**
+ * Gets the armature name based on the animation name suffix
+ */
+const getArmatureFromAnimation = (animationName: string): string => {
+  if (animationName.endsWith('_AvatarOther')) {
+    return ANIMATION_TO_ARMATURE_MAP.AvatarOther
+  }
+  if (animationName.endsWith('_Prop') || animationName.endsWith('_Prop_Start')) {
+    return ANIMATION_TO_ARMATURE_MAP.Prop
+  }
+  // Default to Avatar for _Avatar, _Start, or no suffix
+  return ANIMATION_TO_ARMATURE_MAP.Avatar
+}
+
+/**
+ * Formats the base animation name into a title (e.g., "HighFive" -> "High Five")
+ */
+const formatAnimationTitle = (baseName: string): string => {
+  // Convert camelCase/PascalCase to title case
+  return baseName
+    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+    .trim()
+}
+
+/**
+ * Autocompletes emote data based on animation naming conventions
+ */
+export const autocompleteEmoteData = (animations: string[]) => {
+  const startAnimations: Array<{ armature: string; animation: string; loop: boolean }> = []
+  const outcomes: Array<{ title: string; clips: Array<{ armature: string; animation: string; loop: boolean }> }> = []
+
+  // Group animations by base name
+  const animationGroups = new Map<string, string[]>()
+
+  animations.forEach(animation => {
+    const baseName = getBaseAnimationName(animation)
+    if (!animationGroups.has(baseName)) {
+      animationGroups.set(baseName, [])
+    }
+    animationGroups.get(baseName)!.push(animation)
+  })
+
+  // Process each group
+  animationGroups.forEach((groupAnimations, baseName) => {
+    const title = formatAnimationTitle(baseName)
+
+    // Find start animations
+    const startAnimation = groupAnimations.find(anim => anim.endsWith('_Start'))
+    if (startAnimation) {
+      const armature = getArmatureFromAnimation(startAnimation)
+      startAnimations.push({
+        armature,
+        animation: startAnimation,
+        loop: true
+      })
+    }
+
+    // Find outcome animations (non-start animations)
+    const outcomeAnimations = groupAnimations.filter(anim => !anim.endsWith('_Start'))
+    if (outcomeAnimations.length > 0) {
+      const clips = outcomeAnimations.map(animation => ({
+        armature: getArmatureFromAnimation(animation),
+        animation,
+        loop: true
+      }))
+
+      outcomes.push({
+        title,
+        clips
+      })
+    }
+  })
+
+  return {
+    startAnimation:
+      startAnimations.length > 0
+        ? {
+            avatar: startAnimations.find(s => s.armature === 'Armature') || startAnimations[0],
+            prop: startAnimations.find(s => s.armature === 'Armature_Prop')
+          }
+        : undefined,
+    outcomes: outcomes.length > 0 ? outcomes : undefined
+  }
+}
