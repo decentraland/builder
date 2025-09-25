@@ -1,6 +1,6 @@
 import type { Wearable } from 'decentraland-ecs'
 import { Locale, BodyShape, WearableCategory, WearableDefinition, EmoteDefinition } from '@dcl/schemas'
-import { Item, ItemType } from 'modules/item/types'
+import { isEmoteDataADR287, Item, ItemType } from 'modules/item/types'
 import { CatalystWearable, EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
@@ -198,7 +198,7 @@ export const getName = (wearable: Wearable) => {
       return !isNumeric || part <= 0 ? strPart : null
     })
     .filter(part => part != null) // Filter out ignored parts
-    .map(part => capitalize(part!))
+    .map(part => capitalize(part))
     .join(' ')
 }
 
@@ -324,15 +324,32 @@ export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
         text: item.name
       }
     ],
-    emoteDataADR74: {
-      ...item.data,
-      category: item.data.category,
-      representations: item.data.representations.map(representation => ({
-        ...representation,
-        contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
-      })),
-      loop: item.data.loop
-    }
+    ...(isEmoteDataADR287(item.data)
+      ? {
+          emoteDataADR287: {
+            ...item.data,
+            category: item.data.category,
+            representations: item.data.representations.map(representation => ({
+              ...representation,
+              contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
+            })),
+            loop: item.data.loop,
+            startAnimation: item.data.startAnimation,
+            randomizeOutcomes: item.data.randomizeOutcomes,
+            outcomes: item.data.outcomes
+          }
+        }
+      : {
+          emoteDataADR74: {
+            ...item.data,
+            category: item.data.category,
+            representations: item.data.representations.map(representation => ({
+              ...representation,
+              contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
+            })),
+            loop: item.data.loop
+          }
+        })
   }
 }
 
