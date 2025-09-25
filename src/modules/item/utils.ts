@@ -1,4 +1,5 @@
 import { constants } from 'ethers'
+import { deepEqual } from 'fast-equals'
 import {
   LocalItem,
   MAX_EMOTE_FILE_SIZE,
@@ -10,7 +11,7 @@ import {
   BodyPartCategory,
   BodyShape,
   EmoteCategory,
-  EmoteDataADR74,
+  EmoteDataADR287,
   Wearable,
   Rarity,
   WearableCategory,
@@ -50,7 +51,9 @@ import {
   WearableRepresentation,
   GenerateImageOptions,
   EmotePlayMode,
-  VIDEO_PATH
+  VIDEO_PATH,
+  EmoteOutcomeMetadataType,
+  EmoteData
 } from './types'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib'
 import { getOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
@@ -127,6 +130,23 @@ export function getEmoteAdditionalProperties(item: Item<ItemType.EMOTE>): string
     additionalProperties = `${additionalProperties}g`
   }
   return additionalProperties
+}
+
+export function getEmoteOutcomeType(item: Item<ItemType.EMOTE>): string {
+  // Validates is a Social Emote
+  if (!('startAnimation' in item.data)) {
+    return ''
+  }
+
+  if (item.data.outcomes.length === 1) {
+    return EmoteOutcomeMetadataType.SIMPLE_OUTCOME
+  }
+
+  if (item.data.outcomes.length > 1 && item.data.randomizeOutcomes) {
+    return EmoteOutcomeMetadataType.RANDOM_OUTCOME
+  }
+
+  return EmoteOutcomeMetadataType.MULTIPLE_OUTCOME
 }
 
 export function getMissingBodyShapeType(item: Item) {
@@ -224,11 +244,12 @@ export function buildEmoteMetada(
   category: string,
   bodyShapeTypes: string,
   loop: number,
-  additionalProperties?: string
+  additionalProperties?: string,
+  outcomeType?: string
 ): string {
   return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}${
     additionalProperties ? `:${additionalProperties}` : ''
-  }`
+  }${outcomeType ? `:${outcomeType}` : ''}`
 }
 
 // Metadata looks like this:
@@ -246,12 +267,13 @@ export function getMetadata(item: Item) {
       return buildItemMetadata(1, getItemMetadataType(item), item.name, item.description, data.category, bodyShapeTypes)
     }
     case ItemType.EMOTE: {
-      const data = item.data as unknown as EmoteDataADR74
+      const data = item.data as unknown as EmoteData
       const bodyShapeTypes = getBodyShapes(item).map(toWearableBodyShapeType).join(',')
       if (!data.category) {
         throw new Error(`Unknown item category "${JSON.stringify(item.data)}"`)
       }
       const additionalProperties = getEmoteAdditionalProperties(item as unknown as Item<ItemType.EMOTE>)
+      const outcomeType = getEmoteOutcomeType(item as unknown as Item<ItemType.EMOTE>)
       return buildEmoteMetada(
         1,
         getItemMetadataType(item),
@@ -260,7 +282,8 @@ export function getMetadata(item: Item) {
         data.category,
         bodyShapeTypes,
         data.loop ? 1 : 0,
-        additionalProperties
+        additionalProperties,
+        outcomeType
       )
     }
     default:
@@ -586,23 +609,36 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
     throw new Error('Item must be EMOTE')
   }
 
-  // check if metadata has the new schema from ADR 74
+  // check if metadata has the new schema from ADR 74 or ADR 287
   const isADR74 = 'emoteDataADR74' in entity.metadata
-  if (!isADR74) {
+  const isADR287 = 'emoteDataADR287' in entity.metadata
+  if (!isADR74 && !isADR287) {
     return false
   }
 
   // check if metadata is synced
   const catalystItem = entity.metadata
-  const catalystItemMetadataData = isADR74 ? entity.metadata.emoteDataADR74 : entity.metadata.data
-  const data = item.data as EmoteDataADR74
+  const catalystItemMetadataData = isADR74
+    ? entity.metadata.emoteDataADR74
+    : isADR287
+    ? entity.metadata.emoteDataADR287
+    : entity.metadata.data
+  const data = item.data as unknown as EmoteData
 
-  const hasMetadataChanged =
+  let hasMetadataChanged =
     item.name !== catalystItem.name ||
     item.description !== catalystItem.description ||
     data.category !== catalystItemMetadataData.category ||
     data.loop !== catalystItemMetadataData.loop ||
     data.tags.toString() !== catalystItemMetadataData.tags.toString()
+
+  if (isADR287) {
+    hasMetadataChanged =
+      hasMetadataChanged ||
+      !deepEqual((data as EmoteDataADR287).startAnimation, catalystItemMetadataData.startAnimation) ||
+      (data as EmoteDataADR287).randomizeOutcomes !== catalystItemMetadataData.randomizeOutcomes ||
+      !deepEqual((data as EmoteDataADR287).outcomes, catalystItemMetadataData.outcomes)
+  }
 
   if (hasMetadataChanged) {
     return false
