@@ -1,4 +1,4 @@
-import { Emote, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
+import { Emote, EmoteDataADR287, EntityType, Locale, Rarity, Wearable, WearableCategory, WearableRepresentation } from '@dcl/schemas'
 import { DeploymentPreparationData, buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { MerkleDistributorInfo } from '@dcl/content-hash-tree/dist/types'
 import { calculateMultipleHashesADR32, calculateMultipleHashesADR32LegacyQmHash } from '@dcl/hashing'
@@ -6,7 +6,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
-import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType, VIDEO_PATH } from './types'
+import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType, VIDEO_PATH, isEmoteDataADR287 } from './types'
 import { EMPTY_ITEM_METRICS, generateCatalystImage, generateImage } from './utils'
 
 /**
@@ -222,6 +222,36 @@ function buildADR74EmoteEntityMetadata(collection: Collection, item: Item<ItemTy
   return catalystItem
 }
 
+function buildADR287EmoteEntityMetadata(collection: Collection, item: Item<ItemType.EMOTE>): Emote {
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
+  }
+
+  // The order of the metadata properties can't be changed. Changing it will result in a different content hash.
+  const catalystItem: Emote = {
+    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
+    name: item.name,
+    description: item.description,
+    collectionAddress: collection.contractAddress,
+    rarity: item.rarity! as unknown as Rarity,
+    i18n: [{ code: Locale.EN, text: item.name }],
+    emoteDataADR287: {
+      category: item.data.category,
+      representations: item.data.representations,
+      tags: item.data.tags,
+      loop: item.data.loop,
+      startAnimation: (item.data as EmoteDataADR287).startAnimation,
+      randomizeOutcomes: (item.data as EmoteDataADR287).randomizeOutcomes,
+      outcomes: (item.data as EmoteDataADR287).outcomes
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: EMPTY_ITEM_METRICS
+  }
+  console.log('generating emote metadata for ADR 287', { catalystItem })
+  return catalystItem
+}
+
 async function buildItemEntityContent(item: Item): Promise<Record<string, string>> {
   const contents = { ...item.contents }
   if (!item.contents[IMAGE_PATH]) {
@@ -260,7 +290,9 @@ export async function buildItemEntity(
   let metadata
   const isEmote = isEmoteItemType(item) //TODO: @Emotes remove this FF once launched
   if (isEmote) {
-    metadata = buildADR74EmoteEntityMetadata(collection, item)
+    metadata = isEmoteDataADR287(item.data)
+      ? buildADR287EmoteEntityMetadata(collection, item)
+      : buildADR74EmoteEntityMetadata(collection, item)
   } else if (tree && itemHash) {
     metadata = buildTPItemEntityMetadata(item, itemHash, tree)
   } else {
@@ -301,7 +333,11 @@ export async function buildStandardWearableContentHash(
 ): Promise<string> {
   const hashes = await buildItemEntityContent(item)
   const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
-  const metadata = isEmoteItemType(item) ? buildADR74EmoteEntityMetadata(collection, item) : buildWearableEntityMetadata(collection, item)
+  const metadata = isEmoteItemType(item)
+    ? isEmoteDataADR287(item.data)
+      ? buildADR287EmoteEntityMetadata(collection, item)
+      : buildADR74EmoteEntityMetadata(collection, item)
+    : buildWearableEntityMetadata(collection, item)
   if (hashingType === EntityHashingType.V0) {
     return (await calculateMultipleHashesADR32LegacyQmHash(content, metadata)).hash
   } else {
