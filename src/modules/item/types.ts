@@ -2,6 +2,7 @@ import { BuiltItem, Content } from '@dcl/builder-client'
 import {
   BodyShape,
   EmoteDataADR74,
+  EmoteDataADR287,
   Wearable,
   WearableCategory,
   Rarity,
@@ -89,25 +90,6 @@ export type WearableData = {
   outlineCompatible?: boolean
 }
 
-// TODO: Replace these types using the ones from @dcl/schemas
-
-export type EmoteClip = {
-  armature: string
-  animation: string
-  loop: boolean
-}
-
-export type OutcomeGroup = {
-  title: string
-  clips: EmoteClip[]
-}
-
-export type EmoteDataADR287 = EmoteDataADR74 & {
-  startAnimation: EmoteClip[]
-  randomizeOutcomes: boolean
-  outcomes: OutcomeGroup[]
-}
-
 export type EmoteData = EmoteDataADR74 | EmoteDataADR287
 
 type BaseItem = {
@@ -160,7 +142,8 @@ export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item
   (item as Item<ItemType.EMOTE>).type === ItemType.EMOTE
 
 export const isEmoteDataADR287 = (data: EmoteData): data is EmoteDataADR287 => (data as EmoteDataADR287).outcomes !== undefined
-export const isEmoteData = (data: WearableData | EmoteData): data is EmoteData => (data as EmoteData).loop !== undefined
+export const isEmoteData = (data: WearableData | EmoteData | undefined): data is EmoteData =>
+  !!data && (data as unknown as EmoteData).loop !== undefined
 
 export enum Currency {
   MANA = 'MANA',
