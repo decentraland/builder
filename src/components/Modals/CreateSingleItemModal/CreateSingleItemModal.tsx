@@ -123,7 +123,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         tags,
         blockVrmExport,
         mappings,
-        outcomes
+        emoteData
       } = state as StateData
 
       const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection?.urn)
@@ -163,32 +163,53 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         } as EmoteData
 
         // ADR 287 - Social Emotes
-        // Hardcoded for testing purposes but should be removed later
-        if (outcomes && outcomes.length > 0) {
-          data = {
-            ...data,
-            startAnimation: {
-              [ArmatureId.Armature]: {
-                animation: 'HighFive_Start',
-                loop: true
-              }
-            },
-            randomizeOutcomes: false,
-            outcomes: [
-              {
-                title: 'High Five',
-                clips: {
-                  [ArmatureId.Armature]: {
-                    animation: 'HighFive_Avatar',
-                    loop: false
-                  },
-                  [ArmatureId.Armature_Other]: {
-                    animation: 'HighFive_AvatarOther',
-                    loop: false
-                  }
+        // Use autocompleteEmoteData to generate startAnimation and outcomes from available animations
+        if (emoteData?.animations && emoteData.animations.length > 0) {
+          const animationNames = emoteData.animations.map(clip => clip.name)
+          const autocompletedData = autocompleteEmoteData(animationNames)
+
+          if (autocompletedData.startAnimation || autocompletedData.outcomes) {
+            const socialEmoteData: Partial<EmoteDataADR287> = {}
+
+            // Transform startAnimation if available
+            if (autocompletedData.startAnimation) {
+              socialEmoteData.startAnimation = {
+                [ArmatureId.Armature]: {
+                  animation: autocompletedData.startAnimation.avatar.animation,
+                  loop: autocompletedData.startAnimation.avatar.loop
                 }
               }
-            ]
+
+              // Add prop animation if available
+              if (autocompletedData.startAnimation.prop) {
+                socialEmoteData.startAnimation[ArmatureId.Armature_Prop] = {
+                  animation: autocompletedData.startAnimation.prop.animation,
+                  loop: autocompletedData.startAnimation.prop.loop
+                }
+              }
+            }
+
+            // Transform outcomes if available
+            if (autocompletedData.outcomes) {
+              socialEmoteData.outcomes = autocompletedData.outcomes.map(outcome => ({
+                title: outcome.title,
+                clips: outcome.clips.reduce((clips, clip) => {
+                  clips[clip.armature as ArmatureId] = {
+                    animation: clip.animation,
+                    loop: clip.loop
+                  }
+                  return clips
+                }, {} as Partial<Record<ArmatureId, { animation: string; loop: boolean }>>)
+              }))
+            }
+
+            // Add randomizeOutcomes flag
+            socialEmoteData.randomizeOutcomes = false
+
+            data = {
+              ...data,
+              ...socialEmoteData
+            }
           }
         }
       }
