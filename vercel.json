@@ -9,6 +9,7 @@
       "VITE_REACT_APP_DCL_DEFAULT_ENV": "dev"
     }
   },
+  "buildCommand": "npm ci --legacy-peer-deps && npm run build",
   "rewrites": [
     {
       "source": "/auth/:match*",
