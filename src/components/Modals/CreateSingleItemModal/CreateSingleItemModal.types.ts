@@ -1,11 +1,11 @@
 import { AnimationClip, Object3D } from 'three'
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { IPreviewController, Mappings, Rarity } from '@dcl/schemas'
+import { IPreviewController, Mappings, OutcomeGroup, Rarity } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
-import { BodyShapeType, Item, ItemType, OutcomeGroup, SyncStatus } from 'modules/item/types'
+import { BodyShapeType, Item, ItemType, SyncStatus } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',

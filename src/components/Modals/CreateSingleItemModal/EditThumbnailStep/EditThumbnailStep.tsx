@@ -82,7 +82,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             <WearablePreview
               ref={this.previewRef}
               id="preview"
-              blob={blob}
+              blob={blob as any} // TODO: Remove any
               base64s={base64s}
               profile="default"
               disableBackground
