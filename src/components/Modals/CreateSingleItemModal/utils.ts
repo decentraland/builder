@@ -1,4 +1,5 @@
 import {
+  ArmatureId,
   BodyShape,
   ContractAddress,
   ContractNetwork,
@@ -6,6 +7,8 @@ import {
   EmoteWithBlobs,
   Mapping,
   MappingType,
+  OutcomeGroup,
+  StartAnimation,
   WearableCategory,
   WearableWithBlobs
 } from '@dcl/schemas'
@@ -293,9 +296,9 @@ export const getLinkedContract = (collection: Collection | undefined | null): Li
  * Maps animation suffixes to their corresponding armature names
  */
 const ANIMATION_TO_ARMATURE_MAP = {
-  Avatar: 'Armature',
-  AvatarOther: 'Armature_Other',
-  Prop: 'Armature_Prop'
+  Avatar: ArmatureId.Armature,
+  AvatarOther: ArmatureId.Armature_Other,
+  Prop: ArmatureId.Armature_Prop
 } as const
 
 /**
@@ -317,7 +320,7 @@ const getBaseAnimationName = (animationName: string): string => {
 /**
  * Gets the armature name based on the animation name suffix
  */
-const getArmatureFromAnimation = (animationName: string): string => {
+const getArmatureFromAnimation = (animationName: string): ArmatureId => {
   if (animationName.endsWith('_AvatarOther')) {
     return ANIMATION_TO_ARMATURE_MAP.AvatarOther
   }
@@ -343,8 +346,8 @@ const formatAnimationTitle = (baseName: string): string => {
  * Autocompletes emote data based on animation naming conventions
  */
 export const autocompleteEmoteData = (animations: string[]) => {
-  const startAnimations: Array<{ armature: string; animation: string; loop: boolean }> = []
-  const outcomes: Array<{ title: string; clips: Array<{ armature: string; animation: string; loop: boolean }> }> = []
+  let startAnimations: Partial<StartAnimation> = {}
+  const outcomes: OutcomeGroup[] = []
 
   // Group animations by base name
   const animationGroups = new Map<string, string[]>()
@@ -365,21 +368,31 @@ export const autocompleteEmoteData = (animations: string[]) => {
     const startAnimation = groupAnimations.find(anim => anim.endsWith('_Start'))
     if (startAnimation) {
       const armature = getArmatureFromAnimation(startAnimation)
-      startAnimations.push({
-        armature,
-        animation: startAnimation,
-        loop: true
-      })
+      startAnimations = {
+        ...startAnimations,
+        [armature]: {
+          animation: startAnimation,
+          loop: true
+        }
+      }
     }
 
     // Find outcome animations (non-start animations)
     const outcomeAnimations = groupAnimations.filter(anim => !anim.endsWith('_Start'))
     if (outcomeAnimations.length > 0) {
-      const clips = outcomeAnimations.map(animation => ({
+      const clipsArray = outcomeAnimations.map(animation => ({
         armature: getArmatureFromAnimation(animation),
         animation,
         loop: true
       }))
+
+      const clips: Partial<Record<ArmatureId, { animation: string; loop: boolean }>> = {}
+      clipsArray.forEach(clip => {
+        clips[clip.armature] = {
+          animation: clip.animation,
+          loop: clip.loop
+        }
+      })
 
       outcomes.push({
         title,
@@ -389,13 +402,7 @@ export const autocompleteEmoteData = (animations: string[]) => {
   })
 
   return {
-    startAnimation:
-      startAnimations.length > 0
-        ? {
-            avatar: startAnimations.find(s => s.armature === 'Armature') || startAnimations[0],
-            prop: startAnimations.find(s => s.armature === 'Armature_Prop')
-          }
-        : undefined,
+    startAnimation: Object.keys(startAnimations).length > 0 ? startAnimations : undefined,
     outcomes: outcomes.length > 0 ? outcomes : undefined
   }
 }

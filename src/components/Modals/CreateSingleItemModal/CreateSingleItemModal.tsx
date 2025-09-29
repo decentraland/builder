@@ -8,8 +8,8 @@ import {
   PreviewProjection,
   WearableCategory,
   IPreviewController,
-  ArmatureId,
-  EmoteDataADR287
+  EmoteDataADR287,
+  StartAnimation
 } from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
@@ -173,34 +173,12 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
             // Transform startAnimation if available
             if (autocompletedData.startAnimation) {
-              socialEmoteData.startAnimation = {
-                [ArmatureId.Armature]: {
-                  animation: autocompletedData.startAnimation.avatar.animation,
-                  loop: autocompletedData.startAnimation.avatar.loop
-                }
-              }
-
-              // Add prop animation if available
-              if (autocompletedData.startAnimation.prop) {
-                socialEmoteData.startAnimation[ArmatureId.Armature_Prop] = {
-                  animation: autocompletedData.startAnimation.prop.animation,
-                  loop: autocompletedData.startAnimation.prop.loop
-                }
-              }
+              socialEmoteData.startAnimation = autocompletedData.startAnimation as StartAnimation
             }
 
             // Transform outcomes if available
             if (autocompletedData.outcomes) {
-              socialEmoteData.outcomes = autocompletedData.outcomes.map(outcome => ({
-                title: outcome.title,
-                clips: outcome.clips.reduce((clips, clip) => {
-                  clips[clip.armature as ArmatureId] = {
-                    animation: clip.animation,
-                    loop: clip.loop
-                  }
-                  return clips
-                }, {} as Partial<Record<ArmatureId, { animation: string; loop: boolean }>>)
-              }))
+              socialEmoteData.outcomes = autocompletedData.outcomes
             }
 
             // Add randomizeOutcomes flag

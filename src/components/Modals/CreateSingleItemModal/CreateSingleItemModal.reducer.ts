@@ -1,6 +1,6 @@
 import { AnimationClip, Object3D } from 'three'
-import { EmotePlayMode, Rarity, WearableCategory, Mapping, ContractNetwork, ContractAddress } from '@dcl/schemas'
-import { Item, BodyShapeType, ItemType, OutcomeGroup } from 'modules/item/types'
+import { EmotePlayMode, Rarity, WearableCategory, Mapping, ContractNetwork, ContractAddress, OutcomeGroup } from '@dcl/schemas'
+import { Item, BodyShapeType, ItemType } from 'modules/item/types'
 import { Metrics } from 'modules/models/types'
 import { CreateItemView, State, AcceptedFileProps, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { Collection } from 'modules/collection/types'
