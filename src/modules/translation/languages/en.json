@@ -2140,6 +2140,7 @@
         "avatar": "Avatar",
         "props": "Props",
         "audio": "Audio",
+        "no_audio": "No audio",
         "optional": "optional",
         "randomize_outcomes": "Randomize outcomes",
         "add_outcome": "Add an outcome"

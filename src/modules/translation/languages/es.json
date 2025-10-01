@@ -2158,6 +2158,7 @@
         "avatar": "Avatar",
         "props": "Props",
         "audio": "Audio",
+        "no_audio": "Sin audio",
         "optional": "opcional",
         "randomize_outcomes": "Aleatorizar opciones",
         "add_outcome": "Agregar una opción"
