@@ -235,6 +235,7 @@ function buildADR287EmoteEntityMetadata(collection: Collection, item: Item<ItemT
     collectionAddress: collection.contractAddress,
     rarity: item.rarity! as unknown as Rarity,
     i18n: [{ code: Locale.EN, text: item.name }],
+    // TODO: ADR287
     emoteDataADR287: {
       category: item.data.category,
       representations: item.data.representations,

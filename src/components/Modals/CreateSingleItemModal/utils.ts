@@ -396,7 +396,8 @@ export const autocompleteEmoteData = (animations: string[]) => {
 
       outcomes.push({
         title,
-        clips
+        clips,
+        loop: false
       })
     }
   })

@@ -235,6 +235,7 @@ export async function getEmoteData(url: string, options: Partial<Options> = {}) 
     throw new EmoteWithMeshError()
   }
 
+  // TODO: ADR287
   // For social emotes, we need to count the number of additional armatures, currently only one additional armature is supported
   const additionalArmatures = armatures.some(({ name }) => name === ARMATURES.OTHER) ? 1 : 0
 
