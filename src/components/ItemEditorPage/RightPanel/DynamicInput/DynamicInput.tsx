@@ -1,4 +1,4 @@
-import { FC, memo, useState, useRef, useCallback, ChangeEvent, KeyboardEvent } from 'react'
+import { FC, memo, useState, useCallback, ChangeEvent, KeyboardEvent } from 'react'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui'
 import { Props } from './DynamicInput.types'
@@ -6,7 +6,6 @@ import styles from './DynamicInput.module.css'
 
 const DynamicInput: FC<Props> = ({ value, disabled = false, placeholder = '', editable = false, className = '', maxLength, onChange }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +48,6 @@ const DynamicInput: FC<Props> = ({ value, disabled = false, placeholder = '', ed
   return (
     <div className={classNames(styles.dynamicInput, { [styles.isEditing]: isEditing }, className)}>
       <input
-        ref={inputRef}
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
