@@ -68,7 +68,7 @@ import { areMappingsValid } from 'modules/thirdParty/utils'
 import { Authorization } from 'lib/api/auth'
 import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
 import {
-  autocompleteEmoteData,
+  autocompleteSocialEmoteData,
   buildRepresentations,
   buildRepresentationsZipBothBodyshape,
   getLinkedContract,
@@ -163,10 +163,10 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         } as EmoteData
 
         // TODO: ADR 287 - Social Emotes
-        // Use autocompleteEmoteData to generate startAnimation and outcomes from available animations
+        // Use autocompleteSocialEmoteData to generate startAnimation and outcomes from available animations
         if (emoteData?.animations && emoteData.animations.length > 0) {
           const animationNames = emoteData.animations.map(clip => clip.name)
-          const autocompletedData = autocompleteEmoteData(animationNames)
+          const autocompletedData = autocompleteSocialEmoteData(animationNames)
 
           if (autocompletedData.startAnimation || autocompletedData.outcomes) {
             const socialEmoteData: Partial<EmoteDataADR287> = {}
@@ -717,7 +717,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           const animationNames = (data.animations ?? []).map(clip => clip.name)
 
           // Autocomplete emote data based on animation naming conventions
-          const autocompletedData = autocompleteEmoteData(animationNames)
+          const autocompletedData = autocompleteSocialEmoteData(animationNames)
 
           if (autocompletedData.outcomes) {
             dispatch(createItemActions.setOutcomes(autocompletedData.outcomes))
