@@ -228,13 +228,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const data = this.state.data as any
     const startAnimation = { ...(data.startAnimation || {}) }
 
-    if (!startAnimation[prop]) {
-      startAnimation[prop] = { armature: '', animation: '', loop: true }
-    }
+    // For optional fields (Armature_Prop), remove the entire prop if value is empty
+    if (value === '' && prop === ArmatureId.Armature_Prop) {
+      delete startAnimation[prop]
+    } else {
+      if (!startAnimation[prop]) {
+        startAnimation[prop] = { armature: '', animation: '', loop: true }
+      }
 
-    startAnimation[prop] = {
-      ...startAnimation[prop],
-      [field]: value
+      startAnimation[prop] = {
+        ...startAnimation[prop],
+        [field]: value
+      }
     }
 
     this.setState({
@@ -282,14 +287,20 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const data = this.state.data as unknown as EmoteDataADR287
     const outcomes = [...data.outcomes]
     const clips = { ...outcomes[outcomeIndex].clips }
-    if (!clips[armatureId]) {
-      clips[armatureId] = {
-        animation: ''
+
+    if (value === '') {
+      // Remove the entire armatureId if value is empty
+      delete clips[armatureId]
+    } else {
+      if (!clips[armatureId]) {
+        clips[armatureId] = {
+          animation: ''
+        }
       }
-    }
-    clips[armatureId] = {
-      ...clips[armatureId],
-      [field]: value
+      clips[armatureId] = {
+        ...clips[armatureId],
+        [field]: value
+      }
     }
 
     outcomes[outcomeIndex] = {
@@ -544,7 +555,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }))
   }
 
-  getAnimationOptions(animationData: AnimationData): Array<{ value: string; text: string }> {
+  getAnimationOptions(animationData: AnimationData, optional = false): Array<{ value: string; text: string }> {
     if (!animationData.isLoaded) {
       return []
     }
@@ -554,10 +565,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       return []
     }
 
-    return animationData.animations.map((animation: AnimationClip) => ({
+    const options = animationData.animations.map((animation: AnimationClip) => ({
       value: animation.name,
       text: animation.name
     }))
+
+    return optional ? [{ value: '', text: '--' }, ...options] : options
   }
 
   getAudioOptions(values: Item['contents']): Array<{ value: string; text: string }> {
@@ -582,7 +595,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       })
       .filter(Boolean) as { value: string; text: string }[]
 
-    return [{ value: '', text: t('item_editor.right_panel.social_emote.no_audio') }, ...options]
+    return [{ value: '', text: '--' }, ...options]
   }
 
   renderOverrides(item: Item) {
@@ -849,18 +862,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               disabled={isLoading}
                               onChange={value => this.handleEmoteRequestStateChange(ArmatureId.Armature, 'animation', value)}
                             />
-                            {(data as EmoteDataADR287).startAnimation[ArmatureId.Armature_Prop] ? (
-                              <Select<string>
-                                itemId={item.id}
-                                label={`${t('item_editor.right_panel.social_emote.props')} (${t(
-                                  'item_editor.right_panel.social_emote.optional'
-                                )})`}
-                                value={(data as EmoteDataADR287).startAnimation[ArmatureId.Armature_Prop]?.animation || ''}
-                                options={this.getAnimationOptions(animationData)}
-                                disabled={isLoading}
-                                onChange={value => this.handleEmoteRequestStateChange(ArmatureId.Armature_Prop, 'animation', value)}
-                              />
-                            ) : null}
+
+                            <Select<string>
+                              itemId={item.id}
+                              label={`${t('item_editor.right_panel.social_emote.props')} (${t(
+                                'item_editor.right_panel.social_emote.optional'
+                              )})`}
+                              value={(data as EmoteDataADR287).startAnimation[ArmatureId.Armature_Prop]?.animation}
+                              options={this.getAnimationOptions(animationData, true)}
+                              disabled={isLoading}
+                              onChange={value => this.handleEmoteRequestStateChange(ArmatureId.Armature_Prop, 'animation', value)}
+                            />
+
                             {Object.values(item.contents).length > 0 && itemHasAudio(item) ? (
                               <Select<string>
                                 itemId={item.id}
@@ -928,7 +941,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                 <Select<string>
                                   itemId={item.id}
                                   label={`${t('item_editor.right_panel.social_emote.avatar')} 1`}
-                                  value={outcome.clips[ArmatureId.Armature]?.animation || ''}
+                                  value={outcome.clips[ArmatureId.Armature]?.animation}
                                   options={this.getAnimationOptions(animationData)}
                                   disabled={isLoading}
                                   onChange={value => this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature, 'animation', value)}
@@ -939,8 +952,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                   label={`${t('item_editor.right_panel.social_emote.avatar')} 2 (${t(
                                     'item_editor.right_panel.social_emote.optional'
                                   )})`}
-                                  value={outcome.clips[ArmatureId.Armature_Other]?.animation || ''}
-                                  options={this.getAnimationOptions(animationData)}
+                                  value={outcome.clips[ArmatureId.Armature_Other]?.animation}
+                                  options={this.getAnimationOptions(animationData, true)}
                                   disabled={isLoading}
                                   onChange={value =>
                                     this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature_Other, 'animation', value)
@@ -952,8 +965,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                   label={`${t('item_editor.right_panel.social_emote.props')} (${t(
                                     'item_editor.right_panel.social_emote.optional'
                                   )})`}
-                                  value={outcome.clips[ArmatureId.Armature_Prop]?.animation || ''}
-                                  options={this.getAnimationOptions(animationData)}
+                                  value={outcome.clips[ArmatureId.Armature_Prop]?.animation}
+                                  options={this.getAnimationOptions(animationData, true)}
                                   disabled={isLoading}
                                   onChange={value =>
                                     this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature_Prop, 'animation', value)
