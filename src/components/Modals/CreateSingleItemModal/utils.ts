@@ -4,6 +4,7 @@ import {
   ContractAddress,
   ContractNetwork,
   EmoteCategory,
+  EmoteClip,
   EmoteWithBlobs,
   Mapping,
   MappingType,
@@ -345,7 +346,7 @@ const formatAnimationTitle = (baseName: string): string => {
 /**
  * Autocompletes emote data based on animation naming conventions
  */
-export const autocompleteEmoteData = (animations: string[]) => {
+export const autocompleteSocialEmoteData = (animations: string[]) => {
   let startAnimations: Partial<StartAnimation> = {}
   const outcomes: OutcomeGroup[] = []
 
@@ -371,8 +372,7 @@ export const autocompleteEmoteData = (animations: string[]) => {
       startAnimations = {
         ...startAnimations,
         [armature]: {
-          animation: startAnimation,
-          loop: true
+          animation: startAnimation
         }
       }
     }
@@ -382,15 +382,13 @@ export const autocompleteEmoteData = (animations: string[]) => {
     if (outcomeAnimations.length > 0) {
       const clipsArray = outcomeAnimations.map(animation => ({
         armature: getArmatureFromAnimation(animation),
-        animation,
-        loop: true
+        animation
       }))
 
-      const clips: Partial<Record<ArmatureId, { animation: string; loop: boolean }>> = {}
+      const clips: Partial<Record<ArmatureId, EmoteClip>> = {}
       clipsArray.forEach(clip => {
         clips[clip.armature] = {
-          animation: clip.animation,
-          loop: clip.loop
+          animation: clip.animation
         }
       })
 
@@ -403,7 +401,7 @@ export const autocompleteEmoteData = (animations: string[]) => {
   })
 
   return {
-    startAnimation: Object.keys(startAnimations).length > 0 ? startAnimations : undefined,
+    startAnimation: Object.keys(startAnimations).length > 0 ? { ...startAnimations, loop: true } : undefined,
     outcomes: outcomes.length > 0 ? outcomes : undefined
   }
 }
