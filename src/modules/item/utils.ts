@@ -53,7 +53,8 @@ import {
   EmotePlayMode,
   VIDEO_PATH,
   EmoteOutcomeMetadataType,
-  EmoteData
+  EmoteData,
+  isEmoteDataADR287
 } from './types'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib'
 import { getOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
@@ -133,8 +134,7 @@ export function getEmoteAdditionalProperties(item: Item<ItemType.EMOTE>): string
 }
 
 export function getEmoteOutcomeType(item: Item<ItemType.EMOTE>): string {
-  // Validates is a Social Emote
-  if (!('startAnimation' in item.data)) {
+  if (!isEmoteDataADR287(item.data)) {
     return ''
   }
 
@@ -244,12 +244,28 @@ export function buildEmoteMetada(
   category: string,
   bodyShapeTypes: string,
   loop: number,
-  additionalProperties?: string,
-  outcomeType?: string
+  additionalProperties?: string
 ): string {
   return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}${
     additionalProperties ? `:${additionalProperties}` : ''
-  }${outcomeType ? `:${outcomeType}` : ''}`
+  }`
+}
+
+export function buildADR287EmoteMetadata(
+  version: number,
+  type: ItemMetadataType,
+  name: string,
+  description: string,
+  category: string,
+  bodyShapeTypes: string,
+  loop: number,
+  additionalProperties?: string,
+  _outcomeType?: string
+): string {
+  // TODO: ADR287 we need to add the outcomeType once the subgraph is updated- ${outcomeType ? `:${outcomeType}` : ''}
+  return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}${
+    additionalProperties ? `:${additionalProperties}` : ''
+  }`
 }
 
 // Metadata looks like this:
@@ -274,17 +290,29 @@ export function getMetadata(item: Item) {
       }
       const additionalProperties = getEmoteAdditionalProperties(item as unknown as Item<ItemType.EMOTE>)
       const outcomeType = getEmoteOutcomeType(item as unknown as Item<ItemType.EMOTE>)
-      return buildEmoteMetada(
-        1,
-        getItemMetadataType(item),
-        item.name,
-        item.description,
-        data.category,
-        bodyShapeTypes,
-        data.loop ? 1 : 0,
-        additionalProperties,
-        outcomeType
-      )
+      // TODO: ADR287
+      return isEmoteDataADR287(data)
+        ? buildADR287EmoteMetadata(
+            1,
+            getItemMetadataType(item),
+            item.name,
+            item.description,
+            data.category,
+            bodyShapeTypes,
+            data.loop ? 1 : 0,
+            additionalProperties,
+            outcomeType
+          )
+        : buildEmoteMetada(
+            1,
+            getItemMetadataType(item),
+            item.name,
+            item.description,
+            data.category,
+            bodyShapeTypes,
+            data.loop ? 1 : 0,
+            additionalProperties
+          )
     }
     default:
       throw new Error(`Unknown item.type "${item.type as unknown as string}"`)
@@ -501,6 +529,11 @@ export function isModelFile(fileName: string) {
   return fileName.endsWith('.gltf') || fileName.endsWith('.glb')
 }
 
+export function isAudioFile(fileName: string) {
+  fileName = fileName.toLowerCase()
+  return fileName.endsWith('.mp3') || fileName.endsWith('.ogg')
+}
+
 export function isModelPath(fileName: string) {
   fileName = fileName.toLowerCase()
   // we ignore PNG files that end with "_mask", since those are auxiliary
@@ -609,7 +642,7 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
     throw new Error('Item must be EMOTE')
   }
 
-  // check if metadata has the new schema from ADR 74 or ADR 287
+  // check if metadata has the new schema from ADR74 or ADR287
   const isADR74 = 'emoteDataADR74' in entity.metadata
   const isADR287 = 'emoteDataADR287' in entity.metadata
   if (!isADR74 && !isADR287) {
@@ -879,4 +912,8 @@ export async function createItemOrderTrade(
   }
 
   return { ...tradeToSign, signature: await getTradeSignature(tradeToSign) }
+}
+
+export const itemHasAudio = (item: Item): boolean => {
+  return Object.keys(item.contents).some(content => isAudioFile(content))
 }

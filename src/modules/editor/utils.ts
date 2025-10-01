@@ -324,6 +324,7 @@ export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
         text: item.name
       }
     ],
+    // TODO: ADR287
     ...(isEmoteDataADR287(item.data)
       ? {
           emoteDataADR287: {
