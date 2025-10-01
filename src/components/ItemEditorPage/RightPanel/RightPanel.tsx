@@ -246,7 +246,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleStartAnimationAudioClipChange = (audio: string) => {
     const data = this.state.data as EmoteDataADR287
     const startAnimation = { ...(data.startAnimation || {}) }
-    startAnimation.audio = audio
+    startAnimation.audio = audio || undefined
     this.setState({ data: { ...data, startAnimation }, isDirty: this.isDirty({ data: { ...data, startAnimation } }) })
   }
 
@@ -305,7 +305,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleOutcomeAudioClipChange = (outcomeIndex: number, audio: string) => {
     const data = this.state.data as EmoteDataADR287
     const outcomes = [...data.outcomes]
-    outcomes[outcomeIndex].audio = audio
+    outcomes[outcomeIndex].audio = audio || undefined
     this.setState({ data: { ...data, outcomes }, isDirty: this.isDirty({ data: { ...data, outcomes } }) })
   }
 
@@ -563,7 +563,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   getAudioOptions(values: Item['contents']): Array<{ value: string; text: string }> {
     const audioFiles = new Set<string>()
 
-    return Object.keys(values)
+    const options = Object.keys(values)
       .map(key => {
         if (isAudioFile(key)) {
           // Extract filename without male/ or female/ prefix
@@ -581,6 +581,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         return null
       })
       .filter(Boolean) as { value: string; text: string }[]
+
+    return [{ value: '', text: t('item_editor.right_panel.social_emote.no_audio') }, ...options]
   }
 
   renderOverrides(item: Item) {
