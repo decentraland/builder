@@ -177,7 +177,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           representations: [...representations]
         } as EmoteData
 
-        // ADR 287 - Social Emotes
+        // TODO: ADR 287 - Social Emotes
         // Use autocompleteEmoteData to generate startAnimation and outcomes from available animations
         if (emoteData?.animations && emoteData.animations.length > 0) {
           const animationNames = emoteData.animations.map(clip => clip.name)
