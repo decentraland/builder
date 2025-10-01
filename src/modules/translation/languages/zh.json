@@ -2133,7 +2133,6 @@
         "avatar": "阿凡达",
         "props": "道具",
         "audio": "音频",
-        "no_audio": "没有音频",
         "optional": "可选",
         "randomize_outcomes": "随机化结果",
         "add_outcome": "添加结果"
