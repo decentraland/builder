@@ -141,7 +141,8 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
 export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>
   (item as Item<ItemType.EMOTE>).type === ItemType.EMOTE
 
-export const isEmoteDataADR287 = (data: EmoteData): data is EmoteDataADR287 => (data as EmoteDataADR287).outcomes !== undefined
+export const isEmoteDataADR287 = (data: EmoteData): data is EmoteDataADR287 =>
+  (data as EmoteDataADR287).startAnimation !== undefined && (data as EmoteDataADR287).outcomes !== undefined
 export const isEmoteData = (data: WearableData | EmoteData | undefined): data is EmoteData =>
   !!data && (data as unknown as EmoteData).loop !== undefined
 
@@ -171,6 +172,7 @@ export const SCENE_LOGIC_PATH = 'bin/game.js'
 export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64
 export const ITEM_UTILITY_MAX_LENGTH = 64
+export const OUTCOME_TITLE_MAX_LENGTH = 24
 export const MODEL_EXTENSIONS = ['.zip', '.gltf', '.glb']
 export const IMAGE_EXTENSIONS = ['.zip', '.png']
 export const VIDEO_EXTENSIONS = ['.mp4']
