@@ -2108,6 +2108,7 @@
       "wearables": "可穿戴设备",
       "wearables_info": "您从可穿戴设备下拉菜单中选择的元素将被隐藏。",
       "animation": "动画",
+      "animations": "动画",
       "tags": "标签",
       "event_tag": "如果您想将此项目包含在 {event_tag} 中，请使用 {event_name} 标签。{learn_more}",
       "select_placeholder": "选择一个选项",
@@ -2127,6 +2128,14 @@
         "enabled": "启用",
         "disabled": "禁用",
         "info": "漂亮的可穿戴！允许您的物品的所有者将其包含在VRM Avatar出口中，以便他们可以在分散的外部出现。"
+      },
+      "social_emote": {
+        "avatar": "阿凡达",
+        "props": "道具",
+        "audio": "音频",
+        "optional": "可选",
+        "randomize_outcomes": "随机化结果",
+        "add_outcome": "添加结果"
       }
     }
   },
