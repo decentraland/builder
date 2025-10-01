@@ -1,0 +1,47 @@
+.dynamicInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dynamicInput .dynamicInputField {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0;
+  margin: 0;
+  min-width: 1ch;
+}
+
+.dynamicInput .dynamicInputField:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.dynamicInput .dynamicInputField:focus {
+  outline: 1px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.dynamicInput.isEditing .dynamicInputField {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  border-radius: 3px;
+  background-color: var(--background);
+}
+
+.dynamicInput .dynamicInputEditButton {
+  flex-shrink: 0;
+  margin: 0 !important;
+  padding: 4px !important;
+  min-width: auto !important;
+  height: auto !important;
+}
+
+.dynamicInput .dynamicInputEditButton:hover {
+  background-color: var(--hover) !important;
+}
