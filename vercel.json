@@ -9,7 +9,6 @@
       "VITE_REACT_APP_DCL_DEFAULT_ENV": "dev"
     }
   },
-  "installCommand": "npm ci --legacy-peer-deps",
   "rewrites": [
     {
       "source": "/auth/:match*",
