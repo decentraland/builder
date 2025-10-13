@@ -260,12 +260,11 @@ export function buildADR287EmoteMetadata(
   bodyShapeTypes: string,
   loop: number,
   additionalProperties?: string,
-  _outcomeType?: string
+  outcomeType?: string
 ): string {
-  // TODO: ADR287 we need to add the outcomeType once the subgraph is updated- ${outcomeType ? `:${outcomeType}` : ''}
   return `${version}:${type}:${name}:${description}:${category}:${bodyShapeTypes}:${loop}${
     additionalProperties ? `:${additionalProperties}` : ''
-  }`
+  }${outcomeType ? `:${outcomeType}` : ''}`
 }
 
 // Metadata looks like this:
