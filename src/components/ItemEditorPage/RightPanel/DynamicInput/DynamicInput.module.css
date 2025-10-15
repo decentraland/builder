@@ -1,7 +1,8 @@
 .dynamicInput {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .dynamicInput .dynamicInputField {
@@ -11,9 +12,19 @@
   color: var(--text);
   font-size: inherit;
   font-family: inherit;
+  line-height: inherit;
   padding: 0;
   margin: 0;
-  min-width: 1ch;
+  box-sizing: content-box;
+  width: auto;
+  min-width: 16px;
+  max-width: 100%;
+  transition: width 120ms ease;
+  letter-spacing: inherit;
+}
+
+.dynamicInput .noTransition {
+  transition: none !important;
 }
 
 .dynamicInput .dynamicInputField:disabled {
@@ -44,4 +55,24 @@
 
 .dynamicInput .dynamicInputEditButton:hover {
   background-color: var(--hover) !important;
+}
+
+.dynamicInput .mirrorSpan {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: pre;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  direction: inherit;
+  unicode-bidi: plaintext;
+}
+
+.dynamicInput .dynamicInputField::placeholder {
+  color: var(--text-secondary, #9aa0a6);
 }
