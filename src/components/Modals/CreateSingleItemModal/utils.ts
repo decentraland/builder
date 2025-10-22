@@ -307,7 +307,7 @@ const ANIMATION_TO_ARMATURE_MAP = {
  */
 const getBaseAnimationName = (animationName: string): string => {
   // Remove common suffixes to get the base name
-  const suffixes = ['_Start', '_Avatar', '_AvatarOther', '_Prop', '_Prop_Start']
+  const suffixes = ['_Start', '_Avatar', '_AvatarOther', '_Prop', '_Start_Prop']
 
   for (const suffix of suffixes) {
     if (animationName.endsWith(suffix)) {
@@ -325,7 +325,7 @@ const getArmatureFromAnimation = (animationName: string): ArmatureId => {
   if (animationName.endsWith('_AvatarOther')) {
     return ANIMATION_TO_ARMATURE_MAP.AvatarOther
   }
-  if (animationName.endsWith('_Prop') || animationName.endsWith('_Prop_Start')) {
+  if (animationName.endsWith('_Prop') || animationName.endsWith('_Start_Prop')) {
     return ANIMATION_TO_ARMATURE_MAP.Prop
   }
   // Default to Avatar for _Avatar, _Start, or no suffix
@@ -344,10 +344,17 @@ const formatAnimationTitle = (baseName: string): string => {
 }
 
 /**
+ * Checks if an animation is a start animation
+ */
+const isStartAnimation = (animationName: string): boolean => {
+  return animationName.endsWith('_Start') || animationName.endsWith('_Start_Prop')
+}
+
+/**
  * Autocompletes emote data based on animation naming conventions
  */
 export const autocompleteSocialEmoteData = (animations: string[]) => {
-  let startAnimations: Partial<StartAnimation> = {}
+  const startAnimation: Partial<StartAnimation> = {}
   const outcomes: OutcomeGroup[] = []
 
   // Group animations by base name
@@ -355,10 +362,9 @@ export const autocompleteSocialEmoteData = (animations: string[]) => {
 
   animations.forEach(animation => {
     const baseName = getBaseAnimationName(animation)
-    if (!animationGroups.has(baseName)) {
-      animationGroups.set(baseName, [])
-    }
-    animationGroups.get(baseName)!.push(animation)
+    const group = animationGroups.get(baseName) ?? []
+    group.push(animation)
+    animationGroups.set(baseName, group)
   })
 
   // Process each group
@@ -366,30 +372,19 @@ export const autocompleteSocialEmoteData = (animations: string[]) => {
     const title = formatAnimationTitle(baseName)
 
     // Find start animations
-    const startAnimation = groupAnimations.find(anim => anim.endsWith('_Start'))
-    if (startAnimation) {
-      const armature = getArmatureFromAnimation(startAnimation)
-      startAnimations = {
-        ...startAnimations,
-        [armature]: {
-          animation: startAnimation
-        }
-      }
-    }
+    const startAnimations = groupAnimations.filter(isStartAnimation)
+    startAnimations.forEach(animation => {
+      const armature = getArmatureFromAnimation(animation) as ArmatureId.Armature | ArmatureId.Armature_Prop
+      startAnimation[armature] = { animation }
+    })
 
     // Find outcome animations (non-start animations)
-    const outcomeAnimations = groupAnimations.filter(anim => !anim.endsWith('_Start'))
+    const outcomeAnimations = groupAnimations.filter(anim => !isStartAnimation(anim))
     if (outcomeAnimations.length > 0) {
-      const clipsArray = outcomeAnimations.map(animation => ({
-        armature: getArmatureFromAnimation(animation),
-        animation
-      }))
-
       const clips: Partial<Record<ArmatureId, EmoteClip>> = {}
-      clipsArray.forEach(clip => {
-        clips[clip.armature] = {
-          animation: clip.animation
-        }
+      outcomeAnimations.forEach(animation => {
+        const armature = getArmatureFromAnimation(animation)
+        clips[armature] = { animation }
       })
 
       outcomes.push({
@@ -401,7 +396,7 @@ export const autocompleteSocialEmoteData = (animations: string[]) => {
   })
 
   return {
-    startAnimation: Object.keys(startAnimations).length > 0 ? { ...startAnimations, loop: true } : undefined,
+    startAnimation: Object.keys(startAnimation).length > 0 ? { ...startAnimation, loop: true } : undefined,
     outcomes: outcomes.length > 0 ? outcomes : undefined
   }
 }
