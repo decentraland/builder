@@ -4,7 +4,7 @@ import { autocompleteSocialEmoteData } from './utils'
 describe('autocompleteSocialEmoteData', () => {
   describe('when processing animations with _Start suffix', () => {
     it('should create startAnimation for animations ending with _Start', () => {
-      const animations = ['HighFive_Start', 'Wave_Prop_Start']
+      const animations = ['HighFive_Start', 'Wave_Start_Prop']
 
       const result = autocompleteSocialEmoteData(animations)
 
@@ -16,13 +16,13 @@ describe('autocompleteSocialEmoteData', () => {
     })
 
     it('should handle prop start animations', () => {
-      const animations = ['HighFive_Prop_Start']
+      const animations = ['HighFive_Start_Prop']
 
       const result = autocompleteSocialEmoteData(animations)
 
       expect(result.startAnimation).toBeDefined()
       expect(result.startAnimation?.[ArmatureId.Armature_Prop]).toEqual({
-        animation: 'HighFive_Prop_Start'
+        animation: 'HighFive_Start_Prop'
       })
       expect(result.startAnimation?.loop).toEqual(true)
     })
@@ -93,7 +93,7 @@ describe('autocompleteSocialEmoteData', () => {
 
   describe('when processing mixed animations', () => {
     it('should handle both start animations and outcomes', () => {
-      const animations = ['HighFive_Start', 'HighFive_Avatar', 'HighFive_Prop', 'Wave_Prop_Start', 'Wave_Avatar']
+      const animations = ['HighFive_Start', 'HighFive_Avatar', 'HighFive_Prop', 'Wave_Start_Prop', 'Wave_Avatar']
 
       const result = autocompleteSocialEmoteData(animations)
 
@@ -103,7 +103,7 @@ describe('autocompleteSocialEmoteData', () => {
       })
 
       expect(result.startAnimation?.[ArmatureId.Armature_Prop]).toEqual({
-        animation: 'Wave_Prop_Start'
+        animation: 'Wave_Start_Prop'
       })
 
       expect(result.startAnimation?.loop).toEqual(true)
