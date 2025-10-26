@@ -51,7 +51,7 @@ export function getSaleAddress(chainId: ChainId) {
 }
 
 export function getOffchainSaleAddress(chainId: ChainId) {
-  return getContract(ContractName.OffChainMarketplace, chainId).address.toLowerCase()
+  return getContract(ContractName.OffChainMarketplaceV2, chainId).address.toLowerCase()
 }
 
 export function getCollectionEditorURL(collection: Collection, items: Item[]): string {
