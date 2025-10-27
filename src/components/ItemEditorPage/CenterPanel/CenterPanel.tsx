@@ -1,8 +1,18 @@
 import * as React from 'react'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
-import { WearablePreview } from 'decentraland-ui2'
+import {
+  Dropdown,
+  DropdownProps,
+  Popup,
+  Icon,
+  Loader,
+  Center,
+  EmoteControls,
+  DropdownItemProps,
+  Button,
+  WearablePreview
+} from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Color4 } from 'lib/colors'

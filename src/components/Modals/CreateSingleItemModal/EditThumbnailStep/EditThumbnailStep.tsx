@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, Row, Button, Icon, Loader, EmoteControls } from 'decentraland-ui'
-import { WearablePreview } from 'decentraland-ui2'
+import { ModalNavigation, Row, Button, Icon, Loader, EmoteControls, WearablePreview } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
@@ -10,7 +9,7 @@ const DEFAULT_ZOOM = 2
 const ZOOM_DELTA = 0.1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
-  previewRef = React.createRef<typeof WearablePreview>()
+  previewRef = React.createRef<WearablePreview>()
   state: State = {
     zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
