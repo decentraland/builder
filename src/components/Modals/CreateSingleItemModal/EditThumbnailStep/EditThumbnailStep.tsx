@@ -10,7 +10,7 @@ const DEFAULT_ZOOM = 2
 const ZOOM_DELTA = 0.1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
-  previewRef = React.createRef<WearablePreview>()
+  previewRef = React.createRef<typeof WearablePreview>()
   state: State = {
     zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
