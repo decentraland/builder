@@ -15,7 +15,8 @@ import {
   getFiatGatewayCommodityAmount,
   getOffchainSaleAddress,
   isEnableForSaleOffchain,
-  enableSaleOffchain
+  enableSaleOffchain,
+  getOffchainV2SaleAddress
 } from './utils'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 import { CollectionPaginationData } from './reducer'
@@ -352,7 +353,7 @@ describe('when getting if a collection is enable for offchain purchases', () => 
 describe('when toggling the permissions for the offchain marketplace contract', () => {
   describe('and the user wants to enable the contract', () => {
     it('should return the correct set of permissions', () => {
-      const address = getOffchainSaleAddress(ChainId.MATIC_AMOY)
+      const address = getOffchainV2SaleAddress(ChainId.MATIC_AMOY)
       const collection = { id: 'id' } as Collection
       expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, true)).toEqual([
         { address, hasAccess: true, collection }
@@ -363,7 +364,7 @@ describe('when toggling the permissions for the offchain marketplace contract', 
   describe('and the user wants to disable the contract', () => {
     it('should return the correct set of permissions', () => {
       const address = getOffchainSaleAddress(ChainId.MATIC_AMOY)
-      const collection = { id: 'id' } as Collection
+      const collection = { id: 'id', minters: [address] } as Collection
       expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, false)).toEqual([
         { address, hasAccess: false, collection }
       ])
