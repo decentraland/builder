@@ -42,7 +42,7 @@
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^2.24.0",
-    "decentraland-ui": "^6.22.0",
+    "decentraland-ui": "^6.23.1",
     "decentraland-ui2": "^0.27.0",
     "ethers": "^5.6.8",
     "file-saver": "^2.0.1",
@@ -158,6 +158,7 @@
   "homepage": "",
   "overrides": {
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
-    "decentraland": "3.3.0"
+    "decentraland": "3.3.0",
+    "decentraland-ui2": "^0.27.0"
   }
 }

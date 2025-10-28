@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, WearablePreview, Row, Button, Icon, Loader, EmoteControls } from 'decentraland-ui'
+import { ModalNavigation, Row, Button, Icon, Loader, EmoteControls, WearablePreview } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
