@@ -2420,6 +2420,11 @@
     "title": "Action needed",
     "subtitle": "In order to update the new price, you have to remove the previous sale first",
     "cancel": "Cancel",
-    "reject_old_prices": "Reject old prices"
+    "reject_old_prices": "Reject old prices",
+    "authorization": {
+      "title_action": "operation",
+      "action": "Put for sale",
+      "confirm_transaction_title": "Put for sale"
+    }
   }
 }

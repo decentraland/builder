@@ -22,16 +22,8 @@ export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: bool
 }
 
 export function enableSaleOffchain(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
-  const address = getOffchainSaleAddress(wallet.networks.MATIC.chainId)
-  const addressV2 = getOffchainV2SaleAddress(wallet.networks.MATIC.chainId)
-  // is putting out of sale
-  if (!isOnSale) {
-    if (includes(collection.minters, addressV2)) {
-      return [{ address: addressV2, hasAccess: isOnSale, collection }]
-    }
-    return [{ address, hasAccess: isOnSale, collection }]
-  }
-  return [{ address: addressV2, hasAccess: isOnSale, collection }]
+  const address = getOffchainV2SaleAddress(wallet.networks.MATIC.chainId)
+  return [{ address, hasAccess: isOnSale, collection }]
 }
 
 export function isEnableForSaleOffchain(collection: Collection, wallet: Wallet) {
