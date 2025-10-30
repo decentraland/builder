@@ -14,6 +14,7 @@ import { Item } from 'modules/item/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading'
 import { getAuthorizedCollections } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
+import { getWallet } from 'modules/wallet/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { itemId } = ownProps.metadata
@@ -21,10 +22,12 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const collections = getAuthorizedCollections(state)
   const item = ownProps.item ?? items.find(item => item.id === itemId)!
   const collection = collections.find(collection => collection.id === item.collectionId)
+  const wallet = getWallet(state)
 
   return {
     item,
     collection,
+    connectedChainId: wallet?.chainId,
     isLoading: isLoadingType(getLoading(state), CREATE_ITEM_ORDER_TRADE_REQUEST),
     isLoadingCancel: isLoadingType(getLoading(state), CANCEL_ITEM_ORDER_TRADE_REQUEST),
     error: getError(state)

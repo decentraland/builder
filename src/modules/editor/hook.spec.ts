@@ -17,7 +17,17 @@ import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
 // Mock the dependencies
-jest.mock('react-redux')
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual<typeof import('react-redux')>('react-redux')
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+    connect:
+      () =>
+      <T>(component: T): T =>
+        component
+  }
+})
 jest.mock('react-router-dom', () => ({
   useLocation: jest.fn()
 }))

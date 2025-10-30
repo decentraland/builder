@@ -2419,6 +2419,11 @@
     "title": "需要采取行动",
     "subtitle": "为了更新新价格，您必须首先删除先前的销售",
     "cancel": "取消",
-    "reject_old_prices": "拒绝旧价格"
+    "reject_old_prices": "拒绝旧价格",
+    "authorization": {
+      "title_action": "行动",
+      "action": "出售",
+      "confirm_transaction_title": "出售"
+    }
   }
 }

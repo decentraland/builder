@@ -7,7 +7,17 @@ import { Collection } from './types'
 import { useGetSelectedCollection } from './hooks'
 
 // Mock the dependencies
-jest.mock('react-redux')
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual<typeof import('react-redux')>('react-redux')
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+    connect:
+      () =>
+      <T>(component: T): T =>
+        component
+  }
+})
 jest.mock('modules/collection/selectors')
 jest.mock('modules/location/hooks')
 

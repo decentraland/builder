@@ -2438,6 +2438,11 @@
     "title": "Se necesita acción",
     "subtitle": "Para actualizar el nuevo precio, debe eliminar los precios antiguos primero",
     "cancel": "Cancelar",
-    "reject_old_prices": "Rechazar el precio anterior"
+    "reject_old_prices": "Rechazar el precio anterior",
+    "authorization": {
+      "title_action": "operación",
+      "action": "Poner a la venta",
+      "confirm_transaction_title": "Poner a la venta"
+    }
   }
 }
