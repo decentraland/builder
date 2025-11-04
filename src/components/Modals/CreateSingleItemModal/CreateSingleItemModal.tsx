@@ -8,7 +8,6 @@ import {
   PreviewProjection,
   WearableCategory,
   IPreviewController,
-  EmoteDataADR287,
   StartAnimation
 } from '@dcl/schemas'
 import {
@@ -18,7 +17,7 @@ import {
   MAX_WEARABLE_FILE_SIZE,
   MAX_SMART_WEARABLE_FILE_SIZE
 } from '@dcl/builder-client/dist/files/constants'
-import { WearablePreview } from 'decentraland-ui'
+import { WearablePreview } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -162,32 +161,24 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           representations: [...representations]
         } as EmoteData
 
-        // TODO: ADR 287 - Social Emotes
         // Use autocompleteSocialEmoteData to generate startAnimation and outcomes from available animations
         if (emoteData?.animations && emoteData.animations.length > 0) {
           const animationNames = emoteData.animations.map(clip => clip.name)
           const autocompletedData = autocompleteSocialEmoteData(animationNames)
 
           if (autocompletedData.startAnimation || autocompletedData.outcomes) {
-            const socialEmoteData: Partial<EmoteDataADR287> = {}
-
             // Transform startAnimation if available
             if (autocompletedData.startAnimation) {
-              socialEmoteData.startAnimation = autocompletedData.startAnimation as StartAnimation
+              data.startAnimation = autocompletedData.startAnimation as StartAnimation
             }
 
             // Transform outcomes if available
             if (autocompletedData.outcomes) {
-              socialEmoteData.outcomes = autocompletedData.outcomes
+              data.outcomes = autocompletedData.outcomes
             }
 
             // Add randomizeOutcomes flag
-            socialEmoteData.randomizeOutcomes = false
-
-            data = {
-              ...data,
-              ...socialEmoteData
-            }
+            data.randomizeOutcomes = false
           }
         }
       }
@@ -303,9 +294,9 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           category: category as EmoteCategory
         } as EmoteData
 
-        // ADR 287 - Social Emotes
+        // TODO: Autocomplete animations when modifying an emote
         if (outcomes && outcomes.length > 0) {
-          ;(data as EmoteDataADR287).outcomes = outcomes
+          data.outcomes = outcomes
         }
       }
 
@@ -700,6 +691,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           contents,
           category
         })
+
         let view = CreateItemView.DETAILS
         if (isSmart({ type, contents })) {
           // TODO: await setTimeout(() => {}, ITEM_LOADED_CHECK_DELAY)
@@ -719,6 +711,9 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           // Autocomplete emote data based on animation naming conventions
           const autocompletedData = autocompleteSocialEmoteData(animationNames)
 
+          if (autocompletedData.startAnimation) {
+            dispatch(createItemActions.setStartAnimation(autocompletedData.startAnimation))
+          }
           if (autocompletedData.outcomes) {
             dispatch(createItemActions.setOutcomes(autocompletedData.outcomes))
           }
@@ -778,8 +773,9 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
     return (
       <WearablePreview
+        baseUrl="https://wearable-preview-on3er9hvj-decentraland1.vercel.app"
         id="thumbnail-picker"
-        blob={blob as any} // TODO: Remove any
+        blob={blob}
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}
