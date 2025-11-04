@@ -1,27 +1,18 @@
 import * as React from 'react'
-import { ModalNavigation, Row, Button, Icon, Loader, EmoteControls, WearablePreview } from 'decentraland-ui'
+import { ModalNavigation, Row, Button, Loader } from 'decentraland-ui'
+import { AnimationControls, EmoteControls, TranslationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
+import { Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
-
-const DEFAULT_ZOOM = 2
-const ZOOM_DELTA = 0.1
+import { SocialEmoteAnimation } from 'decentraland-ui2/dist/components/WearablePreview/WearablePreview.types'
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
-  previewRef = React.createRef<WearablePreview>()
   state: State = {
-    zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
     previewController: this.props.wearablePreviewController,
-    hasBeenUpdated: false
-  }
-
-  componentWillUnmount() {
-    const { playingIntervalId } = this.state
-    if (playingIntervalId) {
-      clearInterval(playingIntervalId)
-    }
+    hasBeenUpdated: false,
+    socialEmote: undefined
   }
 
   handleFileLoad = async () => {
@@ -41,38 +32,25 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     await previewController?.scene.getScreenshot(1024, 1024).then(screenshot => onSave(screenshot))
   }
 
-  handleControlActionChange = async (action: ControlOptionAction, value?: number) => {
-    const { previewController } = this.state
-    const iframeContentWindow = this.previewRef.current?.iframe?.contentWindow
-    if (iframeContentWindow) {
-      await previewController?.emote.pause()
-      switch (action) {
-        case ControlOptionAction.PAN_CAMERA_Y: {
-          this.setState({ offsetY: value })
-          await previewController?.scene.panCamera({ y: value! * -1 })
-          break
-        }
-        case ControlOptionAction.ZOOM_IN: {
-          await previewController?.scene.changeZoom(ZOOM_DELTA)
-          break
-        }
-        case ControlOptionAction.ZOOM_OUT: {
-          await previewController?.scene.changeZoom(-ZOOM_DELTA)
-          break
-        }
-        default:
-          break
-      }
-    }
-  }
-
-  handleZoomOut = () => {
-    this.setState(prevState => ({ zoom: (prevState.zoom || DEFAULT_ZOOM) - 1 }))
+  handleSocialEmoteSelect = (animation: SocialEmoteAnimation) => {
+    this.setState({ socialEmote: animation })
   }
 
   render() {
     const { onClose, onBack, title, isLoading, base64s } = this.props
-    const { blob, hasBeenUpdated } = this.state
+    const { blob, hasBeenUpdated, socialEmote, previewController } = this.state
+
+    let emoteData = undefined
+    if (base64s && base64s.length > 0) {
+      emoteData = JSON.parse(atob(base64s[0]))?.emoteDataADR74
+    } else if (blob?.emoteDataADR74) {
+      emoteData = blob?.emoteDataADR74
+    }
+
+    let _socialEmote = undefined
+    if (!socialEmote && emoteData?.startAnimation) {
+      _socialEmote = { title: 'Start Animation', ...emoteData.startAnimation }
+    }
 
     return (
       <>
@@ -80,9 +58,9 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
             <WearablePreview
-              ref={this.previewRef}
+              baseUrl="https://wearable-preview-on3er9hvj-decentraland1.vercel.app"
               id="preview"
-              blob={blob as any} // TODO: Remove any
+              blob={blob}
               base64s={base64s}
               profile="default"
               disableBackground
@@ -94,40 +72,22 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               skin="000000"
               zoom={100}
               wheelZoom={2}
+              socialEmote={socialEmote || _socialEmote}
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
             />
-            {hasBeenUpdated ? (
+            {hasBeenUpdated && previewController ? (
               <>
-                <div className="zoom-controls">
-                  <Button
-                    className="zoom-control zoom-in-control"
-                    onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}
-                  >
-                    <Icon name="plus" />
-                  </Button>
-                  <Button
-                    className="zoom-control zoom-out-control"
-                    onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_OUT)}
-                  >
-                    <Icon name="minus" />
-                  </Button>
-                </div>
-                <div className="y-slider-container">
-                  <Icon className="arrows alternate horizontal" />
-                  <input
-                    step={0.1}
-                    min={-2}
-                    max={2}
-                    type="range"
-                    className="y-slider"
-                    onChange={e => this.handleControlActionChange(ControlOptionAction.PAN_CAMERA_Y, Number(e.target.value))}
-                  ></input>
-                </div>
+                <ZoomControls className="zoom-controls" wearablePreviewId="preview" wearablePreviewController={previewController as any} />
 
-                <div className="play-controls">
-                  <EmoteControls className="emote-controls" wearablePreviewId="preview" />
-                </div>
+                <TranslationControls
+                  className="translation-controls"
+                  vertical
+                  wearablePreviewId="preview"
+                  wearablePreviewController={previewController as any}
+                />
+
+                <EmoteControls className="emote-controls" wearablePreviewId="preview" />
               </>
             ) : (
               <Loader active size="large" />
@@ -137,6 +97,15 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             <Button disabled={!hasBeenUpdated || isLoading} onClick={onBack}>
               {t('global.back')}
             </Button>
+            {hasBeenUpdated && previewController ? (
+              <AnimationControls
+                className="animation-controls"
+                wearablePreviewId="preview"
+                wearablePreviewController={previewController as any}
+                selectedAnimation={socialEmote}
+                onSelectAnimation={this.handleSocialEmoteSelect}
+              />
+            ) : null}
             <Button disabled={!hasBeenUpdated || isLoading} primary loading={isLoading} onClick={this.handleSave}>
               {t('global.save')}
             </Button>
