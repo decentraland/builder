@@ -1,0 +1,78 @@
+.dynamicInput {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.dynamicInput .dynamicInputField {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  padding: 0;
+  margin: 0;
+  box-sizing: content-box;
+  width: auto;
+  min-width: 16px;
+  max-width: 100%;
+  transition: width 120ms ease;
+  letter-spacing: inherit;
+}
+
+.dynamicInput .noTransition {
+  transition: none !important;
+}
+
+.dynamicInput .dynamicInputField:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.dynamicInput .dynamicInputField:focus {
+  outline: 1px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.dynamicInput.isEditing .dynamicInputField {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  border-radius: 3px;
+  background-color: var(--background);
+}
+
+.dynamicInput .dynamicInputEditButton {
+  flex-shrink: 0;
+  margin: 0 !important;
+  padding: 4px !important;
+  min-width: auto !important;
+  height: auto !important;
+}
+
+.dynamicInput .dynamicInputEditButton:hover {
+  background-color: var(--hover) !important;
+}
+
+.dynamicInput .mirrorSpan {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: pre;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  direction: inherit;
+  unicode-bidi: plaintext;
+}
+
+.dynamicInput .dynamicInputField::placeholder {
+  color: var(--text-secondary, #9aa0a6);
+}

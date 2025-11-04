@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { EmoteDataADR74, Rarity } from '@dcl/schemas'
+import { Rarity } from '@dcl/schemas'
 import {
   deleteItemRequest,
   DeleteItemRequestAction,
@@ -8,7 +8,7 @@ import {
   downloadItemRequest,
   DownloadItemRequestAction
 } from 'modules/item/actions'
-import { Item, SyncStatus, WearableData } from 'modules/item/types'
+import { Item, SyncStatus, WearableData, EmoteData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
@@ -42,7 +42,7 @@ export type State = {
   video: string
   rarity?: Rarity
   contents: Record<string, Blob>
-  data?: WearableData | EmoteDataADR74
+  data?: WearableData | EmoteData
   hasItem: boolean
   isDirty: boolean
 }
