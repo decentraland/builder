@@ -1,30 +1,20 @@
 import * as React from 'react'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import {
-  Dropdown,
-  DropdownProps,
-  Popup,
-  Icon,
-  Loader,
-  Center,
-  EmoteControls,
-  DropdownItemProps,
-  Button,
-  WearablePreview
-} from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
+import { AnimationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
+import { SocialEmoteAnimation } from 'decentraland-ui2/dist/components/WearablePreview/WearablePreview.controller'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Color4 } from 'lib/colors'
 import { isDevelopment } from 'lib/environment'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { isTPCollection } from 'modules/collection/utils'
-import { ItemType } from 'modules/item/types'
+import { EmoteData, ItemType } from 'modules/item/types'
 import { isEmote } from 'modules/item/utils'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
-import { ControlOptionAction } from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep.types'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
@@ -34,7 +24,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
     showSceneBoundaries: false,
     isShowingAvatarAttributes: false,
-    isLoading: false
+    isLoading: false,
+    socialEmote: undefined
   }
 
   analytics = getAnalytics()
@@ -163,27 +154,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     this.setState({ isLoading: false })
   }
 
-  handleControlActionChange = async (action: ControlOptionAction) => {
-    const { wearableController } = this.props
-    const ZOOM_DELTA = 0.1
-
-    if (wearableController) {
-      await wearableController?.emote.pause()
-      switch (action) {
-        case ControlOptionAction.ZOOM_IN: {
-          await wearableController?.scene.changeZoom(ZOOM_DELTA)
-          break
-        }
-        case ControlOptionAction.ZOOM_OUT: {
-          await wearableController?.scene.changeZoom(-ZOOM_DELTA)
-          break
-        }
-        default:
-          break
-      }
-    }
-  }
-
   handlePlayEmote = () => {
     const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
@@ -194,6 +164,10 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     } else {
       wearableController?.emote.play() as void
     }
+  }
+
+  handleSocialEmoteSelect = (animation: SocialEmoteAnimation) => {
+    this.setState({ socialEmote: animation })
   }
 
   renderEmotePlayButton = () => {
@@ -272,13 +246,19 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       isImportFilesModalOpen,
       wearableController
     } = this.props
-    const { isShowingAvatarAttributes, showSceneBoundaries, isLoading } = this.state
+    const { isShowingAvatarAttributes, showSceneBoundaries, isLoading, socialEmote } = this.state
     const isRenderingAnEmote = visibleItems.some(isEmote) && selectedItem?.type === ItemType.EMOTE
     const zoom = emote === PreviewEmote.JUMP ? 1 : undefined
+    let _socialEmote = undefined
+
+    if (!socialEmote && selectedItem?.type === ItemType.EMOTE && (selectedItem.data as unknown as EmoteData).startAnimation) {
+      _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation }
+    }
 
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
+          baseUrl="http://localhost:5174"
           id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}
@@ -304,16 +284,14 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
+          socialEmote={socialEmote || _socialEmote}
         />
-        {isRenderingAnEmote ? (
-          <div className="zoom-controls">
-            <Button className="zoom-control zoom-in-control" onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}>
-              <Icon name="plus" />
-            </Button>
-            <Button className="zoom-control zoom-out-control" onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_OUT)}>
-              <Icon name="minus" />
-            </Button>
-          </div>
+        {isRenderingAnEmote && !isLoading && wearableController ? (
+          <ZoomControls
+            className="zoom-controls"
+            wearablePreviewId="wearable-editor"
+            wearablePreviewController={wearableController as any}
+          />
         ) : null}
         {isLoading && (
           <Center>
@@ -334,7 +312,19 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             <div className={`option ${isShowingAvatarAttributes ? 'active' : ''}`} onClick={this.handleToggleShowingAvatarAttributes}>
               <Icon name="user" />
             </div>
-            {isRenderingAnEmote ? null : this.renderEmoteSelector()}
+            {isRenderingAnEmote ? (
+              !isLoading && wearableController ? (
+                <AnimationControls
+                  className="animation-controls"
+                  wearablePreviewId="wearable-editor"
+                  wearablePreviewController={wearableController as any}
+                  selectedAnimation={socialEmote}
+                  onSelectAnimation={this.handleSocialEmoteSelect}
+                />
+              ) : null
+            ) : (
+              this.renderEmoteSelector()
+            )}
             <div className={`option ${showSceneBoundaries ? 'active' : ''}`}>
               <BuilderIcon
                 name="cylinder"
