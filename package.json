@@ -38,7 +38,7 @@
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-connect": "^9.1.0",
     "decentraland-crypto-fetch": "^2.0.1",
-    "decentraland-dapps": "^25.1.1",
+    "decentraland-dapps": "^25.5.0",
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^2.24.0",
