@@ -773,7 +773,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
     return (
       <WearablePreview
-        baseUrl="https://wearable-preview-on3er9hvj-decentraland1.vercel.app"
+        baseUrl="https://wearable-preview-1kigg1ihg-decentraland1.vercel.app"
         id="thumbnail-picker"
         blob={blob}
         disableBackground

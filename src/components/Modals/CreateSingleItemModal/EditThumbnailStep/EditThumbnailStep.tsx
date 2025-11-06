@@ -1,11 +1,11 @@
 import * as React from 'react'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { ModalNavigation, Row, Button, Loader } from 'decentraland-ui'
 import { AnimationControls, EmoteControls, TranslationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
-import { SocialEmoteAnimation } from 'decentraland-ui2/dist/components/WearablePreview/WearablePreview.types'
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
   state: State = {
@@ -58,7 +58,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
             <WearablePreview
-              baseUrl="https://wearable-preview-on3er9hvj-decentraland1.vercel.app"
+              baseUrl="https://wearable-preview-1kigg1ihg-decentraland1.vercel.app"
               id="preview"
               blob={blob}
               base64s={base64s}

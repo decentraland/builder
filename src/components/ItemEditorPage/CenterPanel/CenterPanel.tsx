@@ -3,7 +3,7 @@ import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
 import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
 import { AnimationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
-import { SocialEmoteAnimation } from 'decentraland-ui2/dist/components/WearablePreview/WearablePreview.controller'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Color4 } from 'lib/colors'
@@ -252,13 +252,13 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     let _socialEmote = undefined
 
     if (!socialEmote && selectedItem?.type === ItemType.EMOTE && (selectedItem.data as unknown as EmoteData).startAnimation) {
-      _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation }
+      _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
 
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
-          baseUrl="https://wearable-preview-on3er9hvj-decentraland1.vercel.app"
+          baseUrl="https://wearable-preview-1kigg1ihg-decentraland1.vercel.app"
           id="wearable-editor"
           profile="default"
           bodyShape={bodyShape}

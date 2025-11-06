@@ -1,6 +1,6 @@
 import React from 'react'
 import { EmoteWithBlobs, IPreviewController } from '@dcl/schemas'
-import { SocialEmoteAnimation } from 'decentraland-ui2/dist/components/WearablePreview/WearablePreview.types'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { Item } from 'modules/item/types'
 
 export type Props = {
