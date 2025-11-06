@@ -11,7 +11,7 @@
     "@dcl/crypto": "^3.4.5",
     "@dcl/hashing": "^3.0.4",
     "@dcl/mini-rpc": "^1.0.7",
-    "@dcl/schemas": "^19.6.0",
+    "@dcl/schemas": "^19.7.0",
     "@dcl/sdk": "7.5.5",
     "@dcl/single-sign-on-client": "^0.1.0",
     "@dcl/ui-env": "^1.5.0",
@@ -43,7 +43,7 @@
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^2.24.0",
     "decentraland-ui": "^6.23.1",
-    "decentraland-ui2": "^0.27.0",
+    "decentraland-ui2": "^0.40.0",
     "ethers": "^5.6.8",
     "fast-equals": "^5.3.0",
     "file-saver": "^2.0.1",
@@ -159,7 +159,6 @@
   "homepage": "",
   "overrides": {
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
-    "decentraland": "3.3.0",
-    "decentraland-ui2": "^0.27.0"
+    "decentraland": "3.3.0"
   }
 }
