@@ -1,6 +1,6 @@
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import { SocialEmoteAnimation } from 'decentraland-ui2/dist/components/WearablePreview/WearablePreview.types'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { Collection } from 'modules/collection/types'
 import {
   setEmote,
