@@ -33,9 +33,9 @@ import {
   InputOnChangeData,
   SelectField,
   DropdownProps,
-  WearablePreview,
   Message
 } from 'decentraland-ui'
+import { WearablePreview } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'

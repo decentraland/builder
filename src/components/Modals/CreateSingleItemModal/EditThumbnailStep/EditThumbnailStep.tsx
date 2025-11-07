@@ -1,19 +1,18 @@
 import * as React from 'react'
-import { ModalNavigation, Row, Button, Icon, Loader, EmoteControls, WearablePreview } from 'decentraland-ui'
+import { ModalNavigation, Row, Button, Loader } from 'decentraland-ui'
+import { EmoteControls, TranslationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { ControlOptionAction, Props, State } from './EditThumbnailStep.types'
+import { Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
 
 const DEFAULT_ZOOM = 2
-const ZOOM_DELTA = 0.1
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
-  previewRef = React.createRef<WearablePreview>()
   state: State = {
     zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
-    previewController: this.props.wearablePreviewController,
+    previewController: undefined,
     hasBeenUpdated: false
   }
 
@@ -41,35 +40,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     await previewController?.scene.getScreenshot(1024, 1024).then(screenshot => onSave(screenshot))
   }
 
-  handleControlActionChange = async (action: ControlOptionAction, value?: number) => {
-    const { previewController } = this.state
-    const iframeContentWindow = this.previewRef.current?.iframe?.contentWindow
-    if (iframeContentWindow) {
-      await previewController?.emote.pause()
-      switch (action) {
-        case ControlOptionAction.PAN_CAMERA_Y: {
-          this.setState({ offsetY: value })
-          await previewController?.scene.panCamera({ y: value! * -1 })
-          break
-        }
-        case ControlOptionAction.ZOOM_IN: {
-          await previewController?.scene.changeZoom(ZOOM_DELTA)
-          break
-        }
-        case ControlOptionAction.ZOOM_OUT: {
-          await previewController?.scene.changeZoom(-ZOOM_DELTA)
-          break
-        }
-        default:
-          break
-      }
-    }
-  }
-
-  handleZoomOut = () => {
-    this.setState(prevState => ({ zoom: (prevState.zoom || DEFAULT_ZOOM) - 1 }))
-  }
-
   render() {
     const { onClose, onBack, title, isLoading, base64s } = this.props
     const { blob, hasBeenUpdated } = this.state
@@ -80,7 +50,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
             <WearablePreview
-              ref={this.previewRef}
               id="preview"
               blob={blob}
               base64s={base64s}
@@ -99,35 +68,9 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             />
             {hasBeenUpdated ? (
               <>
-                <div className="zoom-controls">
-                  <Button
-                    className="zoom-control zoom-in-control"
-                    onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_IN)}
-                  >
-                    <Icon name="plus" />
-                  </Button>
-                  <Button
-                    className="zoom-control zoom-out-control"
-                    onClick={() => this.handleControlActionChange(ControlOptionAction.ZOOM_OUT)}
-                  >
-                    <Icon name="minus" />
-                  </Button>
-                </div>
-                <div className="y-slider-container">
-                  <Icon className="arrows alternate horizontal" />
-                  <input
-                    step={0.1}
-                    min={-2}
-                    max={2}
-                    type="range"
-                    className="y-slider"
-                    onChange={e => this.handleControlActionChange(ControlOptionAction.PAN_CAMERA_Y, Number(e.target.value))}
-                  ></input>
-                </div>
-
-                <div className="play-controls">
-                  <EmoteControls className="emote-controls" wearablePreviewId="preview" />
-                </div>
+                <ZoomControls className="zoom-controls" wearablePreviewId="preview" />
+                <TranslationControls className="translation-controls" vertical wearablePreviewId="preview" />
+                <EmoteControls className="emote-controls" wearablePreviewId="preview" />
               </>
             ) : (
               <Loader active size="large" />
