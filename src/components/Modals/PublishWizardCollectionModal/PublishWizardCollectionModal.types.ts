@@ -1,6 +1,7 @@
 import { AuthorizationStepStatus } from 'decentraland-ui'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { CreditsResponse } from 'decentraland-dapps/dist/modules/credits/types'
 import { Collection, PaymentMethod } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { Cheque, ThirdParty } from 'modules/thirdParty/types'
@@ -38,12 +39,15 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   itemsToPublish: Item[]
   itemsWithChanges: Item[]
   price?: Price
+  credits: CreditsResponse | null
+  isLoadingCredits: boolean
   unsyncedCollectionError: string | null
   collectionError: string | null
   itemError: string | null
   isLoading: boolean
   isPublishingFinished: boolean
   isPublishCollectionsWertEnabled: boolean
+  isCreditsForCollectionsFeeEnabled: boolean
   isOffchainPublicItemOrdersEnabled: boolean
   publishingStatus: AuthorizationStepStatus
   onPublish: (
@@ -52,7 +56,8 @@ export type Props = Omit<ModalProps, 'metadata'> & {
     paymentMethod: PaymentMethod,
     cheque?: Cheque,
     maxPrice?: string,
-    minSlots?: string
+    minSlots?: string,
+    useCredits?: boolean
   ) => unknown
   onFetchPrice: () => unknown
 }

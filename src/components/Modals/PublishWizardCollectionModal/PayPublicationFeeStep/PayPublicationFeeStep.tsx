@@ -1,9 +1,10 @@
 import classNames from 'classnames'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { ethers } from 'ethers'
 import { Network } from '@dcl/schemas'
 import { config } from 'config'
 import { AuthorizationStepStatus, Button, Column, Icon, InfoTooltip, Loader, Mana, Modal, Row, Table } from 'decentraland-ui'
+import { CreditsToggle } from 'decentraland-ui2'
 import ItemImage from 'components/ItemImage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
@@ -25,7 +26,10 @@ const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }
 
 export const PayPublicationFeeStep: React.FC<
   Props &
-    WithAuthorizedActionProps & { onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string) => void; onPrevStep: () => void }
+    WithAuthorizedActionProps & {
+      onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string, useCredits?: boolean) => void
+      onPrevStep: () => void
+    }
 > = props => {
   const {
     collection,
@@ -36,6 +40,8 @@ export const PayPublicationFeeStep: React.FC<
     isMagicAutoSignEnabled,
     isUsingMagic,
     price,
+    credits,
+    isLoadingCredits,
     wallet,
     collectionError,
     unsyncedCollectionError,
@@ -43,9 +49,12 @@ export const PayPublicationFeeStep: React.FC<
     publishingStatus,
     thirdParty,
     isPublishCollectionsWertEnabled,
+    isCreditsForCollectionsFeeEnabled,
     onNextStep,
     onPrevStep
   } = props
+
+  const [useCredits, setUseCredits] = useState(false)
 
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const availableSlots = useMemo(() => thirdParty?.availableSlots ?? 0, [thirdParty?.availableSlots])
@@ -88,10 +97,45 @@ export const PayPublicationFeeStep: React.FC<
     }
     return ethers.BigNumber.from(priceUSD).mul(itemsToPublish.length).toString()
   }, [priceUSD, itemsToPublish])
-  const hasInsufficientMANA = useMemo(
-    () => !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(totalPriceMANA)),
-    [wallet, totalPriceMANA]
-  )
+
+  const availableCredits = useMemo(() => {
+    if (!credits || !credits.credits || credits.credits.length === 0) {
+      return '0'
+    }
+    return credits.totalCredits.toString()
+  }, [credits])
+
+  const hasCredits = useMemo(() => {
+    return credits && credits.credits && credits.credits.length > 0 && BigInt(availableCredits) > BigInt(0)
+  }, [credits, availableCredits])
+
+  const amountToPay = useMemo(() => {
+    if (!useCredits || !hasCredits) {
+      return totalPriceMANA
+    }
+    const remaining = BigInt(totalPriceMANA) - BigInt(availableCredits)
+    return remaining > BigInt(0) ? remaining.toString() : '0'
+  }, [totalPriceMANA, availableCredits, useCredits, hasCredits])
+
+  const amountToPayUSD = useMemo(() => {
+    if (!useCredits || !hasCredits) {
+      return totalPriceUSD
+    }
+    // Credits are in MANA, so we need to convert the remaining MANA to USD
+    // Using the ratio: (remainingMANA * totalUSD) / totalMANA
+    const remainingMANA = BigInt(amountToPay)
+    if (remainingMANA === BigInt(0)) {
+      return '0'
+    }
+    const totalUSD = BigInt(totalPriceUSD)
+    const totalMANA = BigInt(totalPriceMANA)
+    const remainingUSD = (remainingMANA * totalUSD) / totalMANA
+    return remainingUSD.toString()
+  }, [totalPriceUSD, totalPriceMANA, amountToPay, useCredits, hasCredits])
+
+  const hasInsufficientMANA = useMemo(() => {
+    return !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(amountToPay))
+  }, [wallet, amountToPay])
 
   const renderErrorMessage = () => {
     let content: React.ReactNode | undefined = undefined
@@ -130,18 +174,23 @@ export const PayPublicationFeeStep: React.FC<
   }
 
   const handleBuyWithMana = useCallback(() => {
+    // When using credits, we need to pass the amountToPay (after deducting credits)
+    // so the authorization logic knows whether to request allowance or not
+    const basePrice = useCredits ? amountToPay : totalPriceMANA
     const priceToPayInWei = thirdParty
-      ? ethers.utils.parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(totalPriceMANA))) * 1.005).toString()).toString()
-      : totalPriceMANA
-    onNextStep(PaymentMethod.MANA, priceToPayInWei)
-  }, [!!thirdParty, totalPriceMANA, onNextStep])
+      ? ethers.utils.parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(basePrice))) * 1.005).toString()).toString()
+      : basePrice
+    onNextStep(PaymentMethod.MANA, priceToPayInWei, useCredits)
+  }, [!!thirdParty, totalPriceMANA, amountToPay, useCredits, onNextStep])
 
   const handleBuyWithFiat = useCallback(() => {
+    // When using credits, we need to pass the amountToPay (after deducting credits)
+    const basePrice = useCredits ? amountToPay : totalPriceMANA
     const priceToPayInWei = ethers.utils
-      .parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(totalPriceMANA))) * 1.005).toString())
+      .parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(basePrice))) * 1.005).toString())
       .toString()
-    onNextStep(PaymentMethod.FIAT, priceToPayInWei)
-  }, [onNextStep, totalPriceMANA])
+    onNextStep(PaymentMethod.FIAT, priceToPayInWei, useCredits)
+  }, [useCredits, onNextStep, totalPriceMANA, amountToPay])
 
   return (
     <Modal.Content>
@@ -181,6 +230,7 @@ export const PayPublicationFeeStep: React.FC<
                     {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
                   </Table.HeaderCell>
                   <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</Table.HeaderCell>
+                  <Table.HeaderCell />
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -199,13 +249,59 @@ export const PayPublicationFeeStep: React.FC<
                         {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(priceUSD))}
                       </Table.Cell>
                     ) : null}
-                    <Table.Cell>
-                      {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                    <Table.Cell className={styles.totalAmount}>
+                      {useCredits && hasCredits ? (
+                        <div className={styles.priceContainer}>
+                          <span className={styles.originalPrice}>
+                            {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                          </span>
+                          <span className={styles.adjustedPrice}>
+                            {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(amountToPayUSD))}
+                          </span>
+                        </div>
+                      ) : (
+                        <>
+                          {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                        </>
+                      )}
                     </Table.Cell>
                     <Table.Cell className={styles.totalAmount}>
-                      <Mana showTooltip network={Network.MATIC} size="small">
-                        {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
-                      </Mana>
+                      {useCredits && hasCredits ? (
+                        <div className={styles.priceContainer}>
+                          <span className={styles.originalPrice}>
+                            <Mana showTooltip network={Network.MATIC} size="small">
+                              {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
+                            </Mana>
+                          </span>
+                          <span className={styles.adjustedPrice}>
+                            <Mana showTooltip network={Network.MATIC} size="small">
+                              {toFixedMANAValue(ethers.utils.formatEther(amountToPay))}
+                            </Mana>
+                          </span>
+                        </div>
+                      ) : (
+                        <Mana showTooltip network={Network.MATIC} size="small">
+                          {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
+                        </Mana>
+                      )}
+                    </Table.Cell>
+                    <Table.Cell className={styles.creditsCell}>
+                      {isCreditsForCollectionsFeeEnabled && !isLoadingCredits && (
+                        <CreditsToggle
+                          totalCredits={availableCredits}
+                          assetPrice={totalPriceMANA}
+                          useCredits={useCredits}
+                          onToggle={setUseCredits}
+                          showLearnMore={!hasCredits}
+                          learnMoreUrl="https://decentraland.org/blog/announcements/marketplace-credits-earn-weekly-rewards-to-power-up-your-look"
+                          label={
+                            hasCredits
+                              ? t('publish_wizard_collection_modal.pay_publication_fee_step.use_credits')
+                              : t('publish_wizard_collection_modal.pay_publication_fee_step.pay_with_credits')
+                          }
+                          tooltipContent={t('credits.value')}
+                        />
+                      )}
                     </Table.Cell>
                   </Table.Row>
                 ) : null}
@@ -248,40 +344,48 @@ export const PayPublicationFeeStep: React.FC<
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading || isLoadingAuthorization}>
             {t('global.back')}
           </Button>
-          <div className={styles.actionsRight}>
-            {isPublishCollectionsWertEnabled ? (
-              <>
-                {!isThirdParty && (
-                  <>
-                    <InfoTooltip
-                      className={styles.payWithCardInfoTooltip}
-                      position="bottom center"
-                      content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
-                    />
-                    <Button className={styles.payWithCard} onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
-                      <Icon name="credit card outline" />
-                      <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
-                    </Button>
-                  </>
-                )}
-              </>
-            ) : null}
-            <Button
-              primary
-              onClick={handleBuyWithMana}
-              disabled={hasInsufficientMANA || isLoading || isLoadingAuthorization}
-              loading={isLoading || isLoadingAuthorization}
-            >
-              {ethers.BigNumber.from(totalPriceMANA).gt(0) ? (
+          {ethers.BigNumber.from(amountToPay).eq(0) ? (
+            <div className={styles.actionsRight}>
+              <Button
+                primary
+                onClick={handleBuyWithMana}
+                disabled={isLoading || isLoadingAuthorization}
+                loading={isLoading || isLoadingAuthorization}
+                className={styles.checkoutButton}
+              >
+                {t('publish_wizard_collection_modal.pay_publication_fee_step.checkout')}
+              </Button>
+            </div>
+          ) : (
+            <div className={styles.actionsRight}>
+              {isPublishCollectionsWertEnabled && !useCredits ? (
                 <>
-                  <Mana inline size="small" network={Network.MATIC} />
-                  <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
+                  {!isThirdParty && (
+                    <>
+                      <InfoTooltip
+                        className={styles.payWithCardInfoTooltip}
+                        position="bottom center"
+                        content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
+                      />
+                      <Button className={styles.payByCardButton} onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+                        <Icon name="credit card outline" />
+                        <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
+                      </Button>
+                    </>
+                  )}
                 </>
-              ) : (
-                t('global.proceed')
-              )}
-            </Button>
-          </div>
+              ) : null}
+              <Button
+                primary
+                onClick={handleBuyWithMana}
+                disabled={hasInsufficientMANA || isLoading || isLoadingAuthorization}
+                loading={isLoading || isLoadingAuthorization}
+              >
+                <Mana inline size="small" network={Network.MATIC} />
+                <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
+              </Button>
+            </div>
+          )}
         </Row>
       </Column>
     </Modal.Content>

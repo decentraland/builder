@@ -85,3 +85,11 @@ export const getIsOffchainPublicItemOrdersEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsCreditsForCollectionsFeeEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREDITS_FOR_COLLECTIONS_FEE)
+  } catch (e) {
+    return false
+  }
+}

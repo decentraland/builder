@@ -11,6 +11,9 @@ import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { getCredits } from 'decentraland-dapps/dist/modules/credits/selectors'
+import { CreditsResponse } from 'decentraland-dapps/dist/modules/credits/types'
+import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 import { config } from 'config'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -2373,6 +2376,166 @@ describe('when handling a deploy missing entities', () => {
         .not.put(fetchCollectionItemsRequest(collection.id))
         .not.put(openModal('DeployEntitiesModal', expect.any(Object)))
         .put(deployMissingEntitiesSuccess())
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when publishing a collection with credits', () => {
+  let collection: Collection
+  let items: Item[]
+  let email: string
+  let subscribeToNewsletter: boolean
+  let from: string
+  let creditsResponse: CreditsResponse
+  let txHash: string
+  let creditsServerUrl: string
+
+  beforeEach(() => {
+    collection = getCollectionMock({
+      salt: '0x' + '123'.padStart(64, '0'),
+      id: 'someId',
+      name: 'name',
+      urn: 'urn:decentraland:amoy:collections-v2:0xabc123:collection-name',
+      isPublished: false
+    })
+    items = [
+      getItemMock(collection, {
+        collectionId: 'someId',
+        currentContentHash: 'bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
+        blockchainContentHash: 'bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
+        catalystContentHash: 'bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
+        contents: { 'thumbnail.png': 'bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzfqnugriqvcbey' }, // New hash format, not starting with 'Qm'
+        rarity: 'common' as any, // Added rarity to prevent toLowerCase error
+        price: '100000000000000000000' // 100 MANA
+      })
+    ]
+    email = 'test@example.com'
+    subscribeToNewsletter = false
+    from = '0x' + '123'.padStart(40, '0')
+    txHash = '0xdeadbeef'
+    creditsServerUrl = 'https://credits.example.com'
+    creditsResponse = {
+      credits: [
+        {
+          id: 'credit-1',
+          amount: '1000000000000000000', // 1 MANA
+          availableAmount: '1000000000000000000',
+          expiresAt: '9999999999',
+          signature: '0xsignature',
+          contract: '0x5309ae874fc4eb21adcd63f8b6c3f766cc3b1849',
+          season: 1,
+          timestamp: '1234567890',
+          userAddress: from
+        }
+      ],
+      totalCredits: 1000000000000000000
+    }
+  })
+
+  describe('when using credits with MANA payment method', () => {
+    let originalFetch: typeof global.fetch
+    let useCreditsCollectionManagerSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue(items)
+      // Mock fetch globally for credits server signature
+      originalFetch = global.fetch
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ signature: '0xexternalCallSignature', messageHash: '0xhash' } as any)
+      } as any)
+      // Mock useCreditsCollectionManager to return txHash directly
+      useCreditsCollectionManagerSpy = jest.spyOn(CreditsService.prototype, 'useCreditsCollectionManager').mockResolvedValue(txHash)
+    })
+
+    afterEach(() => {
+      // Restore original fetch
+      global.fetch = originalFetch
+      // Restore useCreditsCollectionManager
+      useCreditsCollectionManagerSpy.mockRestore()
+    })
+
+    it('should successfully publish the collection using credits', () => {
+      const rarities: BlockchainRarity[] = [
+        {
+          id: 'common',
+          name: 'Common',
+          price: '100000000000000000000',
+          prices: {
+            MANA: '100000000000000000000'
+          },
+          maxSupply: '1000000000'
+        } as unknown as BlockchainRarity
+      ]
+
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        .provide([
+          [put(saveCollectionRequest(collection)), true],
+          [
+            race({ success: take(SAVE_COLLECTION_SUCCESS), failure: take(SAVE_COLLECTION_FAILURE) }),
+            { success: saveCollectionSuccess(collection) }
+          ],
+          [call([mockBuilder, 'fetchCollectionItems'], collection.id), items],
+          [select(getAddress), from],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+          [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email), undefined],
+          [put(fetchRaritiesRequest()), undefined],
+          [
+            race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
+            { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
+          ],
+          [select(getCredits, from), creditsResponse],
+          [call([config, config.get], 'CREDITS_SERVER_URL'), creditsServerUrl],
+          [retry(10, 500, mockBuilder.lockCollection, collection), new Date()]
+        ])
+        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, true))
+        .put(saveCollectionRequest(collection))
+        .put(fetchRaritiesRequest())
+        .put.like({ action: { type: '[Success] Publish Collection' } })
+        .run({ silenceTimeout: true })
+    })
+
+    it('should fail when no credits are available', () => {
+      const noCreditsResponse = {
+        credits: [],
+        totalCredits: 0
+      }
+
+      const rarities = [
+        {
+          id: 'common',
+          name: 'Common',
+          price: '100000000000000000000',
+          prices: {
+            MANA: '100000000000000000000'
+          },
+          maxSupply: '1000000000'
+        } as unknown as BlockchainRarity
+      ]
+
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        .provide([
+          [put(saveCollectionRequest(collection)), true],
+          [
+            race({ success: take(SAVE_COLLECTION_SUCCESS), failure: take(SAVE_COLLECTION_FAILURE) }),
+            { success: saveCollectionSuccess(collection) }
+          ],
+          [call([mockBuilder, 'fetchCollectionItems'], collection.id), items],
+          [select(getAddress), from],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
+          [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email), undefined],
+          [put(fetchRaritiesRequest()), undefined],
+          [
+            race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
+            { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
+          ],
+          [select(getCredits, from), noCreditsResponse]
+        ])
+        .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, true))
+        .put(saveCollectionRequest(collection))
+        .put(fetchRaritiesRequest())
+        .put(publishCollectionFailure(collection, items, 'No credits available', false))
         .run({ silenceTimeout: true })
     })
   })
