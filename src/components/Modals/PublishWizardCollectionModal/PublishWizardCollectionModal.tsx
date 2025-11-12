@@ -109,16 +109,25 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
       }
 
       if (paymentMethod === PaymentMethod.FIAT || priceToPayInWei === ethers.BigNumber.from('0').toString()) {
-        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots, creditsAmount)
+        onPublish(
+          emailAddress,
+          subscribeToNewsletter,
+          paymentMethod,
+          cheque,
+          priceToPayInWei,
+          itemPrice.programmatic?.minSlots,
+          creditsAmount
+        )
         return
       }
 
       // If using credits, we need to authorize the CreditsManager instead of the regular contract
-      const contractName = BigInt(creditsAmount) > BigInt(0)
-        ? ContractName.CreditsManager
-        : isThirdParty
-        ? ContractName.ThirdPartyRegistry
-        : ContractName.CollectionManager
+      const contractName =
+        BigInt(creditsAmount) > BigInt(0)
+          ? ContractName.CreditsManager
+          : isThirdParty
+          ? ContractName.ThirdPartyRegistry
+          : ContractName.CollectionManager
 
       const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, contractName)
 

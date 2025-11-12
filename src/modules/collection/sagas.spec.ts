@@ -13,7 +13,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { getCredits } from 'decentraland-dapps/dist/modules/credits/selectors'
 import { CreditsResponse } from 'decentraland-dapps/dist/modules/credits/types'
-import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
+import { CreditsService, CollectionManagerCreateCollectionArgs } from 'decentraland-dapps/dist/lib/credits'
+import { ContractName, getContract } from 'decentraland-transactions'
+import { toInitializeItems } from 'modules/item/utils'
 import { config } from 'config'
 import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -98,7 +100,7 @@ import { collectionSaga } from './sagas'
 import { Collection, PaymentMethod } from './types'
 import { getData, getPaginationData as getCollectionPaginationData, getLastFetchParams } from './selectors'
 import { CollectionPaginationData } from './reducer'
-import { UNSYNCED_COLLECTION_ERROR_PREFIX } from './utils'
+import { UNSYNCED_COLLECTION_ERROR_PREFIX, getCollectionFactoryContract, getCollectionSymbol, getCollectionBaseURI } from './utils'
 
 const getCollectionMock = (props: Partial<Collection> = {}): Collection =>
   ({ id: 'aCollection', isPublished: true, isApproved: false, ...props } as Collection)
@@ -2439,43 +2441,33 @@ describe('when publishing a collection with credits', () => {
 
   describe('when using credits', () => {
     let creditsService: CreditsService
-    let originalFetch: typeof global.fetch
-    let useCreditsCollectionManagerSpy: jest.SpyInstance
     let creditsAmount: string
-    let rarities: BlockchainRarity[]
+    let totalPrice: string
+    let forwarder: ReturnType<typeof getContract>
+    let factory: ReturnType<typeof getCollectionFactoryContract>
+    let createCollectionArgs: CollectionManagerCreateCollectionArgs
 
     beforeEach(() => {
       creditsService = new CreditsService()
-      creditsAmount = '200000000000000000000' // 200 MANA
-      rarities = [
-        {
-          id: 'common',
-          name: 'Common',
-          price: '100000000000000000000',
-          prices: {
-            MANA: '100000000000000000000'
-          },
-          maxSupply: '1000000000'
-        } as unknown as BlockchainRarity
+      // creditsAmount = rarity price * number of items = 100 MANA * 1 item = 100 MANA
+      creditsAmount = '100000000000000000000' // 100 MANA (1 item at 100 MANA each)
+      totalPrice = '100000000000000000000' // 100 MANA total for 1 item
+
+      // Prepare contracts and args for credits flow
+      forwarder = getContract(ContractName.Forwarder, ChainId.MATIC_AMOY)
+      factory = getCollectionFactoryContract(ChainId.MATIC_AMOY)
+
+      // Build createCollectionArgs as the saga does
+      createCollectionArgs = [
+        forwarder.address,
+        factory.address,
+        collection.salt!,
+        collection.name,
+        getCollectionSymbol(collection),
+        getCollectionBaseURI(),
+        from,
+        toInitializeItems(items)
       ]
-      ;(mockBuilder.fetchCollectionItems as jest.Mock).mockResolvedValue(items)
-
-      // Mock fetch globally for credits server signature
-      originalFetch = global.fetch
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ signature: '0xexternalCallSignature', messageHash: '0xhash' } as any)
-      } as any)
-
-      // Mock useCreditsCollectionManager to return txHash directly
-      useCreditsCollectionManagerSpy = jest.spyOn(CreditsService.prototype, 'useCreditsCollectionManager').mockResolvedValue(txHash)
-    })
-
-    afterEach(() => {
-      // Restore original fetch
-      global.fetch = originalFetch
-      // Restore useCreditsCollectionManager
-      useCreditsCollectionManagerSpy.mockRestore()
     })
 
     describe('and credits are available', () => {
@@ -2491,55 +2483,21 @@ describe('when publishing a collection with credits', () => {
             [select(getAddress), from],
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
             [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email), undefined],
-            [put(fetchRaritiesRequest()), undefined],
-            [
-              race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
-              { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
-            ],
             [select(getCredits, from), creditsResponse],
             [call([config, config.get], 'CREDITS_SERVER_URL'), creditsServerUrl],
+            [matchers.call.fn(creditsService.useCreditsCollectionManager), txHash],
             [retry(10, 500, mockBuilder.lockCollection, collection), new Date()]
           ])
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount))
+          .dispatch(
+            publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount, totalPrice)
+          )
           .put(saveCollectionRequest(collection))
-          .put(fetchRaritiesRequest())
+          .call.like({
+            fn: creditsService.useCreditsCollectionManager,
+            args: [from, creditsResponse.credits, ChainId.MATIC_AMOY, createCollectionArgs, totalPrice, creditsServerUrl]
+          })
           .put.like({ action: { type: '[Success] Publish Collection' } })
           .run({ silenceTimeout: true })
-      })
-
-      it('should call CreditsService.useCreditsCollectionManager with correct parameters', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, creditsService)
-          .provide([
-            [put(saveCollectionRequest(collection)), true],
-            [
-              race({ success: take(SAVE_COLLECTION_SUCCESS), failure: take(SAVE_COLLECTION_FAILURE) }),
-              { success: saveCollectionSuccess(collection) }
-            ],
-            [call([mockBuilder, 'fetchCollectionItems'], collection.id), items],
-            [select(getAddress), from],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
-            [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email), undefined],
-            [put(fetchRaritiesRequest()), undefined],
-            [
-              race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
-              { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
-            ],
-            [select(getCredits, from), creditsResponse],
-            [call([config, config.get], 'CREDITS_SERVER_URL'), creditsServerUrl],
-            [retry(10, 500, mockBuilder.lockCollection, collection), new Date()]
-          ])
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount))
-          .run({ silenceTimeout: true })
-          .then(() => {
-            expect(useCreditsCollectionManagerSpy).toHaveBeenCalledWith(
-              from,
-              creditsResponse.credits,
-              ChainId.MATIC_AMOY,
-              expect.any(Array), // createCollectionArgs
-              creditsAmount,
-              creditsServerUrl
-            )
-          })
       })
     })
 
@@ -2565,27 +2523,18 @@ describe('when publishing a collection with credits', () => {
             [select(getAddress), from],
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
             [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email), undefined],
-            [put(fetchRaritiesRequest()), undefined],
-            [
-              race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
-              { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
-            ],
             [select(getCredits, from), noCreditsResponse]
           ])
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount))
+          .dispatch(
+            publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount, totalPrice)
+          )
           .put(saveCollectionRequest(collection))
-          .put(fetchRaritiesRequest())
           .put(publishCollectionFailure(collection, items, 'No credits available', false))
           .run({ silenceTimeout: true })
       })
     })
 
     describe('and the credits service call fails', () => {
-      beforeEach(() => {
-        // Override the spy to reject
-        useCreditsCollectionManagerSpy.mockRejectedValue(new Error('Credits service error'))
-      })
-
       it('should fail with the service error message', () => {
         return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, creditsService)
           .provide([
@@ -2598,17 +2547,14 @@ describe('when publishing a collection with credits', () => {
             [select(getAddress), from],
             [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_AMOY],
             [retry(10, 500, mockBuilder.saveTOS, TermsOfServiceEvent.PUBLISH_COLLECTION, collection, email), undefined],
-            [put(fetchRaritiesRequest()), undefined],
-            [
-              race({ success: take(FETCH_RARITIES_SUCCESS), failure: take(FETCH_RARITIES_FAILURE) }),
-              { success: { payload: { rarities } } as FetchRaritiesSuccessAction }
-            ],
             [select(getCredits, from), creditsResponse],
-            [call([config, config.get], 'CREDITS_SERVER_URL'), creditsServerUrl]
+            [call([config, config.get], 'CREDITS_SERVER_URL'), creditsServerUrl],
+            [matchers.call.fn(creditsService.useCreditsCollectionManager), Promise.reject(new Error('Credits service error'))]
           ])
-          .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount))
+          .dispatch(
+            publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA, creditsAmount, totalPrice)
+          )
           .put(saveCollectionRequest(collection))
-          .put(fetchRaritiesRequest())
           .put(publishCollectionFailure(collection, items, 'Credits service error', false))
           .run({ silenceTimeout: true })
       })

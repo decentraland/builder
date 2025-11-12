@@ -459,22 +459,10 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
       // Handle credits payment
       if (BigInt(creditsAmount) > BigInt(0) && paymentMethod === PaymentMethod.MANA) {
-        // Fetch rarities to get the price
-        yield put(fetchRaritiesRequest())
-        const fetchRaritiesRequestResult: { success: FetchRaritiesSuccessAction; failure: FetchRaritiesFailureAction } = yield race({
-          success: take(FETCH_RARITIES_SUCCESS),
-          failure: take(FETCH_RARITIES_FAILURE)
-        })
+        const { totalPrice } = action.payload
 
-        if (fetchRaritiesRequestResult.failure) {
-          throw new Error('Could not fetch rarities: ' + fetchRaritiesRequestResult.failure.payload.error)
-        }
-
-        const rarities = fetchRaritiesRequestResult.success.payload.rarities
-        const rarity = rarities[0]
-
-        if (!rarity || !rarity.prices) {
-          throw new Error('Rarity prices not found')
+        if (!totalPrice) {
+          throw new Error('Total price is required when using credits')
         }
 
         // Get user's credits
@@ -483,9 +471,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         if (!creditsResponse || !creditsResponse.credits || creditsResponse.credits.length === 0) {
           throw new Error('No credits available')
         }
-
-        // Calculate total price
-        const totalPrice = ethers.BigNumber.from(rarity.prices.MANA).mul(items.length).toString()
 
         // Get the credits server URL from config
         const creditsServerUrl: string = yield call([config, config.get], 'CREDITS_SERVER_URL')

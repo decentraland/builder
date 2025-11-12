@@ -108,6 +108,9 @@ export default (props: OwnProps) => {
       minSlots?: string,
       creditsAmount = '0'
     ) => {
+      // Calculate totalPrice from rarities and items count for standard collections
+      const totalPrice = price?.item?.mana && !thirdParty ? (BigInt(price.item.mana) * BigInt(itemsToPublish.length)).toString() : undefined
+
       return thirdParty
         ? dispatch(
             publishAndPushChangesThirdPartyItemsRequest(
@@ -121,7 +124,9 @@ export default (props: OwnProps) => {
               minSlots
             )
           )
-        : dispatch(publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount))
+        : dispatch(
+            publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice)
+          )
     },
     [
       thirdParty,
@@ -130,7 +135,8 @@ export default (props: OwnProps) => {
       itemsWithChanges,
       dispatch,
       publishAndPushChangesThirdPartyItemsRequest,
-      publishCollectionRequest
+      publishCollectionRequest,
+      price
     ]
   )
 
