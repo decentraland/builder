@@ -178,6 +178,7 @@ const getItemCurationMock = (item: Item, props: Partial<ItemCuration> = {}): Ite
 
 let mockBuilder: BuilderAPI
 let mockBuilderClient: BuilderClient
+let mockCreditsService: CreditsService
 
 beforeEach(() => {
   mockBuilder = {
@@ -191,13 +192,16 @@ beforeEach(() => {
   mockBuilderClient = {
     getThirdParty: jest.fn()
   } as unknown as BuilderClient
+  mockCreditsService = {
+    useCreditsCollectionManager: jest.fn()
+  } as unknown as CreditsService
 })
 
 describe('when executing the approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
       const collection = getCollectionMock({ isPublished: false })
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .dispatch(initiateApprovalFlow(collection))
         .put(
           openModal('ApprovalFlowModal', {
@@ -216,7 +220,7 @@ describe('when executing the approval flow', () => {
       const item1 = getItemMock(collection)
       const item2 = getItemMock(collection, { tokenId: undefined })
 
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([[select(getItems), [item1, item2]]])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -266,7 +270,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should rescue the item with the entity hashed using the v1 algorithm', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getItems), [item]],
             [
@@ -329,7 +333,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should skip the step to rescue the item', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getItems), [item]],
             [
@@ -371,7 +375,7 @@ describe('when executing the approval flow', () => {
       })
 
       it('should skip the step to rescue the item', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getItems), [item]],
             [
@@ -429,7 +433,7 @@ describe('when executing the approval flow', () => {
     const deployData = getDeployDataMock()
 
     it('should complete the flow doing the rescue, deploy and approve collection steps', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [delay(1000), void 0],
@@ -515,7 +519,7 @@ describe('when executing the approval flow', () => {
     const curation = getCollectionCuration(collection)
 
     it('should complete the flow doing a rescue, deploy and approve curation steps', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [delay(1000), void 0],
@@ -578,7 +582,7 @@ describe('when executing the approval flow', () => {
     const curation = getCollectionCuration(collection, { status: CurationStatus.APPROVED })
 
     it('should skip all the unnecessary steps', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), items],
           [select(getItems), items],
@@ -624,7 +628,7 @@ describe('when executing the approval flow', () => {
     const rescueError = 'Rescue Transaction Error'
 
     it('should open the modal in an error state', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([[select(getItems), [syncedItem, unsyncedItem]]])
         .dispatch(initiateApprovalFlow(collection))
         .put(
@@ -679,7 +683,7 @@ describe('when executing the approval flow', () => {
     const deployError = 'Deployment Error'
 
     it('should open the modal in an error state', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [delay(1000), void 0],
@@ -759,7 +763,7 @@ describe('when executing the approval flow', () => {
     const approveError = 'Approve Collection Transaction Error'
 
     it('should open the modal in an error state', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [delay(1000), void 0],
@@ -848,7 +852,7 @@ describe('when executing the approval flow', () => {
 
     it('should open the modal in an error state', () => {
       const approvedCollection = { ...collection, isApproved: true }
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), [syncedItem, unsyncedItem]],
           [delay(1000), void 0],
@@ -926,7 +930,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should dispatch a failure action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [put(saveCollectionRequest(collection)), true],
           [
@@ -958,7 +962,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should skip saving the collection', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getAddress), [address]],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MUMBAI],
@@ -982,7 +986,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should dispatch a failure action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [put(saveCollectionRequest(saltlessCollection)), true],
           [
@@ -1005,7 +1009,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should signal with a publish collection failure action with an unsynced collection error', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [put(saveCollectionRequest(collection)), true],
           [
@@ -1029,7 +1033,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should signal with a publish collection failure action with an unsynced collection error', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [put(saveCollectionRequest(collection)), true],
           [
@@ -1064,7 +1068,7 @@ describe('when publishing a collection', () => {
         items = [getItemMock(collection), getItemMock(collection, { type: ItemType.EMOTE })]
       })
       it('should put the subscribe to newsletter request action with the right source', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .put(subscribeToNewsletterRequest(email, 'Builder Emotes & Wearables creator'))
           .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
@@ -1076,7 +1080,7 @@ describe('when publishing a collection', () => {
         items = [getItemMock(collection, { type: ItemType.EMOTE }), getItemMock(collection, { type: ItemType.EMOTE })]
       })
       it('should put the subscribe to newsletter request action with the right source', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .put(subscribeToNewsletterRequest(email, 'Builder Emotes creator'))
           .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
@@ -1088,7 +1092,7 @@ describe('when publishing a collection', () => {
         items = [getItemMock(collection), getItemMock(collection)]
       })
       it('should put the subscribe to newsletter request action with the right source', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .put(subscribeToNewsletterRequest(email, 'Builder Wearables creator'))
           .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
           .run({ silenceTimeout: true })
@@ -1104,7 +1108,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should not put the subscribe to newsletter request action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .not.put(subscribeToNewsletterRequest(email, 'Builder Wearable creator'))
         .dispatch(publishCollectionRequest(collection, items, email, subscribeToNewsletter, PaymentMethod.MANA))
         .run({ silenceTimeout: true })
@@ -1127,7 +1131,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should put an action to save each of the items that have contents hashed with an older version', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [put(saveCollectionRequest(collection)), true],
           [
@@ -1153,7 +1157,7 @@ describe('when publishing a collection', () => {
       const error = 'Something went wrong'
 
       it('should put a publish collection failure with the error', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [put(saveCollectionRequest(collection)), true],
             [
@@ -1186,7 +1190,7 @@ describe('when publishing a collection', () => {
     })
 
     it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [put(saveCollectionRequest(collection)), true],
           [
@@ -1218,7 +1222,7 @@ describe('when saving a collection', () => {
     })
 
     it('should dispatch a failure action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([[call(t, 'sagas.collection.invalid_character'), errorMessage]])
         .put(saveCollectionFailure(invalidCollection, errorMessage))
         .dispatch(saveCollectionRequest(invalidCollection))
@@ -1238,7 +1242,7 @@ describe('when saving a collection', () => {
     })
 
     it('should dispatch a failure action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([[call(t, 'sagas.collection.collection_locked'), errorMessage]])
         .put(saveCollectionFailure(lockedCollection, errorMessage))
         .dispatch(saveCollectionRequest(lockedCollection))
@@ -1262,7 +1266,7 @@ describe('when saving a collection', () => {
 
     it('should redirect to the detail page after creating the collection', () => {
       const pushMock = jest.fn()
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [getContext('history'), { push: pushMock }],
           [select(getOpenModals), { CreateThirdPartyCollectionModal: true }],
@@ -1276,7 +1280,7 @@ describe('when saving a collection', () => {
     })
 
     it('should save the collection and close all related modals', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getOpenModals), {}],
           [call([mockBuilder, 'saveCollection'], thirdPartyCollection, ''), remoteCollection]
@@ -1324,7 +1328,7 @@ describe('when executing the TP approval flow', () => {
   describe('when a collection is not published', () => {
     it('should open the modal in an error state', () => {
       const collection = getTPCollectionMock({ isPublished: false })
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .dispatch(initiateTPApprovalFlow(collection))
         .put(
           openModal('ApprovalFlowModal', {
@@ -1366,7 +1370,7 @@ describe('when executing the TP approval flow', () => {
       })
 
       it('should throw an error if itemsToApprove length is different than the cheque qty', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [call([mockBuilder, 'fetchApprovalData'], TPCollection.id), { cheque, content_hashes: contentHashes, root: defaultMerkleRoot }]
@@ -1398,7 +1402,7 @@ describe('when executing the TP approval flow', () => {
 
       it('should complete the flow doing the review without a cheque, deploy and update the item curations steps', () => {
         const merkleTree = generateTree(Object.values(contentHashes))
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: totalItems }],
             [
@@ -1477,7 +1481,7 @@ describe('when executing the TP approval flow', () => {
       it('should fetch all the items needed to be approved, including the 2nd page of the pagination', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: 80 }],
             [
@@ -1501,7 +1505,7 @@ describe('when executing the TP approval flow', () => {
       it('should complete the flow doing the review, deploy and update the item curations steps', () => {
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
         const merkleTree = generateTree(Object.values(contentHashes))
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: 80 }],
             [
@@ -1560,7 +1564,7 @@ describe('when executing the TP approval flow', () => {
         })
 
         it('should complete the flow doing the review, waiting for the merkle root to be updated, deploy and update the item curations', () => {
-          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
@@ -1618,7 +1622,7 @@ describe('when executing the TP approval flow', () => {
         })
 
         it('should open the modal in an error state', () => {
-          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
@@ -1660,7 +1664,7 @@ describe('when executing the TP approval flow', () => {
           const consumeSlotsError = 'Error when consuming slots'
           const parsedSignature = ethers.utils.splitSignature(cheque.signature)
           const merkleTree = generateTree(Object.values(contentHashes))
-          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
@@ -1701,7 +1705,7 @@ describe('when executing the TP approval flow', () => {
           const merkleTree = generateTree(Object.values(contentHashes))
           const parsedSignature = ethers.utils.splitSignature(cheque.signature)
           const deployError = 'Deployment Error'
-          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
             .provide([
               [select(getPaginationData, TPCollection.id), { total: totalItems }],
               [
@@ -1763,7 +1767,7 @@ describe('when executing the TP approval flow', () => {
         const merkleTree = generateTree(Object.values(contentHashes))
         const parsedSignature = ethers.utils.splitSignature(cheque.signature)
 
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getPaginationData, TPCollection.id), { total: 40 }],
             [
@@ -1825,7 +1829,7 @@ describe('when handling the save of multiple items', () => {
     })
 
     it('should not put the collection save action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .not.put(saveCollectionRequest(collection))
         .dispatch(saveMultipleItemsSuccess(items, fileNames, []))
         .run({ silenceTimeout: true })
@@ -1839,7 +1843,7 @@ describe('when handling the save of multiple items', () => {
     })
 
     it('should put a collection save action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([[select(getCollection, items[0].collectionId!), collection]])
         .put(saveCollectionRequest(collection))
         .dispatch(saveMultipleItemsSuccess(items, fileNames, []))
@@ -1869,7 +1873,7 @@ describe('when handling the fetch of collections', () => {
     })
 
     it('should put the success action with the pagination information from the response', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getWalletItems), []],
           [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), { ...mockedPaginationData, results: [collection] }]
@@ -1894,7 +1898,7 @@ describe('when handling the fetch of collections', () => {
     })
 
     it('should put the success action with the data without pagination information', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getWalletItems), []],
           [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), [collection]]
@@ -1914,7 +1918,7 @@ describe('when handling the fetch of collections', () => {
       }
     })
     it('should put the success action with the collections filtered by item tag', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getWalletItems), []],
           [call([mockBuilder, 'fetchCollections'], undefined, mockedFetchParameters), [collection]]
@@ -1961,7 +1965,7 @@ describe('when handling the fetch of collections', () => {
         }
       })
       it('should put the success action with the data without pagination information', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getWalletItems), []],
             [select(getLastFetchParams), mockedFetchParameters],
@@ -1976,7 +1980,7 @@ describe('when handling the fetch of collections', () => {
 
     describe('and it does not have pagination information', () => {
       it('should put the success action with the data without pagination information', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getWalletItems), []],
             [select(getLastFetchParams), mockedFetchParameters],
@@ -2005,7 +2009,7 @@ describe('when handling the fetch of a collection', () => {
     })
 
     it('should put the setItemsTokenIdRequest action with the collection items', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getCollection, collection.id), collection],
           [select(getName), null],
@@ -2082,7 +2086,7 @@ describe('when publishing a collection with fiat', () => {
                 })
 
                 it('should dispatch a failure action', () => {
-                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
                     .provide([
                       [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                       [select(getAddress), 'address'],
@@ -2102,7 +2106,7 @@ describe('when publishing a collection with fiat', () => {
                 })
 
                 it('should dispatch a failure action', () => {
-                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                  return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
                     .provide([
                       [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                       [select(getAddress), 'address'],
@@ -2123,7 +2127,7 @@ describe('when publishing a collection with fiat', () => {
 
                 describe('when fetching rarities fails', () => {
                   it('should dispatch a failure action', () => {
-                    return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                    return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
                       .provide([
                         [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                         [select(getAddress), from],
@@ -2149,7 +2153,7 @@ describe('when publishing a collection with fiat', () => {
                     })
 
                     it('should dispatch a failure action', () => {
-                      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
                         .provide([
                           [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                           [select(getAddress), from],
@@ -2175,7 +2179,7 @@ describe('when publishing a collection with fiat', () => {
                       })
 
                       it('should dispatch a failure action', () => {
-                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+                        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
                           .provide([
                             [call([mockBuilder, 'fetchCollectionItems'], collection.id), serverItems],
                             [select(getAddress), from],
@@ -2221,7 +2225,7 @@ describe('when handling the successful save of an item', () => {
       })
 
       it('should not put any action', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .dispatch(saveItemSuccess(item, {}))
           .run({ silenceTimeout: true })
           .then(({ effects }) => {
@@ -2237,7 +2241,7 @@ describe('when handling the successful save of an item', () => {
 
       describe('and the onlySavedItem option is set', () => {
         it('should not put any action', () => {
-          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
             .dispatch(saveItemSuccess(item, {}, { onlySaveItem: true }))
             .run({ silenceTimeout: true })
             .then(({ effects }) => {
@@ -2254,7 +2258,7 @@ describe('when handling the successful save of an item', () => {
         })
 
         it('should put a saveCollectionRequest action', () => {
-          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+          return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
             .provide([[select(getCollection, item.collectionId ?? ''), collection]])
             .dispatch(saveItemSuccess(item, {}))
             .put(saveCollectionRequest(collection))
@@ -2270,7 +2274,7 @@ describe('when handling the successful save of an item', () => {
     })
 
     it('should not put any action', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .dispatch(saveItemSuccess(item, {}))
         .run({ silenceTimeout: true })
         .then(({ effects }) => {
@@ -2300,7 +2304,7 @@ describe('when handling a deploy missing entities', () => {
   describe('and there are items to upload', () => {
     describe('and the upload succeeds', () => {
       it('should dispatch openModal DeployEntitiesModal with a success view', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getItems), items],
             [select(getEntityByItemId), {}],
@@ -2333,7 +2337,7 @@ describe('when handling a deploy missing entities', () => {
       const deployError = 'Deployment failed'
 
       it('should dispatch openModal DeployEntitiesModal with an error view', () => {
-        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+        return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
           .provide([
             [select(getItems), items],
             [select(getEntityByItemId), {}],
@@ -2365,7 +2369,7 @@ describe('when handling a deploy missing entities', () => {
 
   describe('and there are no items to upload', () => {
     it('should end the flow without showing any modal', () => {
-      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient)
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
         .provide([
           [select(getItems), []],
           [select(getEntityByItemId), {}]
