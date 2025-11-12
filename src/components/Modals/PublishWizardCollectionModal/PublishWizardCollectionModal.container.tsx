@@ -106,7 +106,7 @@ export default (props: OwnProps) => {
       cheque?: Cheque,
       maxSlotPrice?: string,
       minSlots?: string,
-      useCredits = false
+      creditsAmount = '0'
     ) => {
       return thirdParty
         ? dispatch(
@@ -121,7 +121,7 @@ export default (props: OwnProps) => {
               minSlots
             )
           )
-        : dispatch(publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, useCredits))
+        : dispatch(publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount))
     },
     [
       thirdParty,

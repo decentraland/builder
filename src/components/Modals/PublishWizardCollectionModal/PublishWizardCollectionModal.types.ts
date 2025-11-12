@@ -57,7 +57,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
     cheque?: Cheque,
     maxPrice?: string,
     minSlots?: string,
-    useCredits?: boolean
+    creditsAmount?: string
   ) => unknown
   onFetchPrice: () => unknown
 }

@@ -179,7 +179,7 @@ import { Collection, CollectionType, PaymentMethod } from './types'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 
-export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient) {
+export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient, creditsService: CreditsService) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -352,7 +352,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email, subscribeToNewsletter, paymentMethod, useCredits = false } = action.payload
+    const { items, email, subscribeToNewsletter, paymentMethod, creditsAmount = '0' } = action.payload
 
     if (subscribeToNewsletter) {
       const collectionHasEmotes = items.some(isEmote)
@@ -458,7 +458,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       ]
 
       // Handle credits payment
-      if (useCredits && paymentMethod === PaymentMethod.MANA) {
+      if (BigInt(creditsAmount) > BigInt(0) && paymentMethod === PaymentMethod.MANA) {
         // Fetch rarities to get the price
         yield put(fetchRaritiesRequest())
         const fetchRaritiesRequestResult: { success: FetchRaritiesSuccessAction; failure: FetchRaritiesFailureAction } = yield race({
@@ -494,17 +494,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           throw new Error('Missing CREDITS_SERVER_URL configuration')
         }
 
-        // Use the CreditsService to execute the transaction with credits
-        const creditsService = new CreditsService()
         txHash = yield call(
-          (
-            walletAddress: string,
-            credits: CreditsResponse['credits'],
-            chainId: ChainId,
-            args: CollectionManagerCreateCollectionArgs,
-            price: string,
-            serverUrl: string
-          ) => creditsService.useCreditsCollectionManager(walletAddress, credits, chainId, args, price, serverUrl),
+          [creditsService, 'useCreditsCollectionManager'],
           from,
           creditsResponse.credits,
           maticChainId,

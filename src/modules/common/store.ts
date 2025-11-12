@@ -43,6 +43,7 @@ import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
+import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 
 const isTestEnv = process.env.NODE_ENV === 'test'
 
@@ -181,6 +182,7 @@ const contentfulClient = new ContentfulClient()
 
 const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
 const creditsClient = new CreditsClient(config.get('CREDITS_SERVER_URL'))
+const creditsService = new CreditsService()
 
 sagasMiddleware.run(
   rootSaga,
@@ -193,7 +195,8 @@ sagasMiddleware.run(
   ensApi,
   worldsAPI,
   tradeService,
-  creditsClient
+  creditsClient,
+  creditsService
 )
 
 loadStorageMiddleware(store)

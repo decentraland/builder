@@ -27,7 +27,7 @@ const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }
 export const PayPublicationFeeStep: React.FC<
   Props &
     WithAuthorizedActionProps & {
-      onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string, useCredits?: boolean) => void
+      onNextStep: (paymentMethod: PaymentMethod, priceToPayInWei: string, creditsAmount?: string) => void
       onPrevStep: () => void
     }
 > = props => {
@@ -106,16 +106,25 @@ export const PayPublicationFeeStep: React.FC<
   }, [credits])
 
   const hasCredits = useMemo(() => {
-    return credits && credits.credits && credits.credits.length > 0 && BigInt(availableCredits) > BigInt(0)
-  }, [credits, availableCredits])
+    return BigInt(availableCredits) > BigInt(0)
+  }, [availableCredits])
+
+  const creditsToUse = useMemo(() => {
+    if (!useCredits || !hasCredits) {
+      return '0'
+    }
+    const totalPrice = BigInt(totalPriceMANA)
+    const available = BigInt(availableCredits)
+    return (available >= totalPrice ? totalPrice : available).toString()
+  }, [totalPriceMANA, availableCredits, useCredits, hasCredits])
 
   const amountToPay = useMemo(() => {
     if (!useCredits || !hasCredits) {
       return totalPriceMANA
     }
-    const remaining = BigInt(totalPriceMANA) - BigInt(availableCredits)
+    const remaining = BigInt(totalPriceMANA) - BigInt(creditsToUse)
     return remaining > BigInt(0) ? remaining.toString() : '0'
-  }, [totalPriceMANA, availableCredits, useCredits, hasCredits])
+  }, [totalPriceMANA, creditsToUse, useCredits, hasCredits])
 
   const amountToPayUSD = useMemo(() => {
     if (!useCredits || !hasCredits) {
@@ -180,8 +189,8 @@ export const PayPublicationFeeStep: React.FC<
     const priceToPayInWei = thirdParty
       ? ethers.utils.parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(basePrice))) * 1.005).toString()).toString()
       : basePrice
-    onNextStep(PaymentMethod.MANA, priceToPayInWei, useCredits)
-  }, [!!thirdParty, totalPriceMANA, amountToPay, useCredits, onNextStep])
+    onNextStep(PaymentMethod.MANA, priceToPayInWei, creditsToUse)
+  }, [!!thirdParty, totalPriceMANA, amountToPay, useCredits, creditsToUse, onNextStep])
 
   const handleBuyWithFiat = useCallback(() => {
     // When using credits, we need to pass the amountToPay (after deducting credits)
@@ -189,8 +198,8 @@ export const PayPublicationFeeStep: React.FC<
     const priceToPayInWei = ethers.utils
       .parseUnits((Number(ethers.utils.formatEther(ethers.BigNumber.from(basePrice))) * 1.005).toString())
       .toString()
-    onNextStep(PaymentMethod.FIAT, priceToPayInWei, useCredits)
-  }, [useCredits, onNextStep, totalPriceMANA, amountToPay])
+    onNextStep(PaymentMethod.FIAT, priceToPayInWei, creditsToUse)
+  }, [useCredits, creditsToUse, onNextStep, totalPriceMANA, amountToPay])
 
   return (
     <Modal.Content>

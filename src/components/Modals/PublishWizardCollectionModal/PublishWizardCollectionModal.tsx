@@ -103,18 +103,18 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
   )
 
   const handleOnPublish = useCallback(
-    (paymentMethod: PaymentMethod, priceToPayInWei: string, useCredits = false) => {
+    (paymentMethod: PaymentMethod, priceToPayInWei: string, creditsAmount = '0') => {
       if (!itemPrice?.item.mana) {
         return
       }
 
       if (paymentMethod === PaymentMethod.FIAT || priceToPayInWei === ethers.BigNumber.from('0').toString()) {
-        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots, useCredits)
+        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots, creditsAmount)
         return
       }
 
       // If using credits, we need to authorize the CreditsManager instead of the regular contract
-      const contractName = useCredits
+      const contractName = BigInt(creditsAmount) > BigInt(0)
         ? ContractName.CreditsManager
         : isThirdParty
         ? ContractName.ThirdPartyRegistry
@@ -144,7 +144,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
             cheque,
             priceToPayInWei,
             itemPrice.programmatic?.minSlots,
-            useCredits
+            creditsAmount
           )
         }
       })
