@@ -21,6 +21,9 @@ import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { FiatGateway, WertTarget, openFiatGatewayWidgetRequest } from 'decentraland-dapps/dist/modules/gateway'
 import { getProfileOfAddress } from 'decentraland-dapps/dist/modules/profile/selectors'
+import { getCredits } from 'decentraland-dapps/dist/modules/credits/selectors'
+import { CreditsService, CollectionManagerCreateCollectionArgs } from 'decentraland-dapps/dist/lib/credits'
+import { CreditsResponse } from 'decentraland-dapps/dist/modules/credits/types'
 import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
@@ -176,7 +179,7 @@ import { Collection, CollectionType, PaymentMethod } from './types'
 
 const THIRD_PARTY_MERKLE_ROOT_CHECK_MAX_RETRIES = 160
 
-export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient) {
+export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: BuilderClient, creditsService: CreditsService) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -349,7 +352,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email, subscribeToNewsletter, paymentMethod } = action.payload
+    const { items, email, subscribeToNewsletter, paymentMethod, creditsAmount = '0' } = action.payload
 
     if (subscribeToNewsletter) {
       const collectionHasEmotes = items.some(isEmote)
@@ -443,7 +446,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       let txHash: string
 
       // Arguments used in the publish collection transaction.
-      const createCollectionArgs = [
+      const createCollectionArgs: CollectionManagerCreateCollectionArgs = [
         forwarder.address,
         factory.address,
         collection.salt,
@@ -454,7 +457,38 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         toInitializeItems(items)
       ]
 
-      if (paymentMethod === PaymentMethod.FIAT) {
+      // Handle credits payment
+      if (BigInt(creditsAmount) > BigInt(0) && paymentMethod === PaymentMethod.MANA) {
+        const { totalPrice } = action.payload
+
+        if (!totalPrice) {
+          throw new Error('Total price is required when using credits')
+        }
+
+        // Get user's credits
+        const creditsResponse: CreditsResponse | null = yield select(getCredits, from)
+
+        if (!creditsResponse || !creditsResponse.credits || creditsResponse.credits.length === 0) {
+          throw new Error('No credits available')
+        }
+
+        // Get the credits server URL from config
+        const creditsServerUrl: string = yield call([config, config.get], 'CREDITS_SERVER_URL')
+
+        if (!creditsServerUrl) {
+          throw new Error('Missing CREDITS_SERVER_URL configuration')
+        }
+
+        txHash = yield call(
+          [creditsService, 'useCreditsCollectionManager'],
+          from,
+          creditsResponse.credits,
+          maticChainId,
+          createCollectionArgs,
+          totalPrice,
+          creditsServerUrl
+        )
+      } else if (paymentMethod === PaymentMethod.FIAT) {
         const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')
 
         if (!wertPublishFeesEnv) {
@@ -472,8 +506,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           case 'dev':
             partnerId = '01HRRQQ70YK4SP88GHM9A61P6B'
             commodity = 'TT'
-            scAddress = '0xe539E0AED3C1971560517D58277f8dd9aC296281'
-            network = 'mumbai' // TODO: Update to amoy when wert support it
+            ;(scAddress = '0x5309ae874fc4eb21adcd63f8b6c3f766cc3b1849'), (network = 'amoy')
             origin = 'https://sandbox.wert.io'
             break
           case 'prod':
@@ -487,10 +520,6 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
             throw new Error('Invalid WERT_PUBLISH_FEES_ENV')
         }
 
-        // The transaction input data for publishing the collection.
-        const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', createCollectionArgs)
-
-        // The amount of MANA to be purchased required to publish the collection is determined by the price of the rarities.
         // Fetch rarities now to keep the price as updated as possible.
         yield put(fetchRaritiesRequest())
 
@@ -506,9 +535,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         }
 
         // Get the rarities from the successful response.
-        // The success action should always be present if the failure action is not, so we don't need to assert it.
         const rarities = fetchRaritiesRequestResult.success.payload.rarities
-        // Given that all rarities have the same price atm, we can just use the first one.
         const rarity = rarities[0]
 
         if (!rarity) {
@@ -519,7 +546,8 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           throw new Error('Rarity prices not found')
         }
 
-        // Amount of MANA required to publish the collection.
+        // Normal FIAT flow without credits
+        const scInputData = new ethers.utils.Interface(manager.abi).encodeFunctionData('createCollection', createCollectionArgs)
         const commodityAmount = getFiatGatewayCommodityAmount(rarity.prices.MANA, items.length)
 
         // Event channel to handle in this same saga, the events dispatched by the fiat gateway widget.

@@ -75,8 +75,10 @@ export const publishCollectionRequest = (
   items: Item[],
   email: string,
   subscribeToNewsletter: boolean,
-  paymentMethod: PaymentMethod
-) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod })
+  paymentMethod: PaymentMethod,
+  creditsAmount = '0',
+  totalPrice?: string
+) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice })
 export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string, isFiat: boolean) =>
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,

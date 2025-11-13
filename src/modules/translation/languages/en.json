@@ -1909,6 +1909,12 @@
       "fee_per_item": "Fee per item",
       "total_in_usd": "Total in {currency}",
       "total_in_mana": "Total in MANA",
+      "available_credits": "Available Credits",
+      "use_credits": "Use Credits",
+      "pay_with_credits": "Pay with Credits",
+      "credits_applied": "Credits Applied",
+      "remaining_to_pay": "Remaining to pay",
+      "checkout": "Checkout",
       "pay_card": "pay by card",
       "pay_card_info": "A 5% transaction fee will be added to your total by the payment processor, as well as an additional 0.5% to cover possible currency fluctuations.",
       "pay_mana": "pay with mana",
@@ -2426,5 +2432,8 @@
       "action": "Put for sale",
       "confirm_transaction_title": "Put for sale"
     }
+  },
+  "credits": {
+    "value": "Credits Value"
   }
 }
