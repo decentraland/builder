@@ -2,7 +2,6 @@ import { BuiltItem, Content } from '@dcl/builder-client'
 import {
   BodyShape,
   EmoteDataADR74,
-  EmoteDataADR287,
   Wearable,
   WearableCategory,
   Rarity,
@@ -90,7 +89,7 @@ export type WearableData = {
   outlineCompatible?: boolean
 }
 
-export type EmoteData = EmoteDataADR74 | EmoteDataADR287
+export type EmoteData = EmoteDataADR74
 
 type BaseItem = {
   id: string // uuid
@@ -141,8 +140,10 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
 export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>
   (item as Item<ItemType.EMOTE>).type === ItemType.EMOTE
 
-export const isEmoteDataADR287 = (data: EmoteData): data is EmoteDataADR287 =>
-  (data as EmoteDataADR287).startAnimation !== undefined && (data as EmoteDataADR287).outcomes !== undefined
+export const isSocialEmote = (data: WearableData | EmoteData | undefined): boolean => {
+  return !!data && (data as unknown as EmoteData).startAnimation !== undefined && (data as unknown as EmoteData).outcomes !== undefined
+}
+
 export const isEmoteData = (data: WearableData | EmoteData | undefined): data is EmoteData =>
   !!data && (data as unknown as EmoteData).loop !== undefined
 

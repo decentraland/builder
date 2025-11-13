@@ -76,7 +76,11 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
         return (
           <EditThumbnailStep
             isLoading={!!state.isLoading || isLoading}
-            blob={state.contents ? toEmoteWithBlobs({ contents: state.contents }) : undefined}
+            blob={
+              state.contents
+                ? toEmoteWithBlobs({ contents: state.contents, startAnimation: state.startAnimation, outcomes: state.outcomes })
+                : undefined
+            }
             title={renderModalTitle()}
             onBack={handleThumbnailGoBack}
             onSave={handleSaveThumbnail}

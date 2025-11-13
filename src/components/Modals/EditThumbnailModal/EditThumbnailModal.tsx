@@ -2,6 +2,7 @@ import React from 'react'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toBase64 } from 'modules/editor/utils'
+import { EmoteData } from 'modules/item/types'
 import ImportStep from 'components/Modals/CreateSingleItemModal/ImportStep/ImportStep'
 import EditThumbnailStep from 'components/Modals/CreateSingleItemModal/EditThumbnailStep/EditThumbnailStep'
 import { AcceptedFileProps, CreateItemView } from 'components/Modals/CreateSingleItemModal/CreateSingleItemModal.types'
@@ -61,7 +62,13 @@ export default class EditThumbnailModal extends React.PureComponent<Props, State
 
     let wearablePreviewProp
     if (file) {
-      wearablePreviewProp = { blob: toEmoteWithBlobs({ file }) }
+      wearablePreviewProp = {
+        blob: toEmoteWithBlobs({
+          file,
+          startAnimation: (item.data as unknown as EmoteData).startAnimation,
+          outcomes: (item.data as unknown as EmoteData).outcomes
+        })
+      }
     } else if (item) {
       wearablePreviewProp = { base64s: [toBase64(item)] }
     }

@@ -172,6 +172,24 @@
   transform: none;
 }
 
+.CenterPanel .animation-controls {
+  margin-left: 16px;
+  & .MuiButtonBase-root {
+    background-color: #726e7c !important;
+  }
+}
+
+.CenterPanel .animation-controls__popper {
+  & .MuiPaper-root {
+    background-color: #726e7c;
+    & .MuiList-root {
+      & .MuiButtonBase-root.MuiMenuItem-root.Mui-selected {
+        background-color: #24212933;
+      }
+    }
+  }
+}
+
 .CenterPanel.import-files-modal-is-open {
   pointer-events: none;
 }
@@ -181,28 +199,14 @@
   flex-direction: column;
   position: absolute;
   top: 12px;
+  left: auto;
   right: 12px;
-}
-
-.CenterPanel .zoom-controls > .ui.button.zoom-control {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  min-width: unset;
-  background-color: rgba(0, 0, 0, 0.64) !important;
-  border-radius: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.CenterPanel .zoom-controls > .ui.button.zoom-control i.icon {
-  margin: 0 !important;
-}
-
-.CenterPanel .zoom-controls > .ui.button.zoom-in-control {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  min-width: unset;
+  & .MuiButtonBase-root.MuiButton-root {
+    & .MuiSvgIcon-root {
+      fill: white;
+    }
+    & .MuiTouchRipple-root {
+      color: white;
+    }
+  }
 }

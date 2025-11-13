@@ -80,7 +80,17 @@ export function toWearableWithBlobs({ contents, file }: { contents?: Record<stri
   }
 }
 
-export function toEmoteWithBlobs({ contents, file }: { contents?: Record<string, Blob>; file?: File }): EmoteWithBlobs {
+export function toEmoteWithBlobs({
+  contents,
+  file,
+  startAnimation,
+  outcomes
+}: {
+  contents?: Record<string, Blob>
+  file?: File
+  startAnimation?: StartAnimation
+  outcomes?: OutcomeGroup[]
+}): EmoteWithBlobs {
   const mainFile = contents && Object.keys(contents).find(content => isModelFile(content))
   if (contents && !mainFile) {
     throw Error('Not valid main content')
@@ -111,7 +121,10 @@ export function toEmoteWithBlobs({ contents, file }: { contents?: Record<string,
             : []
         }
       ],
-      loop: false
+      loop: false,
+      startAnimation: startAnimation,
+      randomizeOutcomes: false,
+      outcomes: outcomes
     }
   }
 }

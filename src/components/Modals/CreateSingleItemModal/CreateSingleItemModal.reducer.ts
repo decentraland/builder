@@ -1,5 +1,14 @@
 import { AnimationClip, Object3D } from 'three'
-import { EmotePlayMode, Rarity, WearableCategory, Mapping, ContractNetwork, ContractAddress, OutcomeGroup } from '@dcl/schemas'
+import {
+  EmotePlayMode,
+  Rarity,
+  WearableCategory,
+  Mapping,
+  ContractNetwork,
+  ContractAddress,
+  OutcomeGroup,
+  StartAnimation
+} from '@dcl/schemas'
 import { Item, BodyShapeType, ItemType } from 'modules/item/types'
 import { Metrics } from 'modules/models/types'
 import { CreateItemView, State, AcceptedFileProps, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
@@ -78,6 +87,7 @@ export const CREATE_ITEM_ACTIONS = {
   SET_IS_REPRESENTATION: 'SET_IS_REPRESENTATION',
   SET_MAPPINGS: 'SET_MAPPINGS',
   SET_REQUIRED_PERMISSIONS: 'SET_REQUIRED_PERMISSIONS',
+  SET_START_ANIMATION: 'SET_START_ANIMATION',
   SET_OUTCOMES: 'SET_OUTCOMES',
   SET_EMOTE_DATA: 'SET_EMOTE_DATA',
   SET_TAGS: 'SET_TAGS',
@@ -120,6 +130,7 @@ export type CreateItemAction =
       payload: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | undefined
     }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_REQUIRED_PERMISSIONS; payload: string[] }
+  | { type: typeof CREATE_ITEM_ACTIONS.SET_START_ANIMATION; payload: Partial<StartAnimation> }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_OUTCOMES; payload: OutcomeGroup[] | ((prevOutcomes: OutcomeGroup[]) => OutcomeGroup[]) }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_EMOTE_DATA; payload: { animations: AnimationClip[]; armatures: Object3D[] } }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_TAGS; payload: string[] }
@@ -242,6 +253,11 @@ export const createItemActions = {
     payload: requiredPermissions
   }),
 
+  setStartAnimation: (startAnimation: Partial<StartAnimation>): CreateItemAction => ({
+    type: CREATE_ITEM_ACTIONS.SET_START_ANIMATION,
+    payload: startAnimation
+  }),
+
   setOutcomes: (outcomes: OutcomeGroup[] | ((prevOutcomes: OutcomeGroup[]) => OutcomeGroup[])): CreateItemAction => ({
     type: CREATE_ITEM_ACTIONS.SET_OUTCOMES,
     payload: outcomes
@@ -339,9 +355,6 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
     case CREATE_ITEM_ACTIONS.SET_MODEL_SIZE:
       return { ...state, modelSize: action.payload }
 
-    // case CREATE_ITEM_ACTIONS.SET_PREVIEW_CONTROLLER:
-    //   return { ...state, previewController: action.payload }
-
     case CREATE_ITEM_ACTIONS.SET_ITEM:
       return { ...state, item: action.payload }
 
@@ -377,6 +390,9 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
 
     case CREATE_ITEM_ACTIONS.SET_REQUIRED_PERMISSIONS:
       return { ...state, requiredPermissions: action.payload }
+
+    case CREATE_ITEM_ACTIONS.SET_START_ANIMATION:
+      return { ...state, startAnimation: action.payload as StartAnimation }
 
     case CREATE_ITEM_ACTIONS.SET_OUTCOMES:
       return {

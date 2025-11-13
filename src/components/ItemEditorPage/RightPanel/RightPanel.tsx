@@ -10,8 +10,8 @@ import {
   HideableWearableCategory,
   Network,
   WearableCategory,
-  EmoteDataADR287,
-  ArmatureId
+  ArmatureId,
+  StartAnimation
 } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -224,42 +224,41 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
-  handleEmoteRequestStateChange = (prop: ArmatureId.Armature | ArmatureId.Armature_Prop, field: string, value: string) => {
-    const data = this.state.data as any
+  handleStartAnimationArmatureAnimationChange = (prop: ArmatureId.Armature | ArmatureId.Armature_Prop, value: string) => {
+    const data = this.state.data as EmoteData
     const startAnimation = { ...(data.startAnimation || {}) }
 
     // For optional fields (Armature_Prop), remove the entire prop if value is empty
     if (value === '' && prop === ArmatureId.Armature_Prop) {
       delete startAnimation[prop]
     } else {
-      if (!startAnimation[prop]) {
-        startAnimation[prop] = { armature: '', animation: '', loop: true }
-      }
-
-      startAnimation[prop] = {
-        ...startAnimation[prop],
-        [field]: value
-      }
+      startAnimation[prop] = { animation: value }
     }
 
     this.setState({
-      data: { ...data, startAnimation },
-      isDirty: this.isDirty({ data: { ...data, startAnimation } })
+      data: { ...data, startAnimation: startAnimation as StartAnimation },
+      isDirty: this.isDirty({ data: { ...data, startAnimation: startAnimation as StartAnimation } })
     })
   }
 
   handleStartAnimationAudioClipChange = (audio: string) => {
-    const data = this.state.data as EmoteDataADR287
+    const data = this.state.data as EmoteData
     const startAnimation = { ...(data.startAnimation || {}) }
     startAnimation.audio = audio || undefined
-    this.setState({ data: { ...data, startAnimation }, isDirty: this.isDirty({ data: { ...data, startAnimation } }) })
+    this.setState({
+      data: { ...data, startAnimation: startAnimation as StartAnimation },
+      isDirty: this.isDirty({ data: { ...data, startAnimation: startAnimation as StartAnimation } })
+    })
   }
 
   handleStartAnimationPlayModeChange = (loop: boolean) => {
-    const data = this.state.data as EmoteDataADR287
+    const data = this.state.data as EmoteData
     const startAnimation = { ...(data.startAnimation || {}) }
     startAnimation.loop = loop
-    this.setState({ data: { ...data, startAnimation }, isDirty: this.isDirty({ data: { ...data, startAnimation } }) })
+    this.setState({
+      data: { ...data, startAnimation: startAnimation as StartAnimation },
+      isDirty: this.isDirty({ data: { ...data, startAnimation: startAnimation as StartAnimation } })
+    })
   }
 
   handleRandomizeOutcomesChange = (randomize: boolean) => {
@@ -284,8 +283,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOutcomeClipChange = (outcomeIndex: number, armatureId: ArmatureId, field: string, value: string) => {
-    const data = this.state.data as unknown as EmoteDataADR287
-    const outcomes = [...data.outcomes]
+    const data = this.state.data as EmoteData
+    const outcomes = [...(data.outcomes || [])]
     const clips = { ...outcomes[outcomeIndex].clips }
 
     if (value === '') {
@@ -314,15 +313,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOutcomeAudioClipChange = (outcomeIndex: number, audio: string) => {
-    const data = this.state.data as EmoteDataADR287
-    const outcomes = [...data.outcomes]
+    const data = this.state.data as EmoteData
+    const outcomes = [...(data.outcomes || [])]
     outcomes[outcomeIndex].audio = audio || undefined
     this.setState({ data: { ...data, outcomes }, isDirty: this.isDirty({ data: { ...data, outcomes } }) })
   }
 
   handleOutcomePlayModeChange = (outcomeIndex: number, loop: boolean) => {
-    const data = this.state.data as EmoteDataADR287
-    const outcomes = [...data.outcomes]
+    const data = this.state.data as EmoteData
+    const outcomes = [...(data.outcomes || [])]
     outcomes[outcomeIndex].loop = loop
     this.setState({
       data: { ...data, outcomes },
@@ -331,8 +330,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleAddOutcome = () => {
-    const data = this.state.data as EmoteDataADR287
-    if (!data.outcomes) {
+    const data = this.state.data as EmoteData
+    if (!data || !data.outcomes) {
       data.outcomes = []
     }
     const newOutcome = {
@@ -857,10 +856,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <Select<string>
                               itemId={item.id}
                               label={`${t('item_editor.right_panel.social_emote.avatar')} 1`}
-                              value={(data as EmoteDataADR287).startAnimation[ArmatureId.Armature].animation}
+                              value={(data as unknown as EmoteData)?.startAnimation?.[ArmatureId.Armature]?.animation}
                               options={this.getAnimationOptions(animationData)}
                               disabled={isLoading}
-                              onChange={value => this.handleEmoteRequestStateChange(ArmatureId.Armature, 'animation', value)}
+                              onChange={value => this.handleStartAnimationArmatureAnimationChange(ArmatureId.Armature, value)}
                             />
 
                             <Select<string>
@@ -868,10 +867,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               label={`${t('item_editor.right_panel.social_emote.props')} (${t(
                                 'item_editor.right_panel.social_emote.optional'
                               )})`}
-                              value={(data as EmoteDataADR287).startAnimation[ArmatureId.Armature_Prop]?.animation}
+                              value={(data as unknown as EmoteData)?.startAnimation?.[ArmatureId.Armature_Prop]?.animation}
                               options={this.getAnimationOptions(animationData, true)}
                               disabled={isLoading}
-                              onChange={value => this.handleEmoteRequestStateChange(ArmatureId.Armature_Prop, 'animation', value)}
+                              onChange={value => this.handleStartAnimationArmatureAnimationChange(ArmatureId.Armature_Prop, value)}
                             />
 
                             {Object.values(item.contents).length > 0 && itemHasAudio(item) ? (
@@ -880,7 +879,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                 label={`${t('item_editor.right_panel.social_emote.audio')} (${t(
                                   'item_editor.right_panel.social_emote.optional'
                                 )})`}
-                                value={(data as EmoteDataADR287).startAnimation.audio}
+                                value={(data as unknown as EmoteData)?.startAnimation?.audio}
                                 options={this.getAudioOptions(item.contents)}
                                 onChange={value => this.handleStartAnimationAudioClipChange(value)}
                               />
@@ -888,18 +887,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             <Select<EmotePlayMode>
                               itemId={item.id}
                               label={t('create_single_item_modal.play_mode_label')}
-                              value={(data as EmoteDataADR287).startAnimation.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
+                              value={(data as unknown as EmoteData)?.startAnimation?.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
                               options={this.asPlayModeSelect(playModes)}
                               onChange={value => this.handleStartAnimationPlayModeChange(value === EmotePlayMode.LOOP)}
                               disabled // For now play mode for start animation is always loop
                             />
                           </Box>
 
-                          {(data as EmoteDataADR287).outcomes && (data as EmoteDataADR287).outcomes.length > 1 ? (
+                          {(data as unknown as EmoteData)?.outcomes && (data as unknown as EmoteData).outcomes!.length > 1 ? (
                             <Select<string>
                               itemId={item.id}
                               label={t('item_editor.right_panel.social_emote.randomize_outcomes')}
-                              value={(data as EmoteDataADR287).randomizeOutcomes ? 'true' : 'false'}
+                              value={(data as unknown as EmoteData)?.randomizeOutcomes ? 'true' : 'false'}
                               options={[
                                 { value: 'true', text: 'True' },
                                 { value: 'false', text: 'False' }
@@ -909,9 +908,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             />
                           ) : null}
 
-                          {(data as EmoteDataADR287).outcomes &&
-                            (data as EmoteDataADR287).outcomes.length > 0 &&
-                            (data as EmoteDataADR287).outcomes.map((outcome, outcomeIndex) => (
+                          {(data as unknown as EmoteData)?.outcomes &&
+                            (data as unknown as EmoteData).outcomes!.length > 0 &&
+                            (data as unknown as EmoteData).outcomes!.map((outcome, outcomeIndex) => (
                               <Box
                                 key={outcomeIndex}
                                 className="outcome-box"
@@ -924,7 +923,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                       maxLength={OUTCOME_TITLE_MAX_LENGTH}
                                       onChange={(value: string) => this.handleEditOutcomeTitle(outcomeIndex, value)}
                                     />
-                                    {(data as EmoteDataADR287).outcomes.length > 1 ? (
+                                    {(data as unknown as EmoteData).outcomes!.length > 1 ? (
                                       <Button
                                         className="outcome-remove-button"
                                         icon="trash"
@@ -996,7 +995,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               </Box>
                             ))}
 
-                          {((data as EmoteDataADR287).outcomes ?? []).length < MAX_OUTCOMES ? (
+                          {((data as unknown as EmoteData)?.outcomes ?? []).length < MAX_OUTCOMES ? (
                             <Row className="add-outcome-button" align="left">
                               <Button secondary size="small" disabled={isLoading} onClick={this.handleAddOutcome}>
                                 <Icon name="add" /> {t('item_editor.right_panel.social_emote.add_outcome')}
