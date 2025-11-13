@@ -1,5 +1,6 @@
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { Collection } from 'modules/collection/types'
 import {
   setEmote,
@@ -51,4 +52,5 @@ export type State = {
   isShowingAvatarAttributes: boolean
   showSceneBoundaries: boolean
   isLoading: boolean
+  socialEmote?: SocialEmoteAnimation
 }

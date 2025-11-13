@@ -227,6 +227,7 @@
   background-color: var(--secondary-text);
 }
 
+.CreateSingleItemModal .importer-thumbnail-container .WearablePreview,
 .CreateSingleItemModal .importer-thumbnail-container #thumbnail-picker {
   display: none;
 }

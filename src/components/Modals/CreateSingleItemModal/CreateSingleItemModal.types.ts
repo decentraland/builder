@@ -1,7 +1,7 @@
 import { AnimationClip, Object3D } from 'three'
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { IPreviewController, Mappings, OutcomeGroup, Rarity } from '@dcl/schemas'
+import { IPreviewController, Mappings, OutcomeGroup, Rarity, StartAnimation } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
@@ -56,6 +56,7 @@ export type StateData = {
   modelSize?: number
   mappings: Mappings
   blockVrmExport?: boolean
+  startAnimation?: StartAnimation
   outcomes?: OutcomeGroup[]
   emoteData?: {
     animations: AnimationClip[]

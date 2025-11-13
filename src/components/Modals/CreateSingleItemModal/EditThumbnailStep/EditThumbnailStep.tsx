@@ -1,26 +1,19 @@
 import * as React from 'react'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { ModalNavigation, Row, Button, Loader } from 'decentraland-ui'
-import { EmoteControls, TranslationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
+import { AnimationControls, EmoteControls, TranslationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props, State } from './EditThumbnailStep.types'
+import { Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
-
-const DEFAULT_ZOOM = 2
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
   state: State = {
-    zoom: DEFAULT_ZOOM,
     blob: this.props.blob,
-    previewController: undefined,
-    hasBeenUpdated: false
-  }
-
-  componentWillUnmount() {
-    const { playingIntervalId } = this.state
-    if (playingIntervalId) {
-      clearInterval(playingIntervalId)
-    }
+    previewController: this.props.wearablePreviewController,
+    hasBeenUpdated: false,
+    socialEmote: undefined
   }
 
   handleFileLoad = async () => {
@@ -40,9 +33,25 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     await previewController?.scene.getScreenshot(1024, 1024).then(screenshot => onSave(screenshot))
   }
 
+  handleSocialEmoteSelect = (animation: SocialEmoteAnimation) => {
+    this.setState({ socialEmote: animation })
+  }
+
   render() {
     const { onClose, onBack, title, isLoading, base64s } = this.props
-    const { blob, hasBeenUpdated } = this.state
+    const { blob, hasBeenUpdated, socialEmote, previewController } = this.state
+
+    let emoteData = undefined
+    if (base64s && base64s.length > 0) {
+      emoteData = JSON.parse(atob(base64s[0]))?.emoteDataADR74
+    } else if (blob?.emoteDataADR74) {
+      emoteData = blob?.emoteDataADR74
+    }
+
+    let _socialEmote = undefined
+    if (!socialEmote && emoteData?.startAnimation) {
+      _socialEmote = { title: 'Start Animation', ...emoteData.startAnimation }
+    }
 
     return (
       <>
@@ -50,8 +59,9 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
             <WearablePreview
+              baseUrl="https://wearable-preview-1kigg1ihg-decentraland1.vercel.app"
               id="preview"
-              blob={blob as any} // TODO: Remove any
+              blob={blob}
               base64s={base64s}
               profile="default"
               disableBackground
@@ -63,13 +73,21 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               skin="000000"
               zoom={100}
               wheelZoom={2}
+              socialEmote={socialEmote || _socialEmote}
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
             />
-            {hasBeenUpdated ? (
+            {hasBeenUpdated && previewController ? (
               <>
-                <ZoomControls className="zoom-controls" wearablePreviewId="preview" />
-                <TranslationControls className="translation-controls" vertical wearablePreviewId="preview" />
+                <ZoomControls className="zoom-controls" wearablePreviewId="preview" wearablePreviewController={previewController as any} />
+
+                <TranslationControls
+                  className="translation-controls"
+                  vertical
+                  wearablePreviewId="preview"
+                  wearablePreviewController={previewController as any}
+                />
+
                 <EmoteControls className="emote-controls" wearablePreviewId="preview" />
               </>
             ) : (
@@ -80,6 +98,15 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             <Button disabled={!hasBeenUpdated || isLoading} onClick={onBack}>
               {t('global.back')}
             </Button>
+            {hasBeenUpdated && previewController ? (
+              <AnimationControls
+                className="animation-controls"
+                wearablePreviewId="preview"
+                wearablePreviewController={previewController as any}
+                selectedAnimation={socialEmote}
+                onSelectAnimation={this.handleSocialEmoteSelect}
+              />
+            ) : null}
             <Button disabled={!hasBeenUpdated || isLoading} primary loading={isLoading} onClick={this.handleSave}>
               {t('global.save')}
             </Button>
