@@ -79,15 +79,8 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             />
             {hasBeenUpdated && previewController ? (
               <>
-                <ZoomControls className="zoom-controls" wearablePreviewId="preview" wearablePreviewController={previewController as any} />
-
-                <TranslationControls
-                  className="translation-controls"
-                  vertical
-                  wearablePreviewId="preview"
-                  wearablePreviewController={previewController as any}
-                />
-
+                <ZoomControls className="zoom-controls" wearablePreviewId="preview" />
+                <TranslationControls className="translation-controls" vertical wearablePreviewId="preview" />
                 <EmoteControls className="emote-controls" wearablePreviewId="preview" />
               </>
             ) : (
@@ -102,7 +95,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               <AnimationControls
                 className="animation-controls"
                 wearablePreviewId="preview"
-                wearablePreviewController={previewController as any}
                 selectedAnimation={socialEmote}
                 onSelectAnimation={this.handleSocialEmoteSelect}
               />
