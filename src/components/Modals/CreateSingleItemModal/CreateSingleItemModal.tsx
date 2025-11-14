@@ -518,7 +518,6 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     }
 
     if (isRequirementMet && !isSkin && isSmartWearable && finalSize && !isSmartWearableFileSizeValid(finalSize)) {
-      console.log('isSmartWearableFileSizeValid', isSmartWearableFileSizeValid(finalSize), finalSize, toMB(MAX_SMART_WEARABLE_FILE_SIZE))
       dispatch(
         createItemActions.setError(
           t('create_single_item_modal.error.item_too_big', {

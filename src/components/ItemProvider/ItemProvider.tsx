@@ -99,8 +99,6 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       const blob = await this.fetchGlbBlob(glbFile.hash)
       const data = await getEmoteData(URL.createObjectURL(blob))
 
-      console.log('Loaded animation data:', data)
-
       this.setState(prev => ({
         ...prev,
         animationData: {
