@@ -1,5 +1,6 @@
 import React, { useReducer, useRef, useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
+import { AnimationClip } from 'three'
 import {
   BodyPartCategory,
   BodyShape,
@@ -706,7 +707,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
 
           // Extract animation names from AnimationClip objects
-          const animationNames = (data.animations ?? []).map(clip => clip.name)
+          const animationNames = (data.animations ?? []).map((clip: AnimationClip) => clip.name)
 
           // Autocomplete emote data based on animation naming conventions
           const autocompletedData = autocompleteSocialEmoteData(animationNames)
