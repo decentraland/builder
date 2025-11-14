@@ -5,7 +5,6 @@ import { AnimationControls, EmoteControls, TranslationControls, WearablePreview,
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props, State } from './EditThumbnailStep.types'
-import { Props, State } from './EditThumbnailStep.types'
 import './EditThumbnailStep.css'
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
