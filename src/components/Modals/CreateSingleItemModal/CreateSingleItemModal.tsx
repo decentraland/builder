@@ -276,7 +276,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
   const modifyItem = useCallback(
     async (pristineItem: Item, sortedContents: SortedContent, representations: WearableRepresentation[]) => {
-      const { name, bodyShape, type, mappings, metrics, category, playMode, requiredPermissions, outcomes } = state as StateData
+      const { name, bodyShape, type, mappings, metrics, category, playMode, requiredPermissions, emoteData } = state as StateData
 
       let data: WearableData | EmoteData
 
@@ -295,9 +295,23 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           category: category as EmoteCategory
         } as EmoteData
 
-        // TODO: Autocomplete animations when modifying an emote
-        if (outcomes && outcomes.length > 0) {
-          data.outcomes = outcomes
+        // Autocomplete animations when modifying a social emote with a new model
+        if (areEmoteMetrics(metrics) && metrics.additionalArmatures && emoteData && emoteData.animations.length > 0) {
+          const animationNames = emoteData.animations.map((clip: AnimationClip) => clip.name)
+          const autocompletedData = autocompleteSocialEmoteData(animationNames)
+
+          if (autocompletedData.startAnimation) {
+            data.startAnimation = { ...data.startAnimation, ...autocompletedData.startAnimation } as StartAnimation
+          }
+          if (autocompletedData.outcomes) {
+            data.outcomes = autocompletedData.outcomes
+            data.randomizeOutcomes = false
+          }
+        } else {
+          // Current model is not a social emote - clear social emote data
+          data.outcomes = undefined
+          data.startAnimation = undefined
+          data.randomizeOutcomes = undefined
         }
       }
 
@@ -702,7 +716,6 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         dispatch(createItemActions.setThumbnail(thumbnail ?? data.image))
         dispatch(createItemActions.setView(view))
         if (areEmoteMetrics(data.metrics) && data.metrics.additionalArmatures) {
-          // required?
           dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
 
           // Extract animation names from AnimationClip objects
