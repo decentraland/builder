@@ -24,6 +24,7 @@ export type Props = ModalProps & {
   itemStatus: SyncStatus | null
   metadata: CreateSingleItemModalMetadata
   isThirdPartyV2Enabled: boolean
+  isSocialEmotesEnabled: boolean
   isLoading: boolean
   onSave: typeof saveItemRequest
 }
@@ -112,6 +113,9 @@ export type AcceptedFileProps = Pick<
   | 'blockVrmExport'
 >
 export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
-export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled'>
+export type MapStateProps = Pick<
+  Props,
+  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled' | 'isSocialEmotesEnabled'
+>
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

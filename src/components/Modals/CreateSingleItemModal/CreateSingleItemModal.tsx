@@ -696,6 +696,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
   const getMetricsAndScreenshot = useCallback(
     async (controller?: IPreviewController) => {
+      const { isSocialEmotesEnabled } = props
       const { type, model, contents, category, thumbnail } = state
       if (type && model && contents && controller) {
         const data = await getItemData({
@@ -715,7 +716,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         dispatch(createItemActions.setMetrics(data.metrics))
         dispatch(createItemActions.setThumbnail(thumbnail ?? data.image))
         dispatch(createItemActions.setView(view))
-        if (areEmoteMetrics(data.metrics) && data.metrics.additionalArmatures) {
+        if (isSocialEmotesEnabled && areEmoteMetrics(data.metrics) && data.metrics.additionalArmatures) {
           dispatch(createItemActions.setEmoteData({ animations: data.animations ?? [], armatures: data.armatures! }))
 
           // Extract animation names from AnimationClip objects

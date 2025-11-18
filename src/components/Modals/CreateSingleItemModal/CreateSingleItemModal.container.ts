@@ -4,7 +4,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { RootState } from 'modules/common/types'
 import { getCollection } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
-import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { getIsLinkedWearablesV2Enabled, getIsSocialEmotesEnabled } from 'modules/features/selectors'
 import { saveItemRequest, SAVE_ITEM_REQUEST } from 'modules/item/actions'
 import { getLoading, getError, getStatusByItemId } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CreateSingleItemModal.types'
@@ -22,7 +22,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     address: getAddress(state),
     error: getError(state),
     isLoading: isLoadingType(getLoading(state), SAVE_ITEM_REQUEST),
-    isThirdPartyV2Enabled: getIsLinkedWearablesV2Enabled(state)
+    isThirdPartyV2Enabled: getIsLinkedWearablesV2Enabled(state),
+    isSocialEmotesEnabled: getIsSocialEmotesEnabled(state)
   }
 }
 
