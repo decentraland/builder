@@ -58,7 +58,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
             <WearablePreview
-              baseUrl="https://wearable-preview-k796xchi9-decentraland1.vercel.app"
               id="preview"
               blob={blob}
               base64s={base64s}
