@@ -38,7 +38,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
 
   render() {
     const { onClose, onBack, title, isLoading, base64s } = this.props
-    const { blob, hasBeenUpdated, socialEmote, previewController } = this.state
+    const { blob, hasBeenUpdated, socialEmote } = this.state
 
     let emoteData = undefined
     if (base64s && base64s.length > 0) {
@@ -58,7 +58,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
         <Modal.Content className="EditThumbnailStep">
           <div className="thumbnail-step-container">
             <WearablePreview
-              baseUrl="https://wearable-preview-1kigg1ihg-decentraland1.vercel.app"
+              baseUrl="https://wearable-preview-k796xchi9-decentraland1.vercel.app"
               id="preview"
               blob={blob}
               base64s={base64s}
@@ -76,7 +76,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
             />
-            {hasBeenUpdated && previewController ? (
+            {hasBeenUpdated ? (
               <>
                 <ZoomControls className="zoom-controls" wearablePreviewId="preview" />
                 <TranslationControls className="translation-controls" vertical wearablePreviewId="preview" />
@@ -90,7 +90,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
             <Button disabled={!hasBeenUpdated || isLoading} onClick={onBack}>
               {t('global.back')}
             </Button>
-            {hasBeenUpdated && previewController ? (
+            {hasBeenUpdated ? (
               <AnimationControls
                 className="animation-controls"
                 wearablePreviewId="preview"
