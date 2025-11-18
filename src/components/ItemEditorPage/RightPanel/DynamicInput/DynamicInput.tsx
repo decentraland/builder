@@ -5,6 +5,9 @@ import { Props } from './DynamicInput.types'
 import styles from './DynamicInput.module.css'
 
 const EXTRA_CURSOR_SPACE = 6 // px
+const ALLOWED_CHARS = 'a-zA-Z0-9\\s_-'
+const ALLOWED_CHARS_REGEX = new RegExp(`^[${ALLOWED_CHARS}]*$`)
+const INVALID_CHARS_REGEX = new RegExp(`[^${ALLOWED_CHARS}]`, 'g')
 
 const DynamicInput: FC<Props> = ({ value, disabled = false, placeholder = '', editable = false, className = '', maxLength, onChange }) => {
   const [isEditing, setIsEditing] = useState(false)
@@ -43,7 +46,11 @@ const DynamicInput: FC<Props> = ({ value, disabled = false, placeholder = '', ed
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const newValue = event.target.value
+      let newValue = event.target.value
+
+      // Filter out invalid characters
+      newValue = newValue.replace(INVALID_CHARS_REGEX, '')
+
       if (value !== newValue && onChange) {
         onChange(maxLength ? newValue.slice(0, maxLength) : newValue)
       }
@@ -66,7 +73,25 @@ const DynamicInput: FC<Props> = ({ value, disabled = false, placeholder = '', ed
   )
 
   const handleKeyDown = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') setIsEditing(false)
+    if (event.key === 'Enter') {
+      setIsEditing(false)
+      return
+    }
+
+    // Allow control keys (navigation, deletion, etc.)
+    if (
+      event.key.length > 1 || // Control keys like Backspace, Delete, ArrowLeft, etc.
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey
+    ) {
+      return
+    }
+
+    // Prevent invalid characters
+    if (!ALLOWED_CHARS_REGEX.test(event.key)) {
+      event.preventDefault()
+    }
   }, [])
 
   const handleBlur = useCallback(() => setIsEditing(false), [])
