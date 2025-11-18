@@ -233,6 +233,7 @@
   padding: 10px 10px 0 10px;
   width: 100%;
   border-width: 1px;
+  border-radius: 6px;
   border-color: var(--text-area-border);
   margin-bottom: 10px;
 }
