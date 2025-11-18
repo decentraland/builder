@@ -93,3 +93,11 @@ export const getIsCreditsForCollectionsFeeEnabled = (state: RootState) => {
     return false
   }
 }
+
+export const getIsSocialEmotesEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.SOCIAL_EMOTES)
+  } catch (e) {
+    return false
+  }
+}

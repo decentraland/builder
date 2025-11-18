@@ -11,5 +11,6 @@ export enum FeatureName {
   LINKED_WEARABLES_V2 = 'linked-wearables-v2',
   LINKED_WEARABLES_PAYMENTS = 'linked-wearables-payments',
   OFFCHAIN_PUBLIC_ITEM_ORDERS = 'offchain-public-item-orders',
-  CREDITS_FOR_COLLECTIONS_FEE = 'credits-for-collections-fee'
+  CREDITS_FOR_COLLECTIONS_FEE = 'credits-for-collections-fee',
+  SOCIAL_EMOTES = 'social-emotes'
 }
