@@ -244,6 +244,14 @@
   padding: 0;
 }
 
+.dcl.box.emote-request-state-box .ui.dropdown.Select.disabled .value {
+  color: var(--secondary-text);
+}
+
+.dcl.box.emote-request-state-box .ui.dropdown.Select.disabled .handle {
+  visibility: hidden;
+}
+
 .dcl.box.emote-request-state-box .box-header,
 .dcl.box.outcome-box .box-header {
   display: flex;

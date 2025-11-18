@@ -902,7 +902,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                 onChange={value => this.handleStartAnimationAudioClipChange(value)}
                               />
                             ) : null}
-                            {/* TODO: Update styles to make the value dark grayed out and remove the dropdown arrow */}
+
                             <Select<EmotePlayMode>
                               itemId={item.id}
                               label={t('create_single_item_modal.play_mode_label')}
