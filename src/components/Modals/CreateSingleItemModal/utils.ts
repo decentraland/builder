@@ -307,6 +307,17 @@ export const getLinkedContract = (collection: Collection | undefined | null): Li
 }
 
 /**
+ * Animation suffix enum for naming conventions
+ */
+export enum AnimationSuffix {
+  Start = '_Start',
+  StartProp = '_Start_Prop',
+  Avatar = '_Avatar',
+  AvatarOther = '_AvatarOther',
+  Prop = '_Prop'
+}
+
+/**
  * Maps animation suffixes to their corresponding armature names
  */
 const ANIMATION_TO_ARMATURE_MAP = {
@@ -318,9 +329,9 @@ const ANIMATION_TO_ARMATURE_MAP = {
 /**
  * Extracts the base name from an animation name by removing the suffix
  */
-const getBaseAnimationName = (animationName: string): string => {
+export const getBaseAnimationName = (animationName: string): string => {
   // Remove common suffixes to get the base name
-  const suffixes = ['_Start', '_Avatar', '_AvatarOther', '_Prop', '_Start_Prop']
+  const suffixes = Object.values(AnimationSuffix)
 
   for (const suffix of suffixes) {
     if (animationName.endsWith(suffix)) {
@@ -334,11 +345,11 @@ const getBaseAnimationName = (animationName: string): string => {
 /**
  * Gets the armature name based on the animation name suffix
  */
-const getArmatureFromAnimation = (animationName: string): ArmatureId => {
-  if (animationName.endsWith('_AvatarOther')) {
+export const getArmatureFromAnimation = (animationName: string): ArmatureId => {
+  if (animationName.endsWith(AnimationSuffix.AvatarOther)) {
     return ANIMATION_TO_ARMATURE_MAP.AvatarOther
   }
-  if (animationName.endsWith('_Prop') || animationName.endsWith('_Start_Prop')) {
+  if (animationName.endsWith(AnimationSuffix.Prop) || animationName.endsWith(AnimationSuffix.StartProp)) {
     return ANIMATION_TO_ARMATURE_MAP.Prop
   }
   // Default to Avatar for _Avatar, _Start, or no suffix
@@ -360,7 +371,7 @@ const formatAnimationTitle = (baseName: string): string => {
  * Checks if an animation is a start animation
  */
 const isStartAnimation = (animationName: string): boolean => {
-  return animationName.endsWith('_Start') || animationName.endsWith('_Start_Prop')
+  return animationName.endsWith(AnimationSuffix.Start) || animationName.endsWith(AnimationSuffix.StartProp)
 }
 
 /**

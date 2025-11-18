@@ -62,6 +62,7 @@ import ItemVideo from 'components/ItemVideo'
 import ItemProperties from 'components/ItemProperties'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { EditVideoModalMetadata } from 'components/Modals/EditVideoModal/EditVideoModal.types'
+import { getArmatureFromAnimation, getBaseAnimationName, AnimationSuffix } from 'components/Modals/CreateSingleItemModal/utils'
 import DynamicInput from './DynamicInput/DynamicInput'
 import Input from './Input'
 import Select from './Select'
@@ -554,7 +555,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }))
   }
 
-  getAnimationOptions(animationData: AnimationData, optional = false): Array<{ value: string; text: string }> {
+  getAnimationOptions(animationData: AnimationData, optional = false, suffix?: string): Array<{ value: string; text: string }> {
     if (!animationData.isLoaded) {
       return []
     }
@@ -564,7 +565,24 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       return []
     }
 
-    const options = animationData.animations.map((animation: AnimationClip) => ({
+    let filteredAnimations = animationData.animations
+
+    // Filter animations based on suffix if provided
+    if (suffix) {
+      // Get the target armature from the suffix
+      const targetArmature = getArmatureFromAnimation(`dummy${suffix}`)
+
+      filteredAnimations = animationData.animations.filter((animation: AnimationClip) => {
+        const animationArmature = getArmatureFromAnimation(animation.name)
+        const baseName = getBaseAnimationName(animation.name)
+        const hasNoSuffix = baseName === animation.name
+
+        // Show if: matches target armature OR has no recognized suffix
+        return animationArmature === targetArmature || hasNoSuffix
+      })
+    }
+
+    const options: Array<{ value: string; text: string }> = filteredAnimations.map((animation: AnimationClip) => ({
       value: animation.name,
       text: animation.name
     }))
@@ -857,7 +875,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                               itemId={item.id}
                               label={`${t('item_editor.right_panel.social_emote.avatar')} 1`}
                               value={(data as unknown as EmoteData)?.startAnimation?.[ArmatureId.Armature]?.animation}
-                              options={this.getAnimationOptions(animationData)}
+                              options={this.getAnimationOptions(animationData, false, AnimationSuffix.Start)}
                               disabled={isLoading}
                               onChange={value => this.handleStartAnimationArmatureAnimationChange(ArmatureId.Armature, value)}
                             />
@@ -868,7 +886,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                 'item_editor.right_panel.social_emote.optional'
                               )})`}
                               value={(data as unknown as EmoteData)?.startAnimation?.[ArmatureId.Armature_Prop]?.animation}
-                              options={this.getAnimationOptions(animationData, true)}
+                              options={this.getAnimationOptions(animationData, true, AnimationSuffix.StartProp)}
                               disabled={isLoading}
                               onChange={value => this.handleStartAnimationArmatureAnimationChange(ArmatureId.Armature_Prop, value)}
                             />
@@ -884,6 +902,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                 onChange={value => this.handleStartAnimationAudioClipChange(value)}
                               />
                             ) : null}
+                            {/* TODO: Update styles to make the value dark grayed out and remove the dropdown arrow */}
                             <Select<EmotePlayMode>
                               itemId={item.id}
                               label={t('create_single_item_modal.play_mode_label')}
@@ -941,7 +960,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                   itemId={item.id}
                                   label={`${t('item_editor.right_panel.social_emote.avatar')} 1`}
                                   value={outcome.clips[ArmatureId.Armature]?.animation}
-                                  options={this.getAnimationOptions(animationData)}
+                                  options={this.getAnimationOptions(animationData, false, AnimationSuffix.Avatar)}
                                   disabled={isLoading}
                                   onChange={value => this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature, 'animation', value)}
                                 />
@@ -952,7 +971,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                     'item_editor.right_panel.social_emote.optional'
                                   )})`}
                                   value={outcome.clips[ArmatureId.Armature_Other]?.animation}
-                                  options={this.getAnimationOptions(animationData, true)}
+                                  options={this.getAnimationOptions(animationData, true, AnimationSuffix.AvatarOther)}
                                   disabled={isLoading}
                                   onChange={value =>
                                     this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature_Other, 'animation', value)
@@ -965,7 +984,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                                     'item_editor.right_panel.social_emote.optional'
                                   )})`}
                                   value={outcome.clips[ArmatureId.Armature_Prop]?.animation}
-                                  options={this.getAnimationOptions(animationData, true)}
+                                  options={this.getAnimationOptions(animationData, true, AnimationSuffix.Prop)}
                                   disabled={isLoading}
                                   onChange={value =>
                                     this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature_Prop, 'animation', value)
