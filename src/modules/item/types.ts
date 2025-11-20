@@ -44,6 +44,12 @@ export enum ItemMetadataType {
   EMOTE = 'e'
 }
 
+export enum EmoteOutcomeMetadataType {
+  SIMPLE_OUTCOME = 'so',
+  MULTIPLE_OUTCOME = 'mo',
+  RANDOM_OUTCOME = 'ro'
+}
+
 export const BODY_SHAPE_CATEGORY = 'body_shape'
 
 export enum BodyShapeType {
@@ -83,6 +89,8 @@ export type WearableData = {
   outlineCompatible?: boolean
 }
 
+export type EmoteData = EmoteDataADR74
+
 type BaseItem = {
   id: string // uuid
   name: string
@@ -121,7 +129,7 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
   blockchainContentHash: string | null
   currentContentHash: string | null
   catalystContentHash: string | null
-  data: T extends ItemType.WEARABLE ? WearableData : EmoteDataADR74
+  data: T extends ItemType.WEARABLE ? WearableData : EmoteData
   metrics: T extends ItemType.WEARABLE ? ModelMetrics : AnimationMetrics
   mappings: Partial<Record<ContractNetwork, Record<ContractAddress, Mapping[]>>> | null
   isMappingComplete?: boolean
@@ -132,7 +140,12 @@ export type Item<T = ItemType.WEARABLE> = Omit<BaseItem, 'metrics'> & {
 export const isEmoteItemType = (item: Item | Item<ItemType.EMOTE>): item is Item<ItemType.EMOTE> =>
   (item as Item<ItemType.EMOTE>).type === ItemType.EMOTE
 
-export const isEmoteData = (data: WearableData | EmoteDataADR74): data is EmoteDataADR74 => (data as EmoteDataADR74).loop !== undefined
+export const isSocialEmote = (data: WearableData | EmoteData | undefined): boolean => {
+  return !!data && (data as unknown as EmoteData).startAnimation !== undefined && (data as unknown as EmoteData).outcomes !== undefined
+}
+
+export const isEmoteData = (data: WearableData | EmoteData | undefined): data is EmoteData =>
+  !!data && (data as unknown as EmoteData).loop !== undefined
 
 export enum Currency {
   MANA = 'MANA',
@@ -160,6 +173,7 @@ export const SCENE_LOGIC_PATH = 'bin/game.js'
 export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64
 export const ITEM_UTILITY_MAX_LENGTH = 64
+export const OUTCOME_TITLE_MAX_LENGTH = 24
 export const MODEL_EXTENSIONS = ['.zip', '.gltf', '.glb']
 export const IMAGE_EXTENSIONS = ['.zip', '.png']
 export const VIDEO_EXTENSIONS = ['.mp4']

@@ -1,7 +1,18 @@
+import { AnimationClip } from 'three'
 import * as React from 'react'
 import equal from 'fast-deep-equal'
-import { Loader, Dropdown, Button, Checkbox, CheckboxProps, TextAreaField, TextAreaProps } from 'decentraland-ui'
-import { BodyPartCategory, EmoteCategory, Rarity, EmoteDataADR74, HideableWearableCategory, Network, WearableCategory } from '@dcl/schemas'
+import { Loader, Dropdown, Button, Checkbox, CheckboxProps, TextAreaField, TextAreaProps, Row, Box, Header } from 'decentraland-ui'
+import {
+  BodyPartCategory,
+  EmoteCategory,
+  Rarity,
+  EmoteDataADR74,
+  HideableWearableCategory,
+  Network,
+  WearableCategory,
+  ArmatureId,
+  StartAnimation
+} from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -17,7 +28,9 @@ import {
   getHideableWearableCategories,
   isSmart,
   hasVideo,
-  isWearable
+  isWearable,
+  isAudioFile,
+  itemHasAudio
 } from 'modules/item/utils'
 import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -28,12 +41,15 @@ import {
   ItemType,
   ITEM_DESCRIPTION_MAX_LENGTH,
   ITEM_NAME_MAX_LENGTH,
+  OUTCOME_TITLE_MAX_LENGTH,
   THUMBNAIL_PATH,
   WearableData,
   VIDEO_PATH,
   SyncStatus,
-  ITEM_UTILITY_MAX_LENGTH
+  ITEM_UTILITY_MAX_LENGTH,
+  EmoteData
 } from 'modules/item/types'
+import { isSocialEmoteMetrics } from 'modules/models/types'
 import { dataURLToBlob } from 'modules/media/utils'
 import Collapsable from 'components/Collapsable'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -41,16 +57,21 @@ import Icon from 'components/Icon'
 import Info from 'components/Info'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
+import { AnimationData } from 'components/ItemProvider/ItemProvider.types'
 import ItemVideo from 'components/ItemVideo'
 import ItemProperties from 'components/ItemProperties'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { EditVideoModalMetadata } from 'components/Modals/EditVideoModal/EditVideoModal.types'
+import { getArmatureFromAnimation, getBaseAnimationName } from 'components/Modals/CreateSingleItemModal/utils'
+import DynamicInput from './DynamicInput/DynamicInput'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
+
+const MAX_OUTCOMES = 3
 
 export default class RightPanel extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
@@ -177,11 +198,11 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   handleChangeCategory = (category: HideableWearableCategory | EmoteCategory) => {
     let data
-    if (isEmoteData(this.state.data!)) {
+    if (isEmoteData(this.state.data)) {
       data = {
         ...this.state.data,
         category
-      } as EmoteDataADR74
+      } as EmoteData
     } else {
       data = {
         ...this.state.data,
@@ -202,6 +223,142 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       loop: playMode === EmotePlayMode.LOOP
     }
     this.setState({ data, isDirty: this.isDirty({ data }) })
+  }
+
+  handleStartAnimationArmatureAnimationChange = (prop: ArmatureId.Armature | ArmatureId.Armature_Prop, value: string) => {
+    const data = this.state.data as EmoteData
+    const startAnimation = { ...(data.startAnimation || {}) }
+
+    // For optional fields (Armature_Prop), remove the entire prop if value is empty
+    if (value === '' && prop === ArmatureId.Armature_Prop) {
+      delete startAnimation[prop]
+    } else {
+      startAnimation[prop] = { animation: value }
+    }
+
+    this.setState({
+      data: { ...data, startAnimation: startAnimation as StartAnimation },
+      isDirty: this.isDirty({ data: { ...data, startAnimation: startAnimation as StartAnimation } })
+    })
+  }
+
+  handleStartAnimationAudioClipChange = (audio: string) => {
+    const data = this.state.data as EmoteData
+    const startAnimation = { ...(data.startAnimation || {}) }
+    startAnimation.audio = audio || undefined
+    this.setState({
+      data: { ...data, startAnimation: startAnimation as StartAnimation },
+      isDirty: this.isDirty({ data: { ...data, startAnimation: startAnimation as StartAnimation } })
+    })
+  }
+
+  handleStartAnimationPlayModeChange = (loop: boolean) => {
+    const data = this.state.data as EmoteData
+    const startAnimation = { ...(data.startAnimation || {}) }
+    startAnimation.loop = loop
+    this.setState({
+      data: { ...data, startAnimation: startAnimation as StartAnimation },
+      isDirty: this.isDirty({ data: { ...data, startAnimation: startAnimation as StartAnimation } })
+    })
+  }
+
+  handleRandomizeOutcomesChange = (randomize: boolean) => {
+    const data = {
+      ...this.state.data,
+      randomizeOutcomes: randomize
+    } as EmoteData
+    this.setState({ data, isDirty: this.isDirty({ data }) })
+  }
+
+  handleOutcomeChange = (outcomeIndex: number, field: string, value: string) => {
+    const data = this.state.data as any
+    const outcomes = [...data.outcomes]
+    outcomes[outcomeIndex] = {
+      ...outcomes[outcomeIndex],
+      [field]: value
+    }
+    this.setState({
+      data: { ...data, outcomes },
+      isDirty: this.isDirty({ data: { ...data, outcomes } })
+    })
+  }
+
+  handleOutcomeClipChange = (outcomeIndex: number, armatureId: ArmatureId, field: string, value: string) => {
+    const data = this.state.data as EmoteData
+    const outcomes = [...(data.outcomes || [])]
+    const clips = { ...outcomes[outcomeIndex].clips }
+
+    if (value === '') {
+      // Remove the entire armatureId if value is empty
+      delete clips[armatureId]
+    } else {
+      if (!clips[armatureId]) {
+        clips[armatureId] = {
+          animation: ''
+        }
+      }
+      clips[armatureId] = {
+        ...clips[armatureId],
+        [field]: value
+      }
+    }
+
+    outcomes[outcomeIndex] = {
+      ...outcomes[outcomeIndex],
+      clips
+    }
+    this.setState({
+      data: { ...data, outcomes },
+      isDirty: this.isDirty({ data: { ...data, outcomes } })
+    })
+  }
+
+  handleOutcomeAudioClipChange = (outcomeIndex: number, audio: string) => {
+    const data = this.state.data as EmoteData
+    const outcomes = [...(data.outcomes || [])]
+    outcomes[outcomeIndex].audio = audio || undefined
+    this.setState({ data: { ...data, outcomes }, isDirty: this.isDirty({ data: { ...data, outcomes } }) })
+  }
+
+  handleOutcomePlayModeChange = (outcomeIndex: number, loop: boolean) => {
+    const data = this.state.data as EmoteData
+    const outcomes = [...(data.outcomes || [])]
+    outcomes[outcomeIndex].loop = loop
+    this.setState({
+      data: { ...data, outcomes },
+      isDirty: this.isDirty({ data: { ...data, outcomes } })
+    })
+  }
+
+  handleAddOutcome = () => {
+    const data = this.state.data as EmoteData
+    if (!data || !data.outcomes) {
+      data.outcomes = []
+    }
+    const newOutcome = {
+      title: `Outcome ${data.outcomes.length + 1}`,
+      clips: {},
+      loop: false
+    }
+    const outcomes = [...data.outcomes, newOutcome]
+    this.setState({
+      data: { ...data, outcomes },
+      isDirty: this.isDirty({ data: { ...data, outcomes } })
+    })
+  }
+
+  handleRemoveOutcome = (outcomeIndex: number) => {
+    const data = this.state.data as any
+    const outcomes = data.outcomes.filter((_: any, index: number) => index !== outcomeIndex)
+    this.setState({
+      data: { ...data, outcomes },
+      isDirty: this.isDirty({ data: { ...data, outcomes } })
+    })
+  }
+
+  handleEditOutcomeTitle = (outcomeIndex: number, value: string) => {
+    // Update the outcome title
+    this.handleOutcomeChange(outcomeIndex, 'title', value)
   }
 
   setReplaces(data: WearableData, replaces: HideableWearableCategory[]) {
@@ -398,6 +555,66 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }))
   }
 
+  getAnimationOptions(animationData: AnimationData, optional = false, suffix?: string): Array<{ value: string; text: string }> {
+    if (!animationData.isLoaded) {
+      return []
+    }
+
+    if (animationData.error) {
+      console.warn('Animation data error:', animationData.error)
+      return []
+    }
+
+    let filteredAnimations = animationData.animations
+
+    // Filter animations based on suffix if provided
+    if (suffix) {
+      // Get the target armature from the suffix
+      const targetArmature = getArmatureFromAnimation(`dummy${suffix}`)
+
+      filteredAnimations = animationData.animations.filter((animation: AnimationClip) => {
+        const animationArmature = getArmatureFromAnimation(animation.name)
+        const baseName = getBaseAnimationName(animation.name)
+        const hasNoSuffix = baseName === animation.name
+
+        // Show if: matches target armature OR has no recognized suffix
+        return animationArmature === targetArmature || hasNoSuffix
+      })
+    }
+
+    const options: Array<{ value: string; text: string }> = filteredAnimations.map((animation: AnimationClip) => ({
+      value: animation.name,
+      text: animation.name
+    }))
+
+    return optional ? [{ value: '', text: '--' }, ...options] : options
+  }
+
+  getAudioOptions(values: Item['contents']): Array<{ value: string; text: string }> {
+    const audioFiles = new Set<string>()
+
+    const options = Object.keys(values)
+      .map(key => {
+        if (isAudioFile(key)) {
+          // Extract filename without male/ or female/ prefix
+          const fileName = key.replace(/^(male|female)\//, '')
+
+          // Only add if we haven't seen this filename before
+          if (!audioFiles.has(fileName)) {
+            audioFiles.add(fileName)
+            return {
+              value: fileName,
+              text: fileName
+            }
+          }
+        }
+        return null
+      })
+      .filter(Boolean) as { value: string; text: string }[]
+
+    return [{ value: '', text: '--' }, ...options]
+  }
+
   renderOverrides(item: Item) {
     const canEditItemMetadata = this.canEditItemMetadata(item)
     const data = this.state.data as WearableData
@@ -539,7 +756,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="RightPanel">
         {isConnected ? (
           <ItemProvider id={selectedItemId}>
-            {(item, collection, isLoading) => {
+            {(item, collection, isLoading, animationData) => {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
@@ -647,7 +864,166 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         {this.renderOverrides(item)}
                       </Collapsable>
                     )}
-                    {item?.type === ItemType.EMOTE && (
+                    {item?.type === ItemType.EMOTE &&
+                    item?.metrics &&
+                    isSocialEmoteMetrics(item.metrics) &&
+                    !!item.metrics.additionalArmatures ? (
+                      <Collapsable label={t('item_editor.right_panel.animations')}>
+                        <div className="animations-section">
+                          <Box className="emote-request-state-box" header={<Header className="emote-start-header">Emote Start</Header>}>
+                            <Select<string>
+                              itemId={item.id}
+                              label={`${t('item_editor.right_panel.social_emote.avatar')} 1`}
+                              value={(data as unknown as EmoteData)?.startAnimation?.[ArmatureId.Armature]?.animation}
+                              options={this.getAnimationOptions(animationData, false)}
+                              disabled={isLoading}
+                              onChange={value => this.handleStartAnimationArmatureAnimationChange(ArmatureId.Armature, value)}
+                            />
+
+                            <Select<string>
+                              itemId={item.id}
+                              label={`${t('item_editor.right_panel.social_emote.props')} (${t(
+                                'item_editor.right_panel.social_emote.optional'
+                              )})`}
+                              value={(data as unknown as EmoteData)?.startAnimation?.[ArmatureId.Armature_Prop]?.animation}
+                              options={this.getAnimationOptions(animationData, true)}
+                              disabled={isLoading}
+                              onChange={value => this.handleStartAnimationArmatureAnimationChange(ArmatureId.Armature_Prop, value)}
+                            />
+
+                            {Object.values(item.contents).length > 0 && itemHasAudio(item) ? (
+                              <Select<string>
+                                itemId={item.id}
+                                label={`${t('item_editor.right_panel.social_emote.audio')} (${t(
+                                  'item_editor.right_panel.social_emote.optional'
+                                )})`}
+                                value={(data as unknown as EmoteData)?.startAnimation?.audio}
+                                options={this.getAudioOptions(item.contents)}
+                                onChange={value => this.handleStartAnimationAudioClipChange(value)}
+                              />
+                            ) : null}
+
+                            <Select<EmotePlayMode>
+                              itemId={item.id}
+                              label={t('create_single_item_modal.play_mode_label')}
+                              value={(data as unknown as EmoteData)?.startAnimation?.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
+                              options={this.asPlayModeSelect(playModes)}
+                              onChange={value => this.handleStartAnimationPlayModeChange(value === EmotePlayMode.LOOP)}
+                              disabled // For now play mode for start animation is always loop
+                            />
+                          </Box>
+
+                          {(data as unknown as EmoteData)?.outcomes && (data as unknown as EmoteData).outcomes!.length > 1 ? (
+                            <Select<string>
+                              itemId={item.id}
+                              label={t('item_editor.right_panel.social_emote.randomize_outcomes')}
+                              value={(data as unknown as EmoteData)?.randomizeOutcomes ? 'true' : 'false'}
+                              options={[
+                                { value: 'true', text: 'True' },
+                                { value: 'false', text: 'False' }
+                              ]}
+                              disabled={isLoading}
+                              onChange={value => this.handleRandomizeOutcomesChange(value === 'true')}
+                            />
+                          ) : null}
+
+                          {(data as unknown as EmoteData)?.outcomes &&
+                            (data as unknown as EmoteData).outcomes!.length > 0 &&
+                            (data as unknown as EmoteData).outcomes!.map((outcome, outcomeIndex) => (
+                              <Box
+                                key={outcomeIndex}
+                                className="outcome-box"
+                                header={
+                                  <div className="outcome-header">
+                                    <DynamicInput
+                                      className="outcome-title-input"
+                                      value={outcome.title}
+                                      editable
+                                      maxLength={OUTCOME_TITLE_MAX_LENGTH}
+                                      onChange={(value: string) => this.handleEditOutcomeTitle(outcomeIndex, value)}
+                                    />
+                                    {(data as unknown as EmoteData).outcomes!.length > 1 ? (
+                                      <Button
+                                        className="outcome-remove-button"
+                                        icon="trash"
+                                        size="tiny"
+                                        basic
+                                        onClick={() => this.handleRemoveOutcome(outcomeIndex)}
+                                        disabled={isLoading}
+                                        style={{ float: 'right', marginTop: '-2px' }}
+                                      />
+                                    ) : null}
+                                  </div>
+                                }
+                              >
+                                <Select<string>
+                                  itemId={item.id}
+                                  label={`${t('item_editor.right_panel.social_emote.avatar')} 1`}
+                                  value={outcome.clips[ArmatureId.Armature]?.animation}
+                                  options={this.getAnimationOptions(animationData, false)}
+                                  disabled={isLoading}
+                                  onChange={value => this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature, 'animation', value)}
+                                />
+
+                                <Select<string>
+                                  itemId={item.id}
+                                  label={`${t('item_editor.right_panel.social_emote.avatar')} 2 (${t(
+                                    'item_editor.right_panel.social_emote.optional'
+                                  )})`}
+                                  value={outcome.clips[ArmatureId.Armature_Other]?.animation}
+                                  options={this.getAnimationOptions(animationData, true)}
+                                  disabled={isLoading}
+                                  onChange={value =>
+                                    this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature_Other, 'animation', value)
+                                  }
+                                />
+
+                                <Select<string>
+                                  itemId={item.id}
+                                  label={`${t('item_editor.right_panel.social_emote.props')} (${t(
+                                    'item_editor.right_panel.social_emote.optional'
+                                  )})`}
+                                  value={outcome.clips[ArmatureId.Armature_Prop]?.animation}
+                                  options={this.getAnimationOptions(animationData, true)}
+                                  disabled={isLoading}
+                                  onChange={value =>
+                                    this.handleOutcomeClipChange(outcomeIndex, ArmatureId.Armature_Prop, 'animation', value)
+                                  }
+                                />
+
+                                {Object.values(item.contents).length > 0 && itemHasAudio(item) ? (
+                                  <Select<string>
+                                    itemId={item.id}
+                                    label={`${t('item_editor.right_panel.social_emote.audio')} (${t(
+                                      'item_editor.right_panel.social_emote.optional'
+                                    )})`}
+                                    value={outcome.audio}
+                                    options={this.getAudioOptions(item.contents)}
+                                    onChange={value => this.handleOutcomeAudioClipChange(outcomeIndex, value)}
+                                  />
+                                ) : null}
+
+                                <Select<EmotePlayMode>
+                                  itemId={item.id}
+                                  label={t('create_single_item_modal.play_mode_label')}
+                                  value={outcome?.loop ? EmotePlayMode.LOOP : EmotePlayMode.SIMPLE}
+                                  options={this.asPlayModeSelect(playModes)}
+                                  disabled={isLoading}
+                                  onChange={value => this.handleOutcomePlayModeChange(outcomeIndex, value === EmotePlayMode.LOOP)}
+                                />
+                              </Box>
+                            ))}
+
+                          {((data as unknown as EmoteData)?.outcomes ?? []).length < MAX_OUTCOMES ? (
+                            <Row className="add-outcome-button" align="left">
+                              <Button secondary size="small" disabled={isLoading} onClick={this.handleAddOutcome}>
+                                <Icon name="add" /> {t('item_editor.right_panel.social_emote.add_outcome')}
+                              </Button>
+                            </Row>
+                          ) : null}
+                        </div>
+                      </Collapsable>
+                    ) : (
                       <Collapsable label={t('item_editor.right_panel.animation')}>
                         {item ? (
                           <Select<EmotePlayMode>

@@ -1,4 +1,4 @@
-import type { OrthographicCamera, Material } from 'three'
+import type { OrthographicCamera, Material, Object3D, AnimationClip } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { IPreviewController, WearableCategory } from '@dcl/schemas'
@@ -40,6 +40,13 @@ export const defaults: Options = {
   extension: '.glb',
   engine: EngineType.THREE,
   thumbnailType: ThumbnailType.DEFAULT
+}
+
+const ARMATURE_PREFIX = 'Armature'
+
+enum ARMATURES {
+  PROP = ARMATURE_PREFIX + '_Prop',
+  OTHER = ARMATURE_PREFIX + '_Other'
 }
 
 async function loadGltf(url: string, options: Partial<Options> = {}) {
@@ -210,11 +217,32 @@ export async function getIsEmote(url: string, options: Partial<Options> = {}) {
   return gltf.animations.length > 0
 }
 
-export async function getEmoteMetrics(blob: Blob) {
-  const { gltf, renderer } = await loadGltf(URL.createObjectURL(blob))
+export async function getEmoteData(url: string, options: Partial<Options> = {}) {
+  const {
+    gltf: { scene, animations },
+    renderer
+  } = await loadGltf(url, options)
   document.body.removeChild(renderer.domElement)
-  const animation = gltf.animations[0]
-  const propsAnimation = gltf.animations.length > 1 ? gltf.animations[1] : null
+  const armatures = scene.children.filter(({ name }) => name.startsWith(ARMATURE_PREFIX))
+  const animation = animations[0]
+  const propsAnimation = animations.length > 1 ? animations[1] : null
+
+  if (
+    scene.children.some(sceneItem =>
+      sceneItem.children.some(item => item.name.toLowerCase().includes('basemesh') || item.name.toLowerCase().includes('avatar_mesh'))
+    )
+  ) {
+    throw new EmoteWithMeshError()
+  }
+
+  // For social emotes, we need to count the number of additional armatures, currently only one additional armature is supported
+  const additionalArmatures = armatures.some(({ name }) => name === ARMATURES.OTHER) ? 1 : 0
+
+  // For social emotes, we don't need to check the duration of the props animation
+  if (!additionalArmatures && propsAnimation && propsAnimation.duration !== animation.duration) {
+    throw new EmoteAnimationsSyncError()
+  }
+
   let frames = 0
 
   for (let i = 0; i < animation.tracks.length; i++) {
@@ -222,24 +250,17 @@ export async function getEmoteMetrics(blob: Blob) {
     frames = Math.max(frames, track.times.length)
   }
 
-  if (
-    gltf.scene.children.some(sceneItem =>
-      sceneItem.children.some(item => item.name.toLowerCase().includes('basemesh') || item.name.toLowerCase().includes('avatar_mesh'))
-    )
-  ) {
-    throw new EmoteWithMeshError()
-  }
-
-  if (propsAnimation && propsAnimation.duration !== animation.duration) {
-    throw new EmoteAnimationsSyncError()
-  }
-
   return {
-    sequences: gltf.animations.length,
-    duration: animation.duration,
-    frames,
-    fps: frames / animation.duration,
-    props: gltf.scene.children.some(({ name }) => name === 'Armature_Prop') ? 1 : 0
+    animations,
+    armatures,
+    metrics: {
+      sequences: animations.length,
+      duration: animation.duration,
+      frames,
+      fps: frames / animation.duration,
+      props: armatures.some(({ name }) => name === ARMATURES.PROP) ? 1 : 0,
+      additionalArmatures
+    }
   }
 }
 
@@ -256,10 +277,15 @@ export async function getItemData({
   contents: Record<string, Blob>
   category?: string
 }) {
-  let info: Metrics
-  let image
+  const data: { metrics: Metrics; image: string; armatures?: Object3D[]; animations?: AnimationClip[] } = {
+    metrics: {} as Metrics,
+    image: '',
+    armatures: [],
+    animations: []
+  }
+
   if (isImageFile(model)) {
-    info = {
+    data.metrics = {
       triangles: 100,
       materials: 1,
       textures: 1,
@@ -267,18 +293,21 @@ export async function getItemData({
       bodies: 1,
       entities: 1
     }
-    image = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], category as WearableCategory)
+    data.image = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], category as WearableCategory)
   } else {
     if (!wearablePreviewController) {
       throw Error('WearablePreview controller needed')
     }
     if (type === ItemType.EMOTE) {
-      info = await getEmoteMetrics(contents[model])
+      const emoteData = await getEmoteData(URL.createObjectURL(contents[model]))
+      data.metrics = emoteData.metrics
+      data.armatures = emoteData.armatures
+      data.animations = emoteData.animations
     } else {
-      info = await wearablePreviewController.scene.getMetrics()
+      data.metrics = await wearablePreviewController.scene.getMetrics()
     }
-    image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+    data.image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
   }
 
-  return { info, image }
+  return data
 }

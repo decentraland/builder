@@ -13,11 +13,13 @@ export type AnimationMetrics = {
   frames: number
   fps: number
   props: number
+  additionalArmatures: number
 }
 
 export type Metrics = ModelMetrics | AnimationMetrics
 
 export const areEmoteMetrics = (metrics: Metrics): metrics is AnimationMetrics => !!(metrics as AnimationMetrics).fps
+export const isSocialEmoteMetrics = (metrics: Metrics): metrics is AnimationMetrics => !!(metrics as AnimationMetrics).additionalArmatures
 
 export type Vector3 = { x: number; y: number; z: number }
 

@@ -2133,6 +2133,7 @@
       "wearables": "Wearables",
       "wearables_info": "Los elementos que elija del menú desplegable estarán ocultos.",
       "animation": "Animación",
+      "animations": "Animationes",
       "tags": "Etiquetas",
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
       "select_placeholder": "Selecciona una opción",
@@ -2152,6 +2153,14 @@
         "enabled": "Activada",
         "disabled": "Desactivada",
         "info": "¡Bonito wearable! Permitir que los propietarios de su artículo lo incluyan en las exportaciones de avatar de VRM para que puedan mostrarlo fuera de Decentraland."
+      },
+      "social_emote": {
+        "avatar": "Avatar",
+        "props": "Props",
+        "audio": "Audio",
+        "optional": "opcional",
+        "randomize_outcomes": "Aleatorizar opciones",
+        "add_outcome": "Agregar una opción"
       }
     }
   },

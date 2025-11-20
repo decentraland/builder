@@ -1,6 +1,7 @@
+import { AnimationClip, Object3D } from 'three'
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { IPreviewController, Mappings, Rarity } from '@dcl/schemas'
+import { IPreviewController, Mappings, OutcomeGroup, Rarity, StartAnimation } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
@@ -18,13 +19,13 @@ export const ITEM_LOADED_CHECK_DELAY = 2000
 
 export type Props = ModalProps & {
   address?: string
-  metadata: CreateSingleItemModalMetadata
-  error: string | null
-  isThirdPartyV2Enabled: boolean
-  isOffchainPublicItemOrdersEnabled: boolean
-  isLoading: boolean
   collection: Collection | null
+  error: string | null
   itemStatus: SyncStatus | null
+  metadata: CreateSingleItemModalMetadata
+  isThirdPartyV2Enabled: boolean
+  isSocialEmotesEnabled: boolean
+  isLoading: boolean
   onSave: typeof saveItemRequest
 }
 
@@ -56,7 +57,14 @@ export type StateData = {
   modelSize?: number
   mappings: Mappings
   blockVrmExport?: boolean
+  startAnimation?: StartAnimation
+  outcomes?: OutcomeGroup[]
+  emoteData?: {
+    animations: AnimationClip[]
+    armatures: Object3D[]
+  }
 }
+
 export type State = {
   view: CreateItemView
   fromView?: CreateItemView
@@ -107,7 +115,7 @@ export type AcceptedFileProps = Pick<
 export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
 export type MapStateProps = Pick<
   Props,
-  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled' | 'isOffchainPublicItemOrdersEnabled'
+  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled' | 'isSocialEmotesEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>

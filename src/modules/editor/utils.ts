@@ -198,7 +198,7 @@ export const getName = (wearable: Wearable) => {
       return !isNumeric || part <= 0 ? strPart : null
     })
     .filter(part => part != null) // Filter out ignored parts
-    .map(part => capitalize(part!))
+    .map(part => capitalize(part))
     .join(' ')
 }
 
@@ -331,7 +331,10 @@ export function toEmote(item: Item<ItemType.EMOTE>): EmoteDefinition {
         ...representation,
         contents: representation.contents.map(path => ({ key: path, url: getContentsStorageUrl(item.contents[path]) }))
       })),
-      loop: item.data.loop
+      loop: item.data.loop,
+      startAnimation: item.data.startAnimation,
+      randomizeOutcomes: item.data.randomizeOutcomes,
+      outcomes: item.data.outcomes
     }
   }
 }

@@ -43,6 +43,7 @@
   display: flex;
   flex-direction: column;
   padding: 24px;
+  align-self: flex-start;
 }
 
 .CreateSingleItemModal .preview .thumbnail-container {
@@ -226,6 +227,7 @@
   background-color: var(--secondary-text);
 }
 
+.CreateSingleItemModal .importer-thumbnail-container .WearablePreview,
 .CreateSingleItemModal .importer-thumbnail-container #thumbnail-picker {
   display: none;
 }
@@ -280,7 +282,7 @@
   font-weight: 500;
 }
 
-.CreateSingleItemModal .field-header {
+.CreateSingleItemModal .fields-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -288,4 +290,21 @@
 
 .CreateSingleItemModal .field-header .learn-more {
   text-decoration: underline;
+}
+
+.CreateSingleItemModal .outcomes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.CreateSingleItemModal .outcome-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.CreateSingleItemModal .dcl.box.outcome-box {
+  padding: 0;
+  padding-bottom: 8px;
 }
