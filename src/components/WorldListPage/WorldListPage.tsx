@@ -135,7 +135,7 @@ const WorldListPage: React.FC<Props> = props => {
 
       return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
     },
-    [getDCLWorldsStatus, isExternalName, isWorldDeployed]
+    [deploymentsByWorlds, getDCLWorldsStatus, isExternalName, isWorldDeployed]
   )
 
   const renderWorldSize = useCallback(
@@ -231,7 +231,7 @@ const WorldListPage: React.FC<Props> = props => {
                       </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         <Button basic onClick={e => handleOpenPermissionsModal(e, ens.subdomain)}>
-                          Permissions
+                          {t('worlds_list_page.table.permissions')}
                         </Button>
                       </Table.Cell>
                     </Table.Row>

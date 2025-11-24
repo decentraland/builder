@@ -63,7 +63,7 @@ export default function ENSDetailPage(props: Props) {
         <div className={styles.editableField}>
           <span className={styles.avatar} data-testid="alias-avatar">
             {avatar ? (
-              <img className={styles.avatarImg} src={avatar.avatar.snapshots.face256} alt={avatar.realName} />
+              <img className={styles.avatarImg} src={avatar.avatar.snapshots?.face256 || ''} alt={avatar.realName} />
             ) : (
               <Icon name="profile" />
             )}

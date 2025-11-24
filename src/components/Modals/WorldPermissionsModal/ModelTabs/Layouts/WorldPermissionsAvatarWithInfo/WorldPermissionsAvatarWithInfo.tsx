@@ -1,5 +1,5 @@
 import React from 'react'
-import { AvatarFace } from 'decentraland-ui/dist/components/AvatarFace/AvatarFace'
+import { AvatarFace, AvatarFaceProps } from 'decentraland-ui/dist/components/AvatarFace/AvatarFace'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { getResumedAddress } from '../../../utils'
@@ -26,7 +26,7 @@ export const WorldPermissionsAvatarWithInfo = React.memo((props: Props) => {
 
   return (
     <div className={styles.avatar} data-testid={WORLD_PERMISSIONS_AVATAR_WITH_INFO_AVATAR_TEST_ID}>
-      <AvatarFace className={styles.avatarface} avatar={profileAvatar} size="small" inline />
+      <AvatarFace className={styles.avatarface} avatar={profileAvatar as AvatarFaceProps['avatar']} size="small" inline />
       <CopyToClipboard role="option" text={walletAddress} showPopup>
         <p className={styles.paragraph} data-testid={WORLD_PERMISSIONS_AVATAR_WITH_INFO_WALLET_TEST_ID}>
           {profileAvatar && profileAvatar.name && (

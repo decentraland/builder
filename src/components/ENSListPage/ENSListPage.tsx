@@ -216,7 +216,7 @@ export default function ENSListPage(props: Props) {
         alias: isAlias(ens) ? (
           <span className="ens-list-avatar">
             {avatar ? (
-              <img className="ens-list-avatar-img" src={avatar.avatar.snapshots.face256} alt={avatar.realName} />
+              <img className="ens-list-avatar-img" src={avatar.avatar.snapshots?.face256 || ''} alt={avatar.realName} />
             ) : (
               <Icon name="profile" />
             )}
