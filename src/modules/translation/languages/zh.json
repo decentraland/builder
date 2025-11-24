@@ -951,7 +951,8 @@
       "matic": "Polygon",
       "sepolia": "Ethereum Sepolia",
       "amoy": "Polygon Amoy"
-    }
+    },
+    "revert": "撤销"
   },
   "roles": {
     "1": "持有者",

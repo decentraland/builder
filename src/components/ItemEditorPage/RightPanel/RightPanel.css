@@ -3,7 +3,7 @@
   flex: none;
   background-color: #242229;
   border-left: 1px solid rgba(115, 110, 125, 0.3);
-  padding: 16px;
+  padding: 16px 0px 16px 16px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -27,7 +27,7 @@
 
 .RightPanel .container {
   overflow-y: auto;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 135px);
   flex: 1;
 }
 
@@ -131,14 +131,28 @@
   background-size: 18px;
 }
 
-.RightPanel .edit-buttons {
-  margin: 10px 0;
-  justify-content: center;
-  display: flex;
+.RightPanel .edit-buttons-container {
+  position: absolute;
+  bottom: 0;
+  right: 0px;
+  width: var(--item-editor-panel-width);
+  height: 68px;
+  background-color: #242229;
+  box-shadow: 0px -4px 16px 0px #00000040;
+  padding: 16px;
+  z-index: 999;
 }
 
-.RightPanel .edit-buttons .ui.button + .ui.button {
-  margin-left: 20px;
+.RightPanel .edit-buttons {
+  display: flex;
+  gap: 16px;
+  .ui.button {
+    height: 36px;
+    padding: 0;
+    &.primary {
+      flex: 1;
+    }
+  }
 }
 
 .RightPanel .danger-text {
