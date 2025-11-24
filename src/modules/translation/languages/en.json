@@ -1899,7 +1899,7 @@
         "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per collection (paid in MANA) only once."
       },
       "standard": {
-        "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA)."
+        "subtitle": "You are about to submit your {count} {count, plural, one {item} other {items}} collection \"{collection_name}\" for Curator review. To continue, choose your payment method for the publication fee. Learn about the publication fee"
       },
       "learn_more": "Learn about the publication fee",
       "already_payed": "Already payed but not published",
