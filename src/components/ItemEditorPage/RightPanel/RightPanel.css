@@ -335,3 +335,7 @@
 .dcl.box.outcome-box .outcome-header .outcome-title-input .ui.button.basic {
   color: var(--secondary-text) !important;
 }
+
+#root:has(.RightPanel) ~ .intercom-lightweight-app .intercom-lightweight-app-launcher {
+  bottom: 64px;
+}
