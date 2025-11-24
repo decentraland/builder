@@ -1023,7 +1023,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           ) : null}
                         </div>
                       </Collapsable>
-                    ) : (
+                    ) : item?.type === ItemType.EMOTE ? (
                       <Collapsable label={t('item_editor.right_panel.animation')}>
                         {item ? (
                           <Select<EmotePlayMode>
@@ -1036,7 +1036,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           />
                         ) : null}
                       </Collapsable>
-                    )}
+                    ) : null}
                     {item && isSmart(item) && item.data.requiredPermissions?.length ? (
                       <Collapsable label={t('item_editor.right_panel.required_permissions')}>{this.renderPermissions(item)}</Collapsable>
                     ) : null}
@@ -1109,16 +1109,24 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         </div>
                       </Collapsable>
                     )}
-                    {isDirty ? (
+                    <div className="edit-buttons-container">
                       <div className="edit-buttons">
-                        <Button secondary onClick={this.handleOnResetItem}>
-                          {t('global.cancel')}
+                        <Button secondary onClick={this.handleOnResetItem} disabled={!isDirty || isLoading} loading={isLoading}>
+                          {t('global.revert')}
                         </Button>
-                        <NetworkButton primary onClick={this.handleOnSaveItem} network={Network.MATIC}>
+                        <NetworkButton
+                          primary
+                          onClick={this.handleOnSaveItem}
+                          network={Network.MATIC}
+                          disabled={!isDirty || isLoading}
+                          loading={isLoading}
+                        >
                           {t('global.save')}
                         </NetworkButton>
                       </div>
-                    ) : error && selectedItemId ? (
+                    </div>
+
+                    {error && selectedItemId ? (
                       <p className="danger-text">
                         {t('global.error_ocurred')}: {error}
                       </p>

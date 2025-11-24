@@ -960,7 +960,8 @@
       "matic": "Polygon",
       "sepolia": "Ethereum Sepolia",
       "amoy": "Polygon Amoy"
-    }
+    },
+    "revert": "Revert"
   },
   "roles": {
     "1": "Owner",
