@@ -636,7 +636,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const lock: string = yield retry(10, 500, legacyBuilderClient.lockCollection, collection)
       collection = { ...collection, lock: +new Date(lock) }
 
-      yield put(publishCollectionSuccess(collection, items, maticChainId, txHash, paymentMethod === PaymentMethod.FIAT))
+      yield put(publishCollectionSuccess(collection, items, maticChainId, txHash, paymentMethod === PaymentMethod.FIAT, creditsAmount))
     } catch (error) {
       let message: string
       if (isErrorWithCode(error) && error.code.toString() === ErrorCode.HIGH_CONGESTION) {

@@ -79,12 +79,20 @@ export const publishCollectionRequest = (
   creditsAmount = '0',
   totalPrice?: string
 ) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice })
-export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string, isFiat: boolean) =>
+export const publishCollectionSuccess = (
+  collection: Collection,
+  items: Item[],
+  chainId: ChainId,
+  txHash: string,
+  isFiat: boolean,
+  creditsAmount: string = '0'
+) =>
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,
     items,
     isFiat,
-    ...buildTransactionPayload(chainId, txHash, { collection, items, isFiat })
+    creditsAmount,
+    ...buildTransactionPayload(chainId, txHash, { collection, items, isFiat, creditsAmount })
   })
 export const publishCollectionFailure = (collection: Collection, items: Item[], error: string, isFiat: boolean) =>
   action(PUBLISH_COLLECTION_FAILURE, { collection, items, error, isFiat })
