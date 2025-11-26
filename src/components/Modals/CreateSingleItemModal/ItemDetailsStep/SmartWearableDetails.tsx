@@ -28,9 +28,9 @@ export const SmartWearableDetails: React.FC = () => {
   const thumbnailStyle = getBackgroundStyle(rarity)
 
   const handleOpenVideoDialog = useCallback(() => {
-    dispatch(createItemActions.setView(CreateItemView.UPLOAD_VIDEO))
     dispatch(createItemActions.setFromView(CreateItemView.DETAILS))
-  }, [])
+    dispatch(createItemActions.setView(CreateItemView.UPLOAD_VIDEO))
+  }, [dispatch])
 
   return (
     <>
@@ -85,7 +85,7 @@ export const SmartWearableDetails: React.FC = () => {
       </Row>
       <Row className="actions" grow>
         <Column grow shrink>
-          <Button disabled={isDisabled()} onClick={() => dispatch(createItemActions.setView(CreateItemView.UPLOAD_VIDEO))}>
+          <Button disabled={isDisabled()} onClick={handleOpenVideoDialog}>
             {t('global.back')}
           </Button>
         </Column>

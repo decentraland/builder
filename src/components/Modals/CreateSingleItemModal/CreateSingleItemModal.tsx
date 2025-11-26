@@ -711,6 +711,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         if (isSmart({ type, contents })) {
           // TODO: await setTimeout(() => {}, ITEM_LOADED_CHECK_DELAY)
           view = CreateItemView.UPLOAD_VIDEO
+          dispatch(createItemActions.setFromView(CreateItemView.IMPORT))
         }
 
         dispatch(createItemActions.setMetrics(data.metrics))

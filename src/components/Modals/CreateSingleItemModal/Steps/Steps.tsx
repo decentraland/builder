@@ -69,12 +69,13 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
   const handleUploadVideoGoBack = useCallback(() => {
     const { fromView } = state
 
-    if (fromView) {
+    if (fromView && fromView !== CreateItemView.IMPORT) {
+      dispatch(createItemActions.setFromView(undefined))
       dispatch(createItemActions.setView(fromView))
       return
     }
 
-    // Reset to initial state using the reducer's createInitialState function
+    // Going back to IMPORT - reset state to prevent auto-processing
     const initialState = createInitialState(metadata, collection, isThirdPartyV2Enabled)
     dispatch(createItemActions.resetState(initialState))
   }, [state, metadata, collection, isThirdPartyV2Enabled])
