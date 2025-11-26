@@ -6,75 +6,31 @@ import Icon from 'components/Icon'
 import ItemVideo from 'components/ItemVideo'
 import ItemRequiredPermission from 'components/ItemRequiredPermission'
 import { useCreateSingleItemModal } from '../CreateSingleItemModal.context'
-import { AcceptedFileProps, CreateItemView } from '../CreateSingleItemModal.types'
+import { CreateItemView } from '../CreateSingleItemModal.types'
 import CommonFields from '../CommonFields'
-import { UploadVideoStep } from '../UploadVideoStep'
-import { createItemActions, createInitialState } from '../CreateSingleItemModal.reducer'
+import { createItemActions } from '../CreateSingleItemModal.reducer'
 
 export const SmartWearableDetails: React.FC = () => {
   const {
     state,
     dispatch,
-    onClose,
     renderMetrics,
     renderModalTitle,
     handleOpenThumbnailDialog,
     handleThumbnailChange,
     thumbnailInput,
-    itemStatus,
-    metadata,
-    collection,
-    isThirdPartyV2Enabled,
     handleSubmit,
     isDisabled,
     isLoading
   } = useCreateSingleItemModal()
-  const { contents, thumbnail, rarity, requiredPermissions, video, view } = state
+  const { thumbnail, rarity, requiredPermissions, video } = state
   const title = renderModalTitle()
   const thumbnailStyle = getBackgroundStyle(rarity)
 
-  const handleUploadVideoGoBack = useCallback(() => {
-    const { fromView } = state
-
-    if (fromView) {
-      dispatch(createItemActions.setView(fromView))
-      return
-    }
-
-    // Reset to initial state using the reducer's createInitialState function
-    const initialState = createInitialState(metadata, collection, isThirdPartyV2Enabled)
-    dispatch(createItemActions.resetState(initialState))
-  }, [state, metadata, collection, isThirdPartyV2Enabled])
-
-  const handleSaveVideo = useCallback(() => {
-    dispatch(createItemActions.setFromView(undefined))
-    dispatch(createItemActions.setLoading(false))
-    dispatch(createItemActions.setView(CreateItemView.DETAILS))
-  }, [])
-
   const handleOpenVideoDialog = useCallback(() => {
-    dispatch(createItemActions.setView(CreateItemView.UPLOAD_VIDEO))
     dispatch(createItemActions.setFromView(CreateItemView.DETAILS))
-  }, [])
-
-  const handleVideoDropAccepted = useCallback((acceptedFileProps: AcceptedFileProps) => {
-    dispatch(createItemActions.setLoading(true))
-    dispatch(createItemActions.setAcceptedProps(acceptedFileProps))
-  }, [])
-
-  if (view === CreateItemView.UPLOAD_VIDEO) {
-    return (
-      <UploadVideoStep
-        title={title}
-        contents={contents}
-        onDropAccepted={handleVideoDropAccepted}
-        onBack={handleUploadVideoGoBack}
-        onClose={onClose}
-        onSaveVideo={handleSaveVideo}
-        required={!!itemStatus}
-      />
-    )
-  }
+    dispatch(createItemActions.setView(CreateItemView.UPLOAD_VIDEO))
+  }, [dispatch])
 
   return (
     <>
@@ -129,7 +85,7 @@ export const SmartWearableDetails: React.FC = () => {
       </Row>
       <Row className="actions" grow>
         <Column grow shrink>
-          <Button disabled={isDisabled()} onClick={() => dispatch(createItemActions.setView(CreateItemView.UPLOAD_VIDEO))}>
+          <Button disabled={isDisabled()} onClick={handleOpenVideoDialog}>
             {t('global.back')}
           </Button>
         </Column>
