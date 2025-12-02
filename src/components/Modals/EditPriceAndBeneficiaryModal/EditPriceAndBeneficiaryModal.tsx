@@ -112,7 +112,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   getItemPrice() {
-    const { item } = this.props
+    const { item, isOffchainPublicItemOrdersEnabledVariants } = this.props
+    const variantWallet = isOffchainPublicItemOrdersEnabledVariants?.payload.value.trim()
+    if (variantWallet?.toLocaleLowerCase() === item.owner?.toLocaleLowerCase()) {
+      return ethers.constants.MaxUint256.toString()
+    }
     return item.price && item.price !== ethers.constants.MaxUint256.toString() ? ethers.utils.formatEther(item.price) : undefined
   }
 
@@ -144,7 +148,9 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   render() {
     const { name, error, isLoading, mountNode, item, withExpirationDate, isOffchain, onClose, onSkip } = this.props
+    console.log('item:', item)
     const { isFree, isOwnerBeneficiary, price = '', expirationDate } = this.state
+    console.log('price:', price)
     const beneficiary = this.getBeneficiary()
 
     const expirationError = !this.isValidExpirationDate() ? t('edit_price_and_beneficiary_modal.expiration_date_error') : null

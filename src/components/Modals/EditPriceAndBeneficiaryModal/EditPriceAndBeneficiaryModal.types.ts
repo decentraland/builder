@@ -7,6 +7,7 @@ import {
   setPriceAndBeneficiaryRequest,
   SetPriceAndBeneficiaryRequestAction
 } from 'modules/item/actions'
+import { Variant } from 'decentraland-dapps/dist/modules/features/types'
 
 export type Props = ModalProps & {
   item: Item<ItemType.WEARABLE | ItemType.EMOTE>
@@ -17,6 +18,7 @@ export type Props = ModalProps & {
   mountNode?: HTMLDivElement | undefined
   withExpirationDate?: boolean
   isOffchain?: boolean
+  isOffchainPublicItemOrdersEnabledVariants: Variant | null
   onSave: typeof saveItemRequest | ((item: Item) => void)
   onSetPriceAndBeneficiary:
     | typeof setPriceAndBeneficiaryRequest
@@ -37,6 +39,6 @@ export type EditPriceAndBeneficiaryModalMetadata = {
 }
 
 export type OwnProps = Pick<Props, 'metadata' | 'item' | 'mountNode'>
-export type MapStateProps = Pick<Props, 'item' | 'error' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'item' | 'error' | 'isLoading' | 'isOffchainPublicItemOrdersEnabledVariants'>
 export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetPriceAndBeneficiary'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SetPriceAndBeneficiaryRequestAction>
