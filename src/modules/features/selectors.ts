@@ -1,4 +1,4 @@
-import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
+import { getFeatureVariant, getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import { FeatureName } from './types'
@@ -83,6 +83,14 @@ export const getIsOffchainPublicItemOrdersEnabled = (state: RootState) => {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS)
   } catch (e) {
     return false
+  }
+}
+
+export const getIsOffchainPublicItemOrdersEnabledVariants = (state: RootState) => {
+  try {
+    return getFeatureVariant(state, ApplicationName.DAPPS, FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS)
+  } catch (e) {
+    return null
   }
 }
 

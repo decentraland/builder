@@ -85,6 +85,7 @@ function PutForSaleOffchainModal({
   return (
     <EditPriceAndBeneficiaryModal
       name="EditPriceAndBeneficiaryModal"
+      isOffchainPublicItemOrdersEnabledVariants={null}
       metadata={metadata}
       isLoading={isLoading}
       onSetPriceAndBeneficiary={handlePutForSale}

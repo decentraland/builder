@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { ethers } from 'ethers'
 import { EmoteDataADR74, Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -28,6 +28,7 @@ export default function CollectionItem({
   onRemoveFromSale,
   item,
   isOffchainPublicItemOrdersEnabled,
+  isOffchainPublicItemOrdersEnabledVariants,
   collection,
   status,
   ethAddress,
@@ -42,8 +43,12 @@ export default function CollectionItem({
   const shouldAllowPriceEdition =
     !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
 
+  const isWalletVariant = useMemo(() => {
+    return isOffchainPublicItemOrdersEnabledVariants?.payload.value.trim()?.toLocaleLowerCase() === ethAddress?.toLocaleLowerCase()
+  }, [isOffchainPublicItemOrdersEnabledVariants, ethAddress])
+
   const handleEditPriceAndBeneficiary = useCallback(() => {
-    if (isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchainMarketplace) {
+    if (isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchainMarketplace && !isWalletVariant) {
       onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
       return
     }
@@ -86,7 +91,7 @@ export default function CollectionItem({
   }, [item])
 
   const renderPrice = useCallback(() => {
-    if (!item.price) {
+    if (!item.price || isWalletVariant) {
       return (
         <div className={`link ${styles.linkAction}`} onClick={preventDefault(handleEditPriceAndBeneficiary)}>
           {t('collection_item.set_price')}
@@ -224,7 +229,7 @@ export default function CollectionItem({
           {data.category ? <div>{t(`emote.play_mode.${data.loop ? 'loop' : 'simple'}.text`)}</div> : null}
         </Table.Cell>
       ) : null}
-      {isOffchainPublicItemOrdersEnabled && !collection.isPublished ? null : (
+      {isWalletVariant || (isOffchainPublicItemOrdersEnabled && !collection.isPublished) ? null : (
         <Table.Cell className={styles.column}>{renderPrice()}</Table.Cell>
       )}
       {item.isPublished && item.isApproved ? (
