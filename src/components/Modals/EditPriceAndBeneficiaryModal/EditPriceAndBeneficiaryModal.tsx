@@ -148,9 +148,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   render() {
     const { name, error, isLoading, mountNode, item, withExpirationDate, isOffchain, onClose, onSkip } = this.props
-    console.log('item:', item)
     const { isFree, isOwnerBeneficiary, price = '', expirationDate } = this.state
-    console.log('price:', price)
     const beneficiary = this.getBeneficiary()
 
     const expirationError = !this.isValidExpirationDate() ? t('edit_price_and_beneficiary_modal.expiration_date_error') : null
