@@ -115,7 +115,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { item, isOffchainPublicItemOrdersEnabledVariants } = this.props
     const variantWallet = isOffchainPublicItemOrdersEnabledVariants?.payload.value.trim()
     if (variantWallet?.toLocaleLowerCase() === item.owner?.toLocaleLowerCase()) {
-      return ethers.constants.MaxUint256.toString()
+      return ethers.utils.formatEther(ethers.constants.MaxUint256)
     }
     return item.price && item.price !== ethers.constants.MaxUint256.toString() ? ethers.utils.formatEther(item.price) : undefined
   }
