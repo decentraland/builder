@@ -229,7 +229,7 @@ export default function CollectionItem({
           {data.category ? <div>{t(`emote.play_mode.${data.loop ? 'loop' : 'simple'}.text`)}</div> : null}
         </Table.Cell>
       ) : null}
-      {isWalletVariant || (isOffchainPublicItemOrdersEnabled && !collection.isPublished) ? null : (
+      {isOffchainPublicItemOrdersEnabled && !collection.isPublished ? null : (
         <Table.Cell className={styles.column}>{renderPrice()}</Table.Cell>
       )}
       {item.isPublished && item.isApproved ? (
