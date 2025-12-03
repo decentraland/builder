@@ -44,7 +44,7 @@ export default function CollectionItem({
     !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
 
   const isWalletVariant = useMemo(() => {
-    return isOffchainPublicItemOrdersEnabledVariants?.payload.value.trim()?.toLocaleLowerCase() === ethAddress?.toLocaleLowerCase()
+    return isOffchainPublicItemOrdersEnabledVariants?.payload?.value?.trim()?.toLocaleLowerCase() === ethAddress?.toLocaleLowerCase()
   }, [isOffchainPublicItemOrdersEnabledVariants, ethAddress])
 
   const handleEditPriceAndBeneficiary = useCallback(() => {
