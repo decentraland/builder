@@ -32,7 +32,8 @@ import {
   InvalidModelFilesRepresentation,
   InvalidModelFileType,
   CustomErrorWithTitle,
-  ItemNotAllowedInThirdPartyCollections
+  ItemNotAllowedInThirdPartyCollections,
+  MissingExternalResourcesError
 } from 'modules/item/errors'
 import {
   BodyShapeType,
@@ -173,7 +174,14 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     let errorTranslationId = null
     let wrongConfigurations: string[] = []
 
-    if (error instanceof UnknownRequiredPermissionsError) {
+    if (error instanceof MissingExternalResourcesError) {
+      // Handle missing external resources error with proper formatting
+      this.setState({
+        error: new CustomErrorWithTitle(error.title, error.message),
+        isLoading: false
+      })
+      return
+    } else if (error instanceof UnknownRequiredPermissionsError) {
       errorTranslationId = 'unknown_required_permissions'
       wrongConfigurations = error.getUnknownRequiredPermissions()
     } else if (error instanceof DuplicatedRequiredPermissionsError) {
@@ -210,22 +218,44 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
     }
 
-    this.setState({
-      error: errorTranslationId
-        ? new CustomErrorWithTitle(
-            t(`create_single_item_modal.error.${errorTranslationId}.title`, {
-              wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
-              count: wrongConfigurations.length
-            }),
-            t(`create_single_item_modal.error.${errorTranslationId}.message`, {
-              learn_more: (
-                <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
-                  {t('global.learn_more')}
-                </span>
-              )
-            })
+    // Format the error message
+    let formattedError
+    if (errorTranslationId) {
+      formattedError = new CustomErrorWithTitle(
+        t(`create_single_item_modal.error.${errorTranslationId}.title`, {
+          wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
+          count: wrongConfigurations.length
+        }),
+        t(`create_single_item_modal.error.${errorTranslationId}.message`, {
+          learn_more: (
+            <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
+              {t('global.learn_more')}
+            </span>
           )
-        : error.message,
+        })
+      )
+    } else {
+      // Handle unexpected errors with formatted message
+      console.error('Unexpected error during file import:', error)
+
+      const genericMessage = t('create_single_item_modal.error.unexpected_error.message')
+      const actualError = error?.message || error?.toString() || 'Unknown error'
+
+      formattedError = new CustomErrorWithTitle(
+        t('create_single_item_modal.error.unexpected_error.title'),
+        (
+          <>
+            {genericMessage}
+            <br />
+            <br />
+            <b>{t('create_single_item_modal.error.unexpected_error.details')}:</b> {actualError}
+          </>
+        )
+      )
+    }
+
+    this.setState({
+      error: formattedError,
       isLoading: false
     })
   }
