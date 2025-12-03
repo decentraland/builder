@@ -362,6 +362,15 @@
         "title": "Given that the 'ALLOW_MEDIA_HOSTNAMES' permission is set, the 'allowedMediaHostnames' property must be set and not empty. Please correct the 'scene.json'.",
         "message": "For more information, check the Docs to {learn_more}."
       },
+      "unexpected_error": {
+        "title": "An unexpected error occurred while uploading your file",
+        "message": "Please review your file and try again. If the problem persists, contact support.",
+        "details": "Error details"
+      },
+      "missing_external_resources": {
+        "title": "Failed to load model",
+        "message": "Missing external resources: {external_resources}.{additional_message}"
+      },
       "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections",
       "emote_animations_sync_error": "<b>Avatar and prop animations length are not the same</b><br></br>Please correct your animation and upload it again for a perfect sync.",
       "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please re-export your Emote file and upload it again to proceed."
