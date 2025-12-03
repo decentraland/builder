@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { ModalNavigation, Row, Column, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { ItemType } from 'modules/item/types'
@@ -7,10 +7,10 @@ import { useCreateSingleItemModal } from '../CreateSingleItemModal.context'
 import { WearableDetails, EmoteDetails, SmartWearableDetails } from './index'
 
 export const ItemDetailsStep: React.FC = () => {
-  const { state, error, isDisabled, renderModalTitle, onClose } = useCreateSingleItemModal()
+  const { state, error, validationError, isDisabled, renderModalTitle, onClose } = useCreateSingleItemModal()
   const { type, contents } = state
 
-  const renderDetailsContent = () => {
+  const renderDetailsContent = useCallback(() => {
     if (type === ItemType.EMOTE) {
       return <EmoteDetails />
     } else if (isSmart({ type, contents })) {
@@ -18,7 +18,7 @@ export const ItemDetailsStep: React.FC = () => {
     } else {
       return <WearableDetails />
     }
-  }
+  }, [type, contents])
 
   return (
     <>
@@ -27,6 +27,11 @@ export const ItemDetailsStep: React.FC = () => {
         <Form disabled={isDisabled()}>
           <Column>
             {renderDetailsContent()}
+            {validationError ? (
+              <Row className="error" align="right">
+                <p className="danger-text">{validationError}</p>
+              </Row>
+            ) : null}
             {state.error ? (
               <Row className="error" align="right">
                 <p className="danger-text">{state.error}</p>
