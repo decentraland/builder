@@ -40,7 +40,7 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
     } else if (!state.fromView && state.view === CreateItemView.THUMBNAIL && state.hasScreenshotTaken) {
       dispatch(createItemActions.setView(CreateItemView.DETAILS))
     }
-  }, [state, handleSubmit])
+  }, [state, handleSubmit, dispatch])
 
   // Thumbnail editing handlers
   const handleThumbnailGoBack = useCallback(() => {
@@ -52,19 +52,22 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
     (screenshot: string) => {
       handleOnScreenshotTaken(screenshot)
     },
-    [state, dispatch]
+    [handleOnScreenshotTaken]
   )
 
-  const handleVideoDropAccepted = useCallback((acceptedFileProps: AcceptedFileProps) => {
-    dispatch(createItemActions.setLoading(true))
-    dispatch(createItemActions.setAcceptedProps(acceptedFileProps))
-  }, [])
+  const handleVideoDropAccepted = useCallback(
+    (acceptedFileProps: AcceptedFileProps) => {
+      dispatch(createItemActions.setLoading(true))
+      dispatch(createItemActions.setAcceptedProps(acceptedFileProps))
+    },
+    [dispatch]
+  )
 
   const handleSaveVideo = useCallback(() => {
     dispatch(createItemActions.setFromView(undefined))
     dispatch(createItemActions.setLoading(false))
     dispatch(createItemActions.setView(CreateItemView.DETAILS))
-  }, [])
+  }, [dispatch])
 
   const handleUploadVideoGoBack = useCallback(() => {
     const { fromView } = state
@@ -78,7 +81,7 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
     // Going back to IMPORT - reset state to prevent auto-processing
     const initialState = createInitialState(metadata, collection, isThirdPartyV2Enabled)
     dispatch(createItemActions.resetState(initialState))
-  }, [state, metadata, collection, isThirdPartyV2Enabled])
+  }, [state, metadata, collection, isThirdPartyV2Enabled, dispatch])
 
   const renderView = useCallback(() => {
     switch (view) {
@@ -148,7 +151,25 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
       default:
         return null
     }
-  }, [view, state, modalContainer, isLoading, handleDropAccepted, handleOnScreenshotTaken])
+  }, [
+    view,
+    state,
+    collection,
+    metadata,
+    renderModalTitle,
+    renderWearablePreview,
+    handleDropAccepted,
+    onClose,
+    handleVideoDropAccepted,
+    handleUploadVideoGoBack,
+    handleSaveVideo,
+    itemStatus,
+    isLoading,
+    handleThumbnailGoBack,
+    handleSaveThumbnail,
+    modalContainer,
+    handleSubmit
+  ])
 
   return renderView()
 }

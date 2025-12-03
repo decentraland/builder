@@ -29,9 +29,9 @@ export const WearableDetails: React.FC = () => {
   const title = renderModalTitle()
   const thumbnailStyle = getBackgroundStyle(rarity)
 
-  const handleYes = useCallback(() => dispatch(createItemActions.setIsRepresentation(true)), [])
+  const handleYes = useCallback(() => dispatch(createItemActions.setIsRepresentation(true)), [dispatch])
 
-  const handleNo = useCallback(() => dispatch(createItemActions.setIsRepresentation(false)), [])
+  const handleNo = useCallback(() => dispatch(createItemActions.setIsRepresentation(false)), [dispatch])
 
   const renderCommonFields = () => <CommonFields />
 

@@ -13,6 +13,7 @@ export interface CreateSingleItemModalContextValue {
   metadata: CreateSingleItemModalMetadata
   dispatch: (action: CreateItemAction) => void
   isLoading: boolean
+  validationError: string | null
 
   // Thumbnail handlers
   handleOpenThumbnailDialog: () => void
@@ -31,6 +32,7 @@ export interface CreateSingleItemModalContextValue {
   onClose: () => void
   handleSubmit: () => void
   isDisabled: () => boolean
+  isFormValid: boolean
 
   // Render functions
   renderMetrics: () => React.ReactNode
