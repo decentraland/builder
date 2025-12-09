@@ -229,7 +229,9 @@
 
 .CreateSingleItemModal .importer-thumbnail-container .WearablePreview,
 .CreateSingleItemModal .importer-thumbnail-container #thumbnail-picker {
-  display: none;
+  visibility: hidden;
+  width: 400px;
+  height: 0;
 }
 
 .CreateSingleItemModal .thumbnail-step-container {

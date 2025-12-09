@@ -22,7 +22,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
 import { isThirdParty } from 'lib/urn'
 import { EngineType, getEmoteData, getIsEmote } from 'lib/getModelData'
-import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
+import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL } from 'modules/asset/utils'
 import {
   FileTooBigError,
   WrongExtensionError,
@@ -104,7 +104,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   handleZippedModelFiles = async (
     file: File
   ): Promise<{ modelData: ModelData; wearable?: WearableConfig; scene?: SceneConfig; emote?: EmoteConfig }> => {
-    const loadedFile = await loadFile(file.name, file)
+    // Read the file into memory first to avoid race conditions with lazy file reading.
+    // This ensures all content (including sound files for emotes) is fully loaded before processing.
+    const fileArrayBuffer = await file.arrayBuffer()
+    const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
     const { wearable, scene, content, emote } = loadedFile
 
     if (emote && file.size > MAX_EMOTE_FILE_SIZE) {
@@ -355,16 +358,21 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     let isEmote = false
 
     if (extension !== '.png') {
-      isEmote = await getIsEmote(url, {
-        mappings: rawMappingsToObjectURL(contents),
-        width: 1024,
-        height: 1024,
-        extension,
-        engine: EngineType.BABYLON
-      })
-      URL.revokeObjectURL(url)
+      const mappings = rawMappingsToObjectURL(contents)
+      try {
+        isEmote = await getIsEmote(url, {
+          mappings,
+          width: 1024,
+          height: 1024,
+          extension,
+          engine: EngineType.BABYLON
+        })
+      } finally {
+        // Clean up blob URLs to prevent memory leaks
+        revokeMappingsObjectURL(mappings)
+        URL.revokeObjectURL(url)
+      }
     }
-
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 
