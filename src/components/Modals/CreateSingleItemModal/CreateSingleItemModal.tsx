@@ -768,7 +768,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   }, [state, getMetricsAndScreenshot])
 
   const renderWearablePreview = useCallback(() => {
-    const { type, contents } = state
+    const { type, contents, model } = state
     const isEmote = type === ItemType.EMOTE
     const blob = contents ? (isEmote ? toEmoteWithBlobs({ contents }) : toWearableWithBlobs({ contents })) : undefined
 
@@ -786,16 +786,26 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         }
       : {}
 
+    // Use model + contents keys as the key to force remount when content changes.
+    // This ensures WearablePreview.createController returns a fresh controller
+    // connected to the new instance, not a stale one from a previous upload.
+    const previewKey = model ? `${model}-${Object.keys(contents || {}).join('-')}` : 'preview'
+
     return (
       <WearablePreview
+        key={previewKey}
         id="thumbnail-picker"
         blob={blob}
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}
         {...wearablePreviewExtraOptions}
-        onUpdate={() => dispatch(createItemActions.setWearablePreviewUpdated(true))}
-        onLoad={handleFileLoad}
+        onUpdate={() => {
+          queueMicrotask(() => dispatch(createItemActions.setWearablePreviewUpdated(true)))
+        }}
+        onLoad={() => {
+          queueMicrotask(() => handleFileLoad())
+        }}
       />
     )
   }, [state, handleFileLoad])

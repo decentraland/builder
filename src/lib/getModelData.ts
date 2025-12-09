@@ -1,4 +1,4 @@
-import type { OrthographicCamera, Material, Object3D, AnimationClip } from 'three'
+import type { OrthographicCamera, Material, Object3D, AnimationClip, WebGLRenderer } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { IPreviewController, WearableCategory } from '@dcl/schemas'
@@ -88,16 +88,20 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     ...options
   }
 
+  let renderer: WebGLRenderer | null = null
+
   try {
     // load model
     const materials = new Set<string>()
     let bodies = 0
     let colliderTriangles = 0
-    const { gltf, renderer } = await loadGltf(url, {
+    const loadResult = await loadGltf(url, {
       width,
       height,
       mappings
     })
+    const { gltf } = loadResult
+    renderer = loadResult.renderer
 
     gltf.scene.traverse(node => {
       if (node instanceof Three.Mesh) {
@@ -177,10 +181,6 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     // render scenes
     renderer.render(scene, camera)
 
-    // remove dom element
-    document.body.removeChild(renderer.domElement)
-
-    // return data
     const info: ModelMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
@@ -191,8 +191,20 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     }
     const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
 
+    // Properly dispose WebGL resources to prevent context exhaustion
+    renderer.dispose()
+    document.body.removeChild(renderer.domElement)
+
     return { info, image, type: ItemType.WEARABLE }
   } catch (error) {
+    // Properly dispose WebGL resources even on error to prevent context exhaustion
+    if (renderer) {
+      renderer.dispose()
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement)
+      }
+    }
+
     // could not render model, default to 0 metrics and default thumnail
     const info = {
       triangles: 0,
@@ -213,8 +225,13 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
 export async function getIsEmote(url: string, options: Partial<Options> = {}) {
   const { gltf, renderer } = await loadGltf(url, options)
+  const hasAnimations = gltf.animations.length > 0
+
+  // Properly dispose WebGL resources to prevent context exhaustion
+  renderer.dispose()
   document.body.removeChild(renderer.domElement)
-  return gltf.animations.length > 0
+
+  return hasAnimations
 }
 
 export async function getEmoteData(url: string, options: Partial<Options> = {}) {
@@ -222,6 +239,9 @@ export async function getEmoteData(url: string, options: Partial<Options> = {}) 
     gltf: { scene, animations },
     renderer
   } = await loadGltf(url, options)
+
+  // Properly dispose WebGL resources to prevent context exhaustion
+  renderer.dispose()
   document.body.removeChild(renderer.domElement)
   const armatures = scene.children.filter(({ name }) => name.startsWith(ARMATURE_PREFIX))
   const animation = animations[0]
@@ -299,10 +319,15 @@ export async function getItemData({
       throw Error('WearablePreview controller needed')
     }
     if (type === ItemType.EMOTE) {
-      const emoteData = await getEmoteData(URL.createObjectURL(contents[model]))
-      data.metrics = emoteData.metrics
-      data.armatures = emoteData.armatures
-      data.animations = emoteData.animations
+      const modelUrl = URL.createObjectURL(contents[model])
+      try {
+        const emoteData = await getEmoteData(modelUrl)
+        data.metrics = emoteData.metrics
+        data.armatures = emoteData.armatures
+        data.animations = emoteData.animations
+      } finally {
+        URL.revokeObjectURL(modelUrl)
+      }
     } else {
       data.metrics = await wearablePreviewController.scene.getMetrics()
     }
