@@ -53,4 +53,5 @@ export type State = {
   showSceneBoundaries: boolean
   isLoading: boolean
   socialEmote?: SocialEmoteAnimation
+  hasBeenUpdatedWearablePreview: boolean
 }

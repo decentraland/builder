@@ -42,13 +42,7 @@ export type Props = {
   onSetReviewedItems: (itemIds: Item[]) => void
   onFetchOrphanItem: ActionFunction<typeof fetchOrphanItemRequest>
   onResetReviewedItems: () => void
-}
-
-export type State = {
-  currentTab: ItemEditorTabs
-  pages: number[]
-  initialPage: number
-  showSamplesModalAgain: boolean
+  onResetEmoteToIdle: () => void
 }
 
 export type MapStateProps = Pick<
@@ -71,7 +65,10 @@ export type MapStateProps = Pick<
   | 'isPlayingEmote'
   | 'hasUserOrphanItems'
 >
-export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onSetItems' | 'onFetchOrphanItems' | 'onFetchCollections' | 'onFetchOrphanItem' | 'onResetEmoteToIdle'
+>
 export type MapDispatch = Dispatch<
   | SetItemsAction
   | FetchCollectionItemsRequestAction
@@ -82,3 +79,39 @@ export type MapDispatch = Dispatch<
 
 // New type for the functional component container
 export type LeftPanelContainerProps = Omit<Props, keyof MapStateProps | keyof MapDispatchProps>
+
+// Hook types
+export type UseLeftPanelPaginationOptions = {
+  address?: string
+  selectedCollectionId: string | null
+  selectedItemId: string | null
+  orphanItems: Item[]
+  totalItems: number | null
+  totalCollections: number | null
+  isConnected: boolean
+  currentTab: ItemEditorTabs
+  onFetchResource: (page: number) => void
+  onSetReviewedItems: (items: Item[]) => void
+}
+
+export type UseItemSelectionOptions = {
+  selectedItem: Item | null
+  selectedItemId: string | null
+  selectedCollectionId: string | null
+  visibleItems: Item[]
+  onSetItems: (items: Item[]) => void
+  onResetEmoteToIdle: () => void
+}
+
+export type UseInitialDataFetchOptions = {
+  address?: string
+  hasUserOrphanItems: boolean | undefined
+  selectedItem: Item | null
+  isReviewing: boolean
+  selectedCollectionId: string | null
+  currentTab: ItemEditorTabs
+  onFetchOrphanItem: (address: string) => void
+  onFetchCollections: (address: string, params: { limit: number; page: number }) => void
+  onFetchOrphanItems: (address: string, params: { limit: number; page: number }) => void
+  onSetItems: (items: Item[]) => void
+}

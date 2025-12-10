@@ -1,8 +1,8 @@
 import * as React from 'react'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
-import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
-import { AnimationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, DropdownItemProps, Button } from 'decentraland-ui'
+import { AnimationControls, WearablePreview, EmoteControls, ZoomControls } from 'decentraland-ui2'
 import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -25,7 +25,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     showSceneBoundaries: false,
     isShowingAvatarAttributes: false,
     isLoading: false,
-    socialEmote: undefined
+    socialEmote: undefined,
+    hasBeenUpdatedWearablePreview: false
   }
 
   analytics = getAnalytics()
@@ -65,6 +66,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     const { onSetWearablePreviewController } = this.props
     onSetWearablePreviewController(null)
+  }
+
+  componentDidUpdate(_prevProps: Props, prevState: State) {
+    if (prevState.socialEmote !== this.state.socialEmote) {
+      this.setState({ hasBeenUpdatedWearablePreview: false })
+    }
   }
 
   handleToggleShowingAvatarAttributes = () => {
@@ -246,7 +253,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       isImportFilesModalOpen,
       wearableController
     } = this.props
-    const { isShowingAvatarAttributes, showSceneBoundaries, isLoading, socialEmote } = this.state
+    const { isShowingAvatarAttributes, showSceneBoundaries, isLoading, socialEmote, hasBeenUpdatedWearablePreview } = this.state
     const isRenderingAnEmote = visibleItems.some(isEmote) && selectedItem?.type === ItemType.EMOTE
     const zoom = emote === PreviewEmote.JUMP ? 1 : undefined
     let _socialEmote = undefined
@@ -279,18 +286,14 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           wheelZoom={1.5}
           wheelStart={100}
           dev={isDevelopment}
-          onUpdate={() => this.setState({ isLoading: true })}
+          onUpdate={() => this.setState({ isLoading: true, hasBeenUpdatedWearablePreview: true })}
           onLoad={this.handleWearablePreviewLoad}
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
           socialEmote={socialEmote || _socialEmote}
         />
-        {isRenderingAnEmote && !isLoading && wearableController ? (
-          <ZoomControls
-            className="zoom-controls"
-            wearablePreviewId="wearable-editor"
-            wearablePreviewController={wearableController as any}
-          />
+        {isRenderingAnEmote && hasBeenUpdatedWearablePreview && wearableController ? (
+          <ZoomControls className="zoom-controls" wearablePreviewId="wearable-editor" wearablePreviewController={wearableController} />
         ) : null}
         {isLoading && (
           <Center>
@@ -298,7 +301,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           </Center>
         )}
         <div className="footer">
-          {isRenderingAnEmote && !isLoading && wearableController ? (
+          {isRenderingAnEmote && !isLoading && hasBeenUpdatedWearablePreview && wearableController ? (
             <div className="emote-controls-container">
               <EmoteControls
                 className="emote-controls"
@@ -312,7 +315,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               <Icon name="user" />
             </div>
             {isRenderingAnEmote ? (
-              !isLoading && wearableController ? (
+              hasBeenUpdatedWearablePreview && wearableController ? (
                 <AnimationControls
                   className="animation-controls"
                   wearablePreviewId="wearable-editor"

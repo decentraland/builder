@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { PreviewEmote } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -21,7 +22,7 @@ import {
 } from 'modules/item/selectors'
 import { fetchCollectionsRequest } from 'modules/collection/actions'
 import { getAuthorizedCollections, getPaginationData as getCollectionsPaginationData } from 'modules/collection/selectors'
-import { setItems } from 'modules/editor/actions'
+import { setEmote, setItems } from 'modules/editor/actions'
 import { fetchItemsRequest, fetchOrphanItemRequest, FETCH_ITEMS_REQUEST, FETCH_ORPHAN_ITEM_REQUEST } from 'modules/item/actions'
 import { LeftPanelContainerProps } from './LeftPanel.types'
 import LeftPanel from './LeftPanel'
@@ -80,6 +81,7 @@ const LeftPanelContainer: React.FC<LeftPanelContainerProps> = props => {
     address => dispatch(fetchOrphanItemRequest(address)),
     [dispatch]
   )
+  const onResetEmoteToIdle = useCallback(() => dispatch(setEmote(PreviewEmote.IDLE)), [dispatch])
 
   return (
     <LeftPanel
@@ -105,6 +107,7 @@ const LeftPanelContainer: React.FC<LeftPanelContainerProps> = props => {
       onFetchCollections={onFetchCollections}
       onFetchOrphanItems={onFetchOrphanItems}
       onFetchOrphanItem={onFetchOrphanItem}
+      onResetEmoteToIdle={onResetEmoteToIdle}
     />
   )
 }
