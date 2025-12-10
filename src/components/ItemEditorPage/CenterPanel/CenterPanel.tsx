@@ -68,7 +68,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     onSetWearablePreviewController(null)
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(_prevProps: Props, prevState: State) {
     if (prevState.socialEmote !== this.state.socialEmote) {
       this.setState({ hasBeenUpdatedWearablePreview: false })
     }
