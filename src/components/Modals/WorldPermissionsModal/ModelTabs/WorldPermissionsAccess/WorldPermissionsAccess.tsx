@@ -36,7 +36,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
             values={{
               br: () => <br />,
               span: (text: string) => <span>{text}</span>
-            }}
+            } as any}
           />
         }
         loading={loading}
@@ -50,7 +50,7 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
               id="world_permissions_modal.tab_access.warning"
               values={{
                 b: (text: string) => <span>{text}</span>
-              }}
+              } as any}
             />
           </p>
         </div>

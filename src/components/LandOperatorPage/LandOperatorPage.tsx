@@ -21,7 +21,7 @@ export default class LandOperatorPage extends React.PureComponent<Props> {
                   name: <strong>{land.name}</strong>,
                   b: (chunks: string) => <strong>{chunks}</strong>,
                   br: () => <br />
-                }}
+                } as any}
               />
             }
           >

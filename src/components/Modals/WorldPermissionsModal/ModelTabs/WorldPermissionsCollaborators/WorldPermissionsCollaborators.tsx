@@ -34,7 +34,7 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
             id="world_permissions_modal.tab_collaborators.description"
             values={{
               span: (text: string) => <span>{text}</span>
-            }}
+            } as any}
           />
         }
         loading={loading}

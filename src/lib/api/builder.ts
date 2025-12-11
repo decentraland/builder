@@ -825,7 +825,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
-    const requests = []
+    const requests: Promise<any>[] = []
 
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()

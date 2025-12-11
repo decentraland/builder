@@ -40,14 +40,14 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     const { onClose, onBack, title, isLoading, base64s } = this.props
     const { blob, hasBeenUpdated, socialEmote } = this.state
 
-    let emoteData = undefined
+    let emoteData: any = undefined
     if (base64s && base64s.length > 0) {
       emoteData = JSON.parse(atob(base64s[0]))?.emoteDataADR74
     } else if (blob?.emoteDataADR74) {
       emoteData = blob?.emoteDataADR74
     }
 
-    let _socialEmote = undefined
+    let _socialEmote: any = undefined
     if (!socialEmote && emoteData?.startAnimation) {
       _socialEmote = { title: 'Start Animation', ...emoteData.startAnimation }
     }

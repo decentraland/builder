@@ -57,7 +57,7 @@ const ItemAddedToast: React.FC<Props> = props => {
                 </Button>
               </Link>
             )
-          }}
+          } as any}
         />
       }
     />
