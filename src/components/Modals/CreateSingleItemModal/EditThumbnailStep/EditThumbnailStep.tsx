@@ -5,6 +5,7 @@ import { AnimationControls, EmoteControls, TranslationControls, WearablePreview,
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props, State } from './EditThumbnailStep.types'
+import { EmoteDataADR74 } from '@dcl/schemas/dist/platform/item/emote'
 import './EditThumbnailStep.css'
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
@@ -40,11 +41,11 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
     const { onClose, onBack, title, isLoading, base64s } = this.props
     const { blob, hasBeenUpdated, socialEmote } = this.state
 
-    let emoteData: any = undefined
+    let emoteData: EmoteDataADR74 | undefined = undefined
     if (base64s && base64s.length > 0) {
-      emoteData = JSON.parse(atob(base64s[0]))?.emoteDataADR74
+      emoteData = JSON.parse(atob(base64s[0]))?.emoteDataADR74 as unknown as EmoteDataADR74
     } else if (blob?.emoteDataADR74) {
-      emoteData = blob?.emoteDataADR74
+      emoteData = blob?.emoteDataADR74 as unknown as EmoteDataADR74
     }
 
     let _socialEmote: any = undefined
