@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react'
 import { getThirdPartyPrice } from 'modules/thirdParty/utils'
 import { ThirdPartyPrice } from 'modules/thirdParty/types'
 import { useThirdPartyPrice, UseThirdPartyPriceResult } from './hooks'

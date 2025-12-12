@@ -87,6 +87,7 @@
     "@testing-library/react-hooks": "^8.0.1",
     "@types/blob-to-buffer": "^1.2.0",
     "@types/file-saver": "^2.0.0",
+    "@types/flat": "^5.0.5",
     "@types/interface-datastore": "^1.0.0",
     "@types/jest": "^29.5.11",
     "@types/mousetrap": "^1.6.3",
