@@ -27,7 +27,7 @@ export function buildCollectionForumPost(collection: Collection, items: Item[], 
 }
 
 function toRawItem(item: Item) {
-  const sections = []
+  const sections: string[] = []
   if (item.description) {
     sections.push(`- Description: ${item.description}`)
   }

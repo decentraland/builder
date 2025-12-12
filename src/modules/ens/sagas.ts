@@ -220,7 +220,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         ens = maybeEns
       }
 
-      let worldStatus = null
+      let worldStatus: { healthy: boolean; scene: { urn: string; entityId: string } } | null = null
 
       try {
         const world: WorldInfo = yield call([worldsAPIContent, 'fetchWorld'], subdomain)
@@ -385,7 +385,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const subdomain = `${data.toLowerCase()}.dcl.eth`
           let landId: string | undefined = undefined
           let content = ''
-          let worldStatus = null
+          let worldStatus: { healthy: boolean; scene: { urn: string; entityId: string } } | null = null
           let ensAddressRecord = ''
 
           const nodehash = namehash(subdomain)

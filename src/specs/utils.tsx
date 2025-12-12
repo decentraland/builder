@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { Provider } from 'react-redux'
 import { createBrowserHistory } from 'history'
 import { createStore } from 'redux'
@@ -42,7 +43,7 @@ export function renderWithProviders(
 
   const history = createMemoryHistory()
 
-  function AppProviders({ children }: { children: JSX.Element }) {
+  function AppProviders({ children }: { children: ReactNode }) {
     return (
       <Provider store={initializedStore}>
         <TranslationProvider locales={['en', 'en-EN']}>

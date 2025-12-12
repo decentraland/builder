@@ -141,7 +141,7 @@ export default function DeployToWorld({
   }, [nameType, analytics])
 
   const handleWorldSelected = useCallback(
-    (e: React.SyntheticEvent<HTMLElement>, { value }) => {
+    (e: React.SyntheticEvent<HTMLElement>, { value }: any) => {
       if (e.type === 'blur') {
         return
       }
@@ -158,7 +158,7 @@ export default function DeployToWorld({
     [deployments, handleClaimName]
   )
 
-  const handleNameTypeSelected = useCallback((_, { value }) => {
+  const handleNameTypeSelected = useCallback((_: any, { value }: any) => {
     setWorld('')
     setNameType(value)
   }, [])
@@ -167,7 +167,7 @@ export default function DeployToWorld({
     window.open(getExplorerUrl, '_blank,noreferrer')
   }
 
-  const handleConfirmWorldReplaceContent = useCallback((_, { checked }) => {
+  const handleConfirmWorldReplaceContent = useCallback((_: any, { checked }: any) => {
     setConfirmWorldReplaceContent(checked)
   }, [])
 

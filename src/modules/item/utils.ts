@@ -701,7 +701,7 @@ export function groupsOf<T>(array: T[], size: number): Array<Array<T>> {
     throw new Error('The groups size must be greater than 0')
   }
 
-  const arrays = []
+  const arrays: T[][] = []
   for (let i = 0; i < array.length; i += size) {
     arrays.push(array.slice(i, i + size))
   }

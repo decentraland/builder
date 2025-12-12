@@ -9,13 +9,13 @@ let state: RootState
 const originalLocation = window.location
 
 beforeAll(() => {
-  window.location = {
+  ;(window as any).location = {
     ...originalLocation
   }
 })
 
 afterAll(() => {
-  window.location = originalLocation
+  ;(window as any).location = originalLocation
 })
 
 beforeEach(() => {

@@ -24,7 +24,7 @@ const ActivityPage = (props: Props) => {
   const handleConfirm = useCallback(() => setShowConfirmation(true), [setShowConfirmation])
   const handleCancel = useCallback(() => setShowConfirmation(false), [setShowConfirmation])
 
-  let content = null
+  let content: JSX.Element | null = null
 
   if (!isLoggedIn) {
     content = <SignInRequired />

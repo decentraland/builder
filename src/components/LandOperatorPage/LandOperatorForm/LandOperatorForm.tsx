@@ -60,7 +60,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
     const isDisabled =
       loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || !hasAnyRole(land, [RoleType.OWNER, RoleType.TENANT])
 
-    const classes = []
+    const classes: string[] = []
     if (revoked) {
       classes.push('revoked')
     }
