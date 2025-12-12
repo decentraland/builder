@@ -41,10 +41,10 @@ export default class AssetList extends React.PureComponent<Props> {
   renderGrid(assets: Asset[]) {
     const { isList } = this.props
     const columnCount = this.getColumnCount()
-    const el = []
+    const el: JSX.Element[] = []
 
     for (let i = 0; i < assets.length; i += columnCount) {
-      const row = []
+      const row: JSX.Element[] = []
 
       for (let j = i; j < i + columnCount; j++) {
         const item = assets[j]
