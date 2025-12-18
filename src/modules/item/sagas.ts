@@ -1,8 +1,8 @@
 import PQueue from 'p-queue'
 import { History } from 'history'
 import { Contract, ethers, providers } from 'ethers'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
+import { LOCATION_CHANGE, LocationChangeAction } from 'modules/location/actions'
 import { channel } from 'redux-saga'
 import { ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation, Trade, Item as DCLItem } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -702,7 +702,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         payload: { id: toastId }
       }: RenderToastAction = yield take(RENDER_TOAST)
       yield put(fetchItemsRequest(address))
-      const location: Location = yield take(LOCATION_CHANGE)
+      const {
+        payload: { location }
+      }: LocationChangeAction = yield take(LOCATION_CHANGE)
       if (location.pathname !== locations.collectionDetail(item.collectionId)) {
         yield put(hideToast(toastId))
       }

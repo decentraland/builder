@@ -1,6 +1,5 @@
 import { Reducer, Store } from 'redux'
 import { action } from 'typesafe-actions'
-import { RouterState } from 'connected-react-router'
 import { AuthorizationState } from 'decentraland-dapps/dist/modules/authorization/reducer'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { ProfileState } from 'decentraland-dapps/dist/modules/profile/reducer'
@@ -64,7 +63,6 @@ export type RootState = {
   poolGroup: PoolGroupState
   profile: ProfileState
   project: ProjectState
-  router: RouterState
   scene: UndoableSceneState
   stats: StatsState
   storage: StorageState

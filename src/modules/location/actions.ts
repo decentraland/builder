@@ -1,4 +1,10 @@
 import { action } from 'typesafe-actions'
+import { Location } from 'history'
+
+export const LOCATION_CHANGE = '[Location] Change'
+
+export const locationChange = (location: Location) => action(LOCATION_CHANGE, { location })
+export type LocationChangeAction = ReturnType<typeof locationChange>
 
 export const REDIRECT_TO_REQUEST = '[Request] Redirect request'
 export const REDIRECT_TO_SUCCESS = '[Success] Redirect success'
