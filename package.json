@@ -160,8 +160,6 @@
   "overrides": {
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
-    "@dcl/schemas": "^20.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@dcl/schemas": "^20.2.0"
   }
 }
