@@ -27,7 +27,7 @@ export async function computeHashFromContent(content: Blob): Promise<string> {
 export async function makeContentFiles(files: Record<string, string | Blob>): Promise<Map<string, Buffer>> {
   const makeRequests: Promise<{ name: string; content: Buffer }>[] = []
   for (const fileName of Object.keys(files)) {
-    const isEmpty = files[fileName] instanceof Blob && (files[fileName]).size === 0 // skip empty blobs, it breaks the catalyst
+    const isEmpty = files[fileName] instanceof Blob && files[fileName].size === 0 // skip empty blobs, it breaks the catalyst
     if (FILE_NAME_BLACKLIST.includes(fileName) || isEmpty) continue
     makeRequests.push(makeContentFile(fileName, files[fileName]))
   }
