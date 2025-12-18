@@ -70,12 +70,12 @@ export const MappingEditor = (props: Props) => {
     [onChange]
   )
 
-  const handleSingleMappingValueChange = useCallback((_, data: InputOnChangeData) => {
+  const handleSingleMappingValueChange = useCallback((_: unknown, data: InputOnChangeData) => {
     onChange({ type: MappingType.SINGLE, id: data.value.replaceAll(',', '') })
   }, [])
 
   const handleMultipleMappingValueChange = useCallback(
-    (_, data: TextAreaProps | InputOnChangeData) => {
+    (_: unknown, data: TextAreaProps | InputOnChangeData) => {
       let value = (data.value ?? '').toString()
 
       // If it's removing a whitespace character, remove the last comma
