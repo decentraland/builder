@@ -160,6 +160,26 @@
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
     "@dcl/schemas": "^20.2.0",
-    "readable-stream": "^3.6.2"
+    "ripemd160": {
+      "readable-stream": "^3.6.2"
+    },
+    "create-hash": {
+      "readable-stream": "^3.6.2"
+    },
+    "browserify-sign": {
+      "readable-stream": "^3.6.2"
+    },
+    "sha.js": {
+      "readable-stream": "^3.6.2"
+    },
+    "cipher-base": {
+      "readable-stream": "^3.6.2"
+    },
+    "hash-base": {
+      "readable-stream": "^3.6.2"
+    },
+    "md5.js": {
+      "readable-stream": "^3.6.2"
+    }
   }
 }
