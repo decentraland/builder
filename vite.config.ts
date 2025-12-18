@@ -8,10 +8,7 @@ export default defineConfig(({ mode }) => {
   const envVariables = loadEnv(mode, process.cwd())
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
-    plugins: [
-      react(),
-      nodePolyfills()
-    ],
+    plugins: [react(), nodePolyfills()],
     // Required because the CatalystClient tries to access it
     define: {
       // eslint-disable-next-line @typescript-eslint/naming-convention

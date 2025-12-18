@@ -76,7 +76,8 @@
     "ts-deepmerge": "^7.0.0",
     "typechain": "^8.1.0",
     "typesafe-actions": "^4.4.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "readable-stream": "^2.3.8"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -162,7 +163,6 @@
     "decentraland": "3.3.0",
     "@dcl/schemas": "^20.2.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "readable-stream": "^3.6.2"
+    "react-dom": "^18.3.1"
   }
 }
