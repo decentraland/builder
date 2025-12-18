@@ -4,7 +4,6 @@ import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
 import { BuilderClient } from '@dcl/builder-client'
-import { createFetchComponent } from '@well-known-components/fetch-component'
 
 import { createCatalystClient } from 'dcl-catalyst-client'
 import { config } from 'config'
@@ -161,7 +160,8 @@ const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => getAddress(store.getState())))
-const catalystClient = createCatalystClient({ url: PEER_URL, fetcher: createFetchComponent() })
+const catalystClient = createCatalystClient({ url: PEER_URL, // @ts-expect-error - fetch types mismatch between browser and node-fetch
+  fetcher: { fetch: (url, init) => fetch(url, init) } })
 
 const getClientAddress = () => getAddress(store.getState())!
 const getClientAuthAuthority = () => {
