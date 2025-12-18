@@ -12,7 +12,8 @@
     "package.json",
     "package-lock.json",
     "public/config/*",
-    "src/setupProxy.js"
+    "src/setupProxy.js",
+    "vite.config.ts"
   ],
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "prettier"],

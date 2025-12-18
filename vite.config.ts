@@ -8,29 +8,19 @@ export default defineConfig(({ mode }) => {
   const envVariables = loadEnv(mode, process.cwd())
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
-    plugins: [
-      react(),
-      nodePolyfills({
-        protocolImports: true,
-        globals: {
-          Buffer: true,
-          global: true,
-          process: true
-        }
-      })
-    ],
+    plugins: [react(), nodePolyfills()],
     // Required because the CatalystClient tries to access it
     define: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      'process.env.VITE_REACT_APP_DCL_DEFAULT_ENV': JSON.stringify(envVariables.VITE_REACT_APP_DCL_DEFAULT_ENV),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'process.env.VITE_BASE_URL': JSON.stringify(envVariables.VITE_BASE_URL),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'process.env.VITE_INSPECTOR_PORT': JSON.stringify(envVariables.VITE_INSPECTOR_PORT),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'process.env.VITE_BIN_INDEX_JS_DEV_PORT': JSON.stringify(envVariables.VITE_BIN_INDEX_JS_DEV_PORT),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'process.env.VITE_BIN_INDEX_JS_DEV_PATH': JSON.stringify(envVariables.VITE_BIN_INDEX_JS_DEV_PATH)
+      'process.env': {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        VITE_REACT_APP_DCL_DEFAULT_ENV: envVariables.VITE_REACT_APP_DCL_DEFAULT_ENV,
+        VITE_BASE_URL: envVariables.VITE_BASE_URL,
+        VITE_INSPECTOR_PORT: envVariables.VITE_INSPECTOR_PORT,
+        VITE_BIN_INDEX_JS_DEV_PORT: envVariables.VITE_BIN_INDEX_JS_DEV_PORT,
+        VITE_BIN_INDEX_JS_DEV_PATH: envVariables.VITE_BIN_INDEX_JS_DEV_PATH
+      },
+      global: {}
     },
     resolve: {
       alias: {
@@ -45,10 +35,7 @@ export default defineConfig(({ mode }) => {
         lib: path.resolve(__dirname, 'src/lib'),
         modules: path.resolve(__dirname, 'src/modules'),
         routing: path.resolve(__dirname, 'src/routing'),
-        specs: path.resolve(__dirname, 'src/specs'),
-        // Fix ua-parser-js ESM bug - force CommonJS versions
-        'ua-parser-js/helpers': path.resolve(__dirname, 'node_modules/ua-parser-js/src/helpers/ua-parser-helpers.js'),
-        'ua-parser-js': path.resolve(__dirname, 'node_modules/ua-parser-js/src/main/ua-parser.js')
+        specs: path.resolve(__dirname, 'src/specs')
       }
     },
     server: {
@@ -64,7 +51,6 @@ export default defineConfig(({ mode }) => {
       }
     },
     optimizeDeps: {
-      include: ['buffer', 'process', 'stream-browserify'],
       esbuildOptions: {
         // Node.js global to browser globalThis
         define: {

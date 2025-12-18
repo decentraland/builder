@@ -17,9 +17,8 @@
 
     /* Linting */
     "strict": true,
-    "noImplicitAny": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "components/*": ["components/*"],
@@ -36,7 +35,7 @@
     },
     "baseUrl": "src"
   },
-  "include": ["src", ".eslintrc.js", "jest.config.ts", "./node_modules/decentraland-builder-scripts/types.d.ts"],
+  "include": ["src", ".eslintrc.js", "jest.config.ts", "./node_modules/decentraland-builder-scripts/types.d.ts", "vite.config.ts"],
   "exclude": ["src/modules/editor/ecs.js", "src/ecsScene/scene.ts", "dist", "node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
