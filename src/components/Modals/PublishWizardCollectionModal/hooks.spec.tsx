@@ -26,7 +26,7 @@ describe('when using the third party price hook', () => {
       const { result } = renderHook(() => useThirdPartyPrice())
 
       act(() => {
-        result.current.fetchThirdPartyPrice()
+        void result.current.fetchThirdPartyPrice()
       })
 
       await waitFor(() => {

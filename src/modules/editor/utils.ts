@@ -29,7 +29,7 @@ export async function getNewEditorScene(project: Project): Promise<EditorScene> 
     import('../../ecsScene/scene.js?raw').then(module => module.default.toString())
   ])
   const mappings = {
-    'game.js': `data:application/javascript;base64,${base64ArrayBuffer(encoder.encode(script).buffer as ArrayBuffer)}`,
+    'game.js': `data:application/javascript;base64,${base64ArrayBuffer(encoder.encode(script).buffer)}`,
     'scene.json': 'Qm' // stub required by the client
   }
 

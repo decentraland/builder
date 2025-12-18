@@ -14,10 +14,12 @@ export function* getIdentity(): IterableIterator<any> {
     if (login.success) {
       // wait a sec and retry
       yield delay(1000)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return yield getIdentity()
     }
   }
   // Return current identity
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return yield select(getCurrentIdentity)
 }
 
