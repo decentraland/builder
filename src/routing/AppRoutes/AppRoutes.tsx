@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect } from 'react'
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { Loader, Responsive } from 'decentraland-ui'
 import { usePageTracking } from 'decentraland-dapps/dist/hooks/usePageTracking'
@@ -40,18 +40,15 @@ const CurationPage = React.lazy(() => import('components/CurationPage'))
 const TemplatesPage = React.lazy(() => import('components/TemplatesPage'))
 const TemplateDetailPage = React.lazy(() => import('components/TemplateDetailPage'))
 
-export function AppRoutes({ saveLastLocation }: Props) {
-  // Save the last location
-  const location = useLocation()
-  const [currentRoute, setCurrentRoute] = useState(location.pathname)
-  useEffect(() => {
-    if (currentRoute !== location.pathname) {
-      saveLastLocation(currentRoute)
-      setCurrentRoute(location.pathname)
-    }
-  }, [location.pathname, currentRoute])
-
+export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
   usePageTracking()
+
+  const location = useLocation()
+
+  useEffect(() => {
+    onLocationChange(location)
+  }, [location, onLocationChange])
+
   return (
     <React.Suspense fallback={<Loader size="huge" active />}>
       <Responsive maxWidth={1024} as={React.Fragment}>
@@ -102,3 +99,5 @@ export function AppRoutes({ saveLastLocation }: Props) {
     </React.Suspense>
   )
 }
+
+export default memo(AppRoutes)

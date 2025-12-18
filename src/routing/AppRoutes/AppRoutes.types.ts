@@ -1,9 +1,10 @@
 import { Dispatch } from 'react'
-import { SaveLastLocationAction } from 'modules/ui/location/action'
+import { Location } from 'history'
+import { LocationChangeAction } from 'modules/location/actions'
 
 export type Props = {
-  saveLastLocation: (location: string) => void
+  onLocationChange: (location: Location) => void
 }
 
-export type MapDispatchProps = Pick<Props, 'saveLastLocation'>
-export type MapDispatch = Dispatch<SaveLastLocationAction>
+export type MapDispatchProps = Pick<Props, 'onLocationChange'>
+export type MapDispatch = Dispatch<LocationChangeAction>
