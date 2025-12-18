@@ -15,6 +15,6 @@ jobs:
       - name: Upgrade npm
         run: npm i -g npm
       - name: Install
-        run: npm ci
+        run: npm i
       - name: Audit signatures
         run: npm audit signatures
