@@ -75,8 +75,7 @@
     "ts-deepmerge": "^7.0.0",
     "typechain": "^8.1.0",
     "typesafe-actions": "^4.4.2",
-    "uuid": "^3.3.2",
-    "readable-stream": "^2.3.8"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -160,6 +159,7 @@
   "overrides": {
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
-    "@dcl/schemas": "^20.2.0"
+    "@dcl/schemas": "^20.2.0",
+    "readable-stream": "^3.6.2"
   }
 }
