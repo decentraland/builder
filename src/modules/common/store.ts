@@ -160,8 +160,10 @@ const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => getAddress(store.getState())))
-const catalystClient = createCatalystClient({ url: PEER_URL, // @ts-expect-error - fetch types mismatch between browser and node-fetch
-  fetcher: { fetch: (url, init) => fetch(url, init) } })
+const catalystClient = createCatalystClient({
+  url: PEER_URL, // @ts-expect-error - fetch types mismatch between browser and node-fetch
+  fetcher: { fetch: (url, init) => fetch(url, init) }
+})
 
 const getClientAddress = () => getAddress(store.getState())!
 const getClientAuthAuthority = () => {
