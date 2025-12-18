@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'modules/location/actions'
 import { delay, put, select, takeEvery } from 'redux-saga/effects'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'

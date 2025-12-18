@@ -30,7 +30,6 @@
     "buffer": "^6.0.3",
     "cids": "^0.7.2",
     "classnames": "^2.3.2",
-    "connected-react-router": "^6.9.2",
     "date-fns": "^2.28.0",
     "dcl-catalyst-client": "^21.5.5",
     "dcl-scene-writer": "^1.1.2",
@@ -155,7 +154,7 @@
     "url": "https://github.com/decentraland/builder.git"
   },
   "engines": {
-    "node": "20"
+    "node": "24"
   },
   "homepage": "",
   "overrides": {

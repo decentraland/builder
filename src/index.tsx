@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'connected-react-router'
+import { Router } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
@@ -30,7 +30,7 @@ root.render(
     <DndProvider backend={HTML5Backend}>
       <TranslationProvider locales={Object.keys(languages)}>
         <WalletProvider>
-          <ConnectedRouter history={history}>
+          <Router history={history}>
             <DclThemeProvider theme={darkTheme}>
               <ToastProvider>
                 <ModalProvider components={modals}>
@@ -39,7 +39,7 @@ root.render(
               </ToastProvider>
               <Web2TransactionModal />
             </DclThemeProvider>
-          </ConnectedRouter>
+          </Router>
         </WalletProvider>
       </TranslationProvider>
     </DndProvider>

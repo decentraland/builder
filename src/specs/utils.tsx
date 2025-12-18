@@ -1,23 +1,20 @@
-import { ReactNode } from 'react'
+import React from 'react'
 import { Provider } from 'react-redux'
-import { createBrowserHistory } from 'history'
 import { createStore } from 'redux'
 import flatten from 'flat'
 import { render } from '@testing-library/react'
 import { Store } from 'redux'
 import { createMemoryHistory } from 'history'
+import { Router } from 'react-router-dom'
 import { en } from 'decentraland-dapps/dist/modules/translation/defaults'
 import { mergeTranslations } from 'decentraland-dapps/dist/modules/translation/utils'
 import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import * as locales from 'modules/translation/languages'
 import { RootState, RootStore } from 'modules/common/types'
-import { ConnectedRouter } from 'connected-react-router'
 import { createRootReducer } from 'modules/common/reducer'
 
 function initTestStore(preloadedState = {}): RootStore {
-  const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : undefined
-  const history = createBrowserHistory({ basename })
-  const rootReducer = createRootReducer(history)
+  const rootReducer = createRootReducer()
   return createStore(rootReducer, preloadedState) as RootStore
 }
 
@@ -43,11 +40,11 @@ export function renderWithProviders(
 
   const history = createMemoryHistory()
 
-  function AppProviders({ children }: { children: ReactNode }) {
+  function AppProviders({ children }: { children: React.ReactNode }) {
     return (
       <Provider store={initializedStore}>
         <TranslationProvider locales={['en', 'en-EN']}>
-          <ConnectedRouter history={history}>{children}</ConnectedRouter>
+          <Router history={history}>{children}</Router>
         </TranslationProvider>
       </Provider>
     )
