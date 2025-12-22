@@ -1,5 +1,4 @@
 import { merge } from 'ts-deepmerge'
-import { createFetchComponent } from '@well-known-components/fetch-component'
 import { CatalystClient, ContentClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from '@dcl/schemas'
@@ -364,7 +363,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     const { world, projectId } = action.payload
     const contentClient = createContentClient({
       url: getWorldsContentServerUrl(),
-      fetcher: createFetchComponent()
+      fetcher: { fetch: (url: RequestInfo | URL, init?: RequestInit) => fetch(url, init) }
     })
     try {
       const deployment: Deployment = yield call(
@@ -563,7 +562,10 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
 
   function* handleFetchWorldDeploymentsRequest(action: FetchWorldDeploymentsRequestAction) {
     const { worlds } = action.payload
-    const worldContentClient = createContentClient({ url: getWorldsContentServerUrl(), fetcher: createFetchComponent() })
+    const worldContentClient = createContentClient({
+      url: getWorldsContentServerUrl(),
+      fetcher: { fetch: (url: RequestInfo | URL, init?: RequestInit) => fetch(url, init) }
+    })
     try {
       const entities: Entity[] = []
 

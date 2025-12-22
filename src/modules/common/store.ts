@@ -168,7 +168,7 @@ const getClientAuthAuthority = () => {
 // As the builder client manages by itself the version of the API, we need to remove it from
 // the environment variable that we're using to with the older client.
 const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
-const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
+const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, (url, init) => fetch(url, init))
 
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
