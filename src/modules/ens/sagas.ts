@@ -3,12 +3,14 @@ import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
-import { getSigner } from 'decentraland-dapps/dist/lib/eth'
+import { ChainId } from '@dcl/schemas'
+import { getSigner, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { config } from 'config'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
@@ -72,6 +74,15 @@ import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } fro
 const DEFAULT_ENS_PAGE_SIZE = 12
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
+  const ethereumChainId = parseInt(config.get('CHAIN_ID', ChainId.ETHEREUM_MAINNET.toString()))
+
+  /** Get a provider for reading ENS data from Ethereum network.
+   * This allows ENS reads to work regardless of which network the user is connected to. */
+  function* getEthereumReadProvider(): Generator<any, ethers.providers.Web3Provider, any> {
+    const networkProvider: Provider = yield call(getNetworkProvider, ethereumChainId)
+    return new ethers.providers.Web3Provider(networkProvider)
+  }
+
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -93,11 +104,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const subdomain = name.toLowerCase() + '.dcl.eth'
     try {
       const wallet: Wallet = yield call(getWallet)
-      const signer: ethers.Signer = yield call(getSigner)
+      const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
       const address = wallet.address
       const nodehash = namehash(subdomain)
-      const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
-      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
+      const ensContract = ENS__factory.connect(ENS_ADDRESS, ethereumProvider)
+      const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, ethereumProvider)
       const [resolverAddress, ownerAddress, nftTokenId]: [string, string, BigNumber] = yield all([
         call([ensContract, 'resolver'], nodehash),
         call([ensContract, 'owner'], nodehash),
@@ -106,7 +117,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
       const owner = ownerAddress.toLowerCase()
       const tokenId = nftTokenId.toString()
-      const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+      const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
       const resolvedAddress: string = yield call([ensResolverContract, 'addr(bytes32)'], nodehash)
       const ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
 
@@ -126,7 +137,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         return
       }
 
-      const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
+      const resolverContract = ENSResolver__factory.connect(resolverAddress, ethereumProvider)
       const currentContent: string = yield call([resolverContract, 'contenthash'], nodehash)
 
       if (land) {
@@ -359,13 +370,13 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const lands: Land[] = yield select(getLands)
       const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
       const wallet: Wallet = yield call(getWallet)
-      const signer: ethers.Signer = yield call(getSigner)
+      const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
       const address = wallet.address
-      const ensContract: ReturnType<(typeof ENS__factory)['connect']> = yield call([ENS__factory, 'connect'], ENS_ADDRESS, signer)
+      const ensContract: ReturnType<(typeof ENS__factory)['connect']> = yield call([ENS__factory, 'connect'], ENS_ADDRESS, ethereumProvider)
       const dclRegistrarContract: ReturnType<(typeof DCLRegistrar__factory)['connect']> = yield call(
         [DCLRegistrar__factory, 'connect'],
         REGISTRAR_ADDRESS,
-        signer
+        ethereumProvider
       )
       const { first = DEFAULT_ENS_PAGE_SIZE, skip = 0 } = action.payload
       const [fetchedDomains, totalDomains, bannedDomains]: [string[], number, string[]] = yield all([
@@ -378,6 +389,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const worldsDeployed: string[] = []
+      const provider = ethereumProvider
 
       const promisesOfENS: (() => Promise<ENS>)[] = domains.map((data: string) => {
         return async () => {
@@ -397,7 +409,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const resolver = resolverAddress.toString()
 
           try {
-            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, provider)
             const resolvedAddress = await resolverContract['addr(bytes32)'](nodehash)
             ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
           } catch (e) {
@@ -406,7 +418,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
           if (resolver !== ethers.constants.AddressZero) {
             try {
-              const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
+              const resolverContract = ENSResolver__factory.connect(resolverAddress, provider)
               content = await resolverContract.contenthash(nodehash)
 
               const land = landHashes.find(lh => lh.hash === content)
