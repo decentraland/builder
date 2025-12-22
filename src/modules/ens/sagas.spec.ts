@@ -36,6 +36,7 @@ import { getContributableNamesList, getENSBySubdomain, getExternalNames } from '
 import { addWorldStatusToEachENS } from './utils'
 import { Authorization } from 'lib/api/auth'
 import { marketplace } from 'lib/api/marketplace'
+import { config } from 'config'
 
 jest.mock('@dcl/builder-client')
 
@@ -283,6 +284,7 @@ describe('when handling the set ens address request', () => {
     address = '0xtest'
     hash = 'tx-hash'
     ENSResolver__factory.connect = jest.fn().mockReturnValue(ensResolverContract)
+    config.get = jest.fn().mockReturnValueOnce(ChainId.ETHEREUM_GOERLI)
   })
 
   it('should call resolver contract with the ens domain and address', () => {
