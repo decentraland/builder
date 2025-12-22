@@ -363,7 +363,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     const { world, projectId } = action.payload
     const contentClient = createContentClient({
       url: getWorldsContentServerUrl(),
-      fetcher: { fetch: (url: RequestInfo | URL, init?: RequestInit) => fetch(url, init) }
+      // @ts-expect-error - fetch types mismatch between browser and node-fetch
+      fetcher: { fetch: (url, init) => fetch(url, init) }
     })
     try {
       const deployment: Deployment = yield call(
@@ -564,7 +565,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     const { worlds } = action.payload
     const worldContentClient = createContentClient({
       url: getWorldsContentServerUrl(),
-      fetcher: { fetch: (url: RequestInfo | URL, init?: RequestInit) => fetch(url, init) }
+      // @ts-expect-error - fetch types mismatch between browser and node-fetch
+      fetcher: { fetch: (url, init) => fetch(url, init) }
     })
     try {
       const entities: Entity[] = []
