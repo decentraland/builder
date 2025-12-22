@@ -74,7 +74,6 @@ export const CREATE_ITEM_ACTIONS = {
   SET_CONTENTS: 'SET_CONTENTS',
   SET_METRICS: 'SET_METRICS',
   SET_MODEL_SIZE: 'SET_MODEL_SIZE',
-  // SET_PREVIEW_CONTROLLER: 'SET_PREVIEW_CONTROLLER',
   SET_ITEM: 'SET_ITEM',
   SET_COLLECTION_ID: 'SET_COLLECTION_ID',
   SET_BODY_SHAPE: 'SET_BODY_SHAPE',
@@ -114,7 +113,6 @@ export type CreateItemAction =
   | { type: typeof CREATE_ITEM_ACTIONS.SET_CONTENTS; payload: Record<string, Blob> }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_METRICS; payload: Metrics }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_MODEL_SIZE; payload: number }
-  // | { type: typeof CREATE_ITEM_ACTIONS.SET_PREVIEW_CONTROLLER; payload: any }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_ITEM; payload: Item | undefined }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_COLLECTION_ID; payload: string | undefined }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_BODY_SHAPE; payload: BodyShapeType | undefined }
@@ -187,11 +185,6 @@ export const createItemActions = {
     type: CREATE_ITEM_ACTIONS.SET_MODEL_SIZE,
     payload: modelSize
   }),
-
-  // setPreviewController: (controller: any): CreateItemAction => ({
-  //   type: CREATE_ITEM_ACTIONS.SET_PREVIEW_CONTROLLER,
-  //   payload: controller
-  // }),
 
   setItem: (item: Item | undefined): CreateItemAction => ({
     type: CREATE_ITEM_ACTIONS.SET_ITEM,

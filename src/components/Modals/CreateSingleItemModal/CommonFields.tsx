@@ -8,7 +8,7 @@ import { MappingEditor } from 'components/MappingEditor'
 import { THUMBNAIL_PATH } from 'modules/item/types'
 import { createItemActions } from './CreateSingleItemModal.reducer'
 import { useCreateSingleItemModal } from './CreateSingleItemModal.context'
-import { getDefaultMappings, getLinkedContract, getThumbnailType } from './utils'
+import { getDefaultMappings, getLinkedContract, getThumbnailType, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from './utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { getModelData, EngineType } from 'lib/getModelData'
 import { getExtension } from 'lib/file'
@@ -82,26 +82,42 @@ export const CommonFields = () => {
   const updateThumbnailByCategory = useCallback(
     async (category: WearableCategory) => {
       const { model, contents } = state
+      if (!contents || !model) {
+        return
+      }
 
-      const isCustom = !!contents && THUMBNAIL_PATH in contents
-      if (!isCustom) {
-        dispatch(createItemActions.setLoading(true))
-        let thumbnail
-        if (contents && isImageFile(model!)) {
-          thumbnail = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
+      const isCustom = THUMBNAIL_PATH in contents
+      if (isCustom) {
+        return
+      }
+
+      dispatch(createItemActions.setLoading(true))
+      try {
+        let thumbnail: string | undefined
+
+        if (isImageFile(model)) {
+          const source = contents[THUMBNAIL_PATH] || contents[model]
+          thumbnail = await convertImageIntoWearableThumbnail(source, category)
         } else {
-          const url = URL.createObjectURL(contents![model!])
-          const { image } = await getModelData(url, {
-            width: 1024,
-            height: 1024,
-            thumbnailType: getThumbnailType(category),
-            extension: (model && getExtension(model)) || undefined,
-            engine: EngineType.BABYLON
-          })
-          thumbnail = image
-          URL.revokeObjectURL(url)
+          const url = URL.createObjectURL(contents[model])
+          try {
+            const { image } = await getModelData(url, {
+              width: THUMBNAIL_WIDTH,
+              height: THUMBNAIL_HEIGHT,
+              thumbnailType: getThumbnailType(category) as any,
+              extension: getExtension(model) || undefined,
+              engine: EngineType.BABYLON
+            })
+            thumbnail = image
+          } finally {
+            URL.revokeObjectURL(url)
+          }
         }
-        dispatch(createItemActions.setThumbnail(thumbnail))
+
+        if (thumbnail) {
+          dispatch(createItemActions.setThumbnail(thumbnail))
+        }
+      } finally {
         dispatch(createItemActions.setLoading(false))
       }
     },

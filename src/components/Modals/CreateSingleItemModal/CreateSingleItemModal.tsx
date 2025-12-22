@@ -67,6 +67,7 @@ import { MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
 import { areMappingsValid } from 'modules/thirdParty/utils'
 import { Authorization } from 'lib/api/auth'
 import { BUILDER_SERVER_URL, BuilderAPI } from 'lib/api/builder'
+import { Collection } from 'modules/collection/types'
 import {
   autocompleteSocialEmoteData,
   buildRepresentations,
@@ -91,10 +92,81 @@ import { Steps } from './Steps'
 import { CreateSingleItemModalProvider } from './CreateSingleItemModalProvider'
 import './CreateSingleItemModal.css'
 
+type ValidationResult = {
+  isValid: boolean
+  errorMessage?: string
+}
+
+const buildItemTooBigError = (limit: number, typeLabel: string) =>
+  t('create_single_item_modal.error.item_too_big', {
+    size: `${toMB(limit)}MB`,
+    type: typeLabel
+  })
+
+const validateItemDraft = (state: State, collection: Collection | null, isThirdPartyV2Enabled: boolean): ValidationResult => {
+  const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize, mappings, contents } =
+    state
+
+  const belongsToAThirdPartyCollection = Boolean(collection?.urn && isThirdParty(collection.urn))
+  const linkedContract = collection ? getLinkedContract(collection) : undefined
+
+  let required: (string | Metrics | Item | undefined)[]
+  if (isRepresentation) {
+    required = [item as Item]
+  } else if (belongsToAThirdPartyCollection) {
+    required = [name, thumbnail, metrics, bodyShape, category]
+  } else if (type === ItemType.EMOTE) {
+    required = [name, thumbnail, metrics, category, playMode, rarity, type]
+  } else {
+    required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
+  }
+
+  const thumbnailBlob = thumbnail ? dataURLToBlob(thumbnail) : undefined
+  const thumbnailSize = thumbnailBlob ? calculateFileSize(thumbnailBlob) : 0
+
+  if (thumbnailSize && thumbnailSize > MAX_THUMBNAIL_SIZE) {
+    return {
+      isValid: false,
+      errorMessage: t('create_single_item_modal.error.thumbnail_file_too_big', {
+        maxSize: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB`
+      })
+    }
+  }
+
+  if (isThirdPartyV2Enabled && ((!mappings && linkedContract) || (mappings && !areMappingsValid(mappings)))) {
+    return { isValid: false }
+  }
+
+  const isSkin = category === WearableCategory.SKIN
+  const isEmote = type === ItemType.EMOTE
+  const isSmartWearable = isSmart({ type, contents })
+  const isRequirementMet = required.every(prop => prop !== undefined)
+  const finalSize = modelSize ? modelSize + thumbnailSize : undefined
+
+  if (isRequirementMet && isEmote && finalSize && !isEmoteFileSizeValid(finalSize)) {
+    return { isValid: false, errorMessage: buildItemTooBigError(MAX_EMOTE_FILE_SIZE, 'emote') }
+  }
+
+  if (isRequirementMet && isSkin && finalSize && !isSkinFileSizeValid(finalSize)) {
+    return { isValid: false, errorMessage: buildItemTooBigError(MAX_SKIN_FILE_SIZE, 'skin') }
+  }
+
+  if (isRequirementMet && !isSkin && isSmartWearable && finalSize && !isSmartWearableFileSizeValid(finalSize)) {
+    return { isValid: false, errorMessage: buildItemTooBigError(MAX_SMART_WEARABLE_FILE_SIZE, 'smart wearable') }
+  }
+
+  if (isRequirementMet && !isSkin && !isSmartWearable && finalSize && !isWearableFileSizeValid(finalSize)) {
+    return { isValid: false, errorMessage: buildItemTooBigError(MAX_WEARABLE_FILE_SIZE, 'wearable') }
+  }
+
+  return { isValid: isRequirementMet }
+}
+
 export const CreateSingleItemModal: React.FC<Props> = props => {
   const { address, collection, error, itemStatus, metadata, name, onClose, onSave, isLoading, isThirdPartyV2Enabled } = props
   const thumbnailInput = useRef<HTMLInputElement>(null)
   const modalContainer = useRef<HTMLDivElement>(null)
+  const previewControllerRef = useRef<IPreviewController | null>(null)
 
   const getInitialState = useCallback((): State => {
     return createInitialState(metadata, collection, isThirdPartyV2Enabled)
@@ -105,6 +177,13 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   const isAddingRepresentation = useMemo(() => {
     return !!(metadata && metadata.item && !metadata.changeItemFile)
   }, [metadata])
+
+  const validationResult = useMemo(
+    () => validateItemDraft(state, collection, isThirdPartyV2Enabled),
+    [state, collection, isThirdPartyV2Enabled]
+  )
+  const { isValid: isFormValid, errorMessage: validationError } = validationResult
+  const normalizedValidationError = validationError ?? null
 
   const createItem = useCallback(
     async (sortedContents: SortedContent, representations: WearableRepresentation[]) => {
@@ -230,7 +309,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       dispatch(createItemActions.setView(CreateItemView.THUMBNAIL))
       dispatch(createItemActions.setFromView(CreateItemView.THUMBNAIL))
     },
-    [address, collection, state, onSave]
+    [address, collection, state, onSave, dispatch]
   )
 
   const addItemRepresentation = useCallback(
@@ -357,7 +436,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     } else if (thumbnailInput.current) {
       thumbnailInput.current.click()
     }
-  }, [state, thumbnailInput])
+  }, [state, thumbnailInput, dispatch])
 
   const handleThumbnailChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -386,14 +465,17 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         )
       }
     },
-    [state]
+    [state, dispatch]
   )
 
-  const handleItemChange = useCallback((item: Item) => {
-    dispatch(createItemActions.setItem(item))
-    dispatch(createItemActions.setCategory(item.data.category as WearableCategory))
-    dispatch(createItemActions.setRarity(item.rarity as Rarity))
-  }, [])
+  const handleItemChange = useCallback(
+    (item: Item) => {
+      dispatch(createItemActions.setItem(item))
+      dispatch(createItemActions.setCategory(item.data.category as WearableCategory))
+      dispatch(createItemActions.setRarity(item.rarity as Rarity))
+    },
+    [dispatch]
+  )
 
   const filterItemsByBodyShape = useCallback(
     (item: Item) => {
@@ -451,116 +533,11 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     return getModalTitle(state, metadata, isAddingRepresentation)
   }, [state, metadata, isAddingRepresentation])
 
-  // Validation
-  const isValid = useCallback((): boolean => {
-    const {
-      name,
-      thumbnail,
-      metrics,
-      bodyShape,
-      category,
-      playMode,
-      rarity,
-      item,
-      isRepresentation,
-      type,
-      modelSize,
-      mappings,
-      error: stateError
-    } = state
-    const belongsToAThirdPartyCollection = collection?.urn && isThirdParty(collection.urn)
-    const linkedContract = collection ? getLinkedContract(collection) : undefined
-
-    if (stateError) {
-      dispatch(createItemActions.clearError())
-    }
-
-    let required: (string | Metrics | Item | undefined)[]
-    if (isRepresentation) {
-      required = [item as Item]
-    } else if (belongsToAThirdPartyCollection) {
-      required = [name, thumbnail, metrics, bodyShape, category]
-    } else if (type === ItemType.EMOTE) {
-      required = [name, thumbnail, metrics, category, playMode, rarity, type]
-    } else {
-      required = [name, thumbnail, metrics, bodyShape, category, rarity, type]
-    }
-
-    const thumbnailBlob = thumbnail ? dataURLToBlob(thumbnail) : undefined
-    const thumbnailSize = thumbnailBlob ? calculateFileSize(thumbnailBlob) : 0
-
-    if (thumbnailSize && thumbnailSize > MAX_THUMBNAIL_SIZE) {
-      dispatch(
-        createItemActions.setError(
-          t('create_single_item_modal.error.thumbnail_file_too_big', { maxSize: `${toMB(MAX_THUMBNAIL_FILE_SIZE)}MB` })
-        )
-      )
-      return false
-    }
-    const isSkin = category === WearableCategory.SKIN
-    const isEmote = type === ItemType.EMOTE
-    const isSmartWearable = isSmart({ type, contents: state.contents })
-    const isRequirementMet = required.every(prop => prop !== undefined)
-    const finalSize = modelSize ? modelSize + thumbnailSize : undefined
-
-    if (isThirdPartyV2Enabled && ((!mappings && linkedContract) || (mappings && !areMappingsValid(mappings)))) {
-      return false
-    }
-
-    if (isRequirementMet && isEmote && finalSize && !isEmoteFileSizeValid(finalSize)) {
-      dispatch(
-        createItemActions.setError(
-          t('create_single_item_modal.error.item_too_big', {
-            size: `${toMB(MAX_EMOTE_FILE_SIZE)}MB`,
-            type: `emote`
-          })
-        )
-      )
-      return false
-    }
-
-    if (isRequirementMet && isSkin && finalSize && !isSkinFileSizeValid(finalSize)) {
-      dispatch(
-        createItemActions.setError(
-          t('create_single_item_modal.error.item_too_big', {
-            size: `${toMB(MAX_SKIN_FILE_SIZE)}MB`,
-            type: `skin`
-          })
-        )
-      )
-      return false
-    }
-
-    if (isRequirementMet && !isSkin && isSmartWearable && finalSize && !isSmartWearableFileSizeValid(finalSize)) {
-      dispatch(
-        createItemActions.setError(
-          t('create_single_item_modal.error.item_too_big', {
-            size: `${toMB(MAX_SMART_WEARABLE_FILE_SIZE)}MB`,
-            type: `smart wearable`
-          })
-        )
-      )
-      return false
-    }
-
-    if (isRequirementMet && !isSkin && !isSmartWearable && finalSize && !isWearableFileSizeValid(finalSize)) {
-      dispatch(
-        createItemActions.setError(
-          t('create_single_item_modal.error.item_too_big', {
-            size: `${toMB(MAX_WEARABLE_FILE_SIZE)}MB`,
-            type: `wearable`
-          })
-        )
-      )
-      return false
-    }
-    return isRequirementMet
-  }, [collection, state, isThirdPartyV2Enabled])
+  const isStateLoading = Boolean(state.isLoading)
 
   const isDisabled = useCallback((): boolean => {
-    const { isLoading: isStateLoading } = state
-    return !isValid() || isLoading || Boolean(isStateLoading)
-  }, [state, isLoading, isValid])
+    return !isFormValid || isLoading || isStateLoading
+  }, [isFormValid, isLoading, isStateLoading])
 
   // TODO: Refactor this logic to accept all the required parameters instead of using the reduer state as we need to wait for each render before properly call the submit
   const handleSubmit = useCallback(async () => {
@@ -576,7 +553,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       pristineItem = metadata.item
     }
 
-    if (id && isValid()) {
+    if (id && isFormValid) {
       const {
         thumbnail,
         contents,
@@ -660,7 +637,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         await createItem(sortedContents, representations)
       }
     }
-  }, [metadata, state, addItemRepresentation, createItem, modifyItem, isValid])
+  }, [metadata, state, addItemRepresentation, createItem, modifyItem, isFormValid, dispatch])
 
   const handleDropAccepted = useCallback(
     (acceptedFileProps: AcceptedFileProps) => {
@@ -669,7 +646,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       dispatch(createItemActions.setBodyShape(bodyShape || state.bodyShape))
       dispatch(createItemActions.setAcceptedProps(acceptedProps))
     },
-    [state]
+    [state, dispatch]
   )
 
   const handleOnScreenshotTaken = useCallback(
@@ -691,16 +668,17 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       }
       dispatch(createItemActions.setHasScreenshotTaken(true))
     },
-    [state]
+    [state, dispatch]
   )
 
   const getMetricsAndScreenshot = useCallback(
     async (controller?: IPreviewController) => {
       const { isSocialEmotesEnabled } = props
       const { type, model, contents, category, thumbnail } = state
-      if (type && model && contents && controller) {
+      const activeController = controller ?? previewControllerRef.current
+      if (type && model && contents && activeController) {
         const data = await getItemData({
-          wearablePreviewController: controller,
+          wearablePreviewController: activeController,
           type,
           model,
           contents,
@@ -736,7 +714,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         dispatch(createItemActions.setLoading(false))
       }
     },
-    [state]
+    [state, props, dispatch]
   )
 
   const handleFileLoad = useCallback(async () => {
@@ -757,7 +735,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     }
 
     const controller = WearablePreview.createController('thumbnail-picker')
-
+    previewControllerRef.current = controller
     if (weareblePreviewUpdated) {
       if (type === ItemType.EMOTE) {
         const length = await controller.emote.getLength()
@@ -765,7 +743,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       }
       return getMetricsAndScreenshot(controller)
     }
-  }, [state, getMetricsAndScreenshot])
+  }, [state, getMetricsAndScreenshot, props.address, dispatch])
 
   const renderWearablePreview = useCallback(() => {
     const { type, contents, model } = state
@@ -808,7 +786,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         }}
       />
     )
-  }, [state, handleFileLoad])
+  }, [state, handleFileLoad, dispatch])
 
   const contextValue = {
     // State
@@ -837,6 +815,8 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     onClose,
     handleSubmit,
     isDisabled,
+    isFormValid,
+    validationError: normalizedValidationError,
 
     // Render functions
     renderMetrics,
