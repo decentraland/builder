@@ -499,10 +499,10 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
    * Gets the modal title based on state and metadata
    */
   const getModalTitle = (state: State, metadata: CreateSingleItemModalMetadata, isAddingRepresentation: boolean): string => {
-    const { type, view, contents } = state
+    const { bodyShape, type, view, contents } = state
 
     if (isAddingRepresentation) {
-      return t('create_single_item_modal.add_representation')
+      return t('create_single_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape || 'both'}`) })
     }
 
     if (metadata && metadata.changeItemFile) {
