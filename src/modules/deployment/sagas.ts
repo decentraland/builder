@@ -6,6 +6,7 @@ import cryptoFetch from 'decentraland-crypto-fetch'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 import { takeLatest, takeEvery, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
 import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
@@ -363,8 +364,7 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     const { world, projectId } = action.payload
     const contentClient = createContentClient({
       url: getWorldsContentServerUrl(),
-      // @ts-expect-error - fetch types mismatch between browser and node-fetch
-      fetcher: { fetch: (url, init) => fetch(url, init) }
+      fetcher
     })
     try {
       const deployment: Deployment = yield call(

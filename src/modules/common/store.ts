@@ -16,6 +16,7 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ContentfulClient, fetchCampaignRequest } from 'decentraland-dapps/dist/modules/campaign'
 import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
+import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -154,8 +155,8 @@ const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => getAddress(store.getState())))
 const catalystClient = createCatalystClient({
-  url: PEER_URL, // @ts-expect-error - fetch types mismatch between browser and node-fetch
-  fetcher: { fetch: (url, init) => fetch(url, init) }
+  url: PEER_URL,
+  fetcher
 })
 
 const getClientAddress = () => getAddress(store.getState())!
