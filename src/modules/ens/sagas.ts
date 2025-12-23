@@ -5,7 +5,7 @@ import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effect
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction, switchNetworkRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
@@ -81,16 +81,15 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     return new ethers.providers.Web3Provider(networkProvider)
   }
 
-  /** Validate that the user's wallet is on the correct network for write operations. */
-  function* validateWriteNetwork(wallet: Wallet): Generator<any, void, any> {
+  /** Validate that the user's wallet is on Ethereum network for write operations. */
+  function* validateAndSwitchNetwork(wallet: Wallet): Generator<any, void, any> {
+    const ethereumChainId = getChainIdByNetwork(Network.ETHEREUM)
     if (wallet.chainId !== ethereumChainId) {
       const signer: ethers.Signer = yield call(getSigner)
       const signerNetwork: ethers.providers.Network = yield call([signer.provider as ethers.providers.Provider, 'getNetwork'])
-      throw new Error(
-        `This operation requires Ethereum network connection. Currently connected to: ${signerNetwork.name} (Chain ID: ${
-          signerNetwork.chainId
-        }). Please switch to ${ethereumChainId === ChainId.ETHEREUM_MAINNET ? 'Ethereum Mainnet' : 'Sepolia testnet'}.`
-      )
+      if (signerNetwork.chainId !== ethereumChainId) {
+        yield put(switchNetworkRequest(ethereumChainId, signerNetwork.chainId))
+      }
     }
   }
 
@@ -280,7 +279,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
-      yield call(validateWriteNetwork, wallet)
+      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -304,7 +303,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, land } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
-      yield call(validateWriteNetwork, wallet)
+      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -351,7 +350,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, address } = action.payload
     try {
       const wallet: Wallet = yield call(getWallet)
-      yield call(validateWriteNetwork, wallet)
+      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
@@ -499,7 +498,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
-      yield call(validateWriteNetwork, wallet)
+      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
