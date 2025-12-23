@@ -81,6 +81,19 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     return new ethers.providers.Web3Provider(networkProvider)
   }
 
+  /** Validate that the user's wallet is on the correct network for write operations. */
+  function* validateWriteNetwork(wallet: Wallet): Generator<any, void, any> {
+    if (wallet.chainId !== ethereumChainId) {
+      const signer: ethers.Signer = yield call(getSigner)
+      const signerNetwork: ethers.providers.Network = yield call([signer.provider as ethers.providers.Provider, 'getNetwork'])
+      throw new Error(
+        `This operation requires Ethereum network connection. Currently connected to: ${signerNetwork.name} (Chain ID: ${
+          signerNetwork.chainId
+        }). Please switch to ${ethereumChainId === ChainId.ETHEREUM_MAINNET ? 'Ethereum Mainnet' : 'Sepolia testnet'}.`
+      )
+    }
+  }
+
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -267,6 +280,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
+      yield call(validateWriteNetwork, wallet)
+
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
       const nodehash = namehash(ens.subdomain)
@@ -289,6 +304,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, land } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
+      yield call(validateWriteNetwork, wallet)
+
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
 
@@ -334,6 +351,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, address } = action.payload
     try {
       const wallet: Wallet = yield call(getWallet)
+      yield call(validateWriteNetwork, wallet)
+
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
       const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
@@ -480,6 +499,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens } = action.payload
     try {
       const wallet: Wallet = yield getWallet()
+      yield call(validateWriteNetwork, wallet)
+
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
