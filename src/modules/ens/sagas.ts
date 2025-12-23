@@ -76,14 +76,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   /** Get a provider for reading ENS data from Ethereum network.
    * This allows ENS reads to work regardless of which network the user is connected to. */
   function* getEthereumReadProvider(): Generator<any, ethers.providers.Web3Provider, any> {
-    const ethereumChainId = getChainIdByNetwork(Network.ETHEREUM)
+    const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
     const networkProvider: Provider = yield call(getNetworkProvider, ethereumChainId)
     return new ethers.providers.Web3Provider(networkProvider)
   }
 
   /** Validate that the user's wallet is on Ethereum network for write operations. */
   function* validateAndSwitchNetwork(wallet: Wallet): Generator<any, void, any> {
-    const ethereumChainId = getChainIdByNetwork(Network.ETHEREUM)
+    const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
     if (wallet.chainId !== ethereumChainId) {
       const signer: ethers.Signer = yield call(getSigner)
       const signerNetwork: ethers.providers.Network = yield call([signer.provider as ethers.providers.Provider, 'getNetwork'])

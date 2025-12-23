@@ -4,9 +4,9 @@ import { namehash } from '@ethersproject/hash'
 import { call, select } from 'redux-saga/effects'
 import { Signer, ethers } from 'ethers'
 import { BuilderClient } from '@dcl/builder-client'
-import { ChainId } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { ENSResolver__factory, ENSResolver } from 'contracts'
-import { getSigner } from 'decentraland-dapps/dist/lib/eth'
+import { getSigner, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -36,7 +36,6 @@ import { getContributableNamesList, getENSBySubdomain, getExternalNames } from '
 import { addWorldStatusToEachENS } from './utils'
 import { Authorization } from 'lib/api/auth'
 import { marketplace } from 'lib/api/marketplace'
-import { config } from 'config'
 
 jest.mock('@dcl/builder-client')
 
@@ -284,12 +283,12 @@ describe('when handling the set ens address request', () => {
     address = '0xtest'
     hash = 'tx-hash'
     ENSResolver__factory.connect = jest.fn().mockReturnValue(ensResolverContract)
-    config.get = jest.fn().mockReturnValueOnce(ChainId.ETHEREUM_SEPOLIA)
   })
 
   it('should call resolver contract with the ens domain and address', () => {
     return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
         [call(getSigner), { signer }],
         [call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address), { hash } as ethers.ContractTransaction],
@@ -305,6 +304,7 @@ describe('when handling the set ens address request', () => {
     const error = { message: 'an error message', code: 1, name: 'error' }
     return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
         [call(getSigner), { signer }],
         [call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address), throwError(error)],
