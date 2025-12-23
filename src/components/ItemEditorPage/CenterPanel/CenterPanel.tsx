@@ -249,7 +249,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     const { isShowingAvatarAttributes, showSceneBoundaries, isLoading, socialEmote } = this.state
     const isRenderingAnEmote = visibleItems.some(isEmote) && selectedItem?.type === ItemType.EMOTE
     const zoom = emote === PreviewEmote.JUMP ? 1 : undefined
-    let _socialEmote = undefined
+    let _socialEmote: any = undefined
 
     if (!socialEmote && selectedItem?.type === ItemType.EMOTE && (selectedItem.data as unknown as EmoteData).startAnimation) {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }

@@ -91,7 +91,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
   handleDropAccepted = async (acceptedFiles: File[]) => {
     const { acceptedProjects } = this.state
 
-    const projects = []
+    const projects: ImportedFile[] = []
 
     for (const file of acceptedFiles) {
       try {

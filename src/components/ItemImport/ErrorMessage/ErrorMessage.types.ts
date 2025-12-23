@@ -4,6 +4,6 @@ export type Props = {
 }
 
 export type ErrorMessage = {
-  title?: string
-  message: string
+  title?: React.ReactNode
+  message: React.ReactNode
 }

@@ -12,7 +12,7 @@ jobs:
         with:
           node-version: 24.x
       - name: Install
-        run: npm ci --legacy-peer-deps
+        run: npm i
       - name: Test
         run: npm run test:coverage
         if: ${{ always() }}

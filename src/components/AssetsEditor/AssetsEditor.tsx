@@ -20,7 +20,7 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
 
   getAssets() {
     const { assetPack, ignoredAssets } = this.props
-    const assets = []
+    const assets: typeof assetPack.assets = []
     for (const asset of assetPack.assets) {
       if (ignoredAssets && ignoredAssets.length > 0 && ignoredAssets.includes(asset.id)) {
         continue

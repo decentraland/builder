@@ -301,7 +301,7 @@ export function* sceneSaga(builderApi: BuilderAPI) {
     const newEntityIds: string[] = []
 
     for (const entityId of selectedEntityIds) {
-      const entityComponents = []
+      const entityComponents: string[] = []
       const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
       const shape = shapes[entityId]
 
@@ -760,7 +760,7 @@ export function* sceneSaga(builderApi: BuilderAPI) {
 
       const composite = toComposite(scene.sdk6, project)
       const mappings = toMappings(scene.sdk6)
-      const crdt = new Blob([toCrdt(scene.sdk6)])
+      const crdt = new Blob([toCrdt(scene.sdk6) as BlobPart])
 
       const newSDK7Scene: SceneSDK7 = {
         id: scene.sdk6.id,
