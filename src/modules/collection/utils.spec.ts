@@ -261,9 +261,7 @@ describe('when getting the fiat commodity amount', () => {
       })
 
       it('should fail', () => {
-        expect(() => getFiatGatewayCommodityAmount(unitPrice, items)).toThrow(
-          'invalid BigNumber string (argument="value", value="not-a-number", code=INVALID_ARGUMENT, version=bignumber/5.7.0)'
-        )
+        expect(() => getFiatGatewayCommodityAmount(unitPrice, items)).toThrow(/invalid BigNumber string/)
       })
     })
 

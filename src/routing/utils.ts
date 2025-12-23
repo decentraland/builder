@@ -36,7 +36,7 @@ export function injectPagination(location: string, options?: PaginationOptions) 
     return addParams(location)
   }
 
-  const params = []
+  const params: string[] = []
   if (options.page) {
     params.push(`page=${options.page}`)
   }

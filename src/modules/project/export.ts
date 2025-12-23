@@ -389,7 +389,7 @@ export async function downloadFiles(args: {
     }
 
     // 2. Find all the mappings under that namespace, and remove the namespace
-    const nestedPaths = []
+    const nestedPaths: string[] = []
     for (const path of Object.keys(files)) {
       if (path.startsWith(namespace + '/')) {
         const relativePath = path.split(namespace + '/').pop()!

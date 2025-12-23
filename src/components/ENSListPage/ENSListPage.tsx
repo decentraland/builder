@@ -26,14 +26,16 @@ const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
 const ENS_GATEWAY = config.get('ENS_GATEWAY')
 
 export default function ENSListPage(props: Props) {
-  const { ensList, alias, hasProfileCreated, avatar, isLoading, error, onOpenModal, total, onFetchENSList } = props
+  const { ensList, alias, hasProfileCreated, avatar, isLoading, isLoggedIn, error, onOpenModal, total, onFetchENSList } = props
   const [sortBy, setSortBy] = React.useState(SortBy.ASC)
   const [page, setPage] = React.useState(1)
   const history = useHistory()
 
   useEffect(() => {
-    onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
-  }, [onFetchENSList, page])
+    if (isLoggedIn) {
+      onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
+    }
+  }, [isLoggedIn, onFetchENSList, page])
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage)

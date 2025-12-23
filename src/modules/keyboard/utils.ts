@@ -267,7 +267,7 @@ export abstract class ShortcutRenderer {
   }
 
   renderSimple(shortcut: SimpleShortcut) {
-    const out = []
+    const out: (JSX.Element | string)[] = []
 
     if (shortcut.hold) {
       out.push(this.renderHold())

@@ -60,10 +60,10 @@ const WorldListPage: React.FC<Props> = props => {
   }, [isConnected, isWorldContributorEnabled])
 
   useEffect(() => {
-    if (tab === TabType.DCL) {
+    if (isConnected && tab === TabType.DCL) {
       onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
     }
-  }, [onFetchENSList, page])
+  }, [isConnected, onFetchENSList, page, tab])
 
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
