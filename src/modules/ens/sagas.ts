@@ -3,14 +3,13 @@ import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
-import { ChainId } from '@dcl/schemas'
-import { getSigner, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { Network } from '@dcl/schemas'
+import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { config } from 'config'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
 import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
@@ -74,11 +73,10 @@ import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } fro
 const DEFAULT_ENS_PAGE_SIZE = 12
 
 export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
-  const ethereumChainId = parseInt(config.get('CHAIN_ID', ChainId.ETHEREUM_MAINNET.toString()))
-
   /** Get a provider for reading ENS data from Ethereum network.
    * This allows ENS reads to work regardless of which network the user is connected to. */
   function* getEthereumReadProvider(): Generator<any, ethers.providers.Web3Provider, any> {
+    const ethereumChainId = getChainIdByNetwork(Network.ETHEREUM)
     const networkProvider: Provider = yield call(getNetworkProvider, ethereumChainId)
     return new ethers.providers.Web3Provider(networkProvider)
   }
