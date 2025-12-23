@@ -361,6 +361,15 @@
         "title": "Dado que el permiso 'ALLOW_MEDIA_HOSTNAMES' está configurado, la propiedad 'allowedMediaHostnames' debe ser configurada y no puede ser vacía. Por favor, corrija el archivo 'scene.json'.",
         "message": "Para obtener {learn_more}, consulte la documentación."
       },
+      "unexpected_error": {
+        "title": "Ocurrió un error inesperado al subir tu archivo",
+        "message": "Por favor revisa tu archivo e intenta nuevamente. Si el problema persiste, contacta con soporte.",
+        "details": "Detalles del error"
+      },
+      "missing_external_resources": {
+        "title": "Error al cargar el modelo",
+        "message": "Faltan recursos externos: <b>{external_resources}</b><br></br>{additional_message}"
+      },
       "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas",
       "emote_animations_sync_error": "<b>Las longitudes de las animaciones del avatar y de las props no son iguales</b><br></br>Corrija su animación y vuelva a subirla para una sincronización perfecta.",
       "emote_with_mesh": "<b>Su archivo incluye el mesh del Avatar.</b><br></br>Esta malla no es necesaria para este proceso. Por favor, simplemente vuelva a exportarlo y vuelva a subirlo para continuar."

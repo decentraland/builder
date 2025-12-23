@@ -7,7 +7,7 @@ import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
 import { isImageFile } from 'modules/item/utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
-import { EmoteAnimationsSyncError, EmoteWithMeshError } from 'modules/item/errors'
+import { EmoteAnimationsSyncError, EmoteWithMeshError, MissingExternalResourcesError } from 'modules/item/errors'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
 
 // transparent 1x1 pixel
@@ -64,6 +64,8 @@ async function loadGltf(url: string, options: Partial<Options> = {}) {
 
   // configure mappings
   let manager
+  const missingResources: string[] = []
+
   if (mappings) {
     manager = new Three.LoadingManager()
     manager.setURLModifier(url => {
@@ -75,9 +77,37 @@ async function loadGltf(url: string, options: Partial<Options> = {}) {
 
       return url
     })
+
+    // Track missing resources
+    manager.onError = (url: string) => {
+      const path = basename(new URL(url.replace('blob:', '')).pathname.slice(1))
+      missingResources.push(path)
+    }
   }
+
   const loader = new GLTFLoader(manager)
-  return { renderer, gltf: await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject)) }
+
+  try {
+    const gltf = await new Promise<GLTF>((resolve, reject) => {
+      loader.load(url, resolve, undefined, error => {
+        // Enhance error message with missing resources info
+        if (missingResources.length > 0) {
+          const additionalMessage = error instanceof Error ? error.message : ''
+          reject(new MissingExternalResourcesError(missingResources, additionalMessage))
+        } else {
+          reject(error)
+        }
+      })
+    })
+
+    return { renderer, gltf }
+  } catch (error) {
+    // Clean up renderer if loading failed
+    if (renderer.domElement.parentNode) {
+      document.body.removeChild(renderer.domElement)
+    }
+    throw error
+  }
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
@@ -197,12 +227,11 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
     return { info, image, type: ItemType.WEARABLE }
   } catch (error) {
-    // Properly dispose WebGL resources even on error to prevent context exhaustion
-    if (renderer) {
-      renderer.dispose()
-      if (renderer.domElement.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement)
-      }
+    // Log the error for debugging with enhanced context
+    if (error instanceof Error) {
+      console.error('Failed to load model:', error.message, error)
+    } else {
+      console.error('Failed to load model:', error)
     }
 
     // could not render model, default to 0 metrics and default thumnail

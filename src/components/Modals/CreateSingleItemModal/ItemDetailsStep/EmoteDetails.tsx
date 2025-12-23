@@ -74,7 +74,7 @@ export const EmoteDetails: React.FC = () => {
       dispatch(createItemActions.setFromView(CreateItemView.DETAILS))
       handleOpenThumbnailDialog()
     }
-  }, [hasScreenshotTaken, handleSubmit, handleOpenThumbnailDialog])
+  }, [hasScreenshotTaken, handleSubmit, handleOpenThumbnailDialog, dispatch])
 
   return (
     <>

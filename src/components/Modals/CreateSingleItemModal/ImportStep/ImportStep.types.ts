@@ -23,7 +23,7 @@ export type Props = {
 
 export type StateData = {
   id: string
-  error?: ErrorMessage
+  error?: ErrorMessage | React.ReactNode
   isLoading: boolean
 }
 export type State = Partial<StateData>

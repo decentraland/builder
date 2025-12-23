@@ -355,6 +355,15 @@
         "title": "鉴于设置了 'ALLOW_MEDIA_HOSTNAMES' 权限，因此必须设置 'allowedMediaHostnames' 属性且不为空。请更正 'scene.json'。",
         "message": "有关更多信息，请查看文档 {learn_more}。"
       },
+      "unexpected_error": {
+        "title": "上传文件时发生意外错误",
+        "message": "请检查您的文件并重试。如果问题仍然存在，请联系支持人员。",
+        "details": "错误详情"
+      },
+      "missing_external_resources": {
+        "title": "加载模型失败",
+        "message": "缺少外部资源：<b>{external_resources}</b><br></br>{additional_message}"
+      },
       "item_not_allowed_in_third_party_collections": "此项目类型{type}在链接的可穿戴设备集合中不允许",
       "emote_animations_sync_error": "<b>头像和道具动画长度不一样</b><br></br>请更正您的动画，然后再次上传以获得完美的同步.",
       "emote_with_mesh": "<b>您的文件包括头像网。</b><br></br>对于此过程，此网格不是必需的。请，只需重新出口并再次上传即可继续。"
