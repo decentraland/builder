@@ -42,7 +42,7 @@
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^2.24.1",
     "decentraland-ui": "^6.24.0",
-    "decentraland-ui2": "^0.44.1",
+    "decentraland-ui2": "^0.45.2",
     "ethers": "^5.6.8",
     "fast-equals": "^5.3.0",
     "file-saver": "^2.0.1",
