@@ -45,7 +45,7 @@ export default function ENSDetailPage(props: Props) {
 
   const handleReclaim = useCallback(() => {
     onOpenModal('ReclaimNameModal', { ens })
-  }, [onOpenModal])
+  }, [onOpenModal, ens])
 
   const aliasField = useMemo(() => {
     let field: React.ReactNode
