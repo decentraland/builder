@@ -15,6 +15,9 @@ import ethereumImg from '../../icons/ethereum.svg'
 import { Props } from './ENSDetailPage.types'
 import styles from './ENSDetailPage.module.css'
 
+const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
+const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
+
 export default function ENSDetailPage(props: Props) {
   const { ens, isLoading, alias, avatar, name, wallet, onOpenModal, onFetchENS } = props
   const history = useHistory()
@@ -229,9 +232,20 @@ export default function ENSDetailPage(props: Props) {
                 ) : null}
               </span>
             </div>
-            <Button primary onClick={handleReclaim}>
-              {t('ens_detail_page.reclaim_name')}
-            </Button>
+            <div className={styles.actions}>
+              <Button
+                secondary
+                className={styles.transferBtn}
+                target="_blank"
+                href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens?.tokenId}/transfer`}
+              >
+                <DCLIcon name="exchange" />
+                {t('ens_detail_page.transfer')}
+              </Button>
+              <Button primary onClick={handleReclaim}>
+                {t('ens_detail_page.reclaim_name')}
+              </Button>
+            </div>
           </div>
           <div className={styles.fieldContainer}>
             {aliasField}
