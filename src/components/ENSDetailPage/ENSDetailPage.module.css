@@ -61,6 +61,15 @@
   color: white;
 }
 
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.transferBtn:global(.ui.button) {
+  background: var(--light-gray);
+}
+
 .main .field .actionBtn:global(.ui.button) {
   width: fit-content;
   min-width: unset;
