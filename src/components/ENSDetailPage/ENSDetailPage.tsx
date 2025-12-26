@@ -239,7 +239,6 @@ export default function ENSDetailPage(props: Props) {
                 target="_blank"
                 href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens?.tokenId}/transfer`}
               >
-                <DCLIcon name="exchange" />
                 {t('ens_detail_page.transfer')}
               </Button>
               <Button primary onClick={handleReclaim}>

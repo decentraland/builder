@@ -66,8 +66,9 @@
   gap: 10px;
 }
 
-.transferBtn:global(.ui.button) {
-  background: var(--light-gray);
+.transferBtn:global(.ui.button),
+.transferBtn:global(.ui.button):hover {
+  background: var(--bluish-steel);
 }
 
 .main .field .actionBtn:global(.ui.button) {
