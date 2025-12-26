@@ -177,7 +177,9 @@ const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getStat
 const contentfulClient = new ContentfulClient()
 
 const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
-const creditsClient = new CreditsClient(config.get('CREDITS_SERVER_URL'))
+const creditsClient = new CreditsClient(config.get('CREDITS_SERVER_URL'), {
+  identity: getClientAuthAuthority
+})
 const creditsService = new CreditsService()
 
 sagasMiddleware.run(
