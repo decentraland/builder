@@ -1,11 +1,16 @@
 import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
-import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction, switchNetworkRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
+import {
+  CONNECT_WALLET_SUCCESS,
+  ConnectWalletSuccessAction,
+  switchNetworkRequest,
+  SWITCH_NETWORK_SUCCESS
+} from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
@@ -82,13 +87,15 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   }
 
   /** Validate that the user's wallet is on Ethereum network for write operations. */
-  function* validateAndSwitchNetwork(wallet: Wallet): Generator<any, void, any> {
+  function* validateAndSwitchNetwork() {
     const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
+    const wallet: Wallet = yield getWallet()
     if (wallet.chainId !== ethereumChainId) {
       const signer: ethers.Signer = yield call(getSigner)
       const signerNetwork: ethers.providers.Network = yield call([signer.provider as ethers.providers.Provider, 'getNetwork'])
       if (signerNetwork.chainId !== ethereumChainId) {
         yield put(switchNetworkRequest(ethereumChainId, signerNetwork.chainId))
+        yield take(SWITCH_NETWORK_SUCCESS)
       }
     }
   }
@@ -278,8 +285,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     const { ens } = action.payload
     try {
+      yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield getWallet()
-      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -302,8 +309,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     const { ens, land } = action.payload
     try {
+      yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield getWallet()
-      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -349,8 +356,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSAddressRequest(action: SetENSAddressRequestAction) {
     const { ens, address } = action.payload
     try {
+      yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield call(getWallet)
-      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
@@ -497,13 +504,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleReclaimNameRequest(action: ReclaimNameRequestAction) {
     const { ens } = action.payload
     try {
+      yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield getWallet()
-      yield call(validateAndSwitchNetwork, wallet)
 
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
       yield put(reclaimNameSuccess(transaction.hash, wallet.chainId, { ...ens, ensOwnerAddress: wallet.address }))
+      yield call(waitForTx, transaction.hash)
       yield put(closeModal('ReclaimNameModal'))
     } catch (error) {
       const ensError: ENSError = { message: isErrorWithMessage(error) ? error.message : 'Unknown error' }
