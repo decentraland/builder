@@ -241,9 +241,11 @@ export default function ENSDetailPage(props: Props) {
               >
                 {t('ens_detail_page.transfer')}
               </Button>
-              <Button primary onClick={handleReclaim}>
-                {t('ens_detail_page.reclaim_name')}
-              </Button>
+              {shouldReclaim && (
+                <Button primary onClick={handleReclaim}>
+                  {t('ens_detail_page.reclaim_name')}
+                </Button>
+              )}
             </div>
           </div>
           <div className={styles.fieldContainer}>
