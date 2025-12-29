@@ -287,7 +287,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield getWallet()
-
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
       const nodehash = namehash(ens.subdomain)
@@ -311,7 +310,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield getWallet()
-
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
 
@@ -358,7 +356,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield call(getWallet)
-
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
       const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
@@ -506,7 +503,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       yield call(validateAndSwitchNetwork)
       const wallet: Wallet = yield getWallet()
-
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
       const transaction: ethers.ContractTransaction = yield call([dclRegistrarContract, 'reclaim'], ens.tokenId, wallet.address)
