@@ -3,7 +3,6 @@ import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
 import { BuilderClient } from '@dcl/builder-client'
-import { createFetchComponent } from '@well-known-components/fetch-component'
 
 import { createCatalystClient } from 'dcl-catalyst-client'
 import { config } from 'config'
@@ -17,6 +16,7 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ContentfulClient, fetchCampaignRequest } from 'decentraland-dapps/dist/modules/campaign'
 import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
+import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -154,7 +154,10 @@ const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => getAddress(store.getState())))
-const catalystClient = createCatalystClient({ url: PEER_URL, fetcher: createFetchComponent() })
+const catalystClient = createCatalystClient({
+  url: PEER_URL,
+  fetcher
+})
 
 const getClientAddress = () => getAddress(store.getState())!
 const getClientAuthAuthority = () => {
@@ -166,7 +169,7 @@ const getClientAuthAuthority = () => {
 // As the builder client manages by itself the version of the API, we need to remove it from
 // the environment variable that we're using to with the older client.
 const builderClientUrl: string = BUILDER_SERVER_URL.replace('/v1', '')
-const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, fetch)
+const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthority, getClientAddress, (url, init) => fetch(url, init))
 
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
@@ -174,7 +177,9 @@ const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getStat
 const contentfulClient = new ContentfulClient()
 
 const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
-const creditsClient = new CreditsClient(config.get('CREDITS_SERVER_URL'))
+const creditsClient = new CreditsClient(config.get('CREDITS_SERVER_URL'), {
+  identity: getClientAuthAuthority
+})
 const creditsService = new CreditsService()
 
 sagasMiddleware.run(

@@ -23,7 +23,7 @@ const HeaderContainer: React.FC = () => {
     Boolean(collection && address && hasViewAndEditRights(state, address, collection))
   )
 
-  const onOpenModal = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
+  const onOpenModal = useCallback((name: string, metadata: any) => dispatch(openModal(name, metadata)), [dispatch])
   const onDeleteCollection: ActionFunction<typeof deleteCollectionRequest> = useCallback(
     collection => dispatch(deleteCollectionRequest(collection)),
     [dispatch]

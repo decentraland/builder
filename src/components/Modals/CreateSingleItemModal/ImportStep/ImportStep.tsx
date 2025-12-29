@@ -171,7 +171,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   handleErrorsOnFile = (error: any) => {
     this.setState({ error: undefined, isLoading: false })
 
-    let errorTranslationId = null
+    let errorTranslationId: string | null = null
     let wrongConfigurations: string[] = []
 
     if (error instanceof MissingExternalResourcesError) {
@@ -268,7 +268,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const { collection, category, metadata, isRepresentation, onDropAccepted } = this.props
 
     let changeItemFile = false
-    let item = null
+    let item: any = null
 
     if (metadata?.changeItemFile) {
       changeItemFile = metadata.changeItemFile
