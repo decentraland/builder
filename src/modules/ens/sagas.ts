@@ -89,7 +89,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   /** Validate that the user's wallet is on Ethereum network for write operations. */
   function* validateAndSwitchNetwork() {
     const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
-    const wallet: Wallet = yield getWallet()
+    const wallet: Wallet = yield call(getWallet)
     if (wallet.chainId !== ethereumChainId) {
       yield put(switchNetworkRequest(ethereumChainId, wallet.chainId))
       yield take(SWITCH_NETWORK_SUCCESS)
