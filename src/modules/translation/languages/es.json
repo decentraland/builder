@@ -749,6 +749,7 @@
     "address": "Dirección",
     "alias": "Alias",
     "land": "Tierra",
+    "transfer": "Transferir",
     "unassign": "Sin asignar",
     "set_as_primary": "Usar como alias",
     "edit_address": "Editar dirección",

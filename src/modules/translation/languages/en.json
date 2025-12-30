@@ -748,6 +748,7 @@
     "address": "Associated Address",
     "alias": "Linked Avatar",
     "land": "Linked LAND",
+    "transfer": "Transfer",
     "unassign": "Assign to Avatar",
     "set_as_primary": "Assign to Avatar",
     "edit_address": "Edit address",
