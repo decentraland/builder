@@ -91,12 +91,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
     const wallet: Wallet = yield getWallet()
     if (wallet.chainId !== ethereumChainId) {
-      const signer: ethers.Signer = yield call(getSigner)
-      const signerNetwork: ethers.providers.Network = yield call([signer.provider as ethers.providers.Provider, 'getNetwork'])
-      if (signerNetwork.chainId !== ethereumChainId) {
-        yield put(switchNetworkRequest(ethereumChainId, signerNetwork.chainId))
-        yield take(SWITCH_NETWORK_SUCCESS)
-      }
+      yield put(switchNetworkRequest(ethereumChainId, wallet.chainId))
+      yield take(SWITCH_NETWORK_SUCCESS)
     }
   }
 
@@ -409,7 +405,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const REQUESTS_BATCH_SIZE = 25
       const queue = new PQueue({ concurrency: REQUESTS_BATCH_SIZE })
       const worldsDeployed: string[] = []
-      const provider = ethereumProvider
 
       const promisesOfENS: (() => Promise<ENS>)[] = domains.map((data: string) => {
         return async () => {
@@ -429,7 +424,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const resolver = resolverAddress.toString()
 
           try {
-            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, provider)
+            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
             const resolvedAddress = await resolverContract['addr(bytes32)'](nodehash)
             ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
           } catch (e) {
@@ -438,7 +433,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
           if (resolver !== ethers.constants.AddressZero) {
             try {
-              const resolverContract = ENSResolver__factory.connect(resolverAddress, provider)
+              const resolverContract = ENSResolver__factory.connect(resolverAddress, ethereumProvider)
               content = await resolverContract.contenthash(nodehash)
 
               const land = landHashes.find(lh => lh.hash === content)
