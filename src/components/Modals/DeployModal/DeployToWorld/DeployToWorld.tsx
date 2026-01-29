@@ -29,7 +29,7 @@ const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
-const ENS_LIST_PAGE_SIZE = 2000 // TODO: see how to paginate this in the future
+const ENS_LIST_PAGE_SIZE = parseInt(config.get('ENS_LIST_PAGE_SIZE', '2000')) // TODO: see how to paginate this in the future
 
 export default function DeployToWorld({
   name,
