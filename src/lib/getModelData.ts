@@ -322,7 +322,7 @@ export async function getItemData({
 }: {
   type: ItemType
   model: string
-  wearablePreviewController?: IPreviewController
+  wearablePreviewController?: IPreviewController | null
   contents: Record<string, Blob>
   category?: string
 }) {

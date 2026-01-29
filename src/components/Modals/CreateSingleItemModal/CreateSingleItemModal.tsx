@@ -676,7 +676,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       const { isSocialEmotesEnabled } = props
       const { type, model, contents, category, thumbnail } = state
       const activeController = controller ?? previewControllerRef.current
-      if (type && model && contents && activeController) {
+      if (type && model && contents) {
         const data = await getItemData({
           wearablePreviewController: activeController,
           type,
