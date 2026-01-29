@@ -591,12 +591,12 @@ export function isWearableSynced(item: Item, entity: Entity) {
   }
 
   // check if contents are synced
-  const contents = entity.content.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
+  const contents = entity.content?.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
     // Skip video file because it's not in the catalyst
     if (VIDEO_PATH === path) continue
-    if (contents.get(path) !== hash) {
+    if (contents?.get(path) !== hash) {
       return false
     }
   }
@@ -654,10 +654,10 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
   }
 
   // check if contents are synced
-  const contents = entity.content.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
+  const contents = entity.content?.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
-    if (contents.get(path) !== hash) {
+    if (contents?.get(path) !== hash) {
       return false
     }
   }

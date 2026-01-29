@@ -659,7 +659,12 @@ export class BuilderAPI extends BaseAPI {
     const urn = about.configurations.scenesUrn[0]
     const hash = urn.split('urn:decentraland:entity:').pop()!.split('?')[0]
     const entity: Entity = await request(`/projects/${projectId}/contents/${hash}`).then(resp => resp.json())
-    const main = entity.content.find(content => content.file === 'bin/index.js')!
+    const main = entity.content?.find(content => content.file === 'bin/index.js')
+
+    if (!main) {
+      throw new Error('Main file not found')
+    }
+
     const file: string = await request(`/projects/${projectId}/contents/${main.hash}`).then(resp => resp.text())
     return new Blob([file])
   }
