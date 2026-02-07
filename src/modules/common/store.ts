@@ -65,7 +65,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   })
   : compose
 
-const basename = /^decentraland.(zone|org|today)$/.test(window.location.host) ? '/builder' : undefined
+const basename =
+  /^decentraland.(zone|org|today)$/.test(window.location.host) || window.location.pathname.startsWith('/builder') ? '/builder' : undefined
 
 const history = createBrowserHistory({ basename })
 const rootReducer = createRootReducer()
