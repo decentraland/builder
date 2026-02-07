@@ -31,3 +31,5 @@ src/ecsScene/scene.js
 /public/inspector*
 /public/bin
 /src/ecsScene/ecs.js.raw
+
+.__mf__temp
