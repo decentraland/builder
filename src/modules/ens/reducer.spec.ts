@@ -6,6 +6,9 @@ import {
   fetchContributableNamesFailure,
   fetchContributableNamesRequest,
   fetchContributableNamesSuccess,
+  fetchENSFailure,
+  fetchENSListRequest,
+  fetchENSRequest,
   fetchExternalNamesFailure,
   fetchExternalNamesRequest,
   fetchExternalNamesSuccess,
@@ -98,6 +101,70 @@ describe('when handling the fetch external names actions', () => {
       const action = fetchExternalNamesSuccess(owner, names)
       const newState = ensReducer(state, action)
       expect(newState.loading.length).toEqual(0)
+    })
+  })
+})
+
+describe('when handling the fetch ENS actions', () => {
+  let subdomain: string
+
+  beforeEach(() => {
+    subdomain = 'test.dcl.eth'
+  })
+
+  describe('when handling the fetch ENS request action', () => {
+    it('should add the fetch ENS request action to the loading state', () => {
+      const action = fetchENSRequest(subdomain)
+      const newState = ensReducer(state, action)
+      expect(newState.loading[0]).toEqual(action)
+    })
+
+    it('should clear both error and fetchNameError', () => {
+      const stateWithErrors = {
+        ...state,
+        error: { message: 'general error' },
+        fetchNameError: { message: 'fetch name error' }
+      }
+      const action = fetchENSRequest(subdomain)
+      const newState = ensReducer(stateWithErrors, action)
+      expect(newState.error).toEqual(null)
+      expect(newState.fetchNameError).toEqual(null)
+    })
+  })
+
+  describe('when handling the fetch ENS failure action', () => {
+    let error: ENSError
+
+    beforeEach(() => {
+      error = { message: 'ENS name does not exist' }
+      state.loading = [fetchENSRequest(subdomain)]
+    })
+
+    it('should set both error and fetchNameError to the error state', () => {
+      const action = fetchENSFailure(error)
+      const newState = ensReducer(state, action)
+      expect(newState.error).toEqual(error)
+      expect(newState.fetchNameError).toEqual(error)
+    })
+
+    it('should remove the fetch ENS request action from the loading state', () => {
+      const action = fetchENSFailure(error)
+      const newState = ensReducer(state, action)
+      expect(newState.loading.length).toEqual(0)
+    })
+  })
+
+  describe('when handling the fetch ENS list request action', () => {
+    it('should clear the general error but not fetchNameError', () => {
+      const stateWithErrors = {
+        ...state,
+        error: { message: 'general error' },
+        fetchNameError: { message: 'fetch name error' }
+      }
+      const action = fetchENSListRequest('0x123')
+      const newState = ensReducer(stateWithErrors, action)
+      expect(newState.error).toEqual(null)
+      expect(newState.fetchNameError).toEqual({ message: 'fetch name error' })
     })
   })
 })

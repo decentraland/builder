@@ -68,6 +68,7 @@ export type ENSState = {
   contributableNames: Record<string, ENS>
   loading: LoadingState
   error: ENSError | null
+  fetchNameError: ENSError | null
   contributableNamesError: ENSError | null
   total: number
 }
@@ -78,6 +79,7 @@ export const INITIAL_STATE: ENSState = {
   contributableNames: {},
   loading: [],
   error: null,
+  fetchNameError: null,
   contributableNamesError: null,
   total: 0
 }
@@ -115,9 +117,16 @@ export type ENSReducerAction =
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
+    case FETCH_ENS_REQUEST: {
+      return {
+        ...state,
+        error: null,
+        fetchNameError: null,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
     case RECLAIM_NAME_REQUEST:
     case FETCH_ENS_LIST_REQUEST:
-    case FETCH_ENS_REQUEST:
     case FETCH_ENS_WORLD_STATUS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
     case SET_ENS_RESOLVER_REQUEST:
@@ -251,10 +260,17 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case FETCH_ENS_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: { ...action.payload.error },
+        fetchNameError: { ...action.payload.error }
+      }
+    }
     case RECLAIM_NAME_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
-    case FETCH_ENS_FAILURE:
     case FETCH_ENS_WORLD_STATUS_FAILURE:
     case FETCH_ENS_LIST_FAILURE:
     case FETCH_EXTERNAL_NAMES_FAILURE:

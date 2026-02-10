@@ -5,7 +5,7 @@ import { FETCH_ENS_REQUEST, fetchENSRequest } from 'modules/ens/actions'
 import { getAvatar, getName } from 'modules/profile/selectors'
 import { getWallet } from 'modules/wallet/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getENSBySubdomain, getLoading, getErrorMessage } from 'modules/ens/selectors'
+import { getENSBySubdomain, getLoading, getFetchNameErrorMessage } from 'modules/ens/selectors'
 import { RootState } from 'modules/common/types'
 import { useGetENSNameFromCurrentUrl } from 'modules/location/hooks'
 import ENSDetailPage from './ENSDetailPage'
@@ -16,7 +16,7 @@ export default function ENSDetailPageContainer() {
 
   const ens = useSelector((state: RootState) => (name ? getENSBySubdomain(state, `${name}.dcl.eth`) : null))
   const isLoading = useSelector((state: RootState) => isLoadingType(getLoading(state), FETCH_ENS_REQUEST))
-  const error = useSelector(getErrorMessage)
+  const error = useSelector(getFetchNameErrorMessage)
   const alias = useSelector(getName)
   const avatar = useSelector(getAvatar)
   const wallet = useSelector(getWallet)

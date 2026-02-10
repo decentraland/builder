@@ -129,3 +129,14 @@ export const getErrorMessage = (state: RootState) => {
 
   return null
 }
+
+export const getFetchNameError = (state: RootState) => getState(state).fetchNameError
+
+export const getFetchNameErrorMessage = (state: RootState) => {
+  const error = getFetchNameError(state)
+  if (error) {
+    return error.message
+  }
+
+  return null
+}
