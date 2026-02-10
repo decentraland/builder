@@ -161,7 +161,7 @@ describe('when handling the fetch ENS actions', () => {
         error: { message: 'general error' },
         fetchNameError: { message: 'fetch name error' }
       }
-      const action = fetchENSListRequest('0x123')
+      const action = fetchENSListRequest()
       const newState = ensReducer(stateWithErrors, action)
       expect(newState.error).toEqual(null)
       expect(newState.fetchNameError).toEqual({ message: 'fetch name error' })
