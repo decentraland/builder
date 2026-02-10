@@ -14,8 +14,8 @@ import addRounded from 'icons/add-rounded.svg'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import ENSEmptyState from 'components/ENSEmptyState'
 import ethereumImg from '../../icons/ethereum.svg'
-import namesImg from '../../images/empty-names.svg'
 import { Props, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
 
@@ -259,20 +259,7 @@ export default function ENSListPage(props: Props) {
   )
 
   const renderEmptyEnsList = useCallback(() => {
-    return (
-      <div className="ens-list-page-empty">
-        <div className="ens-list-page-empty-image">
-          <img src={namesImg} alt="empty names" />
-        </div>
-        <h3 className="ens-list-page-empty-title">{t('ens_list_page.empty_state.title')}</h3>
-        <span className="ens-list-page-empty-subtitle">{t('ens_list_page.empty_state.subtitle')}</span>
-        <div className="ens-list-page-empty-actions">
-          <Button primary href={`${MARKETPLACE_WEB_URL}/names/claim`} target="_blank">
-            {t('ens_list_page.empty_state.mint_name')}
-          </Button>
-        </div>
-      </div>
-    )
+    return <ENSEmptyState />
   }, [])
 
   const renderEnsList = useCallback(() => {

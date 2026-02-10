@@ -9,6 +9,7 @@ import ENSDetailPage from './ENSDetailPage'
 import { Props } from './ENSDetailPage.types'
 
 jest.mock('components/LoggedInDetailPage', () => ({ children }: any) => <div>{children}</div>)
+jest.mock('components/ENSEmptyState', () => () => <div data-testid="ens-empty-state">ENS Empty State</div>)
 jest.mock('react-router-dom', () => {
   const module = jest.requireActual('react-router-dom')
   return {
@@ -26,6 +27,7 @@ function renderENSDetailPage(props: Partial<Props>) {
       alias="test"
       avatar={null}
       isLoading={false}
+      error={null}
       onOpenModal={jest.fn()}
       onFetchENS={jest.fn()}
       wallet={{ address: '0xtest1' } as Wallet}
@@ -227,5 +229,23 @@ describe('when ens is defined', () => {
       const screen = renderENSDetailPage({ ens })
       expect(screen.getByRole('button', { name: t('ens_detail_page.reclaim_for_location') })).toBeDisabled()
     })
+  })
+})
+
+describe('when there is an error fetching the ENS', () => {
+  let error: string
+
+  beforeEach(() => {
+    error = 'ENS name does not exist'
+  })
+
+  it('should show the empty state component when not loading and there is an error', () => {
+    const screen = renderENSDetailPage({ error, isLoading: false, ens: null })
+    expect(screen.getByTestId('ens-empty-state')).toBeInTheDocument()
+  })
+
+  it('should not show the empty state when loading even if there is an error', () => {
+    const screen = renderENSDetailPage({ error, isLoading: true, ens: null })
+    expect(screen.queryByTestId('ens-empty-state')).not.toBeInTheDocument()
   })
 })
