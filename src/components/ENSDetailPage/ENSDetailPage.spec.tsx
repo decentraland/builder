@@ -248,4 +248,10 @@ describe('when there is an error fetching the ENS', () => {
     const screen = renderENSDetailPage({ error, isLoading: true, ens: null })
     expect(screen.queryByTestId('ens-empty-state')).not.toBeInTheDocument()
   })
+
+  it('should show the empty state when the name does not belong to the user', () => {
+    const nameNotFoundError = 'Name not found'
+    const screen = renderENSDetailPage({ error: nameNotFoundError, isLoading: false, ens: null })
+    expect(screen.getByTestId('ens-empty-state')).toBeInTheDocument()
+  })
 })
