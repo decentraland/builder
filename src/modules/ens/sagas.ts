@@ -134,12 +134,12 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const nftOwnerAddress = nftOwner.toLowerCase()
 
       if (nftOwnerAddress === ethers.constants.AddressZero.toLowerCase()) {
-        throw new Error('Name not found')
+        throw new Error('Name does not exist')
       }
 
       const connectedWallet = wallet.address.toLowerCase()
       if (nftOwnerAddress !== connectedWallet) {
-        throw new Error('Name does not belong to the user')
+        throw new Error('Name unavailable')
       }
 
       const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)

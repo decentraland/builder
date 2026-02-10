@@ -209,8 +209,8 @@ export default function ENSDetailPage(props: Props) {
 
   return (
     <LoggedInDetailPage activeTab={NavigationTab.NAMES} isPageFullscreen={true} isLoading={isLoading}>
-      {!isLoading && error ? (
-        <ENSEmptyState />
+      {!isLoading && (error || !ens) ? (
+        <ENSEmptyState name={name} error={error} />
       ) : ens ? (
         <>
           <Link to={locations.ens()}>
