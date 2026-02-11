@@ -2422,6 +2422,20 @@
     "start_building": "start building",
     "learn_more": "learn more"
   },
+  "creator_hub_upgrade_modal": {
+    "title": "Upgrade your creation workflow",
+    "description": "The new Creator Hub replaces the old web editor with tons of new features and continuous improvements.",
+    "feature1": {
+      "title": "Better for code and no-code creators",
+      "description": "Work with your code editor of choice while taking full advantage of the visual tools included in the scene editor."
+    },
+    "feature2": {
+      "title": "Preview and share your scenes",
+      "description": "Preview your project exactly as it will appear, then easily publish it to your world or LAND with full control over your files."
+    },
+    "download": "Download Creator Hub",
+    "skip_for_now": "Skip for now"
+  },
   "item_status": {
     "unpublished": "Ready to publish",
     "under_review": "Under Review",
