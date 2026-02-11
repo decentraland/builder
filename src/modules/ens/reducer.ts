@@ -68,7 +68,7 @@ export type ENSState = {
   contributableNames: Record<string, ENS>
   loading: LoadingState
   error: ENSError | null
-  fetchNameError: ENSError | null
+  ensError: ENSError | null
   contributableNamesError: ENSError | null
   total: number
 }
@@ -79,7 +79,7 @@ export const INITIAL_STATE: ENSState = {
   contributableNames: {},
   loading: [],
   error: null,
-  fetchNameError: null,
+  ensError: null,
   contributableNamesError: null,
   total: 0
 }
@@ -121,7 +121,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       return {
         ...state,
         error: null,
-        fetchNameError: null,
+        ensError: null,
         loading: loadingReducer(state.loading, action)
       }
     }
@@ -265,7 +265,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...state,
         loading: loadingReducer(state.loading, action),
         error: { ...action.payload.error },
-        fetchNameError: { ...action.payload.error }
+        ensError: { ...action.payload.error }
       }
     }
     case RECLAIM_NAME_FAILURE:

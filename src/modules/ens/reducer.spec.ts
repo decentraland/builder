@@ -119,16 +119,16 @@ describe('when handling the fetch ENS actions', () => {
       expect(newState.loading[0]).toEqual(action)
     })
 
-    it('should clear both error and fetchNameError', () => {
+    it('should clear both error and ensError', () => {
       const stateWithErrors = {
         ...state,
         error: { message: 'general error' },
-        fetchNameError: { message: 'fetch name error' }
+        ensError: { message: 'fetch name error' }
       }
       const action = fetchENSRequest(subdomain)
       const newState = ensReducer(stateWithErrors, action)
       expect(newState.error).toEqual(null)
-      expect(newState.fetchNameError).toEqual(null)
+      expect(newState.ensError).toEqual(null)
     })
   })
 
@@ -140,11 +140,11 @@ describe('when handling the fetch ENS actions', () => {
       state.loading = [fetchENSRequest(subdomain)]
     })
 
-    it('should set both error and fetchNameError to the error state', () => {
+    it('should set both error and ensError to the error state', () => {
       const action = fetchENSFailure(error)
       const newState = ensReducer(state, action)
       expect(newState.error).toEqual(error)
-      expect(newState.fetchNameError).toEqual(error)
+      expect(newState.ensError).toEqual(error)
     })
 
     it('should remove the fetch ENS request action from the loading state', () => {
@@ -155,16 +155,16 @@ describe('when handling the fetch ENS actions', () => {
   })
 
   describe('when handling the fetch ENS list request action', () => {
-    it('should clear the general error but not fetchNameError', () => {
+    it('should clear the general error but not ensError', () => {
       const stateWithErrors = {
         ...state,
         error: { message: 'general error' },
-        fetchNameError: { message: 'fetch name error' }
+        ensError: { message: 'fetch name error' }
       }
       const action = fetchENSListRequest()
       const newState = ensReducer(stateWithErrors, action)
       expect(newState.error).toEqual(null)
-      expect(newState.fetchNameError).toEqual({ message: 'fetch name error' })
+      expect(newState.ensError).toEqual({ message: 'fetch name error' })
     })
   })
 })

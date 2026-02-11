@@ -130,10 +130,10 @@ export const getErrorMessage = (state: RootState) => {
   return null
 }
 
-export const getFetchNameError = (state: RootState) => getState(state).fetchNameError
+export const getENSError = (state: RootState) => getState(state).ensError
 
-export const getFetchNameErrorMessage = (state: RootState) => {
-  const error = getFetchNameError(state)
+export const getENSErrorMessage = (state: RootState) => {
+  const error = getENSError(state)
   if (error) {
     return error.message
   }
