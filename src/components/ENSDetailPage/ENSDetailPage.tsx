@@ -11,6 +11,7 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Icon from 'components/Icon'
+import ENSEmptyState from 'components/ENSEmptyState'
 import ethereumImg from '../../icons/ethereum.svg'
 import { Props } from './ENSDetailPage.types'
 import styles from './ENSDetailPage.module.css'
@@ -19,7 +20,7 @@ const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
 
 export default function ENSDetailPage(props: Props) {
-  const { ens, isLoading, alias, avatar, name, wallet, onOpenModal, onFetchENS } = props
+  const { ens, isLoading, alias, avatar, name, wallet, error, onOpenModal, onFetchENS } = props
   const history = useHistory()
   const imgUrl = useMemo<string>(
     () => (ens ? `${config.get('MARKETPLACE_API')}/ens/generate?ens=${ens.name}&width=330&height=330` : ''),
@@ -207,54 +208,60 @@ export default function ENSDetailPage(props: Props) {
   }, [ens?.landId, shouldReclaim, handleAssignENS])
 
   return (
-    <LoggedInDetailPage activeTab={NavigationTab.NAMES} isPageFullscreen={true} isLoading={isLoading || !ens}>
-      <Link to={locations.ens()}>
-        <Button basic className={styles.returnLink}>
-          <DCLIcon name="chevron left" />
-          Return
-        </Button>
-      </Link>
-      <div className={styles.main}>
-        <img alt={ens?.subdomain} src={imgUrl} className={styles.ensImage} />
-        <div className={styles.fields}>
-          <div className={styles.fieldContainer}>
-            <div>
-              <span className={styles.fieldTitle}>{t('ens_detail_page.name')}</span>
-              <span className={styles.subdomain}>
-                <span>
-                  <span>{ens?.name}</span>.dcl.eth
-                </span>
-                <CopyToClipboard role="button" text={ens?.subdomain || ''} showPopup={true} className="copy-to-clipboard">
-                  <DCLIcon aria-label="copy name" aria-hidden="false" name="clone outline" />
-                </CopyToClipboard>
-                {ens?.ensOwnerAddress !== ens?.nftOwnerAddress ? (
-                  <span className={styles.unclaimedBadge}>{t('ens_detail_page.unclaimed')}</span>
-                ) : null}
-              </span>
-            </div>
-            <div className={styles.actions}>
-              <Button
-                secondary
-                className={styles.transferBtn}
-                target="_blank"
-                href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens?.tokenId}/transfer`}
-              >
-                {t('ens_detail_page.transfer')}
-              </Button>
-              {shouldReclaim && (
-                <Button primary onClick={handleReclaim}>
-                  {t('ens_detail_page.reclaim_name')}
-                </Button>
-              )}
+    <LoggedInDetailPage activeTab={NavigationTab.NAMES} isPageFullscreen={true} isLoading={isLoading}>
+      {!isLoading && error ? (
+        <ENSEmptyState name={name} error={error} />
+      ) : ens ? (
+        <>
+          <Link to={locations.ens()}>
+            <Button basic className={styles.returnLink}>
+              <DCLIcon name="chevron left" />
+              Return
+            </Button>
+          </Link>
+          <div className={styles.main}>
+            <img alt={ens.subdomain} src={imgUrl} className={styles.ensImage} />
+            <div className={styles.fields}>
+              <div className={styles.fieldContainer}>
+                <div>
+                  <span className={styles.fieldTitle}>{t('ens_detail_page.name')}</span>
+                  <span className={styles.subdomain}>
+                    <span>
+                      <span>{ens.name}</span>.dcl.eth
+                    </span>
+                    <CopyToClipboard role="button" text={ens.subdomain} showPopup={true} className="copy-to-clipboard">
+                      <DCLIcon aria-label="copy name" aria-hidden="false" name="clone outline" />
+                    </CopyToClipboard>
+                    {ens.ensOwnerAddress !== ens.nftOwnerAddress ? (
+                      <span className={styles.unclaimedBadge}>{t('ens_detail_page.unclaimed')}</span>
+                    ) : null}
+                  </span>
+                </div>
+                <div className={styles.actions}>
+                  <Button
+                    secondary
+                    className={styles.transferBtn}
+                    target="_blank"
+                    href={`${MARKETPLACE_WEB_URL}/contracts/${REGISTRAR_CONTRACT_ADDRESS}/tokens/${ens.tokenId}/transfer`}
+                  >
+                    {t('ens_detail_page.transfer')}
+                  </Button>
+                  {shouldReclaim && (
+                    <Button primary onClick={handleReclaim}>
+                      {t('ens_detail_page.reclaim_name')}
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className={styles.fieldContainer}>
+                {aliasField}
+                {addressField}
+                {landField}
+              </div>
             </div>
           </div>
-          <div className={styles.fieldContainer}>
-            {aliasField}
-            {addressField}
-            {landField}
-          </div>
-        </div>
-      </div>
+        </>
+      ) : null}
     </LoggedInDetailPage>
   )
 }

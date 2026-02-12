@@ -9,6 +9,21 @@ import ENSDetailPage from './ENSDetailPage'
 import { Props } from './ENSDetailPage.types'
 
 jest.mock('components/LoggedInDetailPage', () => ({ children }: any) => <div>{children}</div>)
+jest.mock('components/ENSEmptyState', () => ({ name, error }: any) => (
+  <div data-testid="ens-empty-state">
+    {error === 'Name unavailable' && name ? (
+      <>
+        <h3>Unavailable NAME</h3>
+        <span>See if it's on sale in the Marketplace</span>
+        <a role="link" href={`https://decentraland.org/marketplace/names/browse?section=ens&sortBy=newest&onlyOnSale=false&search=${name}`}>
+          Continue
+        </a>
+      </>
+    ) : (
+      <>ENS Empty State</>
+    )}
+  </div>
+))
 jest.mock('react-router-dom', () => {
   const module = jest.requireActual('react-router-dom')
   return {
@@ -26,6 +41,7 @@ function renderENSDetailPage(props: Partial<Props>) {
       alias="test"
       avatar={null}
       isLoading={false}
+      error={null}
       onOpenModal={jest.fn()}
       onFetchENS={jest.fn()}
       wallet={{ address: '0xtest1' } as Wallet}
@@ -227,5 +243,40 @@ describe('when ens is defined', () => {
       const screen = renderENSDetailPage({ ens })
       expect(screen.getByRole('button', { name: t('ens_detail_page.reclaim_for_location') })).toBeDisabled()
     })
+  })
+})
+
+describe('when there is an error fetching the ENS', () => {
+  let error: string
+
+  beforeEach(() => {
+    error = 'ENS name does not exist'
+  })
+
+  it('should show the empty state component when not loading and there is an error', () => {
+    const screen = renderENSDetailPage({ error, isLoading: false, ens: null })
+    expect(screen.getByTestId('ens-empty-state')).toBeInTheDocument()
+  })
+
+  it('should not show the empty state when loading even if there is an error', () => {
+    const screen = renderENSDetailPage({ error, isLoading: true, ens: null })
+    expect(screen.queryByTestId('ens-empty-state')).not.toBeInTheDocument()
+  })
+
+  it('should show the empty state when the name does not belong to the user', () => {
+    const nameNotFoundError = 'Name not found'
+    const screen = renderENSDetailPage({ error: nameNotFoundError, isLoading: false, ens: null })
+    expect(screen.getByTestId('ens-empty-state')).toBeInTheDocument()
+  })
+
+  it('should show marketplace link when the name is unavailable', () => {
+    const nameUnavailableError = 'Name unavailable'
+    const testName = 'dafu'
+    const screen = renderENSDetailPage({ name: testName, error: nameUnavailableError, isLoading: false, ens: null })
+    expect(screen.getByTestId('ens-empty-state')).toBeInTheDocument()
+    expect(screen.getByText('Unavailable NAME')).toBeInTheDocument()
+    expect(screen.getByText("See if it's on sale in the Marketplace")).toBeInTheDocument()
+    const continueButton = screen.getByRole('link', { name: 'Continue' })
+    expect(continueButton).toHaveAttribute('href', expect.stringContaining(`search=${testName}`))
   })
 })

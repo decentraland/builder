@@ -118,7 +118,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       const wallet: Wallet = yield call(getWallet)
       const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
-      const address = wallet.address
       const nodehash = namehash(subdomain)
       const ensContract = ENS__factory.connect(ENS_ADDRESS, ethereumProvider)
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, ethereumProvider)
@@ -128,8 +127,21 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         call([dclRegistrarContract, 'getTokenId'], name)
       ])
 
-      const owner = ownerAddress.toLowerCase()
+      const ensOwnerAddress = ownerAddress.toLowerCase()
       const tokenId = nftTokenId.toString()
+
+      const nftOwner: string = yield call([dclRegistrarContract, 'ownerOf'], nftTokenId)
+      const nftOwnerAddress = nftOwner.toLowerCase()
+
+      if (nftOwnerAddress === ethers.constants.AddressZero.toLowerCase()) {
+        throw new Error('Name does not exist')
+      }
+
+      const connectedWallet = wallet.address.toLowerCase()
+      if (nftOwnerAddress !== connectedWallet) {
+        throw new Error('Name unavailable')
+      }
+
       const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
       const resolvedAddress: string = yield call([ensResolverContract, 'addr(bytes32)'], nodehash)
       const ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
@@ -139,8 +151,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           fetchENSSuccess({
             name,
             tokenId,
-            ensOwnerAddress: owner,
-            nftOwnerAddress: address,
+            ensOwnerAddress,
+            nftOwnerAddress,
             subdomain,
             resolver: ethers.constants.AddressZero,
             content: ethers.constants.AddressZero,
@@ -167,8 +179,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             fetchENSSuccess({
               name,
               tokenId,
-              ensOwnerAddress: owner,
-              nftOwnerAddress: address,
+              ensOwnerAddress,
+              nftOwnerAddress,
               subdomain,
               resolver: resolverAddress.toString(),
               content: ethers.constants.AddressZero,
@@ -184,8 +196,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             fetchENSSuccess({
               name,
               tokenId,
-              ensOwnerAddress: owner,
-              nftOwnerAddress: address,
+              ensOwnerAddress,
+              nftOwnerAddress,
               subdomain,
               resolver: ENS_RESOLVER_ADDRESS,
               content: contentHash,
@@ -205,8 +217,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         fetchENSSuccess({
           name,
           tokenId,
-          ensOwnerAddress: owner,
-          nftOwnerAddress: address,
+          ensOwnerAddress,
+          nftOwnerAddress,
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent ?? ethers.constants.AddressZero,
@@ -416,12 +428,17 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           let ensAddressRecord = ''
 
           const nodehash = namehash(subdomain)
-          const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
+          const [resolverAddress, ensOwner, tokenIdBN]: [string, string, ethers.BigNumber] = await Promise.all([
             ensContract.resolver(nodehash),
             ensContract.owner(nodehash).then(owner => owner.toLowerCase()),
-            dclRegistrarContract.getTokenId(name).then(name => name.toString())
+            dclRegistrarContract.getTokenId(name)
           ])
+          const tokenId = tokenIdBN.toString()
           const resolver = resolverAddress.toString()
+
+          // Fetch real NFT owner
+          const nftOwner = await dclRegistrarContract.ownerOf(tokenIdBN)
+          const nftOwnerAddress = nftOwner.toLowerCase()
 
           try {
             const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
@@ -466,8 +483,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const ens: ENS = {
             name,
             tokenId,
-            ensOwnerAddress: owner,
-            nftOwnerAddress: address,
+            ensOwnerAddress: ensOwner,
+            nftOwnerAddress,
             subdomain,
             resolver,
             content,
