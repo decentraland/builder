@@ -120,7 +120,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case FETCH_ENS_REQUEST: {
       return {
         ...state,
-        error: null,
         ensError: null,
         loading: loadingReducer(state.loading, action)
       }
@@ -264,7 +263,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: { ...action.payload.error },
         ensError: { ...action.payload.error }
       }
     }
