@@ -119,7 +119,7 @@ describe('when handling the fetch ENS actions', () => {
       expect(newState.loading[0]).toEqual(action)
     })
 
-    it('should clear both error and ensError', () => {
+    it('should clear ensError', () => {
       const stateWithErrors = {
         ...state,
         error: { message: 'general error' },
@@ -127,7 +127,7 @@ describe('when handling the fetch ENS actions', () => {
       }
       const action = fetchENSRequest(subdomain)
       const newState = ensReducer(stateWithErrors, action)
-      expect(newState.error).toEqual(null)
+      expect(newState.error).toEqual({ message: 'general error' })
       expect(newState.ensError).toEqual(null)
     })
   })
@@ -140,10 +140,10 @@ describe('when handling the fetch ENS actions', () => {
       state.loading = [fetchENSRequest(subdomain)]
     })
 
-    it('should set both error and ensError to the error state', () => {
+    it('should set ensError to the error state', () => {
       const action = fetchENSFailure(error)
       const newState = ensReducer(state, action)
-      expect(newState.error).toEqual(error)
+      expect(newState.error).toEqual(null)
       expect(newState.ensError).toEqual(error)
     })
 
