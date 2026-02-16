@@ -1,21 +1,19 @@
-import { takeLatest, call, put, takeEvery, all, getContext, take } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all, getContext } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { History } from 'history'
-import { Network } from '@dcl/schemas'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
   ConnectWalletSuccessAction,
-  ChangeAccountAction,
-  switchNetworkRequest,
-  SWITCH_NETWORK_SUCCESS
+  ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getSigner, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { getSigner } from 'decentraland-dapps/dist/lib/eth'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { waitForTx } from 'modules/transaction/utils'
 import { getWallet } from 'modules/wallet/utils'
+import { validateAndSwitchNetwork } from 'modules/wallet/sagas'
 import { locations } from 'routing/locations'
 import { manager } from 'lib/api/manager'
 import { rental } from 'lib/api/rentals'
@@ -60,15 +58,6 @@ import {
 } from './actions'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization, RoleType } from './types'
-
-function* validateAndSwitchNetwork() {
-  const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
-  const wallet: Wallet = yield call(getWallet)
-  if (wallet.chainId !== ethereumChainId) {
-    yield put(switchNetworkRequest(ethereumChainId, wallet.chainId))
-    yield take(SWITCH_NETWORK_SUCCESS)
-  }
-}
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)

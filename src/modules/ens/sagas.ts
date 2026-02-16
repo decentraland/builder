@@ -1,15 +1,13 @@
 import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
-import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import {
   CONNECT_WALLET_SUCCESS,
-  ConnectWalletSuccessAction,
-  switchNetworkRequest,
-  SWITCH_NETWORK_SUCCESS
+  ConnectWalletSuccessAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -20,6 +18,7 @@ import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
+import { validateAndSwitchNetwork } from 'modules/wallet/sagas'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
@@ -84,16 +83,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
     const networkProvider: Provider = yield call(getNetworkProvider, ethereumChainId)
     return new ethers.providers.Web3Provider(networkProvider)
-  }
-
-  /** Validate that the user's wallet is on Ethereum network for write operations. */
-  function* validateAndSwitchNetwork() {
-    const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
-    const wallet: Wallet = yield call(getWallet)
-    if (wallet.chainId !== ethereumChainId) {
-      yield put(switchNetworkRequest(ethereumChainId, wallet.chainId))
-      yield take(SWITCH_NETWORK_SUCCESS)
-    }
   }
 
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
