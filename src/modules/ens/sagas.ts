@@ -5,10 +5,7 @@ import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effect
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import {
-  CONNECT_WALLET_SUCCESS,
-  ConnectWalletSuccessAction
-} from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
