@@ -2440,6 +2440,20 @@
     "start_building": "comenzar a construir",
     "learn_more": "aprende más"
   },
+  "creator_hub_upgrade_modal": {
+    "title": "Mejora tu flujo de trabajo de creación",
+    "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+    "feature1": {
+      "title": "Mejor para creadores con código y sin código",
+      "description": "Trabaja con tu editor de código preferido mientras aprovechas al máximo las herramientas visuales incluidas en el editor de escenas."
+    },
+    "feature2": {
+      "title": "Vista previa y comparte tus escenas",
+      "description": "Vista previa de tu proyecto exactamente como aparecerá, luego publícalo fácilmente en tu mundo o LAND con control total sobre tus archivos."
+    },
+    "download": "Descargar Creator Hub",
+    "skip_for_now": "Omitir por ahora"
+  },
   "item_status": {
     "unpublished": "Listos para publicar",
     "under_review": "Bajo revisión",

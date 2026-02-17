@@ -2421,6 +2421,20 @@
     "start_building": "开始建设",
     "learn_more": "了解更多"
   },
+  "creator_hub_upgrade_modal": {
+    "title": "升级您的创作工作流程",
+    "description": "新的Creator Hub取代了旧的网页编辑器，带来了大量新功能和持续改进。",
+    "feature1": {
+      "title": "更适合代码和无代码创作者",
+      "description": "使用您选择的代码编辑器，同时充分利用场景编辑器中包含的可视化工具。"
+    },
+    "feature2": {
+      "title": "预览和分享您的场景",
+      "description": "预览您的项目，就像它将要出现的样子，然后轻松将其发布到您的世界或LAND，完全控制您的文件。"
+    },
+    "download": "下载Creator Hub",
+    "skip_for_now": "暂时跳过"
+  },
   "item_status": {
     "unpublished": "准备发布",
     "under_review": "审查中",
