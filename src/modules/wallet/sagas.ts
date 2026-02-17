@@ -36,7 +36,7 @@ function* customWalletSaga() {
   yield takeEvery(CHANGE_NETWORK, handleWalletChange)
 }
 
-export function* validateAndSwitchNetwork() {
+export function* changeToEthereumNetwork() {
   const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
   const wallet: Wallet = yield call(getWallet)
   if (wallet.chainId !== ethereumChainId) {

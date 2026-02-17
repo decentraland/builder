@@ -18,7 +18,7 @@ import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
-import { validateAndSwitchNetwork } from 'modules/wallet/sagas'
+import { changeToEthereumNetwork } from 'modules/wallet/sagas'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
@@ -282,7 +282,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     const { ens } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -305,7 +305,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     const { ens, land } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -351,7 +351,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSAddressRequest(action: SetENSAddressRequestAction) {
     const { ens, address } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
@@ -502,7 +502,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleReclaimNameRequest(action: ReclaimNameRequestAction) {
     const { ens } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)
