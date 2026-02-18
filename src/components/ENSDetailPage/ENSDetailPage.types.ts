@@ -11,6 +11,7 @@ export type Props = {
   alias: string | null
   avatar: Avatar | null
   wallet: Wallet | null
+  error: string | null
   onOpenModal: ActionFunction<typeof openModal>
   onFetchENS: ActionFunction<typeof fetchENSRequest>
 }

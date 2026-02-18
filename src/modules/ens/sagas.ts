@@ -1,16 +1,11 @@
 import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
-import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import {
-  CONNECT_WALLET_SUCCESS,
-  ConnectWalletSuccessAction,
-  switchNetworkRequest,
-  SWITCH_NETWORK_SUCCESS
-} from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
@@ -20,6 +15,7 @@ import { ENSResolver__factory } from 'contracts/factories/ENSResolver__factory'
 import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
+import { changeToEthereumNetwork } from 'modules/wallet/sagas'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
@@ -86,16 +82,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     return new ethers.providers.Web3Provider(networkProvider)
   }
 
-  /** Validate that the user's wallet is on Ethereum network for write operations. */
-  function* validateAndSwitchNetwork() {
-    const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
-    const wallet: Wallet = yield call(getWallet)
-    if (wallet.chainId !== ethereumChainId) {
-      yield put(switchNetworkRequest(ethereumChainId, wallet.chainId))
-      yield take(SWITCH_NETWORK_SUCCESS)
-    }
-  }
-
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -118,7 +104,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       const wallet: Wallet = yield call(getWallet)
       const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
-      const address = wallet.address
       const nodehash = namehash(subdomain)
       const ensContract = ENS__factory.connect(ENS_ADDRESS, ethereumProvider)
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, ethereumProvider)
@@ -128,8 +113,21 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         call([dclRegistrarContract, 'getTokenId'], name)
       ])
 
-      const owner = ownerAddress.toLowerCase()
+      const ensOwnerAddress = ownerAddress.toLowerCase()
       const tokenId = nftTokenId.toString()
+
+      const nftOwner: string = yield call([dclRegistrarContract, 'ownerOf'], nftTokenId)
+      const nftOwnerAddress = nftOwner.toLowerCase()
+
+      if (nftOwnerAddress === ethers.constants.AddressZero.toLowerCase()) {
+        throw new Error('Name does not exist')
+      }
+
+      const connectedWallet = wallet.address.toLowerCase()
+      if (nftOwnerAddress !== connectedWallet) {
+        throw new Error('Name unavailable')
+      }
+
       const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
       const resolvedAddress: string = yield call([ensResolverContract, 'addr(bytes32)'], nodehash)
       const ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
@@ -139,8 +137,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           fetchENSSuccess({
             name,
             tokenId,
-            ensOwnerAddress: owner,
-            nftOwnerAddress: address,
+            ensOwnerAddress,
+            nftOwnerAddress,
             subdomain,
             resolver: ethers.constants.AddressZero,
             content: ethers.constants.AddressZero,
@@ -167,8 +165,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             fetchENSSuccess({
               name,
               tokenId,
-              ensOwnerAddress: owner,
-              nftOwnerAddress: address,
+              ensOwnerAddress,
+              nftOwnerAddress,
               subdomain,
               resolver: resolverAddress.toString(),
               content: ethers.constants.AddressZero,
@@ -184,8 +182,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             fetchENSSuccess({
               name,
               tokenId,
-              ensOwnerAddress: owner,
-              nftOwnerAddress: address,
+              ensOwnerAddress,
+              nftOwnerAddress,
               subdomain,
               resolver: ENS_RESOLVER_ADDRESS,
               content: contentHash,
@@ -205,8 +203,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         fetchENSSuccess({
           name,
           tokenId,
-          ensOwnerAddress: owner,
-          nftOwnerAddress: address,
+          ensOwnerAddress,
+          nftOwnerAddress,
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent ?? ethers.constants.AddressZero,
@@ -281,7 +279,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     const { ens } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -304,7 +302,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     const { ens, land } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const from = wallet.address
@@ -350,7 +348,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleSetENSAddressRequest(action: SetENSAddressRequestAction) {
     const { ens, address } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
@@ -416,12 +414,17 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           let ensAddressRecord = ''
 
           const nodehash = namehash(subdomain)
-          const [resolverAddress, owner, tokenId]: [string, string, string] = await Promise.all([
+          const [resolverAddress, ensOwner, tokenIdBN]: [string, string, ethers.BigNumber] = await Promise.all([
             ensContract.resolver(nodehash),
             ensContract.owner(nodehash).then(owner => owner.toLowerCase()),
-            dclRegistrarContract.getTokenId(name).then(name => name.toString())
+            dclRegistrarContract.getTokenId(name)
           ])
+          const tokenId = tokenIdBN.toString()
           const resolver = resolverAddress.toString()
+
+          // Fetch real NFT owner
+          const nftOwner = await dclRegistrarContract.ownerOf(tokenIdBN)
+          const nftOwnerAddress = nftOwner.toLowerCase()
 
           try {
             const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
@@ -466,8 +469,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const ens: ENS = {
             name,
             tokenId,
-            ensOwnerAddress: owner,
-            nftOwnerAddress: address,
+            ensOwnerAddress: ensOwner,
+            nftOwnerAddress,
             subdomain,
             resolver,
             content,
@@ -496,7 +499,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleReclaimNameRequest(action: ReclaimNameRequestAction) {
     const { ens } = action.payload
     try {
-      yield call(validateAndSwitchNetwork)
+      yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield getWallet()
       const signer: ethers.Signer = yield getSigner()
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, signer)

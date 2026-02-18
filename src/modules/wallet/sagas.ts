@@ -1,5 +1,5 @@
-import { all, takeEvery, put } from 'redux-saga/effects'
-import { ChainId } from '@dcl/schemas'
+import { all, takeEvery, put, call, take } from 'redux-saga/effects'
+import { ChainId, Network } from '@dcl/schemas'
 import { ContractName } from 'decentraland-transactions'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import {
@@ -8,13 +8,17 @@ import {
   CONNECT_WALLET_SUCCESS,
   ChangeAccountAction,
   ChangeNetworkAction,
-  ConnectWalletSuccessAction
+  ConnectWalletSuccessAction,
+  switchNetworkRequest,
+  SWITCH_NETWORK_SUCCESS
 } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { fetchAuthorizationsRequest } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
 import { config } from 'config'
 import { buildManaAuthorization } from 'lib/mana'
-import { TRANSACTIONS_API_URL } from './utils'
+import { getWallet, TRANSACTIONS_API_URL } from './utils'
 
 const baseWalletSaga = createWalletSaga({
   CHAIN_ID: config.get('CHAIN_ID') || ChainId.ETHEREUM_MAINNET,
@@ -30,6 +34,15 @@ function* customWalletSaga() {
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleWalletChange)
   yield takeEvery(CHANGE_ACCOUNT, handleWalletChange)
   yield takeEvery(CHANGE_NETWORK, handleWalletChange)
+}
+
+export function* changeToEthereumNetwork() {
+  const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
+  const wallet: Wallet = yield call(getWallet)
+  if (wallet.chainId !== ethereumChainId) {
+    yield put(switchNetworkRequest(ethereumChainId, wallet.chainId))
+    yield take(SWITCH_NETWORK_SUCCESS)
+  }
 }
 
 function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountAction | ChangeNetworkAction) {

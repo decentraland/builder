@@ -13,6 +13,7 @@ import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { waitForTx } from 'modules/transaction/utils'
 import { getWallet } from 'modules/wallet/utils'
+import { changeToEthereumNetwork } from 'modules/wallet/sagas'
 import { locations } from 'routing/locations'
 import { manager } from 'lib/api/manager'
 import { rental } from 'lib/api/rentals'
@@ -75,6 +76,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
   const history: History = yield getContext('history')
   try {
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     const from = wallet.address
@@ -111,6 +113,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     if (land.type !== LandType.ESTATE) {
       throw new Error(`Invalid LandType: "${land.type}"`)
     }
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     const from = wallet.address
@@ -131,6 +134,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
   const { name, description, coords } = action.payload
   const history: History = yield getContext('history')
   try {
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     const from = wallet.address
@@ -152,6 +156,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
   const { land, toAdd, toRemove } = action.payload
   const history: History = yield getContext('history')
   try {
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     const from = wallet.address
@@ -185,6 +190,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const history: History = yield getContext('history')
 
   try {
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     const operator = address ?? ethers.constants.AddressZero
@@ -235,6 +241,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
   const metadata = buildMetadata(name, description)
 
   try {
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     let transaction: ethers.ContractTransaction
@@ -269,6 +276,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const history: History = yield getContext('history')
 
   try {
+    yield call(changeToEthereumNetwork)
     const wallet: Wallet = yield getWallet()
     const signer: ethers.Signer = yield getSigner()
     const from = wallet.address
