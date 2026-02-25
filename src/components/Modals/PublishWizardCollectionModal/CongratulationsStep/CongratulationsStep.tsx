@@ -39,9 +39,11 @@ export const CongratulationsStep: React.FC<{ collection: Collection; onClose: ()
                 <p className="description">
                   <T
                     id="publish_wizard_collection_modal.congratulations_step.description"
-                    values={{
-                      b: (chunks: string) => <strong>{chunks}</strong>
-                    } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>}
+                    values={
+                      {
+                        b: (chunks: string) => <strong>{chunks}</strong>
+                      } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>
+                    }
                   ></T>
                 </p>
               </div>

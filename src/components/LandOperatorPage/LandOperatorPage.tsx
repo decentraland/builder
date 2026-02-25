@@ -17,11 +17,13 @@ export default class LandOperatorPage extends React.PureComponent<Props> {
             subtitle={
               <T
                 id="operator_page.subtitle"
-                values={{
-                  name: <strong>{land.name}</strong>,
-                  b: (chunks: string) => <strong>{chunks}</strong>,
-                  br: () => <br />
-                } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>}
+                values={
+                  {
+                    name: <strong>{land.name}</strong>,
+                    b: (chunks: string) => <strong>{chunks}</strong>,
+                    br: () => <br />
+                  } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>
+                }
               />
             }
           >

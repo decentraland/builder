@@ -2434,7 +2434,19 @@
       "description": "Preview your project exactly as it will appear, then easily publish it to your world or LAND with full control over your files."
     },
     "download": "Download Creator Hub",
-    "skip_for_now": "Skip for now"
+    "skip_for_now": "Skip for now",
+    "permissions_variant": {
+      "title": "Upgrade your creation workflow",
+      "description": "The new Creator Hub replaces the old web editor with tons of new features and continuous improvements.",
+      "feature1": {
+        "title": "Better manage access",
+        "description": "Set an access password, allow a select number of people into your place, or invite an entire community!"
+      },
+      "feature2": {
+        "title": "Improved collaboration",
+        "description": "Assign specific parcels to members of your collaboration team and design your own city!"
+      }
+    }
   },
   "item_status": {
     "unpublished": "Ready to publish",

@@ -32,9 +32,11 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
         description={
           <T
             id="world_permissions_modal.tab_collaborators.description"
-            values={{
-              span: (text: string) => <span>{text}</span>
-            } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>}
+            values={
+              {
+                span: (text: string) => <span>{text}</span>
+              } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>
+            }
           />
         }
         loading={loading}

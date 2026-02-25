@@ -2452,7 +2452,19 @@
       "description": "Vista previa de tu proyecto exactamente como aparecerá, luego publícalo fácilmente en tu mundo o LAND con control total sobre tus archivos."
     },
     "download": "Descargar Creator Hub",
-    "skip_for_now": "Omitir por ahora"
+    "skip_for_now": "Omitir por ahora",
+    "permissions_variant": {
+      "title": "Mejora tu flujo de trabajo de creación",
+      "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+      "feature1": {
+        "title": "Mejor gestión de acceso",
+        "description": "¡Establece una contraseña de acceso, permite que un número selecto de personas entren a tu lugar o invita a toda una comunidad!"
+      },
+      "feature2": {
+        "title": "Colaboración mejorada",
+        "description": "¡Asigna parcelas específicas a los miembros de tu equipo de colaboración y diseña tu propia ciudad!"
+      }
+    }
   },
   "item_status": {
     "unpublished": "Listos para publicar",

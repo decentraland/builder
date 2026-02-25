@@ -2433,7 +2433,19 @@
       "description": "预览您的项目，就像它将要出现的样子，然后轻松将其发布到您的世界或LAND，完全控制您的文件。"
     },
     "download": "下载Creator Hub",
-    "skip_for_now": "暂时跳过"
+    "skip_for_now": "暂时跳过",
+    "permissions_variant": {
+      "title": "升级您的创作工作流程",
+      "description": "新的Creator Hub取代了旧的网页编辑器，带来了大量新功能和持续改进。",
+      "feature1": {
+        "title": "更好地管理访问权限",
+        "description": "设置访问密码，允许特定数量的人进入您的地方，或邀请整个社区！"
+      },
+      "feature2": {
+        "title": "改进的协作功能",
+        "description": "将特定地块分配给协作团队成员，设计您自己的城市！"
+      }
+    }
   },
   "item_status": {
     "unpublished": "准备发布",
