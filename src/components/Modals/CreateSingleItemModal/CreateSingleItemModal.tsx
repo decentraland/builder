@@ -26,6 +26,7 @@ import { getImageType, dataURLToBlob } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
 import {
   THUMBNAIL_PATH,
+  IMAGE_PATH,
   Item,
   BodyShapeType,
   WearableRepresentation,
@@ -719,10 +720,12 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
   const handleFileLoad = useCallback(async () => {
     const { weareblePreviewUpdated, type, model, item, contents } = state
+    const { [THUMBNAIL_PATH]: _thumbnail, [IMAGE_PATH]: _image, [VIDEO_PATH]: _video, ...modelContents } = contents ?? {}
+    const { [THUMBNAIL_PATH]: _oldThumbnail, [IMAGE_PATH]: _oldImage, [VIDEO_PATH]: _oldVideo, ...oldModelContents } = item?.contents ?? {}
 
     const modelSize = await calculateModelFinalSize(
-      item?.contents ?? {},
-      contents ?? {},
+      oldModelContents,
+      modelContents,
       type ?? ItemType.WEARABLE,
       new BuilderAPI(BUILDER_SERVER_URL, new Authorization(() => props.address))
     )
