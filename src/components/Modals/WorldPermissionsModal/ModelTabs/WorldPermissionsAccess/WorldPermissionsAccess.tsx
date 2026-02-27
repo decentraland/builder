@@ -33,10 +33,12 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
         description={
           <T
             id="world_permissions_modal.tab_access.description"
-            values={{
-              br: () => <br />,
-              span: (text: string) => <span>{text}</span>
-            } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>}
+            values={
+              {
+                br: () => <br />,
+                span: (text: string) => <span>{text}</span>
+              } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>
+            }
           />
         }
         loading={loading}
@@ -48,9 +50,11 @@ export default React.memo(function WorldPermissionsAccess(props: WorldPermission
           <p className={styles.warningParagraph}>
             <T
               id="world_permissions_modal.tab_access.warning"
-              values={{
-                b: (text: string) => <span>{text}</span>
-              } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>}
+              values={
+                {
+                  b: (text: string) => <span>{text}</span>
+                } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>
+              }
             />
           </p>
         </div>

@@ -46,18 +46,20 @@ const ItemAddedToast: React.FC<Props> = props => {
       body={
         <T
           id="sagas.item.item_added_toast.body"
-          values={{
-            name: item,
-            br: () => <br />,
-            b: (chunks: string) => <strong>{chunks}</strong>,
-            'collection-link': (chunks: string) => (
-              <Link to={locations.collectionDetail(collectionId)}>
-                <Button className="ItemAddedToast view-collection-link" basic>
-                  {chunks}
-                </Button>
-              </Link>
-            )
-          } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>}
+          values={
+            {
+              name: item,
+              br: () => <br />,
+              b: (chunks: string) => <strong>{chunks}</strong>,
+              'collection-link': (chunks: string) => (
+                <Link to={locations.collectionDetail(collectionId)}>
+                  <Button className="ItemAddedToast view-collection-link" basic>
+                    {chunks}
+                  </Button>
+                </Link>
+              )
+            } as Record<string, React.ReactNode | ((chunks: React.ReactNode) => React.ReactNode)>
+          }
         />
       }
     />

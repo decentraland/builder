@@ -24,7 +24,7 @@ function* handleStorageLoad() {
 
   // Determine the locale to use
   let targetLocale = currentLocale || getPreferredLocale(locales as Locale[]) || locales[0]
-  
+
   if (localeFromUrl && locales.includes(localeFromUrl)) {
     targetLocale = localeFromUrl as Locale
   }

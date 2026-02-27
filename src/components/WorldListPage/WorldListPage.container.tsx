@@ -67,7 +67,7 @@ const WorldListPageContainer: React.FC = () => {
   )
   const onOpenPermissionsModal = useCallback(
     (name: string, isCollaboratorsTabShown?: boolean) =>
-      dispatch(openModal('WorldPermissionsModal', { worldName: name, isCollaboratorsTabShown })),
+      dispatch(openModal('CreatorHubUpgradeModal', { worldName: name, isCollaboratorsTabShown, variant: 'permissions' })),
     [dispatch]
   )
   const onOpenWorldsForENSOwnersAnnouncementModal = useCallback(
