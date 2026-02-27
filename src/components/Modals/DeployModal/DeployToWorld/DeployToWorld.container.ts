@@ -37,9 +37,7 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onPublish: (projectId: string, name: string) => {
-    return dispatch(deployToWorldRequest(projectId, name))
-  },
+  onPublish: (projectId: string, name: string) => dispatch(deployToWorldRequest(projectId, name)),
   onRecord: () => dispatch(recordMediaRequest()),
   onFetchContributableNames: () => dispatch(fetchContributableNamesRequest())
 })

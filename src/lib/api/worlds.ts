@@ -2,8 +2,7 @@ import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { config } from 'config'
 import { ContributableDomain } from 'modules/ens/types'
 import { Authorization } from './auth'
-import { AuthChain, IPFSv2 } from '@dcl/schemas'
-import { Entity } from 'decentraland-ecs'
+import { AuthChain, Entity, IPFSv2 } from '@dcl/schemas'
 
 export const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
 

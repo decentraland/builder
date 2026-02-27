@@ -623,7 +623,7 @@
       "scene_information": "Scene Information",
       "multi_scene_blocked": {
         "title": "This World has multiple scenes",
-        "description": "This World contains multiple scenes that can only be managed from Creator Hub. Download Creator Hub to publish to this world.",
+        "description": "This World contains multiple scenes that can only be managed from Creator Hub.\n Download Creator Hub to publish to this world.",
         "download_creator_hub": "Download Creator Hub",
         "go_back": "Go back"
       }

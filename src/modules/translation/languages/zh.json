@@ -617,7 +617,7 @@
       "scene_information": "场景信息",
       "multi_scene_blocked": {
         "title": "此世界包含多个场景",
-        "description": "此世界包含多个场景，只能通过 Creator Hub 管理。请下载 Creator Hub 以发布到此世界。",
+        "description": "此世界包含多个场景，只能通过 Creator Hub 管理。\n请下载 Creator Hub 以发布到此世界。",
         "download_creator_hub": "下载 Creator Hub",
         "go_back": "返回"
       }

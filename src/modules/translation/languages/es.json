@@ -624,7 +624,7 @@
       "scene_information": "Información de escena",
       "multi_scene_blocked": {
         "title": "Este Mundo tiene múltiples escenas",
-        "description": "Este Mundo contiene múltiples escenas que solo pueden administrarse desde Creator Hub. Descarga Creator Hub para publicar en este mundo.",
+        "description": "Este Mundo contiene múltiples escenas que solo pueden administrarse desde Creator Hub.\n Descarga Creator Hub para publicar en este mundo.",
         "download_creator_hub": "Descargar Creator Hub",
         "go_back": "Volver"
       }

@@ -8,7 +8,7 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { config } from 'config'
 import { isDevelopment } from 'lib/environment'
 import { locations } from 'routing/locations'
-import { Deployment } from 'modules/deployment/types'
+import { Deployment, DeploymentError } from 'modules/deployment/types'
 import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import Icon from 'components/Icon'
 import { InfoIcon } from 'components/InfoIcon'
@@ -23,6 +23,7 @@ import { ENS } from 'modules/ens/types'
 import Profile from 'components/Profile'
 import { marketplace } from 'lib/api/marketplace'
 
+const CREATOR_HUB_DOWNLOAD_URL = 'https://decentraland.org/download/creator-hub/'
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
@@ -85,7 +86,11 @@ export default function DeployToWorld({
   }, [ensList, externalNames, contributableNames, onRecord, analytics])
 
   useEffect(() => {
-    if (view === DeployToWorldView.FORM && loading && error) {
+    if (view === DeployToWorldView.FORM && loading && error === DeploymentError.MULTI_SCENE_BLOCKED) {
+      setView(DeployToWorldView.MULTI_SCENE_BLOCKED)
+      setLoading(false)
+      analytics?.track('Publish to World step', { step: DeployToWorldView.MULTI_SCENE_BLOCKED })
+    } else if (view === DeployToWorldView.FORM && loading && error) {
       setView(DeployToWorldView.ERROR)
       setLoading(false)
       analytics?.track('Publish to World step', { step: DeployToWorldView.ERROR })
@@ -354,6 +359,29 @@ export default function DeployToWorld({
     )
   }
 
+  const renderMultiSceneBlockedState = () => {
+    return (
+      <div className={styles.emptyState}>
+        <div className={styles.modalHeader}>
+          <h3>{t('deployment_modal.deploy_world.multi_scene_blocked.title')}</h3>
+        </div>
+        <div className={`${styles.modalBodyState} ${styles.modalBodyEmptyState}`}>
+          <div className={styles.emptyThumbnail} aria-label={project?.description} role="img" />
+          <span className={styles.description}>{t('deployment_modal.deploy_world.multi_scene_blocked.description')}</span>
+        </div>
+        <div className={styles.modalBodyStateActions}>
+          <Button
+            primary
+            className={styles.modalBodyStateActionButton}
+            onClick={() => window.open(CREATOR_HUB_DOWNLOAD_URL, '_blank', 'noopener,noreferrer')}
+          >
+            {t('deployment_modal.deploy_world.multi_scene_blocked.download_creator_hub')}
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   const renderMetrics = () => {
     const { rows, cols } = project.layout
     return (
@@ -476,6 +504,8 @@ export default function DeployToWorld({
         return renderFailureState()
       case DeployToWorldView.EMPTY:
         return renderEmptyState()
+      case DeployToWorldView.MULTI_SCENE_BLOCKED:
+        return renderMultiSceneBlockedState()
       default:
         return null
     }
