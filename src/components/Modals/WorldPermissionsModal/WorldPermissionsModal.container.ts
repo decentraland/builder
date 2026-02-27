@@ -10,7 +10,7 @@ import {
   postWorldPermissionsRequest,
   putWorldPermissionsRequest
 } from 'modules/worlds/actions'
-import { getWorldPermissions, getLoading } from 'modules/worlds/selectors'
+import { getWorldPermissions, getWorldPermissionsSummary, getLoading } from 'modules/worlds/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './WorldPermissionsModal.types'
 import WorldPermissionsModal from './WorldPermissionsModal'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile'
@@ -19,7 +19,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   isLoading: isLoadingType(getLoading(state), GET_WORLD_PERMISSIONS_REQUEST),
   isLoadingNewUser: isLoadingType(getLoading(state), PUT_WORLD_PERMISSIONS_REQUEST),
   error: getError(state),
-  worldPermissions: getWorldPermissions(state, ownProps.metadata.worldName)
+  worldPermissions: getWorldPermissions(state, ownProps.metadata.worldName),
+  worldPermissionsSummary: getWorldPermissionsSummary(state, ownProps.metadata.worldName)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

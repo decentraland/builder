@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import { AddressWorldPermission, WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 
 // Fetch Worlds Wallet Stats
 export const FETCH_WORLDS_WALLET_STATS_REQUEST = '[Request] Fetch Worlds Wallet Stats'
@@ -22,8 +22,11 @@ export const GET_WORLD_PERMISSIONS_SUCCESS = '[Success] Get World Permissions'
 export const GET_WORLD_PERMISSIONS_FAILURE = '[Failure] Get World Permissions'
 
 export const getWorldPermissionsRequest = (worldName: string) => action(GET_WORLD_PERMISSIONS_REQUEST, { worldName })
-export const getWorldPermissionsSuccess = (worldName: string, permissions: WorldPermissions) =>
-  action(GET_WORLD_PERMISSIONS_SUCCESS, { worldName, permissions })
+export const getWorldPermissionsSuccess = (
+  worldName: string,
+  permissions: WorldPermissions,
+  summary?: Record<string, AddressWorldPermission[]>
+) => action(GET_WORLD_PERMISSIONS_SUCCESS, { worldName, permissions, summary })
 export const getWorldPermissionsFailure = (worldName: string, error: string) => action(GET_WORLD_PERMISSIONS_FAILURE, { worldName, error })
 
 export type GetWorldPermissionsRequestAction = ReturnType<typeof getWorldPermissionsRequest>

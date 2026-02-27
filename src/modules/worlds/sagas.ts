@@ -3,7 +3,7 @@ import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/a
 import { loadProfileRequest, loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { WorldsWalletStats, WorldsAPI, WorldPermissions, WorldPermissionType } from 'lib/api/worlds'
+import { WorldsWalletStats, WorldsAPI, WorldPermissionsResponse, WorldPermissionType } from 'lib/api/worlds'
 import {
   FETCH_WORLDS_WALLET_STATS_REQUEST,
   GET_WORLD_PERMISSIONS_REQUEST,
@@ -69,10 +69,12 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   function* handleGetWorldPermissionsRequest(action: GetWorldPermissionsRequestAction) {
     const { worldName } = action.payload
     try {
-      const worldPermissions: WorldPermissions | null = yield call(WorldsAPIContent.getPermissions, worldName)
-      if (!worldPermissions) {
+      const permissions: WorldPermissionsResponse = yield call(WorldsAPIContent.getPermissions, worldName)
+      if (!permissions) {
         throw new Error('Could not fetch world permissions')
       }
+
+      const { permissions: worldPermissions, summary } = permissions
 
       let newWallets: string[] = []
 
@@ -90,7 +92,7 @@ export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
         yield put(loadProfilesRequest([...new Set(newWallets)]))
       }
 
-      yield put(getWorldPermissionsSuccess(worldName, worldPermissions))
+      yield put(getWorldPermissionsSuccess(worldName, worldPermissions, summary))
     } catch (error) {
       yield put(getWorldPermissionsFailure(worldName, isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }

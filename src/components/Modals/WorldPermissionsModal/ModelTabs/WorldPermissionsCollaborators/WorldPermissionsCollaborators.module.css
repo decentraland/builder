@@ -26,3 +26,29 @@
   color: #716b7c;
   justify-content: center;
 }
+
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #1a1820;
+  border: 1px solid #3d3450;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.callout :global(.icon) {
+  color: #716b7c;
+}
+
+.callout p {
+  color: #a09ba8;
+}
+
+.callout a {
+  color: #ffffff;
+  text-decoration: underline;
+}

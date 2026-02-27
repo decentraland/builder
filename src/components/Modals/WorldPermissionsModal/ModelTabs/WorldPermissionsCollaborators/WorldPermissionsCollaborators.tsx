@@ -11,6 +11,8 @@ import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 
 import styles from './WorldPermissionsCollaborators.module.css'
 
+const CREATOR_HUB_DOWNLOAD_URL = 'https://decentraland.org/download/creator-hub/'
+
 export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
   const {
     loading,
@@ -24,7 +26,8 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
     onRemoveCollaborator,
     error,
     worldDeploymentPermissions,
-    worldStreamingPermissions
+    worldStreamingPermissions,
+    permissionsSummary
   } = props
   return (
     <div>
@@ -41,6 +44,23 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
         }
         loading={loading}
       />
+      {!loading && (
+        <div className={styles.callout}>
+          <Icon name="info circle" />
+          <p>
+            <T
+              id="world_permissions_modal.tab_collaborators.parcel_permissions_callout"
+              values={{
+                link: (content: React.ReactNode) => (
+                  <a href={CREATOR_HUB_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
+                    {content}
+                  </a>
+                )
+              }}
+            />
+          </p>
+        </div>
+      )}
 
       {(!collaboratorUserList || collaboratorUserList.length < 10) && (
         <WorldPermissionsAddUserForm
@@ -117,6 +137,7 @@ export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
                     onRemoveCollaborator={onRemoveCollaborator}
                     hasWorldDeploymentPermission={worldDeploymentPermissions?.wallets.includes(wallet)}
                     hasWorldStreamingPermission={worldStreamingPermissions?.wallets.includes(wallet)}
+                    permissionsSummary={permissionsSummary?.[wallet] ?? []}
                     key={index}
                     walletAddress={wallet}
                   />

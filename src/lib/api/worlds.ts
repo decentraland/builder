@@ -2,6 +2,8 @@ import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { config } from 'config'
 import { ContributableDomain } from 'modules/ens/types'
 import { Authorization } from './auth'
+import { AuthChain, IPFSv2 } from '@dcl/schemas'
+import { Entity } from 'decentraland-ecs'
 
 export const WORLDS_CONTENT_SERVER = config.get('WORLDS_CONTENT_SERVER', '')
 
@@ -60,8 +62,31 @@ export type WorldPermissions = {
   streaming: AllowListPermissionSetting
 }
 
+export type WorldScene = {
+  worldName: string
+  deployer: string
+  deploymentAuthChain: AuthChain
+  entity: Entity
+  entityId: IPFSv2
+  parcels: string[]
+  size: string
+  createdAt: string
+}
+
+export type WorldScenesResponse = {
+  scenes: WorldScene[]
+  total: number
+}
+
+export type AddressWorldPermission = {
+  permission: 'deployment' | 'streaming'
+  world_wide: boolean // If worldWide is set, parcels will not be returned
+  parcel_count?: number
+}
+
 export type WorldPermissionsResponse = {
   permissions: WorldPermissions
+  summary: Record<string, AddressWorldPermission[]>
 }
 
 export enum WorldPermissionNames {
@@ -106,10 +131,34 @@ export class WorldsAPI extends BaseAPI {
 
     if (result.ok) {
       const json: WorldPermissionsResponse = await result.json()
-      return json.permissions
+      return json
     } else {
       return null
     }
+  }
+
+  public fetchWorldScenes = async (
+    worldName: string,
+    params: {
+      limit?: number
+      offset?: number
+      x1?: number
+      x2?: number
+      y1?: number
+      y2?: number
+    } = { limit: 100, offset: 0 }
+  ): Promise<WorldScenesResponse | null> => {
+    const queryParams = new URLSearchParams(
+      Object.entries(params)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)])
+    )
+    const result = await fetch(`${this.url}/world/${worldName}/scenes?${queryParams.toString()}`)
+    if (result.ok) {
+      const json = await result.json()
+      return json as WorldScenesResponse
+    }
+    return null
   }
 
   public postPermissionType = async (

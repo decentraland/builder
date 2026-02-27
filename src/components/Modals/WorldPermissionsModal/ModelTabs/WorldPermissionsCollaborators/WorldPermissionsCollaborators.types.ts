@@ -1,10 +1,11 @@
 import { ButtonProps, InputOnChangeData } from 'decentraland-ui'
-import { AllowListPermissionSetting, WorldPermissionNames } from 'lib/api/worlds'
+import { AddressWorldPermission, AllowListPermissionSetting, WorldPermissionNames } from 'lib/api/worlds'
 
 export type WorldPermissionsCollaboratorsProps = {
   loading: boolean
   worldDeploymentPermissions?: AllowListPermissionSetting
   worldStreamingPermissions?: AllowListPermissionSetting
+  permissionsSummary?: Record<string, AddressWorldPermission[]>
   collaboratorUserList?: string[]
   showAddUserForm: boolean
   newAddress: string
