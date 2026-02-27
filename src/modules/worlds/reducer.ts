@@ -31,7 +31,13 @@ import {
   PUT_WORLD_PERMISSIONS_REQUEST,
   PUT_WORLD_PERMISSIONS_SUCCESS
 } from './actions'
-import { AddressWorldPermission, AllowListPermissionSetting, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import {
+  AddressWorldPermission,
+  AllowListPermissionSetting,
+  WorldPermissionType,
+  WorldPermissions,
+  WorldsWalletStats
+} from 'lib/api/worlds'
 
 export type WorldsState = {
   // TODO: Find a use for the data object when there is something more relevant as the core data for the worlds module.
@@ -186,6 +192,11 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
         }
       }
 
+      const worldPermissionsSummary = state.worldsPermissionsSummary[worldName]
+      if (worldPermissionsSummary) {
+        delete worldPermissionsSummary[address]
+      }
+
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -194,6 +205,10 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
           [worldName]: {
             ...worldPermissions
           }
+        },
+        worldsPermissionsSummary: {
+          ...state.worldsPermissionsSummary,
+          [worldName]: worldPermissionsSummary ?? {}
         }
       }
     }
