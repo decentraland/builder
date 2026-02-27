@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
+import { RouteComponentProps } from 'react-router-dom'
 import { ProjectState } from 'modules/project/reducer'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Deployment } from 'modules/deployment/types'
@@ -12,10 +12,8 @@ export type Props = {
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   projects: ProjectState['data']
-  onNavigate: (path: string) => void
-  onReplace: (path: string) => void
-  onOpenModal: typeof openModal
-}
+  onOpenModal: ActionFunction<typeof openModal>
+} & Pick<RouteComponentProps, 'history'>
 
 export type State = {
   hovered: Deployment | null
@@ -25,5 +23,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'ensList' | 'parcelsAvailableToBuildEstates' | 'deploymentsByCoord' | 'projects' | 'landTiles'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onReplace'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>
+export type MapDispatchProps = Pick<Props, 'onOpenModal'>
+export type MapDispatch = Dispatch<OpenModalAction>

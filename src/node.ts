@@ -1,2 +1,5 @@
-import { Buffer } from 'buffer/'
+import buffer from 'buffer'
+
+const Buffer = buffer.Buffer
+
 ;(globalThis as any).Buffer = Buffer

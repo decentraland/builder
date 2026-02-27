@@ -1,4 +1,4 @@
-import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
+import { LocationChangeAction, LOCATION_CHANGE } from 'modules/location/actions'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Mint } from 'modules/collection/types'

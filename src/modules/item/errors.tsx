@@ -163,3 +163,14 @@ export class EmoteWithMeshError extends CustomError {
     )
   }
 }
+
+export class MissingExternalResourcesError extends CustomErrorWithTitle {
+  constructor(resources: string[], additionalMessage?: string) {
+    const message = t('create_single_item_modal.error.missing_external_resources.message', {
+      external_resources: createElement('b', null, resources.join(', ')),
+      additional_message: additionalMessage ? createElement('span', null, [createElement('br'), additionalMessage]) : null
+    })
+
+    super(t('create_single_item_modal.error.missing_external_resources.title'), message)
+  }
+}

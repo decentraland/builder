@@ -21,8 +21,8 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
 import { isThirdParty } from 'lib/urn'
-import { EngineType, getEmoteMetrics, getIsEmote } from 'lib/getModelData'
-import { cleanAssetName, rawMappingsToObjectURL } from 'modules/asset/utils'
+import { EngineType, getEmoteData, getIsEmote } from 'lib/getModelData'
+import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL } from 'modules/asset/utils'
 import {
   FileTooBigError,
   WrongExtensionError,
@@ -32,7 +32,8 @@ import {
   InvalidModelFilesRepresentation,
   InvalidModelFileType,
   CustomErrorWithTitle,
-  ItemNotAllowedInThirdPartyCollections
+  ItemNotAllowedInThirdPartyCollections,
+  MissingExternalResourcesError
 } from 'modules/item/errors'
 import {
   BodyShapeType,
@@ -104,7 +105,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   handleZippedModelFiles = async (
     file: File
   ): Promise<{ modelData: ModelData; wearable?: WearableConfig; scene?: SceneConfig; emote?: EmoteConfig }> => {
-    const loadedFile = await loadFile(file.name, file)
+    // Read the file into memory first to avoid race conditions with lazy file reading.
+    // This ensures all content (including sound files for emotes) is fully loaded before processing.
+    const fileArrayBuffer = await file.arrayBuffer()
+    const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
     const { wearable, scene, content, emote } = loadedFile
 
     if (emote && file.size > MAX_EMOTE_FILE_SIZE) {
@@ -145,8 +149,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const { model, contents: proccessedContent, type } = await this.processModel(modelPath, contents)
 
     if (type === ItemType.EMOTE) {
-      const info: AnimationMetrics = await getEmoteMetrics(contents[model])
-      if (info.duration > MAX_EMOTE_DURATION) {
+      const { metrics }: { metrics: AnimationMetrics } = await getEmoteData(URL.createObjectURL(contents[model]))
+      if (metrics.duration > MAX_EMOTE_DURATION) {
         throw new EmoteDurationTooLongError()
       }
     }
@@ -167,10 +171,17 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   handleErrorsOnFile = (error: any) => {
     this.setState({ error: undefined, isLoading: false })
 
-    let errorTranslationId = null
+    let errorTranslationId: string | null = null
     let wrongConfigurations: string[] = []
 
-    if (error instanceof UnknownRequiredPermissionsError) {
+    if (error instanceof MissingExternalResourcesError) {
+      // Handle missing external resources error with proper formatting
+      this.setState({
+        error: new CustomErrorWithTitle(error.title, error.message),
+        isLoading: false
+      })
+      return
+    } else if (error instanceof UnknownRequiredPermissionsError) {
       errorTranslationId = 'unknown_required_permissions'
       wrongConfigurations = error.getUnknownRequiredPermissions()
     } else if (error instanceof DuplicatedRequiredPermissionsError) {
@@ -207,22 +218,44 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       console.error(wrongConfigurations.map(it => `'${it}'`).join(', '))
     }
 
-    this.setState({
-      error: errorTranslationId
-        ? new CustomErrorWithTitle(
-            t(`create_single_item_modal.error.${errorTranslationId}.title`, {
-              wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
-              count: wrongConfigurations.length
-            }),
-            t(`create_single_item_modal.error.${errorTranslationId}.message`, {
-              learn_more: (
-                <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
-                  {t('global.learn_more')}
-                </span>
-              )
-            })
+    // Format the error message
+    let formattedError
+    if (errorTranslationId) {
+      formattedError = new CustomErrorWithTitle(
+        t(`create_single_item_modal.error.${errorTranslationId}.title`, {
+          wrong_configurations: wrongConfigurations.map(it => `'${it}'`).join(', '),
+          count: wrongConfigurations.length
+        }),
+        t(`create_single_item_modal.error.${errorTranslationId}.message`, {
+          learn_more: (
+            <span className="link" onClick={preventDefault(this.handleOpenLearnMoreOnError)}>
+              {t('global.learn_more')}
+            </span>
           )
-        : error.message,
+        })
+      )
+    } else {
+      // Handle unexpected errors with formatted message
+      console.error('Unexpected error during file import:', error)
+
+      const genericMessage = t('create_single_item_modal.error.unexpected_error.message')
+      const actualError = error?.message || error?.toString() || 'Unknown error'
+
+      formattedError = new CustomErrorWithTitle(
+        t('create_single_item_modal.error.unexpected_error.title'),
+        (
+          <>
+            {genericMessage}
+            <br />
+            <br />
+            <b>{t('create_single_item_modal.error.unexpected_error.details')}:</b> {actualError}
+          </>
+        )
+      )
+    }
+
+    this.setState({
+      error: formattedError,
       isLoading: false
     })
   }
@@ -235,7 +268,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const { collection, category, metadata, isRepresentation, onDropAccepted } = this.props
 
     let changeItemFile = false
-    let item = null
+    let item: any = null
 
     if (metadata?.changeItemFile) {
       changeItemFile = metadata.changeItemFile
@@ -355,16 +388,21 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     let isEmote = false
 
     if (extension !== '.png') {
-      isEmote = await getIsEmote(url, {
-        mappings: rawMappingsToObjectURL(contents),
-        width: 1024,
-        height: 1024,
-        extension,
-        engine: EngineType.BABYLON
-      })
-      URL.revokeObjectURL(url)
+      const mappings = rawMappingsToObjectURL(contents)
+      try {
+        isEmote = await getIsEmote(url, {
+          mappings,
+          width: 1024,
+          height: 1024,
+          extension,
+          engine: EngineType.BABYLON
+        })
+      } finally {
+        // Clean up blob URLs to prevent memory leaks
+        revokeMappingsObjectURL(mappings)
+        URL.revokeObjectURL(url)
+      }
     }
-
     return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
   }
 

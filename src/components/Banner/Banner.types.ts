@@ -3,6 +3,7 @@ export type Props = {
   name?: string
   isClosable: boolean
   onClose: () => void
+  children?: React.ReactNode
 }
 
 export type State = {

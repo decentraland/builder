@@ -19,7 +19,7 @@ export default function EnsMapAddressModal(props: Props) {
   }, [address, onSave])
 
   const handleAddressChange = useCallback(
-    (_evt, { value }) => {
+    (_evt: unknown, { value }: { value: string }) => {
       setAddress(value)
     },
     [setAddress]

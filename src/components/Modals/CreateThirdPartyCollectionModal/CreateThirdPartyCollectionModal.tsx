@@ -66,7 +66,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
       (selectedThirdParty ? Array.from(new Set(selectedThirdParty.contracts.map(contract => contract.network))) : []).map(network => ({
         text: t(`global.networks.${network}`),
         value: network,
-        image: imgSrcByNetwork[network]
+        image: imgSrcByNetwork[network as keyof typeof imgSrcByNetwork]
       })),
     [selectedThirdParty]
   )
@@ -86,7 +86,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
         .map(network => ({
           text: t(`global.networks.${network}`),
           value: network,
-          image: imgSrcByNetwork[network]
+          image: imgSrcByNetwork[network as keyof typeof imgSrcByNetwork]
         })),
     [isDevelopment]
   )

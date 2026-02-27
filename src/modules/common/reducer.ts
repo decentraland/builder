@@ -1,6 +1,4 @@
 import { combineReducers } from 'redux'
-import { connectRouter } from 'connected-react-router'
-import { History } from 'history'
 import { authorizationReducer as authorization } from 'decentraland-dapps/dist/modules/authorization/reducer'
 import { modalReducer as modal } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { profileReducer as profile } from 'decentraland-dapps/dist/modules/profile/reducer'
@@ -41,7 +39,7 @@ import { uiReducer as ui } from 'modules/ui/reducer'
 import { inspectorReducer as inspector } from 'modules/inspector/reducer'
 import { worldsReducer as worlds } from 'modules/worlds/reducer'
 
-export function createRootReducer(history: History) {
+export function createRootReducer() {
   return storageReducerWrapper(
     combineReducers<RootState>({
       asset,
@@ -65,7 +63,6 @@ export function createRootReducer(history: History) {
       poolGroup,
       profile,
       project,
-      router: connectRouter(history),
       scene,
       stats,
       storage,

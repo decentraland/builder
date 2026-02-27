@@ -14,11 +14,13 @@ import SDKTag from 'components/SDKTag/SDKTag'
 import DeploymentDetail from './DeploymentDetail'
 import MigrateSceneToSDK7 from './MigrateSceneToSDK7'
 import './SceneDetailPage.css'
+import { useHistory } from 'react-router'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onNavigate, onLoadProjectScene } = props
+  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onLoadProjectScene } = props
   const [isDeleting, setIsDeleting] = useState(false)
   const [showMigrationModal, setShowMigrationModal] = useState(false)
+  const history = useHistory()
 
   useEffect(() => {
     if (project && !scene) {
@@ -63,9 +65,9 @@ const SceneDetailPage: React.FC<Props> = props => {
     if (scene?.sdk6) {
       setShowMigrationModal(true)
     } else {
-      onNavigate(locations.inspector(project?.id))
+      history.push(locations.inspector(project?.id))
     }
-  }, [project, scene, onNavigate])
+  }, [project, scene, history])
 
   const getSceneStatus = () => {
     const { project, isLoading, isLoadingDeployments } = props
@@ -77,15 +79,22 @@ const SceneDetailPage: React.FC<Props> = props => {
     return <DeploymentStatus projectId={project.id} className="deployment-status" />
   }
 
+  const handleNavigate = useCallback(
+    (location: string) => {
+      history.push(location)
+    },
+    [history]
+  )
+
   const renderPage = (project: Project, deployments: Deployment[]) => {
-    const { isLoadingDeployments, onNavigate, onOpenModal, scene } = props
+    const { isLoadingDeployments, onOpenModal, scene } = props
     return (
       <>
         <Section size="large">
           <Row>
             <Column>
               <Row>
-                <Back absolute onClick={() => onNavigate(locations.scenes())} />
+                <Back absolute onClick={() => handleNavigate(locations.scenes())} />
                 <Header className="name">
                   {project.title}
                   <Icon name="edit outline" onClick={handleEditClick} />
@@ -179,7 +188,7 @@ const SceneDetailPage: React.FC<Props> = props => {
           </>
         ) : null}
         {showMigrationModal && (
-          <MigrateSceneToSDK7 project={project} scene={scene} onNavigate={onNavigate} onClose={() => setShowMigrationModal(false)} />
+          <MigrateSceneToSDK7 project={project} scene={scene} onNavigate={handleNavigate} onClose={() => setShowMigrationModal(false)} />
         )}
       </Page>
       <Footer />

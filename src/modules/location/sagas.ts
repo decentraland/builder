@@ -1,6 +1,6 @@
 import { all, takeLatest, put, select, take, race, getContext } from 'redux-saga/effects'
 import { History } from 'history'
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from './actions'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { locations } from 'routing/locations'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'

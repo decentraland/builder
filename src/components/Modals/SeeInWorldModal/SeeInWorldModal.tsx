@@ -45,7 +45,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props> {
             {this.renderOption(
               t('see_in_world_modal.empty_parcel.title'),
               t('see_in_world_modal.empty_parcel.subtitle'),
-              { x: 100, y: 100 },
+              { x: 150, y: -150 },
               styles.emptyParcel
             )}
             {this.renderOption(

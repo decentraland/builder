@@ -4,9 +4,9 @@ import { namehash } from '@ethersproject/hash'
 import { call, select } from 'redux-saga/effects'
 import { Signer, ethers } from 'ethers'
 import { BuilderClient } from '@dcl/builder-client'
-import { ChainId } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { ENSResolver__factory, ENSResolver } from 'contracts'
-import { getSigner } from 'decentraland-dapps/dist/lib/eth'
+import { getSigner, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { connectWalletSuccess } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
@@ -288,12 +288,13 @@ describe('when handling the set ens address request', () => {
   it('should call resolver contract with the ens domain and address', () => {
     return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
-        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
+        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
         [call(getSigner), { signer }],
         [call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address), { hash } as ethers.ContractTransaction],
         [call(waitForTx, hash), true]
       ])
-      .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_GOERLI, hash))
+      .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_SEPOLIA, hash))
       .put(closeModal('EnsMapAddressModal'))
       .dispatch(setENSAddressRequest(ens, address))
       .silentRun()
@@ -303,7 +304,8 @@ describe('when handling the set ens address request', () => {
     const error = { message: 'an error message', code: 1, name: 'error' }
     return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
-        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_GOERLI }],
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
+        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
         [call(getSigner), { signer }],
         [call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address), throwError(error)],
         [call(waitForTx, hash), true]

@@ -312,10 +312,15 @@ addPayload(DELETE_COLLECTION_FAILURE, 'Delete collection error')
 
 add(PUBLISH_COLLECTION_SUCCESS, 'Publish collection', action => {
   const { payload } = action as PublishCollectionSuccessAction
+  const creditsAmountBigInt = BigInt(payload.creditsAmount || '0')
+  const usedCredits = creditsAmountBigInt > BigInt(0)
+
   return {
     txHash: payload[TRANSACTION_ACTION_FLAG].hash,
     collectionId: payload.collection.id,
-    isFiat: payload.isFiat
+    isFiat: payload.isFiat,
+    usedCredits,
+    creditsAmount: payload.creditsAmount
   }
 })
 add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {

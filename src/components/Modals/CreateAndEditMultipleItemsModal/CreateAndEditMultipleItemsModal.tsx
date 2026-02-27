@@ -125,7 +125,7 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (isLinkedWearablesPaymentsEnabled && view === ItemCreationView.THIRD_PARTY_KIND_SELECTOR && !thirdPartyPrice && !isFetchingPrice) {
-      return fetchThirdPartyPrice() as unknown as void
+      void fetchThirdPartyPrice()
     }
   }, [view, isLinkedWearablesPaymentsEnabled, thirdPartyPrice, isFetchingPrice, fetchThirdPartyPrice])
 

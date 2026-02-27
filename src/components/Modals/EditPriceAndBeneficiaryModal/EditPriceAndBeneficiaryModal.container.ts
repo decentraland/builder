@@ -12,6 +12,7 @@ import {
 } from 'modules/item/actions'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './EditPriceAndBeneficiaryModal.types'
 import EditPriceAndBeneficiaryModal from './EditPriceAndBeneficiaryModal'
+import { getIsOffchainPublicItemOrdersEnabledVariants } from 'modules/features/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { itemId } = ownProps.metadata
@@ -21,6 +22,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
     item,
     error: getError(state),
+    isOffchainPublicItemOrdersEnabledVariants: getIsOffchainPublicItemOrdersEnabledVariants(state),
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST) ||

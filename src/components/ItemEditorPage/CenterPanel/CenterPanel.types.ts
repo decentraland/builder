@@ -1,34 +1,19 @@
-import { Dispatch } from 'redux'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, IPreviewController, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { Collection } from 'modules/collection/types'
 import {
-  CloseEditorAction,
   setEmote,
-  SetEmoteAction,
   setBodyShape,
-  SetBodyShapeAction,
   setSkinColor,
-  SetSkinColorAction,
   setEyeColor,
-  SetEyeColorAction,
   setHairColor,
-  SetHairColorAction,
   setBaseWearable,
-  SetBaseWearableAction,
-  fetchBaseWearablesRequest,
-  FetchBaseWearablesRequestAction,
   setWearablePreviewController,
-  SetWearablePreviewControllerAction,
-  SetItemsAction,
-  setItems
+  setItems,
+  fetchBaseWearablesRequest
 } from 'modules/editor/actions'
-import {
-  fetchCollectionItemsRequest,
-  FetchCollectionItemsRequestAction,
-  fetchItemsRequest,
-  FetchItemsRequestAction
-} from 'modules/item/actions'
+import { fetchCollectionItemsRequest, fetchItemsRequest } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { Color4 } from 'lib/colors'
 
@@ -49,69 +34,24 @@ export type Props = {
   isImportFilesModalOpen: boolean
   hasUserOrphanItems: boolean | undefined
   isUnityWearablePreviewEnabled: boolean
-  onSetBodyShape: typeof setBodyShape
-  onSetAvatarAnimation: typeof setEmote
-  onSetSkinColor: typeof setSkinColor
-  onSetEyeColor: typeof setEyeColor
-  onSetHairColor: typeof setHairColor
-  onSetBaseWearable: typeof setBaseWearable
-  onFetchBaseWearables: typeof fetchBaseWearablesRequest
-  onFetchOrphanItems: typeof fetchItemsRequest
-  onFetchCollectionItems: typeof fetchCollectionItemsRequest
-  onSetWearablePreviewController: typeof setWearablePreviewController
-  onSetItems: typeof setItems
+  onSetBodyShape: ActionFunction<typeof setBodyShape>
+  onSetAvatarAnimation: ActionFunction<typeof setEmote>
+  onSetSkinColor: ActionFunction<typeof setSkinColor>
+  onSetEyeColor: ActionFunction<typeof setEyeColor>
+  onSetHairColor: ActionFunction<typeof setHairColor>
+  onSetBaseWearable: ActionFunction<typeof setBaseWearable>
+  onFetchBaseWearables: ActionFunction<typeof fetchBaseWearablesRequest>
+  onFetchOrphanItems: ActionFunction<typeof fetchItemsRequest>
+  onFetchCollectionItems: ActionFunction<typeof fetchCollectionItemsRequest>
+  onSetWearablePreviewController: (controller: Parameters<typeof setWearablePreviewController>[0]) => void
+  onSetItems: (items: Parameters<typeof setItems>[0]) => void
 }
+
+export type CenterPanelContainerProps = Record<string, never>
 
 export type State = {
   isShowingAvatarAttributes: boolean
   showSceneBoundaries: boolean
   isLoading: boolean
+  socialEmote?: SocialEmoteAnimation
 }
-
-export type MapStateProps = Pick<
-  Props,
-  | 'address'
-  | 'bodyShape'
-  | 'collection'
-  | 'skinColor'
-  | 'eyeColor'
-  | 'hairColor'
-  | 'emote'
-  | 'visibleItems'
-  | 'selectedBaseWearables'
-  | 'selectedItem'
-  | 'wearableController'
-  | 'emotes'
-  | 'isPlayingEmote'
-  | 'isImportFilesModalOpen'
-  | 'hasUserOrphanItems'
-  | 'isUnityWearablePreviewEnabled'
->
-export type MapDispatchProps = Pick<
-  Props,
-  | 'onSetBodyShape'
-  | 'onSetAvatarAnimation'
-  | 'onSetSkinColor'
-  | 'onSetEyeColor'
-  | 'onSetHairColor'
-  | 'onSetBaseWearable'
-  | 'onFetchBaseWearables'
-  | 'onFetchOrphanItems'
-  | 'onFetchCollectionItems'
-  | 'onSetWearablePreviewController'
-  | 'onSetItems'
->
-export type MapDispatch = Dispatch<
-  | CloseEditorAction
-  | SetBodyShapeAction
-  | SetEmoteAction
-  | SetSkinColorAction
-  | SetEyeColorAction
-  | SetHairColorAction
-  | SetBaseWearableAction
-  | FetchBaseWearablesRequestAction
-  | FetchItemsRequestAction
-  | FetchCollectionItemsRequestAction
-  | SetWearablePreviewControllerAction
-  | SetItemsAction
->

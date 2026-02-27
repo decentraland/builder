@@ -1,5 +1,6 @@
+import type { History } from 'history'
 import type { Wearable } from 'decentraland-ecs'
-import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
+import { takeLatest, select, put, call, delay, take, getContext } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -106,8 +107,8 @@ import {
   getEntitiesOutOfBoundaries,
   hasLoadedAssetPacks,
   isMultiselectEnabled,
-  getVisibleItems,
-  getWearablePreviewController
+  getWearablePreviewController,
+  getVisibleItemsFromUrl
 } from './selectors'
 import {
   getNewEditorScene,
@@ -660,8 +661,9 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
 }
 
 function* handleSetBodyShape(_action: SetBodyShapeAction) {
+  const history: History = yield getContext('history')
   // this gets rid of items that don't have a representation for the current body shape
-  const visibleItems: Item[] = yield select(getVisibleItems)
+  const visibleItems: Item[] = yield select(getVisibleItemsFromUrl, history.location.search)
   yield put(setItems(visibleItems))
 }
 

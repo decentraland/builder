@@ -64,13 +64,13 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   handleClick = (x: number, y: number) => {
-    const { deploymentsByCoord, projects, onNavigate, onReplace, landTiles } = this.props
+    const { deploymentsByCoord, projects, history, landTiles } = this.props
     const id = coordsToId(x, y)
     const deployment = deploymentsByCoord[id]
     if (deployment && deployment.projectId && deployment.projectId in projects) {
-      onNavigate(locations.sceneDetail(deployment.projectId))
+      history.push(locations.sceneDetail(deployment.projectId))
     } else if (id in landTiles) {
-      onReplace(locations.landDetail(landTiles[id].land.id))
+      history.replace(locations.landDetail(landTiles[id].land.id))
     }
   }
 
@@ -110,7 +110,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderDetail(land: Land, deployments: Deployment[], rental: Rental | null) {
-    const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
+    const { ensList, parcelsAvailableToBuildEstates, projects, history, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = this.computeOccupiedLand(land, deployments)
     const landOwner = rental && (land.roles.includes(RoleType.LESSOR) || land.roles.includes(RoleType.TENANT)) ? rental.lessor : land.owner
@@ -129,7 +129,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
         ) : null}
         <Section size="large">
           <Row>
-            <Back absolute onClick={() => onNavigate(locations.land())} />
+            <Back absolute onClick={() => history.push(locations.land())} />
             <Narrow>
               <Row>
                 <Column>
@@ -152,12 +152,12 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                   <Column className="actions" align="right">
                     <Row>
                       <RentedLandWrapper land={land}>
-                        <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
+                        <Button basic onClick={() => history.push(locations.landTransfer(land.id))}>
                           {t('land_detail_page.transfer')}
                         </Button>
                       </RentedLandWrapper>
                       <RentedLandWrapper land={land}>
-                        <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
+                        <Button basic onClick={() => history.push(locations.landEdit(land.id))}>
                           {t('global.edit')}
                         </Button>
                       </RentedLandWrapper>
@@ -197,13 +197,13 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             <>
                               <Dropdown.Item
                                 text={t('land_detail_page.assign_name')}
-                                onClick={() => onNavigate(locations.landSelectENS(land.id))}
+                                onClick={() => history.push(locations.landSelectENS(land.id))}
                               />
                               <Dropdown.Divider />
                             </>
                             <Dropdown.Item
                               text={t('land_detail_page.set_operator')}
-                              onClick={() => onNavigate(locations.landOperator(land.id))}
+                              onClick={() => history.push(locations.landOperator(land.id))}
                             />
                           </Dropdown.Menu>
                         </Dropdown>
@@ -223,7 +223,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                     <Dropdown.Menu>
                       <Dropdown.Item
                         text={t('land_detail_page.set_operator')}
-                        onClick={() => onNavigate(locations.landOperator(land.id))}
+                        onClick={() => history.push(locations.landOperator(land.id))}
                       />
                     </Dropdown.Menu>
                   </Dropdown>
@@ -263,7 +263,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                       deployment={deployment}
                       onMouseEnter={this.handleMouseEnter}
                       onMouseLeave={this.handleMouseLeave}
-                      onNavigate={onNavigate}
+                      onNavigate={(path: string) => history.push(path)}
                       onOpenModal={onOpenModal}
                       projects={projects}
                     />

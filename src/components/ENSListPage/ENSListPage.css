@@ -355,38 +355,6 @@
   gap: 10px;
 }
 
-.ENSListPage .ens-list-page-empty {
-  height: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--background);
-  gap: 32px;
-}
-
-.ENSListPage .ens-list-page-empty-title {
-  margin: 0;
-}
-
-.ENSListPage .ens-list-page-empty-subtitle {
-  color: var(--secondary-text);
-  text-align: center;
-  max-width: 480px;
-  font-size: 14px;
-}
-
-.ENSListPage .ens-list-page-empty-actions {
-  display: flex;
-  gap: 20px;
-}
-
-.ENSListPage .ens-list-page-empty-image {
-  padding: 30px;
-  border-radius: 50%;
-  background: var(--secondary);
-}
-
 .ENSListPage .ens-list-reclaim-icon {
   margin: 0 !important;
   width: fit-content;

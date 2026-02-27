@@ -36,11 +36,11 @@ export type Props = {
   isPlayingEmote: boolean
   wearableController: IPreviewController | null
   hasUserOrphanItems: boolean | undefined
-  onSetItems: typeof setItems
-  onFetchOrphanItems: typeof fetchItemsRequest
-  onFetchCollections: typeof fetchCollectionsRequest
+  onSetItems: ActionFunction<typeof setItems>
+  onFetchOrphanItems: ActionFunction<typeof fetchItemsRequest>
+  onFetchCollections: ActionFunction<typeof fetchCollectionsRequest>
   onSetReviewedItems: (itemIds: Item[]) => void
-  onFetchOrphanItem: typeof fetchOrphanItemRequest
+  onFetchOrphanItem: ActionFunction<typeof fetchOrphanItemRequest>
   onResetReviewedItems: () => void
 }
 
@@ -79,3 +79,6 @@ export type MapDispatch = Dispatch<
   | FetchCollectionsRequestAction
   | FetchOrphanItemRequestAction
 >
+
+// New type for the functional component container
+export type LeftPanelContainerProps = Omit<Props, keyof MapStateProps | keyof MapDispatchProps>

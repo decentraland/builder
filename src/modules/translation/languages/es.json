@@ -361,6 +361,15 @@
         "title": "Dado que el permiso 'ALLOW_MEDIA_HOSTNAMES' está configurado, la propiedad 'allowedMediaHostnames' debe ser configurada y no puede ser vacía. Por favor, corrija el archivo 'scene.json'.",
         "message": "Para obtener {learn_more}, consulte la documentación."
       },
+      "unexpected_error": {
+        "title": "Ocurrió un error inesperado al subir tu archivo",
+        "message": "Por favor revisa tu archivo e intenta nuevamente. Si el problema persiste, contacta con soporte.",
+        "details": "Detalles del error"
+      },
+      "missing_external_resources": {
+        "title": "Error al cargar el modelo",
+        "message": "Faltan recursos externos: <b>{external_resources}</b><br></br>{additional_message}"
+      },
       "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas",
       "emote_animations_sync_error": "<b>Las longitudes de las animaciones del avatar y de las props no son iguales</b><br></br>Corrija su animación y vuelva a subirla para una sincronización perfecta.",
       "emote_with_mesh": "<b>Su archivo incluye el mesh del Avatar.</b><br></br>Esta malla no es necesaria para este proceso. Por favor, simplemente vuelva a exportarlo y vuelva a subirlo para continuar."
@@ -740,6 +749,7 @@
     "address": "Dirección",
     "alias": "Alias",
     "land": "Tierra",
+    "transfer": "Transferir",
     "unassign": "Sin asignar",
     "set_as_primary": "Usar como alias",
     "edit_address": "Editar dirección",
@@ -958,7 +968,8 @@
       "matic": "Polygon",
       "sepolia": "Ethereum Sepolia",
       "amoy": "Polygon Amoy"
-    }
+    },
+    "revert": "Revertir"
   },
   "roles": {
     "1": "Dueño",
@@ -1772,6 +1783,7 @@
     "rarity": "Rareza",
     "representation": "Representación",
     "price": "Precio",
+    "not_for_sale": "No está en venta",
     "beneficiary": "Beneficiario",
     "supply": "Suministro",
     "collection": "Colección",
@@ -1917,6 +1929,12 @@
       "fee_per_item": "Tarifa por item",
       "total_in_usd": "Total en {currency}",
       "total_in_mana": "Total en MANA",
+      "available_credits": "Créditos Disponibles",
+      "use_credits": "Usar Créditos",
+      "pay_with_credits": "Pagar con Créditos",
+      "credits_applied": "Créditos Aplicados",
+      "remaining_to_pay": "Restante a pagar",
+      "checkout": "Finalizar Compra",
       "pay_card": "pagar con tarjeta",
       "pay_card_info": "Un 5% de tarifa de transacción será añadido a su total por el procesador de pagos, además de un 0.5% adicional para cubrir posibles fluctuaciones de moneda.",
       "pay_mana": "pagar con mana",
@@ -2126,6 +2144,7 @@
       "wearables": "Wearables",
       "wearables_info": "Los elementos que elija del menú desplegable estarán ocultos.",
       "animation": "Animación",
+      "animations": "Animationes",
       "tags": "Etiquetas",
       "event_tag": "Usa la etiqueta {event_tag} si quieres incluir este item en el {event_name}. {learn_more}",
       "select_placeholder": "Selecciona una opción",
@@ -2145,6 +2164,14 @@
         "enabled": "Activada",
         "disabled": "Desactivada",
         "info": "¡Bonito wearable! Permitir que los propietarios de su artículo lo incluyan en las exportaciones de avatar de VRM para que puedan mostrarlo fuera de Decentraland."
+      },
+      "social_emote": {
+        "avatar": "Avatar",
+        "props": "Props",
+        "audio": "Audio",
+        "optional": "opcional",
+        "randomize_outcomes": "Aleatorizar opciones",
+        "add_outcome": "Agregar una opción"
       }
     }
   },
@@ -2413,6 +2440,32 @@
     "start_building": "comenzar a construir",
     "learn_more": "aprende más"
   },
+  "creator_hub_upgrade_modal": {
+    "title": "Mejora tu flujo de trabajo de creación",
+    "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+    "feature1": {
+      "title": "Mejor para creadores con código y sin código",
+      "description": "Trabaja con tu editor de código preferido mientras aprovechas al máximo las herramientas visuales incluidas en el editor de escenas."
+    },
+    "feature2": {
+      "title": "Vista previa y comparte tus escenas",
+      "description": "Vista previa de tu proyecto exactamente como aparecerá, luego publícalo fácilmente en tu mundo o LAND con control total sobre tus archivos."
+    },
+    "download": "Descargar Creator Hub",
+    "skip_for_now": "Omitir por ahora",
+    "permissions_variant": {
+      "title": "Mejora tu flujo de trabajo de creación",
+      "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+      "feature1": {
+        "title": "Mejor gestión de acceso",
+        "description": "¡Establece una contraseña de acceso, permite que un número selecto de personas entren a tu lugar o invita a toda una comunidad!"
+      },
+      "feature2": {
+        "title": "Colaboración mejorada",
+        "description": "¡Asigna parcelas específicas a los miembros de tu equipo de colaboración y diseña tu propia ciudad!"
+      }
+    }
+  },
   "item_status": {
     "unpublished": "Listos para publicar",
     "under_review": "Bajo revisión",
@@ -2437,6 +2490,11 @@
     "title": "Se necesita acción",
     "subtitle": "Para actualizar el nuevo precio, debe eliminar los precios antiguos primero",
     "cancel": "Cancelar",
-    "reject_old_prices": "Rechazar el precio anterior"
+    "reject_old_prices": "Rechazar el precio anterior",
+    "authorization": {
+      "title_action": "operación",
+      "action": "Poner a la venta",
+      "confirm_transaction_title": "Poner a la venta"
+    }
   }
 }

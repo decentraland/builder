@@ -8,6 +8,7 @@ import {
   getIsMaintenanceEnabled,
   getIsOffchainPublicItemOrdersEnabled,
   getIsPublishCollectionsWertEnabled,
+  getIsSocialEmotesEnabled,
   getIsVrmOptOutEnabled,
   getIsWearableUtilityEnabled,
   getIsWorldContributorEnabled
@@ -71,7 +72,8 @@ const ffSelectors = [
   { selector: getIsWorldContributorEnabled, app: ApplicationName.BUILDER, feature: FeatureName.WORLD_CONTRIBUTOR },
   { selector: getIsLinkedWearablesV2Enabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_V2 },
   { selector: getIsLinkedWearablesPaymentsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_PAYMENTS },
-  { selector: getIsOffchainPublicItemOrdersEnabled, app: ApplicationName.DAPPS, feature: FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS }
+  { selector: getIsOffchainPublicItemOrdersEnabled, app: ApplicationName.DAPPS, feature: FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS },
+  { selector: getIsSocialEmotesEnabled, app: ApplicationName.DAPPS, feature: FeatureName.SOCIAL_EMOTES }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

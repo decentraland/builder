@@ -1,19 +1,22 @@
-import { SAVE_LAST_LOCATION, SaveLastLocationAction } from './action'
+import { LOCATION_CHANGE, LocationChangeAction } from 'modules/location/actions'
 
 export type LocationState = {
+  currentLocation?: string
   lastLocation?: string
 }
 
 export const INITIAL_STATE: LocationState = {
+  currentLocation: undefined,
   lastLocation: undefined
 }
 
-export function locationReducer(state = INITIAL_STATE, action: SaveLastLocationAction) {
+export function locationReducer(state = INITIAL_STATE, action: LocationChangeAction): LocationState {
   switch (action.type) {
-    case SAVE_LAST_LOCATION: {
+    case LOCATION_CHANGE: {
       return {
         ...state,
-        lastLocation: action.payload.location
+        lastLocation: state.currentLocation,
+        currentLocation: action.payload.location.pathname
       }
     }
     default:

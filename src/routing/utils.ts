@@ -36,7 +36,7 @@ export function injectPagination(location: string, options?: PaginationOptions) 
     return addParams(location)
   }
 
-  const params = []
+  const params: string[] = []
   if (options.page) {
     params.push(`page=${options.page}`)
   }
@@ -87,14 +87,6 @@ export function getPage(value: string | number | null | undefined, defaultValue 
   }
 
   return Math.max(defaultValue, value)
-}
-
-export function getSortBy<V extends string>(value: string | null | undefined, values: V[], defaultValue: V) {
-  if (values.includes(value as any)) {
-    return value as V
-  }
-
-  return defaultValue
 }
 
 export function getSortOrder(value: string | null | undefined, defaultValue: 'desc' | 'asc' = 'desc'): 'desc' | 'asc' {

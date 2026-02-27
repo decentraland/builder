@@ -368,7 +368,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
       case 'main.crdt': {
         const project: Project = yield select(getCurrentProject)
         assets.set('main.crdt', content)
-        const blob = new Blob([content])
+        const blob = new Blob([content as BlobPart])
         void builder.uploadCrdt(blob, project.id)
         break
       }
@@ -380,7 +380,7 @@ export function* inspectorSaga(builder: BuilderAPI, store: RootStore) {
         if (!isUploaded) {
           // keep asset in memory while uploading it
           assets.set(path, content)
-          const blob = new Blob([content])
+          const blob = new Blob([content as BlobPart])
           // we dont await for the upload and serve the file from memory in the meantime to have a faster feedback
           void builder.uploadFile(blob)
         }

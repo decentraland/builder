@@ -60,10 +60,10 @@ const WorldListPage: React.FC<Props> = props => {
   }, [isConnected, isWorldContributorEnabled])
 
   useEffect(() => {
-    if (tab === TabType.DCL) {
+    if (isConnected && tab === TabType.DCL) {
       onFetchENSList(PAGE_SIZE, (page - 1) * PAGE_SIZE)
     }
-  }, [onFetchENSList, page])
+  }, [isConnected, onFetchENSList, page, tab])
 
   const handleClaimENS = useCallback(() => {
     if (tab === TabType.DCL) {
@@ -135,7 +135,7 @@ const WorldListPage: React.FC<Props> = props => {
 
       return <span className={`world-status ${status}`}>{t(`worlds_list_page.table.status_${status}`)}</span>
     },
-    [getDCLWorldsStatus, isExternalName, isWorldDeployed]
+    [deploymentsByWorlds, getDCLWorldsStatus, isExternalName, isWorldDeployed]
   )
 
   const renderWorldSize = useCallback(
@@ -231,7 +231,7 @@ const WorldListPage: React.FC<Props> = props => {
                       </Table.Cell>
                       <Table.Cell width={1} textAlign="center">
                         <Button basic onClick={e => handleOpenPermissionsModal(e, ens.subdomain)}>
-                          Permissions
+                          {t('worlds_list_page.table.permissions')}
                         </Button>
                       </Table.Cell>
                     </Table.Row>

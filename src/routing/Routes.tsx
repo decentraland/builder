@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { Component, memo, useCallback, useEffect, useState } from 'react'
 import { Center, Page } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -9,64 +9,73 @@ import ErrorPage from 'components/ErrorPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import { isDevelopment } from 'lib/environment'
 import { AppRoutes } from './AppRoutes'
-import { Props, State } from './Routes.types'
+import { ErrorBoundaryProps, ErrorBoundaryState, Props } from './Routes.types'
 
-export default class Routes extends React.Component<Props, State> {
-  state = {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false }
+
+  componentDidCatch(error: Error) {
+    this.setState({ hasError: true })
+    this.props.onError(error)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null
+    }
+    return this.props.children
+  }
+}
+
+const MaintenancePage = memo(() => (
+  <>
+    <Navbar />
+    <Page>
+      <Center>🚧 {t('maintainance.notice')} 🚧</Center>
+    </Page>
+    <Footer />
+  </>
+))
+
+const Routes: React.FC<Props> = ({ inMaintenance }) => {
+  const [errorState, setErrorState] = useState<{ hasError: boolean; stackTrace: string }>({
     hasError: false,
     stackTrace: ''
-  }
+  })
 
-  componentDidCatch(err: Error) {
-    this.setState({
-      hasError: true,
-      stackTrace: err.stack || 'No details avaibale'
-    })
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     document.body.classList.remove('loading-overlay')
-  }
+  }, [])
 
-  renderMaintenancePage() {
-    return (
-      <>
-        <Navbar />
-        <Page>
-          <Center>🚧 {t('maintainance.notice')} 🚧</Center>
-        </Page>
-        <Footer />
-      </>
-    )
-  }
+  const handleError = useCallback((error: Error) => {
+    setErrorState({
+      hasError: true,
+      stackTrace: error.stack || 'No details available'
+    })
+  }, [])
 
-  renderRoutes() {
-    const { inMaintenance } = this.props
-    const { hasError, stackTrace } = this.state
+  const renderRoutes = useCallback(() => {
+    if (isDevelopment && errorState.hasError) {
+      return <ErrorPage stackTrace={errorState.stackTrace} />
+    }
 
-    if (isDevelopment && hasError) {
-      return <ErrorPage stackTrace={stackTrace} />
-    } else if (window.navigator.userAgent.includes('Edge')) {
+    if (window.navigator.userAgent.includes('Edge')) {
       return <UnsupportedBrowserPage />
     }
 
     if (inMaintenance) {
-      return this.renderMaintenancePage()
+      return <MaintenancePage />
     }
 
     return <AppRoutes />
-  }
+  }, [errorState, inMaintenance])
 
-  renderIntercom() {
-    return <Intercom />
-  }
-
-  render() {
-    return (
-      <>
-        {this.renderRoutes()}
-        {this.renderIntercom()}
-      </>
-    )
-  }
+  return (
+    <ErrorBoundary onError={handleError}>
+      {renderRoutes()}
+      <Intercom />
+    </ErrorBoundary>
+  )
 }
+
+export default memo(Routes)

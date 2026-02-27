@@ -1,4 +1,5 @@
-import { takeLatest, put, select } from 'redux-saga/effects'
+import { History } from 'history'
+import { takeLatest, put, select, getContext } from 'redux-saga/effects'
 import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { Project } from 'modules/project/types'
 import { DELETE_PROJECT } from 'modules/project/actions'
@@ -15,7 +16,8 @@ function* handleSaveProjectSuccess() {
 }
 
 function* handleDeleteProject() {
-  const projects: Project[] = yield select(getProjects)
+  const history: History = yield getContext('history')
+  const projects: Project[] = yield select(getProjects, history.location.search)
   if (projects.length === 0) {
     yield put(setSync(false))
   }

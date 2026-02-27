@@ -76,6 +76,7 @@ export function* analyticsSaga() {
   yield all([baseAnalyticsSaga(), builderAnalyticsSaga()])
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 export const track = (event: string, params: any) => getAnalytics()?.track(event, params)
 
 function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {

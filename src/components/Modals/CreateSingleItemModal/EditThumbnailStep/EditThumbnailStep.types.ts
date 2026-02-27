@@ -1,19 +1,7 @@
-import { EmoteWithBlobs, IPreviewController } from '@dcl/schemas'
-import { Item } from 'modules/item/types'
 import React from 'react'
-
-export enum CreateItemView {
-  IMPORT = 'import',
-  DETAILS = 'details',
-  THUMBNAIL = 'thumbnail'
-}
-
-export enum ControlOptionAction {
-  ZOOM_IN,
-  ZOOM_OUT,
-  PAN_CAMERA_Y,
-  CHANGE_CAMERA_ALPHA
-}
+import { EmoteWithBlobs, IPreviewController } from '@dcl/schemas'
+import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
+import { Item } from 'modules/item/types'
 
 export type Props = {
   title: string
@@ -29,11 +17,9 @@ export type Props = {
 
 export type State = {
   hasBeenUpdated: boolean
-  playingIntervalId?: ReturnType<typeof setTimeout>
   previewController?: IPreviewController
   blob?: EmoteWithBlobs
-  zoom: number
-  offsetY?: number
+  socialEmote?: SocialEmoteAnimation
 }
 
 export type CreateSingleItemModalMetadata = {

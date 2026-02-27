@@ -61,6 +61,16 @@
   color: white;
 }
 
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.transferBtn:global(.ui.button),
+.transferBtn:global(.ui.button):hover {
+  background: var(--bluish-steel);
+}
+
 .main .field .actionBtn:global(.ui.button) {
   width: fit-content;
   min-width: unset;

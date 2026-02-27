@@ -1,4 +1,4 @@
-import type { OrthographicCamera, Material } from 'three'
+import type { OrthographicCamera, Material, Object3D, AnimationClip, WebGLRenderer } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { IPreviewController, WearableCategory } from '@dcl/schemas'
@@ -7,7 +7,7 @@ import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
 import { isImageFile } from 'modules/item/utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
-import { EmoteAnimationsSyncError, EmoteWithMeshError } from 'modules/item/errors'
+import { EmoteAnimationsSyncError, EmoteWithMeshError, MissingExternalResourcesError } from 'modules/item/errors'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
 
 // transparent 1x1 pixel
@@ -42,6 +42,13 @@ export const defaults: Options = {
   thumbnailType: ThumbnailType.DEFAULT
 }
 
+const ARMATURE_PREFIX = 'Armature'
+
+enum ARMATURES {
+  PROP = ARMATURE_PREFIX + '_Prop',
+  OTHER = ARMATURE_PREFIX + '_Other'
+}
+
 async function loadGltf(url: string, options: Partial<Options> = {}) {
   const Three = await import('three')
   const { width, height, mappings } = {
@@ -57,6 +64,8 @@ async function loadGltf(url: string, options: Partial<Options> = {}) {
 
   // configure mappings
   let manager
+  const missingResources: string[] = []
+
   if (mappings) {
     manager = new Three.LoadingManager()
     manager.setURLModifier(url => {
@@ -68,9 +77,37 @@ async function loadGltf(url: string, options: Partial<Options> = {}) {
 
       return url
     })
+
+    // Track missing resources
+    manager.onError = (url: string) => {
+      const path = basename(new URL(url.replace('blob:', '')).pathname.slice(1))
+      missingResources.push(path)
+    }
   }
+
   const loader = new GLTFLoader(manager)
-  return { renderer, gltf: await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject)) }
+
+  try {
+    const gltf = await new Promise<GLTF>((resolve, reject) => {
+      loader.load(url, resolve, undefined, error => {
+        // Enhance error message with missing resources info
+        if (missingResources.length > 0) {
+          const additionalMessage = error instanceof Error ? error.message : ''
+          reject(new MissingExternalResourcesError(missingResources, additionalMessage))
+        } else {
+          reject(error)
+        }
+      })
+    })
+
+    return { renderer, gltf }
+  } catch (error) {
+    // Clean up renderer if loading failed
+    if (renderer.domElement.parentNode) {
+      document.body.removeChild(renderer.domElement)
+    }
+    throw error
+  }
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
@@ -81,16 +118,20 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     ...options
   }
 
+  let renderer: WebGLRenderer | null = null
+
   try {
     // load model
     const materials = new Set<string>()
     let bodies = 0
     let colliderTriangles = 0
-    const { gltf, renderer } = await loadGltf(url, {
+    const loadResult = await loadGltf(url, {
       width,
       height,
       mappings
     })
+    const { gltf } = loadResult
+    renderer = loadResult.renderer
 
     gltf.scene.traverse(node => {
       if (node instanceof Three.Mesh) {
@@ -170,10 +211,6 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     // render scenes
     renderer.render(scene, camera)
 
-    // remove dom element
-    document.body.removeChild(renderer.domElement)
-
-    // return data
     const info: ModelMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials: materials.size,
@@ -184,8 +221,19 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     }
     const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
 
+    // Properly dispose WebGL resources to prevent context exhaustion
+    renderer.dispose()
+    document.body.removeChild(renderer.domElement)
+
     return { info, image, type: ItemType.WEARABLE }
   } catch (error) {
+    // Log the error for debugging with enhanced context
+    if (error instanceof Error) {
+      console.error('Failed to load model:', error.message, error)
+    } else {
+      console.error('Failed to load model:', error)
+    }
+
     // could not render model, default to 0 metrics and default thumnail
     const info = {
       triangles: 0,
@@ -206,15 +254,44 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
 export async function getIsEmote(url: string, options: Partial<Options> = {}) {
   const { gltf, renderer } = await loadGltf(url, options)
+  const hasAnimations = gltf.animations.length > 0
+
+  // Properly dispose WebGL resources to prevent context exhaustion
+  renderer.dispose()
   document.body.removeChild(renderer.domElement)
-  return gltf.animations.length > 0
+
+  return hasAnimations
 }
 
-export async function getEmoteMetrics(blob: Blob) {
-  const { gltf, renderer } = await loadGltf(URL.createObjectURL(blob))
+export async function getEmoteData(url: string, options: Partial<Options> = {}) {
+  const {
+    gltf: { scene, animations },
+    renderer
+  } = await loadGltf(url, options)
+
+  // Properly dispose WebGL resources to prevent context exhaustion
+  renderer.dispose()
   document.body.removeChild(renderer.domElement)
-  const animation = gltf.animations[0]
-  const propsAnimation = gltf.animations.length > 1 ? gltf.animations[1] : null
+  const armatures = scene.children.filter(({ name }) => name.startsWith(ARMATURE_PREFIX))
+  const animation = animations[0]
+  const propsAnimation = animations.length > 1 ? animations[1] : null
+
+  if (
+    scene.children.some(sceneItem =>
+      sceneItem.children.some(item => item.name.toLowerCase().includes('basemesh') || item.name.toLowerCase().includes('avatar_mesh'))
+    )
+  ) {
+    throw new EmoteWithMeshError()
+  }
+
+  // For social emotes, we need to count the number of additional armatures, currently only one additional armature is supported
+  const additionalArmatures = armatures.some(({ name }) => name === ARMATURES.OTHER) ? 1 : 0
+
+  // For social emotes, we don't need to check the duration of the props animation
+  if (!additionalArmatures && propsAnimation && propsAnimation.duration !== animation.duration) {
+    throw new EmoteAnimationsSyncError()
+  }
+
   let frames = 0
 
   for (let i = 0; i < animation.tracks.length; i++) {
@@ -222,24 +299,17 @@ export async function getEmoteMetrics(blob: Blob) {
     frames = Math.max(frames, track.times.length)
   }
 
-  if (
-    gltf.scene.children.some(sceneItem =>
-      sceneItem.children.some(item => item.name.toLowerCase().includes('basemesh') || item.name.toLowerCase().includes('avatar_mesh'))
-    )
-  ) {
-    throw new EmoteWithMeshError()
-  }
-
-  if (propsAnimation && propsAnimation.duration !== animation.duration) {
-    throw new EmoteAnimationsSyncError()
-  }
-
   return {
-    sequences: gltf.animations.length,
-    duration: animation.duration,
-    frames,
-    fps: frames / animation.duration,
-    props: gltf.scene.children.some(({ name }) => name === 'Armature_Prop') ? 1 : 0
+    animations,
+    armatures,
+    metrics: {
+      sequences: animations.length,
+      duration: animation.duration,
+      frames,
+      fps: frames / animation.duration,
+      props: armatures.some(({ name }) => name === ARMATURES.PROP) ? 1 : 0,
+      additionalArmatures
+    }
   }
 }
 
@@ -252,14 +322,19 @@ export async function getItemData({
 }: {
   type: ItemType
   model: string
-  wearablePreviewController?: IPreviewController
+  wearablePreviewController?: IPreviewController | null
   contents: Record<string, Blob>
   category?: string
 }) {
-  let info: Metrics
-  let image
+  const data: { metrics: Metrics; image: string; armatures?: Object3D[]; animations?: AnimationClip[] } = {
+    metrics: {} as Metrics,
+    image: '',
+    armatures: [],
+    animations: []
+  }
+
   if (isImageFile(model)) {
-    info = {
+    data.metrics = {
       triangles: 100,
       materials: 1,
       textures: 1,
@@ -267,18 +342,26 @@ export async function getItemData({
       bodies: 1,
       entities: 1
     }
-    image = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], category as WearableCategory)
+    data.image = await convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], category as WearableCategory)
   } else {
     if (!wearablePreviewController) {
       throw Error('WearablePreview controller needed')
     }
     if (type === ItemType.EMOTE) {
-      info = await getEmoteMetrics(contents[model])
+      const modelUrl = URL.createObjectURL(contents[model])
+      try {
+        const emoteData = await getEmoteData(modelUrl)
+        data.metrics = emoteData.metrics
+        data.armatures = emoteData.armatures
+        data.animations = emoteData.animations
+      } finally {
+        URL.revokeObjectURL(modelUrl)
+      }
     } else {
-      info = await wearablePreviewController.scene.getMetrics()
+      data.metrics = await wearablePreviewController.scene.getMetrics()
     }
-    image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+    data.image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
   }
 
-  return { info, image }
+  return data
 }

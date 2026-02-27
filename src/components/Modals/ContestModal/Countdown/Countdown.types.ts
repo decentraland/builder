@@ -9,9 +9,9 @@ export type State = {
   seconds: number
 }
 
-export type Props = React.Props<HTMLDivElement> & {
+export type Props = React.PropsWithChildren<{
   until: Date
-}
+}>
 
 export enum Time {
   Millisecond = 1,

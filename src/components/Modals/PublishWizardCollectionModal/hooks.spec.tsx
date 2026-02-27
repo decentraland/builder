@@ -1,52 +1,46 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { getThirdPartyPrice } from 'modules/thirdParty/utils'
 import { ThirdPartyPrice } from 'modules/thirdParty/types'
-import { useThirdPartyPrice, UseThirdPartyPriceResult } from './hooks'
+import { useThirdPartyPrice } from './hooks'
 
 jest.mock('modules/thirdParty/utils')
 
 const mockGetThirdPartyPrice = getThirdPartyPrice as jest.MockedFn<typeof getThirdPartyPrice>
 
 describe('when using the third party price hook', () => {
-  let renderedHook: ReturnType<typeof renderHook>
-  let currentResult: UseThirdPartyPriceResult
-
   describe('and the price is not being fetched', () => {
-    beforeEach(() => {
-      renderedHook = renderHook(() => useThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-    })
-
     it('should return the isFetchingPrice property as false', () => {
-      expect(currentResult.isFetchingPrice).toBe(false)
+      const { result } = renderHook(() => useThirdPartyPrice())
+      expect(result.current.isFetchingPrice).toBe(false)
     })
   })
 
   describe('and the price is being fetched', () => {
-    let pricePromiseResolve: (value: unknown) => void
-    let promiseOfAct: Promise<unknown>
+    it('should return the isFetchingPrice property as true', async () => {
+      let resolvePrice: (value: ThirdPartyPrice) => void
+      const pricePromise = new Promise<ThirdPartyPrice>(resolve => {
+        resolvePrice = resolve
+      })
+      mockGetThirdPartyPrice.mockReturnValueOnce(pricePromise)
 
-    beforeEach(() => {
-      const pricePromise = new Promise(resolve => (pricePromiseResolve = resolve))
-      mockGetThirdPartyPrice.mockReturnValueOnce(pricePromise as Promise<ThirdPartyPrice>)
-      renderedHook = renderHook(() => useThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-      promiseOfAct = act(() => currentResult.fetchThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-    })
+      const { result } = renderHook(() => useThirdPartyPrice())
 
-    it('should return the isFetchingPrice property as true', () => {
-      expect(currentResult.isFetchingPrice).toBe(true)
-      pricePromiseResolve(undefined)
-      return promiseOfAct
+      act(() => {
+        void result.current.fetchThirdPartyPrice()
+      })
+
+      await waitFor(() => {
+        expect(result.current.isFetchingPrice).toBe(true)
+      })
+
+      // Cleanup: resolve the promise
+      resolvePrice!({ item: { mana: '1', usd: '1' }, programmatic: { mana: '1', usd: '1', minSlots: '1' } })
     })
   })
 
   describe('and the price is fetched successfully', () => {
-    let thirdPartyPrice: ThirdPartyPrice
-
-    beforeEach(async () => {
-      thirdPartyPrice = {
+    it('should return the third party price and set the isFetchingPrice property as false', async () => {
+      const thirdPartyPrice: ThirdPartyPrice = {
         item: {
           mana: '1',
           usd: '2'
@@ -59,30 +53,28 @@ describe('when using the third party price hook', () => {
       }
 
       mockGetThirdPartyPrice.mockResolvedValueOnce(thirdPartyPrice)
-      renderedHook = renderHook(() => useThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-      await act(() => currentResult.fetchThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-    })
+      const { result } = renderHook(() => useThirdPartyPrice())
 
-    it('should return the third party price and set the isFetchingPrice property as false', () => {
-      expect(currentResult.isFetchingPrice).toBe(false)
-      expect(currentResult.thirdPartyPrice).toEqual(thirdPartyPrice)
+      await act(async () => {
+        await result.current.fetchThirdPartyPrice()
+      })
+
+      expect(result.current.isFetchingPrice).toBe(false)
+      expect(result.current.thirdPartyPrice).toEqual(thirdPartyPrice)
     })
   })
 
   describe('and the price is not fetched successfully', () => {
-    beforeEach(async () => {
+    it('should return the price as undefined', async () => {
       mockGetThirdPartyPrice.mockRejectedValueOnce(new Error('Failed to fetch price'))
-      renderedHook = renderHook(() => useThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-      await act(() => currentResult.fetchThirdPartyPrice())
-      currentResult = renderedHook.result.current as UseThirdPartyPriceResult
-    })
+      const { result } = renderHook(() => useThirdPartyPrice())
 
-    it('should return the price as undefined and ', () => {
-      expect(currentResult.isFetchingPrice).toBe(false)
-      expect(currentResult.thirdPartyPrice).toBeUndefined()
+      await act(async () => {
+        await result.current.fetchThirdPartyPrice()
+      })
+
+      expect(result.current.isFetchingPrice).toBe(false)
+      expect(result.current.thirdPartyPrice).toBeUndefined()
     })
   })
 })

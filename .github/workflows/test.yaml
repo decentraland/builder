@@ -6,17 +6,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4.0.1
         with:
-          node-version: 20.x
+          node-version: 24.x
       - name: Install
-        run: npm ci --legacy-peer-deps
+        run: npm i
       - name: Test
         run: npm run test:coverage
         if: ${{ always() }}
       - name: report coverage
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          fail-on-error: false

@@ -362,6 +362,15 @@
         "title": "Given that the 'ALLOW_MEDIA_HOSTNAMES' permission is set, the 'allowedMediaHostnames' property must be set and not empty. Please correct the 'scene.json'.",
         "message": "For more information, check the Docs to {learn_more}."
       },
+      "unexpected_error": {
+        "title": "An unexpected error occurred while uploading your file",
+        "message": "Please review your file and try again. If the problem persists, contact support.",
+        "details": "Error details"
+      },
+      "missing_external_resources": {
+        "title": "Failed to load model",
+        "message": "Missing external resources: {external_resources}.{additional_message}"
+      },
       "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections",
       "emote_animations_sync_error": "<b>Avatar and prop animations length are not the same</b><br></br>Please correct your animation and upload it again for a perfect sync.",
       "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please re-export your Emote file and upload it again to proceed."
@@ -739,6 +748,7 @@
     "address": "Associated Address",
     "alias": "Linked Avatar",
     "land": "Linked LAND",
+    "transfer": "Transfer",
     "unassign": "Assign to Avatar",
     "set_as_primary": "Assign to Avatar",
     "edit_address": "Edit address",
@@ -960,7 +970,8 @@
       "matic": "Polygon",
       "sepolia": "Ethereum Sepolia",
       "amoy": "Polygon Amoy"
-    }
+    },
+    "revert": "Revert"
   },
   "roles": {
     "1": "Owner",
@@ -1763,6 +1774,7 @@
     "rarity": "Rarity",
     "representation": "Representation",
     "price": "Price",
+    "not_for_sale": "Not for sale",
     "beneficiary": "Beneficiary",
     "supply": "Supply",
     "collection": "Collection",
@@ -1898,7 +1910,7 @@
         "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per collection (paid in MANA) only once."
       },
       "standard": {
-        "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per item (paid in MANA)."
+        "subtitle": "You are about to submit your {count} {count, plural, one {item} other {items}} collection \"{collection_name}\" for Curator review. To continue, choose your payment method for the publication fee. Learn about the publication fee"
       },
       "learn_more": "Learn about the publication fee",
       "already_payed": "Already payed but not published",
@@ -1908,6 +1920,12 @@
       "fee_per_item": "Fee per item",
       "total_in_usd": "Total in {currency}",
       "total_in_mana": "Total in MANA",
+      "available_credits": "Available Credits",
+      "use_credits": "Use Credits",
+      "pay_with_credits": "Pay with Credits",
+      "credits_applied": "Credits Applied",
+      "remaining_to_pay": "Remaining to pay",
+      "checkout": "Checkout",
       "pay_card": "pay by card",
       "pay_card_info": "A 5% transaction fee will be added to your total by the payment processor, as well as an additional 0.5% to cover possible currency fluctuations.",
       "pay_mana": "pay with mana",
@@ -2108,6 +2126,7 @@
       "wearables": "Wearables",
       "wearables_info": "The elements you choose from the wearables dropdown menu will be hidden.",
       "animation": "Animation",
+      "animations": "Animations",
       "tags": "Tags",
       "event_tag": "Use the {event_tag} tag if you want to include this item in the {event_name} event.",
       "select_placeholder": "Select an option",
@@ -2127,6 +2146,14 @@
         "enabled": "Enabled",
         "disabled": "Disabled",
         "info": "Nice Wearable! Allow owners of your item to include it in VRM Avatar Exports so they can show it off outside of Decentraland."
+      },
+      "social_emote": {
+        "avatar": "Avatar",
+        "props": "Props",
+        "audio": "Audio",
+        "optional": "optional",
+        "randomize_outcomes": "Randomize outcomes",
+        "add_outcome": "Add an outcome"
       }
     }
   },
@@ -2395,6 +2422,32 @@
     "start_building": "start building",
     "learn_more": "learn more"
   },
+  "creator_hub_upgrade_modal": {
+    "title": "Upgrade your creation workflow",
+    "description": "The new Creator Hub replaces the old web editor with tons of new features and continuous improvements.",
+    "feature1": {
+      "title": "Better for code and no-code creators",
+      "description": "Work with your code editor of choice while taking full advantage of the visual tools included in the scene editor."
+    },
+    "feature2": {
+      "title": "Preview and share your scenes",
+      "description": "Preview your project exactly as it will appear, then easily publish it to your world or LAND with full control over your files."
+    },
+    "download": "Download Creator Hub",
+    "skip_for_now": "Skip for now",
+    "permissions_variant": {
+      "title": "Upgrade your creation workflow",
+      "description": "The new Creator Hub replaces the old web editor with tons of new features and continuous improvements.",
+      "feature1": {
+        "title": "Better manage access",
+        "description": "Set an access password, allow a select number of people into your place, or invite an entire community!"
+      },
+      "feature2": {
+        "title": "Improved collaboration",
+        "description": "Assign specific parcels to members of your collaboration team and design your own city!"
+      }
+    }
+  },
   "item_status": {
     "unpublished": "Ready to publish",
     "under_review": "Under Review",
@@ -2419,6 +2472,14 @@
     "title": "Action needed",
     "subtitle": "In order to update the new price, you have to remove the previous sale first",
     "cancel": "Cancel",
-    "reject_old_prices": "Reject old prices"
+    "reject_old_prices": "Reject old prices",
+    "authorization": {
+      "title_action": "operation",
+      "action": "Put for sale",
+      "confirm_transaction_title": "Put for sale"
+    }
+  },
+  "credits": {
+    "value": "Credits Value"
   }
 }

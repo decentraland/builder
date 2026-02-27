@@ -1,25 +1,27 @@
-import { Dispatch } from 'redux'
+import { AnimationClip, Object3D } from 'three'
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { FetchItemRequestAction, fetchItemRequest } from 'modules/item/actions'
-import { fetchCollectionRequest, FetchCollectionRequestAction } from 'modules/collection/actions'
+
+export type AnimationData = {
+  animations: AnimationClip[]
+  armatures: Object3D[]
+  isLoaded: boolean
+  error?: string
+}
 
 export type Props = {
-  isConnected: boolean
-  id: string | null
   item: Item | null
   collection: Collection | null
   isLoading: boolean
-  children: (item: Item | null, collection: Collection | null, isLoading: boolean) => React.ReactNode
-  onFetchItem: typeof fetchItemRequest
-  onFetchCollection: typeof fetchCollectionRequest
+  isConnected: boolean
+  id: string | null
+  onFetchItem: (id: string) => void
+  onFetchCollection: (id: string) => void
+  children: (item: Item | null, collection: Collection | null, isLoading: boolean, animationData: AnimationData) => React.ReactNode
 }
-
 export type State = {
   loadedItemId: string | undefined
+  animationData: AnimationData
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'id' | 'item' | 'collection' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onFetchItem' | 'onFetchCollection'>
-export type MapDispatch = Dispatch<FetchItemRequestAction | FetchCollectionRequestAction>
-export type OwnProps = Partial<Pick<Props, 'id'>>
+export type ContainerProps = Pick<Props, 'id' | 'children'>

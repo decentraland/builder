@@ -103,15 +103,32 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
   )
 
   const handleOnPublish = useCallback(
-    (paymentMethod: PaymentMethod, priceToPayInWei: string) => {
+    (paymentMethod: PaymentMethod, priceToPayInWei: string, creditsAmount = '0') => {
       if (!itemPrice?.item.mana) {
         return
       }
+
       if (paymentMethod === PaymentMethod.FIAT || priceToPayInWei === ethers.BigNumber.from('0').toString()) {
-        onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots)
+        onPublish(
+          emailAddress,
+          subscribeToNewsletter,
+          paymentMethod,
+          cheque,
+          priceToPayInWei,
+          itemPrice.programmatic?.minSlots,
+          creditsAmount
+        )
         return
       }
-      const contractName = isThirdParty ? ContractName.ThirdPartyRegistry : ContractName.CollectionManager
+
+      // If using credits, we need to authorize the CreditsManager instead of the regular contract
+      const contractName =
+        BigInt(creditsAmount) > BigInt(0)
+          ? ContractName.CreditsManager
+          : isThirdParty
+          ? ContractName.ThirdPartyRegistry
+          : ContractName.CollectionManager
+
       const authorization = buildManaAuthorization(wallet.address, wallet.networks.MATIC.chainId, contractName)
 
       onAuthorizedAction({
@@ -128,8 +145,17 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
         targetContractName: ContractName.MANAToken,
         requiredAllowanceInWei: priceToPayInWei,
         authorizationType: AuthorizationType.ALLOWANCE,
-        onAuthorized: () =>
-          onPublish(emailAddress, subscribeToNewsletter, paymentMethod, cheque, priceToPayInWei, itemPrice.programmatic?.minSlots)
+        onAuthorized: () => {
+          onPublish(
+            emailAddress,
+            subscribeToNewsletter,
+            paymentMethod,
+            cheque,
+            priceToPayInWei,
+            itemPrice.programmatic?.minSlots,
+            creditsAmount
+          )
+        }
       })
     },
     [

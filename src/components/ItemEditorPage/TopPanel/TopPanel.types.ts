@@ -1,19 +1,8 @@
-import { Dispatch } from 'redux'
-import { CallHistoryMethodAction } from 'connected-react-router'
 import { ChainId } from '@dcl/schemas'
-import {
-  initiateApprovalFlow,
-  InitiateApprovalFlowAction,
-  initiateTPApprovalFlow,
-  InitiateTPApprovalFlowAction,
-  deployMissingEntitiesRequest,
-  DeployMissingEntitiesRequestAction
-} from 'modules/collection/actions'
+import { RouteComponentProps } from 'react-router-dom'
+import { initiateApprovalFlow, initiateTPApprovalFlow, deployMissingEntitiesRequest } from 'modules/collection/actions'
 import { Item } from 'modules/item/types'
-import {
-  setCollectionCurationAssigneeRequest,
-  SetCollectionCurationAssigneeRequestAction
-} from 'modules/curations/collectionCuration/actions'
+import { setCollectionCurationAssigneeRequest } from 'modules/curations/collectionCuration/actions'
 import { Collection } from 'modules/collection/types'
 import { CollectionCuration } from 'modules/curations/collectionCuration/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
@@ -36,12 +25,13 @@ export type Props = {
   isCommitteeMember: boolean
   hasCollectionMissingEntities: boolean
   selectedCollectionId: string | null
-  onNavigate: (path: string) => void
-  onInitiateApprovalFlow: typeof initiateApprovalFlow
-  onInitiateTPApprovalFlow: typeof initiateTPApprovalFlow
-  onSetAssignee: typeof setCollectionCurationAssigneeRequest
-  onDeployMissingEntities: typeof deployMissingEntitiesRequest
-}
+  onInitiateApprovalFlow: ActionFunction<typeof initiateApprovalFlow>
+  onInitiateTPApprovalFlow: ActionFunction<typeof initiateTPApprovalFlow>
+  onSetAssignee: ActionFunction<typeof setCollectionCurationAssigneeRequest>
+  onDeployMissingEntities: ActionFunction<typeof deployMissingEntitiesRequest>
+} & Pick<RouteComponentProps, 'history'>
+
+export type ContainerProps = Pick<Props, 'reviewedItems'>
 
 export type State = {
   currentVeredict?: boolean
@@ -56,34 +46,3 @@ export enum ButtonType {
   DISABLE,
   DEPLOY_MISSING_ENTITIES
 }
-
-export type MapStateProps = Pick<
-  Props,
-  | 'items'
-  | 'totalItems'
-  | 'collection'
-  | 'curation'
-  | 'itemCurations'
-  | 'thirdParty'
-  | 'isLoading'
-  | 'address'
-  | 'chainId'
-  | 'isConnected'
-  | 'isReviewing'
-  | 'isCommitteeMember'
-  | 'selectedCollectionId'
-  | 'hasCollectionMissingEntities'
->
-
-export type MapDispatchProps = Pick<
-  Props,
-  'onNavigate' | 'onInitiateApprovalFlow' | 'onInitiateTPApprovalFlow' | 'onSetAssignee' | 'onDeployMissingEntities'
->
-
-export type MapDispatch = Dispatch<
-  | CallHistoryMethodAction
-  | InitiateApprovalFlowAction
-  | InitiateTPApprovalFlowAction
-  | SetCollectionCurationAssigneeRequestAction
-  | DeployMissingEntitiesRequestAction
->

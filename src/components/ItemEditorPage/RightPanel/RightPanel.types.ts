@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { EmoteDataADR74, Rarity } from '@dcl/schemas'
+import { Rarity } from '@dcl/schemas'
 import {
   deleteItemRequest,
   DeleteItemRequestAction,
@@ -8,7 +8,7 @@ import {
   downloadItemRequest,
   DownloadItemRequestAction
 } from 'modules/item/actions'
-import { Item, SyncStatus, WearableData } from 'modules/item/types'
+import { Item, SyncStatus, WearableData, EmoteData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
@@ -28,10 +28,10 @@ export type Props = {
   campaignName?: string
   isVrmOptOutEnabled: boolean
   isWearableUtilityEnabled: boolean
-  onSaveItem: typeof saveItemRequest
-  onDeleteItem: typeof deleteItemRequest
-  onOpenModal: typeof openModal
-  onDownload: typeof downloadItemRequest
+  onSaveItem: ActionFunction<typeof saveItemRequest>
+  onDeleteItem: ActionFunction<typeof deleteItemRequest>
+  onOpenModal: ActionFunction<typeof openModal>
+  onDownload: ActionFunction<typeof downloadItemRequest>
 }
 
 export type State = {
@@ -42,7 +42,7 @@ export type State = {
   video: string
   rarity?: Rarity
   contents: Record<string, Blob>
-  data?: WearableData | EmoteDataADR74
+  data?: WearableData | EmoteData
   hasItem: boolean
   isDirty: boolean
 }
@@ -67,3 +67,6 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onDownload'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | DownloadItemRequestAction>
+
+// New type for the functional component container
+export type RightPanelContainerProps = Omit<Props, keyof MapStateProps | keyof MapDispatchProps>

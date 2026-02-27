@@ -12,7 +12,7 @@ import { getLoading, getStatusByItemId } from 'modules/item/selectors'
 import { setItems } from 'modules/editor/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './CollectionItem.types'
 import CollectionItem from './CollectionItem'
-import { getIsOffchainPublicItemOrdersEnabled } from 'modules/features/selectors'
+import { getIsOffchainPublicItemOrdersEnabled, getIsOffchainPublicItemOrdersEnabledVariants } from 'modules/features/selectors'
 import { getWallet } from 'modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading'
 
@@ -26,6 +26,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     status: statusByItemId[ownProps.item.id],
     wallet: getWallet(state),
     isOffchainPublicItemOrdersEnabled: getIsOffchainPublicItemOrdersEnabled(state),
+    isOffchainPublicItemOrdersEnabledVariants: getIsOffchainPublicItemOrdersEnabledVariants(state),
     isCancellingItemOrder: isLoadingType(getLoading(state), CANCEL_ITEM_ORDER_TRADE_REQUEST),
     loadingTradeIds
   }

@@ -3,7 +3,7 @@
   flex: none;
   background-color: #242229;
   border-left: 1px solid rgba(115, 110, 125, 0.3);
-  padding: 16px;
+  padding: 16px 0px 16px 16px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -27,7 +27,7 @@
 
 .RightPanel .container {
   overflow-y: auto;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 135px);
   flex: 1;
 }
 
@@ -131,14 +131,28 @@
   background-size: 18px;
 }
 
-.RightPanel .edit-buttons {
-  margin: 10px 0;
-  justify-content: center;
-  display: flex;
+.RightPanel .edit-buttons-container {
+  position: absolute;
+  bottom: 0;
+  right: 0px;
+  width: var(--item-editor-panel-width);
+  height: 68px;
+  background-color: #242229;
+  box-shadow: 0px -4px 16px 0px #00000040;
+  padding: 16px;
+  z-index: 999;
 }
 
-.RightPanel .edit-buttons .ui.button + .ui.button {
-  margin-left: 20px;
+.RightPanel .edit-buttons {
+  display: flex;
+  gap: 16px;
+  .ui.button {
+    height: 36px;
+    padding: 0;
+    &.primary {
+      flex: 1;
+    }
+  }
 }
 
 .RightPanel .danger-text {
@@ -226,4 +240,102 @@
   grid-template-columns: 1fr 105px;
   align-items: center;
   color: var(--secondary-text);
+}
+
+.dcl.box.emote-request-state-box,
+.dcl.box.outcome-box {
+  padding: 10px 10px 0 10px;
+  width: 100%;
+  border-width: 1px;
+  border-radius: 6px;
+  border-color: var(--text-area-border);
+  margin-bottom: 10px;
+}
+
+.dcl.box.emote-request-state-box .ui.dropdown.Select,
+.dcl.box.outcome-box .ui.dropdown.Select {
+  border: none;
+  padding: 0;
+}
+
+.dcl.box.emote-request-state-box .ui.dropdown.Select.disabled .value {
+  color: var(--secondary-text);
+}
+
+.dcl.box.emote-request-state-box .ui.dropdown.Select.disabled .handle {
+  visibility: hidden;
+}
+
+.dcl.box.emote-request-state-box .box-header,
+.dcl.box.outcome-box .box-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+.dcl.box.emote-request-state-box .box-header::after,
+.dcl.box.outcome-box .box-header::after {
+  content: '';
+  margin-left: -10px;
+  display: block;
+  width: calc(100% + 20px);
+  height: 1px;
+  background-color: var(--gray);
+  margin-top: 10px;
+}
+
+.dcl.box.outcome-box .box-header .dcl.box-header-text {
+  width: 100%;
+}
+
+.dcl.box.emote-request-state-box .emote-start-header,
+.dcl.box.outcome-box .outcome-header {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dcl.box.outcome-box .outcome-header {
+  display: flex;
+  align-items: center;
+}
+
+.dcl.box.outcome-box .outcome-header .outcome-edit-button .icon {
+  color: var(--secondary-text);
+}
+
+.dcl.box.outcome-box .outcome-header .outcome-remove-button {
+  margin-left: auto;
+}
+
+.dcl.box.outcome-box .outcome-header .outcome-remove-button .icon {
+  color: var(--secondary-text);
+}
+
+.dcl.box.outcome-box .outcome-header .Input {
+  border: none;
+  padding: 0;
+  margin: 0;
+  height: unset;
+}
+
+.dcl.box.outcome-box .outcome-header .Input input {
+  text-align: left;
+  flex: 0;
+}
+
+.dcl.box.outcome-box .outcome-header .outcome-title-input > input {
+  font-weight: 700;
+  color: var(--text);
+  &:disabled {
+    opacity: 1;
+  }
+}
+
+.dcl.box.outcome-box .outcome-header .outcome-title-input .ui.button.basic {
+  color: var(--secondary-text) !important;
+}
+
+#root:has(.RightPanel) ~ .intercom-lightweight-app .intercom-lightweight-app-launcher {
+  bottom: 64px;
 }

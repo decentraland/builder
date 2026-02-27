@@ -1,7 +1,11 @@
+import { useCallback, useEffect, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { AuthorizationStepStatus } from 'decentraland-ui'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getWallet, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getCredits, isFetchingCredits } from 'decentraland-dapps/dist/modules/credits/selectors'
+import { fetchCreditsRequest } from 'decentraland-dapps/dist/modules/credits/actions'
+import { CreditsResponse } from 'decentraland-dapps/dist/modules/credits/types'
 import { RootState } from 'modules/common/types'
 import {
   getCollection,
@@ -21,10 +25,13 @@ import {
 import { publishCollectionRequest } from 'modules/collection/actions'
 import { CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } from 'modules/item/actions'
-import { getIsOffchainPublicItemOrdersEnabled, getIsPublishCollectionsWertEnabled } from 'modules/features/selectors'
+import {
+  getIsOffchainPublicItemOrdersEnabled,
+  getIsPublishCollectionsWertEnabled,
+  getIsCreditsForCollectionsFeeEnabled
+} from 'modules/features/selectors'
 import { OwnProps } from './PublishWizardCollectionModal.types'
 import { AuthorizedPublishWizardThirdPartyCollectionModal, AuthorizedPublishWizardCollectionModal } from './PublishWizardCollectionModal'
-import { useCallback, useMemo } from 'react'
 import { isTPCollection } from 'modules/collection/utils'
 import { PaymentMethod } from 'modules/collection/types'
 import { Cheque } from 'modules/thirdParty/types'
@@ -48,6 +55,7 @@ export default (props: OwnProps) => {
 
   const isOffchainPublicItemOrdersEnabled = useSelector((state: RootState) => getIsOffchainPublicItemOrdersEnabled(state))
   const isPublishCollectionsWertEnabled = useSelector(getIsPublishCollectionsWertEnabled, shallowEqual)
+  const isCreditsForCollectionsFeeEnabled = useSelector(getIsCreditsForCollectionsFeeEnabled, shallowEqual)
   const wallet = useSelector(getWallet, shallowEqual)!
   const unsyncedCollectionError = useSelector(getUnsyncedCollectionError, shallowEqual)
   const allCollectionItems = useSelector((state: RootState) => getCollectionItems(state, props.metadata.collectionId), shallowEqual)
@@ -97,8 +105,12 @@ export default (props: OwnProps) => {
       paymentMethod: PaymentMethod,
       cheque?: Cheque,
       maxSlotPrice?: string,
-      minSlots?: string
+      minSlots?: string,
+      creditsAmount = '0'
     ) => {
+      // Calculate totalPrice from rarities and items count for standard collections
+      const totalPrice = price?.item?.mana && !thirdParty ? (BigInt(price.item.mana) * BigInt(itemsToPublish.length)).toString() : undefined
+
       return thirdParty
         ? dispatch(
             publishAndPushChangesThirdPartyItemsRequest(
@@ -112,7 +124,9 @@ export default (props: OwnProps) => {
               minSlots
             )
           )
-        : dispatch(publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod))
+        : dispatch(
+            publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice)
+          )
     },
     [
       thirdParty,
@@ -121,9 +135,21 @@ export default (props: OwnProps) => {
       itemsWithChanges,
       dispatch,
       publishAndPushChangesThirdPartyItemsRequest,
-      publishCollectionRequest
+      publishCollectionRequest,
+      price
     ]
   )
+
+  const address = useSelector(getAddress)
+  const credits = useSelector((state: RootState) => (address ? getCredits(state, address) : null) as CreditsResponse | null, shallowEqual)
+  const isLoadingCredits = useSelector(isFetchingCredits, shallowEqual)
+
+  // Fetch credits when the component mounts
+  useEffect(() => {
+    if (address && !credits) {
+      dispatch(fetchCreditsRequest(address))
+    }
+  }, [address, credits, dispatch])
 
   const isPublishingFinished = !!collection.forumLink && thirdPartyItemsToPublish.length === 0 && thirdPartyItemsToPushChanges.length === 0
   const publishingStatus = thirdParty ? thirdPartyPublishingStatus : standardPublishingStatus
@@ -144,10 +170,13 @@ export default (props: OwnProps) => {
       itemsWithChanges={itemsWithChanges}
       isPublishingFinished={isPublishingFinished}
       price={price}
+      credits={credits}
+      isLoadingCredits={isLoadingCredits}
       unsyncedCollectionError={unsyncedCollectionError}
       itemError={itemError}
       collectionError={collectionError || thirdPartyPublishingError}
       isPublishCollectionsWertEnabled={isPublishCollectionsWertEnabled}
+      isCreditsForCollectionsFeeEnabled={isCreditsForCollectionsFeeEnabled}
       isOffchainPublicItemOrdersEnabled={isOffchainPublicItemOrdersEnabled}
       onPublish={onPublish}
       onFetchPrice={isThirdParty ? fetchThirdPartyPrice : onFetchRarities}

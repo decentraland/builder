@@ -1,3 +1,3 @@
-import ItemAddedToast from './ItemAddedToast.container'
+import ItemAddedToast from './ItemAddedToast'
 
 export { ItemAddedToast }

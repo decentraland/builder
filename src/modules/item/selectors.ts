@@ -1,7 +1,7 @@
 import { Entity } from '@dcl/schemas'
 import { AnyAction } from 'redux-saga'
 import { createSelector } from 'reselect'
-import { getSearch } from 'connected-react-router'
+import { AuthorizationStepStatus } from 'decentraland-dapps/dist/containers/withAuthorizedAction/AuthorizationModal'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
@@ -18,7 +18,7 @@ import { getItemThirdParty } from 'modules/thirdParty/selectors'
 import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import { isEqual } from 'lib/address'
 import { buildCatalystItemURN, isThirdParty } from '../../lib/urn'
-import { DOWNLOAD_ITEM_REQUEST, SAVE_ITEM_REQUEST, SaveItemRequestAction } from './actions'
+import { CREATE_ITEM_ORDER_TRADE_REQUEST, DOWNLOAD_ITEM_REQUEST, SAVE_ITEM_REQUEST, SaveItemRequestAction } from './actions'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, BlockchainRarity, CatalystItem, VIDEO_PATH } from './types'
 import { areSynced, canSeeItem, isEmote, isOwner, isSmart, isWearable } from './utils'
@@ -241,8 +241,6 @@ export const hasViewAndEditRights = (state: RootState, address: string, collecti
   )
 }
 
-export const getNewItemName = (state: RootState) => new URLSearchParams(getSearch(state)).get('newItem')
-
 export const getIdsOfItemsBeingSaved = createSelector<RootState, AnyAction[], Record<string, boolean>>(getLoading, (actions: AnyAction[]) =>
   actions.reduce((acc, action) => {
     if (isSavingItemAction(action)) {
@@ -266,4 +264,16 @@ export const getUnsyncedThirdPartyItemsById = (state: RootState, itemIds: string
     .filter(itemId => statusOfItems[itemId] === SyncStatus.UNSYNCED)
     .map(itemId => getItem(state, itemId))
     .filter(Boolean) as Item[]
+}
+
+export const getPutForSaleOffChainStatus = (state: RootState) => {
+  if (isLoadingType(getLoading(state), CREATE_ITEM_ORDER_TRADE_REQUEST)) {
+    return AuthorizationStepStatus.WAITING
+  }
+
+  if (getError(state)) {
+    return AuthorizationStepStatus.ERROR
+  }
+
+  return AuthorizationStepStatus.PENDING
 }

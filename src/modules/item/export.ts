@@ -212,7 +212,10 @@ function buildADR74EmoteEntityMetadata(collection: Collection, item: Item<ItemTy
       category: item.data.category,
       representations: item.data.representations,
       tags: item.data.tags,
-      loop: item.data.loop
+      loop: item.data.loop,
+      startAnimation: item.data.startAnimation,
+      randomizeOutcomes: item.data.randomizeOutcomes,
+      outcomes: item.data.outcomes
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,

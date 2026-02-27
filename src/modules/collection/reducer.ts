@@ -1,5 +1,5 @@
 import equal from 'fast-deep-equal'
-import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
+import { LocationChangeAction, LOCATION_CHANGE } from 'modules/location/actions'
 import { CloseAllModalsAction, CloseModalAction, CLOSE_ALL_MODALS, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'

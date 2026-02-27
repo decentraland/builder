@@ -29,7 +29,7 @@ const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
 const CLAIM_NAME_OPTION = 'claim_name_option'
 
-const ENS_LIST_PAGE_SIZE = 2000 // TODO: see how to paginate this in the future
+const ENS_LIST_PAGE_SIZE = parseInt(config.get('ENS_LIST_PAGE_SIZE', '1000')) // TODO: see how to paginate this in the future
 
 export default function DeployToWorld({
   name,
@@ -141,7 +141,7 @@ export default function DeployToWorld({
   }, [nameType, analytics])
 
   const handleWorldSelected = useCallback(
-    (e: React.SyntheticEvent<HTMLElement>, { value }) => {
+    (e: React.SyntheticEvent<HTMLElement>, { value }: any) => {
       if (e.type === 'blur') {
         return
       }
@@ -158,7 +158,7 @@ export default function DeployToWorld({
     [deployments, handleClaimName]
   )
 
-  const handleNameTypeSelected = useCallback((_, { value }) => {
+  const handleNameTypeSelected = useCallback((_: any, { value }: any) => {
     setWorld('')
     setNameType(value)
   }, [])
@@ -167,7 +167,7 @@ export default function DeployToWorld({
     window.open(getExplorerUrl, '_blank,noreferrer')
   }
 
-  const handleConfirmWorldReplaceContent = useCallback((_, { checked }) => {
+  const handleConfirmWorldReplaceContent = useCallback((_: any, { checked }: any) => {
     setConfirmWorldReplaceContent(checked)
   }, [])
 

@@ -1,5 +1,4 @@
 import { Land, Rental } from 'modules/land/types'
-import { Dispatch } from 'redux'
 import { Deployment } from 'modules/deployment/types'
 
 export type Props = {
@@ -16,6 +15,12 @@ export type Props = {
   ) => React.ReactNode
 }
 
-export type MapStateProps = Pick<Props, 'id' | 'land' | 'deployments' | 'rental' | 'isLoading'>
-export type MapDispatch = Dispatch
-export type OwnProps = Partial<Pick<Props, 'id'>>
+export type ContainerProps = {
+  id?: string | null
+  children: (
+    id: string | null,
+    land: Land | null,
+    isLoading: boolean,
+    associations: { deployments: Deployment[]; rental: Rental | null }
+  ) => React.ReactNode
+}

@@ -1,8 +1,8 @@
-import * as ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'connected-react-router'
-import { DragDropContextProvider } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
+import { Router } from 'react-router-dom'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
 import ToastProvider from 'decentraland-dapps/dist/providers/ToastProvider'
@@ -21,12 +21,16 @@ import './modules/analytics/sentry'
 import './themes'
 import './index.css'
 
-ReactDOM.render(
+const container = document.getElementById('root')
+if (!container) throw new Error('Failed to find the root element')
+const root = createRoot(container)
+
+root.render(
   <Provider store={store}>
-    <DragDropContextProvider backend={HTML5Backend}>
+    <DndProvider backend={HTML5Backend}>
       <TranslationProvider locales={Object.keys(languages)}>
         <WalletProvider>
-          <ConnectedRouter history={history}>
+          <Router history={history}>
             <DclThemeProvider theme={darkTheme}>
               <ToastProvider>
                 <ModalProvider components={modals}>
@@ -35,10 +39,9 @@ ReactDOM.render(
               </ToastProvider>
               <Web2TransactionModal />
             </DclThemeProvider>
-          </ConnectedRouter>
+          </Router>
         </WalletProvider>
       </TranslationProvider>
-    </DragDropContextProvider>
-  </Provider>,
-  document.getElementById('root')
+    </DndProvider>
+  </Provider>
 )

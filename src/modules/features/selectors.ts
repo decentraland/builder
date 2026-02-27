@@ -1,4 +1,4 @@
-import { getIsFeatureEnabled, hasLoadedInitialFlags } from 'decentraland-dapps/dist/modules/features/selectors'
+import { getFeatureVariant, getIsFeatureEnabled, hasLoadedInitialFlags } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import { FeatureName } from './types'
@@ -78,4 +78,28 @@ export const getIsUnityWearablePreviewEnabled = (state: RootState) => {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.UNITY_WEARABLE_PREVIEW)
   }
   return false
+}
+
+export const getIsOffchainPublicItemOrdersEnabledVariants = (state: RootState) => {
+  try {
+    return getFeatureVariant(state, ApplicationName.DAPPS, FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS)
+  } catch (e) {
+    return null
+  }
+}
+
+export const getIsCreditsForCollectionsFeeEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREDITS_FOR_COLLECTIONS_FEE)
+  } catch (e) {
+    return false
+  }
+}
+
+export const getIsSocialEmotesEnabled = (state: RootState) => {
+  try {
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.SOCIAL_EMOTES)
+  } catch (e) {
+    return false
+  }
 }

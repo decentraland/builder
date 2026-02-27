@@ -15,6 +15,7 @@ import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeServic
 import { ContentfulClient, campaignSagas } from 'decentraland-dapps/dist/modules/campaign'
 import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
 import { creditsSaga } from 'decentraland-dapps/dist/modules/credits/sagas'
+import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -79,7 +80,8 @@ export function* rootSaga(
   ensApi: ENSApi,
   worldsApi: WorldsAPI,
   tradeService: TradeService,
-  creditsClient: CreditsClient
+  creditsClient: CreditsClient,
+  creditsService: CreditsService
 ) {
   yield all([
     analyticsSaga(),
@@ -91,7 +93,7 @@ export function* rootSaga(
     assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
     authorizationSaga(),
-    collectionSaga(builderAPI, newBuilderClient),
+    collectionSaga(builderAPI, newBuilderClient, creditsService),
     committeeSaga(builderAPI),
     deploymentSaga(builderAPI, catalystClient),
     editorSaga(),

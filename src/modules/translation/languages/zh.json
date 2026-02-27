@@ -355,6 +355,15 @@
         "title": "鉴于设置了 'ALLOW_MEDIA_HOSTNAMES' 权限，因此必须设置 'allowedMediaHostnames' 属性且不为空。请更正 'scene.json'。",
         "message": "有关更多信息，请查看文档 {learn_more}。"
       },
+      "unexpected_error": {
+        "title": "上传文件时发生意外错误",
+        "message": "请检查您的文件并重试。如果问题仍然存在，请联系支持人员。",
+        "details": "错误详情"
+      },
+      "missing_external_resources": {
+        "title": "加载模型失败",
+        "message": "缺少外部资源：<b>{external_resources}</b><br></br>{additional_message}"
+      },
       "item_not_allowed_in_third_party_collections": "此项目类型{type}在链接的可穿戴设备集合中不允许",
       "emote_animations_sync_error": "<b>头像和道具动画长度不一样</b><br></br>请更正您的动画，然后再次上传以获得完美的同步.",
       "emote_with_mesh": "<b>您的文件包括头像网。</b><br></br>对于此过程，此网格不是必需的。请，只需重新出口并再次上传即可继续。"
@@ -741,6 +750,7 @@
     "address": "相关地址",
     "alias": "链接的头像",
     "land": "链接的土地",
+    "transfer": "转移",
     "unassign": "分配给阿凡达",
     "set_as_primary": "分配给阿凡达",
     "edit_address": "编辑地址",
@@ -951,7 +961,8 @@
       "matic": "Polygon",
       "sepolia": "Ethereum Sepolia",
       "amoy": "Polygon Amoy"
-    }
+    },
+    "revert": "撤销"
   },
   "roles": {
     "1": "持有者",
@@ -1751,6 +1762,7 @@
     "rarity": "稀有度",
     "representation": "表示",
     "price": "价钱",
+    "not_for_sale": "不出售",
     "beneficiary": "受益人",
     "supply": "供应",
     "collection": "采集",
@@ -1898,6 +1910,12 @@
       "fee_per_item": "每件费用",
       "total_in_usd": "总计 {currency}",
       "total_in_mana": "总计 MANA",
+      "available_credits": "可用积分",
+      "use_credits": "使用积分",
+      "pay_with_credits": "使用积分支付",
+      "credits_applied": "已应用积分",
+      "remaining_to_pay": "剩余支付",
+      "checkout": "结账",
       "pay_card": "用卡支付",
       "pay_card_info": "支付处理方将在您的总额中加收 5% 的交易费，以及额外的 0.5% 以应对可能的货币波动。",
       "pay_mana": "用法力支付",
@@ -2107,6 +2125,7 @@
       "wearables": "可穿戴设备",
       "wearables_info": "您从可穿戴设备下拉菜单中选择的元素将被隐藏。",
       "animation": "动画",
+      "animations": "动画",
       "tags": "标签",
       "event_tag": "如果您想将此项目包含在 {event_tag} 中，请使用 {event_name} 标签。{learn_more}",
       "select_placeholder": "选择一个选项",
@@ -2126,6 +2145,14 @@
         "enabled": "启用",
         "disabled": "禁用",
         "info": "漂亮的可穿戴！允许您的物品的所有者将其包含在VRM Avatar出口中，以便他们可以在分散的外部出现。"
+      },
+      "social_emote": {
+        "avatar": "阿凡达",
+        "props": "道具",
+        "audio": "音频",
+        "optional": "可选",
+        "randomize_outcomes": "随机化结果",
+        "add_outcome": "添加结果"
       }
     }
   },
@@ -2394,6 +2421,32 @@
     "start_building": "开始建设",
     "learn_more": "了解更多"
   },
+  "creator_hub_upgrade_modal": {
+    "title": "升级您的创作工作流程",
+    "description": "新的Creator Hub取代了旧的网页编辑器，带来了大量新功能和持续改进。",
+    "feature1": {
+      "title": "更适合代码和无代码创作者",
+      "description": "使用您选择的代码编辑器，同时充分利用场景编辑器中包含的可视化工具。"
+    },
+    "feature2": {
+      "title": "预览和分享您的场景",
+      "description": "预览您的项目，就像它将要出现的样子，然后轻松将其发布到您的世界或LAND，完全控制您的文件。"
+    },
+    "download": "下载Creator Hub",
+    "skip_for_now": "暂时跳过",
+    "permissions_variant": {
+      "title": "升级您的创作工作流程",
+      "description": "新的Creator Hub取代了旧的网页编辑器，带来了大量新功能和持续改进。",
+      "feature1": {
+        "title": "更好地管理访问权限",
+        "description": "设置访问密码，允许特定数量的人进入您的地方，或邀请整个社区！"
+      },
+      "feature2": {
+        "title": "改进的协作功能",
+        "description": "将特定地块分配给协作团队成员，设计您自己的城市！"
+      }
+    }
+  },
   "item_status": {
     "unpublished": "准备发布",
     "under_review": "审查中",
@@ -2418,6 +2471,11 @@
     "title": "需要采取行动",
     "subtitle": "为了更新新价格，您必须首先删除先前的销售",
     "cancel": "取消",
-    "reject_old_prices": "拒绝旧价格"
+    "reject_old_prices": "拒绝旧价格",
+    "authorization": {
+      "title_action": "行动",
+      "action": "出售",
+      "confirm_transaction_title": "出售"
+    }
   }
 }

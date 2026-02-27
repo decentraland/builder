@@ -324,23 +324,40 @@ export default function ItemDetailPage(props: Props) {
                   <div className="title">{t('item_detail_page.selling.title')}</div>
                   <div className="data">
                     {isFree(item) ? (
-                      <Section>
+                      <Section className="price-container">
                         <div className="subtitle">{t('item.price')}</div>
                         <div className="value">{t('global.free')}</div>
                       </Section>
                     ) : item.price ? (
-                      <Section>
+                      <Section className="price-container">
                         <div className="subtitle">{t('item.price')}</div>
-                        {item.price ? (
-                          <Mana showTooltip network={Network.MATIC}>
-                            {ethers.utils.formatEther(item.price)}
+                        {item.price && item.price !== ethers.constants.MaxUint256.toString() ? (
+                          <Mana showTooltip network={Network.MATIC} className="mana-price-container">
+                            {(() => {
+                              const price = ethers.utils.formatEther(item.price)
+                              return price.length > 10 ? (
+                                <Popup
+                                  content={price}
+                                  position="top center"
+                                  trigger={<span>{`${price.slice(0, 3)}...${price.slice(-4)}`}</span>}
+                                  hideOnScroll
+                                  on="hover"
+                                  inverted
+                                  flowing
+                                />
+                              ) : (
+                                <div className="value">{price}</div>
+                              )
+                            })()}
                           </Mana>
+                        ) : item.price === ethers.constants.MaxUint256.toString() ? (
+                          <div className="value">{t('item.not_for_sale')}</div>
                         ) : (
                           '-'
                         )}
                       </Section>
                     ) : null}
-                    <Section>
+                    <Section className="beneficiary-container">
                       <div className="subtitle">{t('item.beneficiary')}</div>
                       {item.beneficiary ? <div className="value">{shorten(item.beneficiary)}</div> : '-'}
                     </Section>

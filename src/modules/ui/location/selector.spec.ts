@@ -7,6 +7,7 @@ beforeEach(() => {
   state = {
     ui: {
       location: {
+        currentLocation: undefined,
         lastLocation: undefined
       }
     }
