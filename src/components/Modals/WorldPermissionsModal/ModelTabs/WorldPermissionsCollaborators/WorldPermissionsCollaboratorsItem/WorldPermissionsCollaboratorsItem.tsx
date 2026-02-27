@@ -55,7 +55,12 @@ export const WorldPermissionsCollaboratorsItem = React.memo((props: Props) => {
     <Table.Row>
       <Table.Cell className={styles.userCell}>
         <WorldPermissionsAvatarWithInfo walletAddress={walletAddress} />
-        {parcelCount > 0 && <Chip label={t('world_permissions_modal.tab_collaborators.parcel_count_badge', { count: parcelCount })} />}
+        {parcelCount > 0 && (
+          <Chip
+            className={styles.parcelBadge}
+            label={t('world_permissions_modal.tab_collaborators.parcel_count_badge', { count: parcelCount })}
+          />
+        )}
       </Table.Cell>
       <Table.Cell>
         <Checkbox
