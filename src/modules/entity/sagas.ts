@@ -61,11 +61,17 @@ export function* entitySaga(catalystClient: CatalystClient) {
         throw new Error('Invalid Identity')
       }
       const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
-      yield all(
+      const responses: Response[] = yield all(
         entities.map(entity =>
           call([contentClient, 'deploy'], { ...entity, authChain: Authenticator.signPayload(identity, entity.entityId) })
         )
       )
+
+      const failedResponse = responses.find(r => !r.ok)
+      if (failedResponse) {
+        const { errors } = yield call([failedResponse, 'json'])
+        throw new Error(`Deploy failed with status ${failedResponse.status}: ${errors.join(' ') ?? 'Unknown error'}`)
+      }
 
       yield put(deployEntitiesSuccess(entities))
     } catch (error) {
