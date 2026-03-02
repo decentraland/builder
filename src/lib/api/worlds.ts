@@ -77,7 +77,7 @@ export type WorldScenesResponse = {
   total: number
 }
 
-export type AddressWorldPermission = {
+export type WorldCollaboratorPermission = {
   permission: 'deployment' | 'streaming'
   world_wide: boolean // If worldWide is set, parcels will not be returned
   parcel_count?: number
@@ -85,7 +85,7 @@ export type AddressWorldPermission = {
 
 export type WorldPermissionsResponse = {
   permissions: WorldPermissions
-  summary: Record<string, AddressWorldPermission[]>
+  summary: Record<string, WorldCollaboratorPermission[]>
 }
 
 export enum WorldPermissionNames {

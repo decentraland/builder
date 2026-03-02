@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { Checkbox, Table } from 'decentraland-ui'
+import { Chip } from 'decentraland-ui2'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -8,7 +9,6 @@ import Icon from 'components/Icon'
 import { Props } from './WorldPermissionsCollaboratorsItem.types'
 import { WorldPermissionsAvatarWithInfo } from '../../Layouts/WorldPermissionsAvatarWithInfo'
 import styles from './WorldPermissionsCollaboratorsItem.module.css'
-import { Chip } from 'decentraland-ui2'
 
 export const WORLD_PERMISSIONS_COLLABORATORS_ITEM_LOADING_ROW_TEST_ID = 'world-permissions-collaborators-item-test-id'
 export const WORLD_PERMISSIONS_COLLABORATORS_ITEM_DEPLOYMENT_CHECKBOX_TEST_ID =
@@ -28,9 +28,10 @@ export const WorldPermissionsCollaboratorsItem = React.memo((props: Props) => {
     loading
   } = props
 
-  const parcelCount = useMemo(() => {
-    return permissionsSummary?.find(p => p.permission === 'deployment')?.parcel_count ?? 0
-  }, [permissionsSummary])
+  const parcelCount: number = useMemo(
+    () => permissionsSummary?.find(p => p.permission === 'deployment')?.parcel_count ?? 0,
+    [permissionsSummary]
+  )
 
   if (loading || !walletAddress || !onUserPermissionListChange) {
     return (

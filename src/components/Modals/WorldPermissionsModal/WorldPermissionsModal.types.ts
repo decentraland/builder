@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile'
 
-import { AddressWorldPermission, WorldPermissionNames, WorldPermissionType, WorldPermissions } from 'lib/api/worlds'
+import { WorldCollaboratorPermission, WorldPermissionNames, WorldPermissionType, WorldPermissions } from 'lib/api/worlds'
 import { deleteWorldPermissionsRequest, postWorldPermissionsRequest, putWorldPermissionsRequest } from 'modules/worlds/actions'
 
 export type WorldPermissionsEssentials = { name: string; permissionName?: WorldPermissionNames; permissionType?: WorldPermissionType }
@@ -15,7 +15,7 @@ export type WorldPermissionsModalProps = {
     isCollaboratorsTabShown?: boolean
   }
   worldPermissions?: WorldPermissions
-  worldPermissionsSummary?: Record<string, AddressWorldPermission[]>
+  worldPermissionsSummary?: Record<string, WorldCollaboratorPermission[]>
   onPutWorldPermissionsRequest: typeof putWorldPermissionsRequest
   onPostWorldPermissionsRequest: typeof postWorldPermissionsRequest
   onDeleteWorldPermissionsRequest: typeof deleteWorldPermissionsRequest

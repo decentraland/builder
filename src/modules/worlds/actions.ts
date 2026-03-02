@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { AddressWorldPermission, WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import { WorldCollaboratorPermission, WorldPermissionNames, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
 
 // Fetch Worlds Wallet Stats
 export const FETCH_WORLDS_WALLET_STATS_REQUEST = '[Request] Fetch Worlds Wallet Stats'
@@ -25,7 +25,7 @@ export const getWorldPermissionsRequest = (worldName: string) => action(GET_WORL
 export const getWorldPermissionsSuccess = (
   worldName: string,
   permissions: WorldPermissions,
-  summary?: Record<string, AddressWorldPermission[]>
+  summary?: Record<string, WorldCollaboratorPermission[]>
 ) => action(GET_WORLD_PERMISSIONS_SUCCESS, { worldName, permissions, summary })
 export const getWorldPermissionsFailure = (worldName: string, error: string) => action(GET_WORLD_PERMISSIONS_FAILURE, { worldName, error })
 

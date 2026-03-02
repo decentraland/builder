@@ -32,7 +32,7 @@ import {
   PUT_WORLD_PERMISSIONS_SUCCESS
 } from './actions'
 import {
-  AddressWorldPermission,
+  WorldCollaboratorPermission,
   AllowListPermissionSetting,
   WorldPermissionType,
   WorldPermissions,
@@ -44,7 +44,7 @@ export type WorldsState = {
   data: Record<string, unknown>
   walletStats: Record<string, WorldsWalletStats>
   worldsPermissions: Record<string, WorldPermissions>
-  worldsPermissionsSummary: Record<string, Record<string, AddressWorldPermission[]>>
+  worldsPermissionsSummary: Record<string, Record<string, WorldCollaboratorPermission[]>>
   loading: LoadingState
   error: string | null
 }
