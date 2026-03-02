@@ -23,7 +23,7 @@ import { ENS } from 'modules/ens/types'
 import Profile from 'components/Profile'
 import { marketplace } from 'lib/api/marketplace'
 
-const CREATOR_HUB_DOWNLOAD_URL = 'https://decentraland.org/download/creator-hub/'
+const CREATOR_HUB_DOWNLOAD_URL = config.get('CREATOR_HUB_DOWNLOAD_URL')
 const EXPLORER_URL = config.get('EXPLORER_URL', '')
 const WORLDS_CONTENT_SERVER_URL = config.get('WORLDS_CONTENT_SERVER', '')
 const ENS_DOMAINS_URL = config.get('ENS_DOMAINS_URL', '')

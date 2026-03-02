@@ -3,6 +3,7 @@ import React from 'react'
 import { Icon, Popup, Table } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { config } from 'config'
 import { WorldPermissionsCollaboratorsProps } from './WorldPermissionsCollaborators.types'
 import { WorldPermissionsAddUserForm } from '../Layouts/WorldPermissionsAddUserForm'
 import { WorldPermissionsHeader } from '../Layouts/WorldPermissionsHeader'
@@ -11,7 +12,7 @@ import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
 
 import styles from './WorldPermissionsCollaborators.module.css'
 
-const CREATOR_HUB_DOWNLOAD_URL = 'https://decentraland.org/download/creator-hub/'
+const CREATOR_HUB_DOWNLOAD_URL = config.get('CREATOR_HUB_DOWNLOAD_URL')
 
 export default React.memo((props: WorldPermissionsCollaboratorsProps) => {
   const {
