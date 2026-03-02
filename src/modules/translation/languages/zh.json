@@ -2037,6 +2037,7 @@
       "reject": "拒绝",
       "enable": "使",
       "disable": "禁用",
+      "deploy_missing_entities": "部署缺失实体",
       "rejection_modal": {
         "veredict_explanation": "你能告诉我们为什么吗？",
         "visit_activity": "您可以检查您的 {activity_link} 以监控交易",
@@ -2155,6 +2156,12 @@
         "add_outcome": "添加结果"
       }
     }
+  },
+  "deploy_entities_modal": {
+    "success_title": "成功",
+    "error_title": "错误",
+    "success_message": "集合的道具已成功上传：<b>{name}</b>",
+    "error_message": "上传集合的道具时出错：<b>{name}</b>"
   },
   "video_showcase_modal": {
     "title": "您智能可穿戴的详细视频",

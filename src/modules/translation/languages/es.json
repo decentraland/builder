@@ -2056,6 +2056,7 @@
       "reject": "Rechazar",
       "enable": "Habilitar",
       "disable": "Deshabilitar",
+      "deploy_missing_entities": "Subir Entidades Faltantes",
       "rejection_modal": {
         "veredict_explanation": "Puedes contarnos por qué?",
         "visit_activity": "Puedes visitar tu {activity_link} para monitoriear la transacción",
@@ -2174,6 +2175,12 @@
         "add_outcome": "Agregar una opción"
       }
     }
+  },
+  "deploy_entities_modal": {
+    "success_title": "Éxito",
+    "error_title": "Error",
+    "success_message": "Los elementos se subieron exitosamente para la colección: <b>{name}</b>",
+    "error_message": "Hubo un error al subir los elementos para la colección: <b>{name}</b>"
   },
   "video_showcase_modal": {
     "title": "Video detallado de su Vestimenta Interactiva",

@@ -2041,6 +2041,7 @@
       "reject": "Reject",
       "enable": "Enable",
       "disable": "Disable",
+      "deploy_missing_entities": "Deploy Missing Entities",
       "rejection_modal": {
         "discussion": "Discussion",
         "forum_link": "Forum link",
@@ -2156,6 +2157,12 @@
         "add_outcome": "Add an outcome"
       }
     }
+  },
+  "deploy_entities_modal": {
+    "success_title": "Success",
+    "error_title": "Error",
+    "success_message": "The items were successfully uploaded for collection: <b>{name}</b>",
+    "error_message": "There was an error uploading the items for collection: <b>{name}</b>"
   },
   "video_showcase_modal": {
     "title": "Detailed Video of your Smart Wearable",
