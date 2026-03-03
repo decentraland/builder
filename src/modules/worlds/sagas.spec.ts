@@ -204,8 +204,8 @@ describe('when handling the request of permissions of a world', () => {
   describe('when the permission fetch is successful and there aren`t any wallets in the permissions', () => {
     it('should put the success action with the retrieved permissions', () => {
       return expectSaga(worldsSaga, worldsApi)
-        .provide([[call(worldsApi.getPermissions, worldName), worldPermissionsMock]])
-        .put(getWorldPermissionsSuccess(worldName, worldPermissionsMock))
+        .provide([[call(worldsApi.getPermissions, worldName), { permissions: worldPermissionsMock, summary: undefined }]])
+        .put(getWorldPermissionsSuccess(worldName, worldPermissionsMock, undefined))
         .dispatch(getWorldPermissionsRequest(worldName))
         .silentRun()
     })
@@ -225,9 +225,9 @@ describe('when handling the request of permissions of a world', () => {
 
     it('should put the success action with the retrieved permissions and the load profile request for each wallet address', () => {
       return expectSaga(worldsSaga, worldsApi)
-        .provide([[call(worldsApi.getPermissions, worldName), worldPermissionsMockTemp]])
+        .provide([[call(worldsApi.getPermissions, worldName), { permissions: worldPermissionsMockTemp, summary: undefined }]])
         .put(loadProfilesRequest(['0x123']))
-        .put(getWorldPermissionsSuccess(worldName, worldPermissionsMockTemp))
+        .put(getWorldPermissionsSuccess(worldName, worldPermissionsMockTemp, undefined))
         .dispatch(getWorldPermissionsRequest(worldName))
         .silentRun()
     })

@@ -59,7 +59,8 @@ export enum DeployToWorldView {
   PROGRESS = 'PROGRESS',
   SUCCESS = 'SUCCESS',
   EMPTY = 'EMPTY',
-  ERROR = 'ERROR'
+  ERROR = 'ERROR',
+  MULTI_SCENE_BLOCKED = 'MULTI_SCENE_BLOCKED'
 }
 
 export type DeployToWorldModalMetadata = DeployModalMetadata & {

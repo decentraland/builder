@@ -51,7 +51,9 @@
       "column_deploy_label": "deploy",
       "column_deploy_tooltip": "User will be able to deploy new scenes to your World",
       "column_stream_label": "stream",
-      "column_stream_tooltip": "User will be able to stream content into your World"
+      "column_stream_tooltip": "User will be able to stream content into your World",
+      "parcel_permissions_callout": "Parcel-level permissions can only be managed from Creator Hub. <link>Download Creator Hub</link> to grant access to specific parcels within this World.",
+      "parcel_count_badge": "{count} {count, plural, one {parcel} other {parcels}}"
     }
   },
   "asset_pack": {
@@ -618,7 +620,13 @@
       "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>",
       "world_has_content": "The existing content in {world} World will be replaced with the new content you're about to publish.",
       "confirm_world_replace_content": "I understand that this action is irreversible",
-      "scene_information": "Scene Information"
+      "scene_information": "Scene Information",
+      "multi_scene_blocked": {
+        "title": "This World has multiple scenes",
+        "description": "This World contains multiple scenes that can only be managed from Creator Hub.\n Download Creator Hub to publish to this world.",
+        "download_creator_hub": "Download Creator Hub",
+        "go_back": "Go back"
+      }
     },
     "title": "Publish {sceneName} Scene",
     "subtitle": "Select where you want to deploy this scene:",

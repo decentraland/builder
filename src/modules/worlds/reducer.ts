@@ -31,13 +31,20 @@ import {
   PUT_WORLD_PERMISSIONS_REQUEST,
   PUT_WORLD_PERMISSIONS_SUCCESS
 } from './actions'
-import { AllowListPermissionSetting, WorldPermissionType, WorldPermissions, WorldsWalletStats } from 'lib/api/worlds'
+import {
+  WorldCollaboratorPermission,
+  AllowListPermissionSetting,
+  WorldPermissionType,
+  WorldPermissions,
+  WorldsWalletStats
+} from 'lib/api/worlds'
 
 export type WorldsState = {
   // TODO: Find a use for the data object when there is something more relevant as the core data for the worlds module.
   data: Record<string, unknown>
   walletStats: Record<string, WorldsWalletStats>
   worldsPermissions: Record<string, WorldPermissions>
+  worldsPermissionsSummary: Record<string, Record<string, WorldCollaboratorPermission[]>>
   loading: LoadingState
   error: string | null
 }
@@ -46,6 +53,7 @@ export const INITIAL_STATE: WorldsState = {
   data: {},
   walletStats: {},
   worldsPermissions: {},
+  worldsPermissionsSummary: {},
   loading: [],
   error: null
 }
@@ -106,13 +114,17 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
       }
     }
     case GET_WORLD_PERMISSIONS_SUCCESS: {
-      const { worldName, permissions } = action.payload
+      const { worldName, permissions, summary } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         worldsPermissions: {
           ...state.worldsPermissions,
           [worldName]: permissions
+        },
+        worldsPermissionsSummary: {
+          ...state.worldsPermissionsSummary,
+          [worldName]: summary ?? {}
         }
       }
     }
@@ -180,6 +192,11 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
         }
       }
 
+      const worldPermissionsSummary = state.worldsPermissionsSummary[worldName]
+      if (worldPermissionsSummary) {
+        delete worldPermissionsSummary[address]
+      }
+
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -188,6 +205,10 @@ export function worldsReducer(state: WorldsState = INITIAL_STATE, action: Worlds
           [worldName]: {
             ...worldPermissions
           }
+        },
+        worldsPermissionsSummary: {
+          ...state.worldsPermissionsSummary,
+          [worldName]: worldPermissionsSummary ?? {}
         }
       }
     }

@@ -10,7 +10,8 @@ import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 import { takeLatest, takeEvery, put, select, call, take, all } from 'redux-saga/effects'
 import { config } from 'config'
 import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
-import { Deployment, SceneDefinition, Placement, Coordinate } from 'modules/deployment/types'
+import { WorldsAPI } from 'lib/api/worlds'
+import { Deployment, SceneDefinition, Placement, Coordinate, DeploymentError } from 'modules/deployment/types'
 import { takeScreenshot } from 'modules/editor/actions'
 import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
@@ -76,7 +77,7 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
   store.dispatch(setProgress(type, progress))
 }
 
-export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient) {
+export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient, worldsApi: WorldsAPI) {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
@@ -367,12 +368,35 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
       fetcher
     })
     try {
+      const scenesResponse: Awaited<ReturnType<typeof worldsApi.fetchWorldScenes>> = yield call(
+        [worldsApi, worldsApi.fetchWorldScenes],
+        world,
+        { limit: 1, offset: 0 }
+      )
+      const totalScenes = scenesResponse?.total ?? 0
+
+      if (totalScenes >= 2) {
+        yield put(deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED))
+        return
+      }
+
+      let point: Coordinate = { x: 0, y: 0 }
+      if (totalScenes === 1 && scenesResponse && scenesResponse.scenes.length > 0) {
+        const firstParcel = scenesResponse.scenes[0].parcels[0]
+        if (firstParcel) {
+          const [x, y] = firstParcel.split(',').map(n => parseInt(n, 10))
+          if (!isNaN(x) && !isNaN(y)) {
+            point = { x, y }
+          }
+        }
+      }
+
       const deployment: Deployment = yield call(
         deployScene,
         deployToWorldFailure,
         contentClient,
         projectId,
-        { point: { x: 0, y: 0 }, rotation: 'north' },
+        { point, rotation: 'north' },
         world
       )
       yield put(fetchENSWorldStatusRequest(world))

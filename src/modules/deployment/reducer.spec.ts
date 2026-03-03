@@ -7,7 +7,7 @@ import {
   fetchWorldDeploymentsFailure
 } from './actions'
 import { deploymentReducer, INITIAL_STATE } from './reducer'
-import { Deployment, ProgressStage } from './types'
+import { Deployment, DeploymentError, ProgressStage } from './types'
 
 const mockWorlds = ['my-world.dcl.eth', 'my-world2.dcl.eth']
 
@@ -72,6 +72,21 @@ describe('when DEPLOY_TO_WORLD_FAILURE action is dispatched', () => {
   it('should add error to the state', () => {
     const deployToWorldFailureAction = deployToWorldFailure('error')
     expect(deploymentReducer(INITIAL_STATE, deployToWorldFailureAction)).toEqual(expect.objectContaining({ error: 'error' }))
+  })
+
+  describe('when the error is MULTI_SCENE_BLOCKED', () => {
+    it('should set the MULTI_SCENE_BLOCKED error', () => {
+      const action = deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED)
+      expect(deploymentReducer(INITIAL_STATE, action)).toEqual(expect.objectContaining({ error: DeploymentError.MULTI_SCENE_BLOCKED }))
+    })
+  })
+})
+
+describe('when DEPLOY_TO_WORLD_REQUEST action is dispatched after a MULTI_SCENE_BLOCKED failure', () => {
+  it('should clear the MULTI_SCENE_BLOCKED error', () => {
+    const stateWithBlockedError = deploymentReducer(INITIAL_STATE, deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED))
+    const result = deploymentReducer(stateWithBlockedError, deployToWorldRequest('project-id', 'world-name'))
+    expect(result).toEqual(expect.objectContaining({ error: null }))
   })
 })
 

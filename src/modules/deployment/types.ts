@@ -33,6 +33,10 @@ export enum DeploymentStatus {
   NEEDS_SYNC
 }
 
+export enum DeploymentError {
+  MULTI_SCENE_BLOCKED = 'MULTI_SCENE_BLOCKED'
+}
+
 export type ContentServiceScene = {
   id: string
   type: EntityType

@@ -4,6 +4,7 @@ import { Button, ModalActions, ModalContent } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { config } from 'config'
 import { Props, CreatorHubUpgradeModalMetadata } from './CreatorHubUpgradeModal.types'
 import coverImg from 'images/creator-hub-cover.png'
 import codeImg from 'images/creator-hub-step1.png'
@@ -15,7 +16,7 @@ import styles from './CreatorHubUpgradeModal.module.css'
 
 type Variant = CreatorHubUpgradeModalMetadata['variant']
 
-const CREATOR_HUB_DOWNLOAD_URL = 'https://decentraland.org/download/creator-hub/'
+const CREATOR_HUB_DOWNLOAD_URL = config.get('CREATOR_HUB_DOWNLOAD_URL')
 
 const VARIANT_CONFIG: Record<string, { images: [string, string]; translationPrefix: string }> = {
   permissions: { images: [accessImg, collaborationImg], translationPrefix: 'creator_hub_upgrade_modal.permissions_variant' },

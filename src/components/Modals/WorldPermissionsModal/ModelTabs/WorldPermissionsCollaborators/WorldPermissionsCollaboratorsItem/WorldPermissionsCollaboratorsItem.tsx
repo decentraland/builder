@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Checkbox, Table } from 'decentraland-ui'
+import { Chip } from 'decentraland-ui2'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { WorldPermissionNames } from 'lib/api/worlds'
 import Icon from 'components/Icon'
 import { Props } from './WorldPermissionsCollaboratorsItem.types'
 import { WorldPermissionsAvatarWithInfo } from '../../Layouts/WorldPermissionsAvatarWithInfo'
+import styles from './WorldPermissionsCollaboratorsItem.module.css'
 
 export const WORLD_PERMISSIONS_COLLABORATORS_ITEM_LOADING_ROW_TEST_ID = 'world-permissions-collaborators-item-test-id'
 export const WORLD_PERMISSIONS_COLLABORATORS_ITEM_DEPLOYMENT_CHECKBOX_TEST_ID =
@@ -19,10 +22,16 @@ export const WorldPermissionsCollaboratorsItem = React.memo((props: Props) => {
     walletAddress,
     hasWorldDeploymentPermission,
     hasWorldStreamingPermission,
+    permissionsSummary,
     onUserPermissionListChange,
     onRemoveCollaborator,
     loading
   } = props
+
+  const parcelCount: number = useMemo(
+    () => permissionsSummary?.find(p => p.permission === 'deployment')?.parcel_count ?? 0,
+    [permissionsSummary]
+  )
 
   if (loading || !walletAddress || !onUserPermissionListChange) {
     return (
@@ -45,8 +54,14 @@ export const WorldPermissionsCollaboratorsItem = React.memo((props: Props) => {
 
   return (
     <Table.Row>
-      <Table.Cell>
+      <Table.Cell className={styles.userCell}>
         <WorldPermissionsAvatarWithInfo walletAddress={walletAddress} />
+        {parcelCount > 0 && (
+          <Chip
+            className={styles.parcelBadge}
+            label={t('world_permissions_modal.tab_collaborators.parcel_count_badge', { count: parcelCount })}
+          />
+        )}
       </Table.Cell>
       <Table.Cell>
         <Checkbox

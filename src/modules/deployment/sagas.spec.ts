@@ -9,6 +9,7 @@ import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import cryptoFetch from 'decentraland-crypto-fetch'
 import { config } from 'config'
 import { BuilderAPI } from 'lib/api/builder'
+import { WorldsAPI } from 'lib/api/worlds'
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getIdentity } from 'modules/identity/utils'
@@ -24,16 +25,18 @@ import {
   clearDeploymentFailure,
   clearDeploymentRequest,
   clearDeploymentSuccess,
+  deployToWorldFailure,
   deployToWorldRequest,
   fetchWorldDeploymentsRequest,
   fetchWorldDeploymentsSuccess
 } from './actions'
 import { deploymentSaga } from './sagas'
 import { makeContentFiles } from './contentUtils'
-import { Deployment } from './types'
+import { Deployment, DeploymentError } from './types'
 
 let builderAPI: BuilderAPI
 let catalystClient: CatalystClient
+let worldsApi: WorldsAPI
 let deployMock: jest.Mock
 let fetchEntitiesByPointersMock: jest.Mock
 
@@ -70,6 +73,9 @@ beforeEach(() => {
   catalystClient = {
     getContentClient: getContentClientMock
   } as unknown as CatalystClient
+  worldsApi = {
+    fetchWorldScenes: jest.fn().mockResolvedValue({ scenes: [], total: 0 })
+  } as unknown as WorldsAPI
   ;(createCatalystClient as jest.Mock).mockReturnValue({
     getContentClient: getContentClientMock
   })
@@ -82,8 +88,9 @@ beforeEach(() => {
 describe('when handling deploy to world request', () => {
   it('should upload media', () => {
     const projectId = 'project-id'
-    return expectSaga(deploymentSaga, builderAPI, catalystClient)
+    return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
       .provide([
+        [matchers.call.fn(worldsApi.fetchWorldScenes), { scenes: [], total: 0 }],
         [matchers.select(getData), { [projectId]: { id: projectId } }],
         [matchers.call.fn(getSceneByProjectId), { sdk6: {} }],
         [matchers.call.fn(getIdentity), {}],
@@ -100,8 +107,9 @@ describe('when handling deploy to world request', () => {
   it('should build and deploy scene with correct parameters', () => {
     const projectId = 'project-id'
     const sceneDefinition = { scene: { parcels: [] } }
-    return expectSaga(deploymentSaga, builderAPI, catalystClient)
+    return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
       .provide([
+        [matchers.call.fn(worldsApi.fetchWorldScenes), { scenes: [], total: 0 }],
         [matchers.select(getData), { [projectId]: { id: projectId } }],
         [matchers.call.fn(getSceneByProjectId), { sdk6: {} }],
         [matchers.call.fn(getIdentity), {}],
@@ -119,12 +127,80 @@ describe('when handling deploy to world request', () => {
       .dispatch(deployToWorldRequest('project-id', 'world-name'))
       .silentRun()
   })
+
+  describe('when the world has 2 or more existing scenes', () => {
+    it('should dispatch deployToWorldFailure with MULTI_SCENE_BLOCKED error', () => {
+      return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
+        .provide([[matchers.call.fn(worldsApi.fetchWorldScenes), { scenes: [], total: 2 }]])
+        .put(deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED))
+        .dispatch(deployToWorldRequest('project-id', 'world-name'))
+        .silentRun()
+    })
+
+    it('should not attempt to deploy the scene', () => {
+      return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
+        .provide([[matchers.call.fn(worldsApi.fetchWorldScenes), { scenes: [], total: 2 }]])
+        .not.call.like({ fn: deployMock })
+        .dispatch(deployToWorldRequest('project-id', 'world-name'))
+        .silentRun()
+    })
+  })
+
+  describe('when the world has exactly 1 existing scene', () => {
+    it('should proceed with deployment (not block)', () => {
+      const projectId = 'project-id'
+      return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
+        .provide([
+          [matchers.call.fn(worldsApi.fetchWorldScenes), { scenes: [{ parcels: ['-3,5'] }], total: 1 }],
+          [matchers.select(getData), { [projectId]: { id: projectId } }],
+          [matchers.call.fn(getSceneByProjectId), { sdk6: {} }],
+          [matchers.call.fn(getIdentity), {}],
+          [matchers.select(getName), 'author'],
+          [matchers.select(getMedia), { north: 'north', south: 'south', east: 'east', west: 'west', preview: 'preview' }],
+          [matchers.select(isLoggedIn), true],
+          [matchers.select(getAddress), 'address'],
+          [matchers.call.fn(objectURLToBlob), {}],
+          [matchers.call.fn(createFiles), {}],
+          [matchers.call.fn(makeContentFiles), {}],
+          [matchers.call.fn(buildEntity), { entityId: 'entityId', files: [] }]
+        ])
+        .not.put(deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED))
+        .call.like({ fn: builderAPI.uploadMedia })
+        .dispatch(deployToWorldRequest(projectId, 'world-name'))
+        .silentRun()
+    })
+  })
+
+  describe('when fetchWorldScenes returns null (API error)', () => {
+    it('should proceed with deployment without blocking', () => {
+      const projectId = 'project-id'
+      return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
+        .provide([
+          [matchers.call.fn(worldsApi.fetchWorldScenes), null],
+          [matchers.select(getData), { [projectId]: { id: projectId } }],
+          [matchers.call.fn(getSceneByProjectId), { sdk6: {} }],
+          [matchers.call.fn(getIdentity), {}],
+          [matchers.select(getName), 'author'],
+          [matchers.select(getMedia), { north: 'north', south: 'south', east: 'east', west: 'west', preview: 'preview' }],
+          [matchers.select(isLoggedIn), true],
+          [matchers.select(getAddress), 'address'],
+          [matchers.call.fn(objectURLToBlob), {}],
+          [matchers.call.fn(createFiles), {}],
+          [matchers.call.fn(makeContentFiles), {}],
+          [matchers.call.fn(buildEntity), { entityId: 'entityId', files: [] }]
+        ])
+        .not.put(deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED))
+        .call.like({ fn: builderAPI.uploadMedia })
+        .dispatch(deployToWorldRequest(projectId, 'world-name'))
+        .silentRun()
+    })
+  })
 })
 
 describe('when handling fetch worlds deployments request', () => {
   it('should fetch deployments for each world', () => {
     const worlds = ['my-world.dcl.eth']
-    return expectSaga(deploymentSaga, builderAPI, catalystClient)
+    return expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
       .provide([
         [
           matchers.call.fn(fetchEntitiesByPointersMock),
@@ -184,7 +260,7 @@ describe('when handling the clear deployment request action', () => {
 
   describe('when the stored deployments does not contain a deployment for the provided id', () => {
     it('should put a clear deployment failure action signaling that the deployment id is invalid', async () => {
-      await expectSaga(deploymentSaga, builderAPI, catalystClient)
+      await expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
         .provide([
           [select(getDeployments), deployments],
           [select(getLandTiles), []]
@@ -202,7 +278,7 @@ describe('when handling the clear deployment request action', () => {
 
     describe('when getting the identity returns a null or undefined value', () => {
       it('should put a clear deployment failure action signaling that the identity cannot be obtained', async () => {
-        await expectSaga(deploymentSaga, builderAPI, catalystClient)
+        await expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
           .provide([
             [select(getDeployments), deployments],
             [select(getLandTiles), []],
@@ -230,7 +306,7 @@ describe('when handling the clear deployment request action', () => {
 
         describe('when the crypto fetch response is not ok', () => {
           it('should put a clear deployment failure action signaling that the response is not ok', async () => {
-            await expectSaga(deploymentSaga, builderAPI, catalystClient)
+            await expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
               .provide([
                 [select(getDeployments), deployments],
                 [select(getLandTiles), []],
@@ -255,7 +331,7 @@ describe('when handling the clear deployment request action', () => {
           })
 
           it('should put a clear deployment success action signaling that the clear deployment executed successfuly', async () => {
-            await expectSaga(deploymentSaga, builderAPI, catalystClient)
+            await expectSaga(deploymentSaga, builderAPI, catalystClient, worldsApi)
               .provide([
                 [select(getDeployments), deployments],
                 [select(getLandTiles), []],
