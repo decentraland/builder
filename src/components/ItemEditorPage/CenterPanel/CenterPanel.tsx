@@ -184,15 +184,13 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderEmoteDropdownButton = () => {
-    const { collection, emotes, isPlayingEmote } = this.props
+  renderEmoteDropdownButton = (text?: string) => {
+    const { collection, emotes } = this.props
     const areEmotesFromCollection = !!collection
     const hasEmotes = emotes.length > 0
 
-    if (isPlayingEmote) return null
-
     return (
-      <Dropdown className="avatar-animation button icon" floating scrolling>
+      <Dropdown className="avatar-animation button icon" floating scrolling text={text}>
         <Dropdown.Menu>
           {hasEmotes && (
             <>
@@ -217,8 +215,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   renderEmoteDropdownUnity = () => {
-    const { collection, emotes, emote, visibleItems } = this.props
-    const areEmotesFromCollection = !!collection
+    const { emotes, emote, visibleItems } = this.props
     const hasEmotes = emotes.length > 0
 
     // Find the current emote display name
@@ -245,33 +242,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       }
     }
 
-    return (
-      <Dropdown className="avatar-animation button icon unity-emote-dropdown" floating scrolling text={currentEmoteName}>
-        <Dropdown.Menu>
-          {hasEmotes && (
-            <>
-              <Dropdown.Header
-                content={areEmotesFromCollection ? t('item_editor.center_panel.from_collection') : t('item_editor.center_panel.from_items')}
-              />
-              <Dropdown.Divider />
-              {emotes.map(value => (
-                <Dropdown.Item key={value.id} value={value.id} text={value.name} onClick={this.handleAnimationChange} />
-              ))}
-              <Dropdown.Divider />
-              <Dropdown.Header content={t('item_editor.center_panel.default')} />
-              <Dropdown.Divider />
-            </>
-          )}
-          {PreviewEmote.schema.enum.map((value: PreviewEmote) => (
-            <Dropdown.Item key={value} value={value} text={t(`emotes.${value}`)} onClick={this.handleAnimationChange} />
-          ))}
-        </Dropdown.Menu>
-      </Dropdown>
-    )
+    return this.renderEmoteDropdownButton(currentEmoteName)
   }
 
   renderEmoteSelector = () => {
-    const { isUnityWearablePreviewEnabled } = this.props
+    const { isUnityWearablePreviewEnabled, isPlayingEmote } = this.props
 
     return (
       <Popup
@@ -286,7 +261,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               ) : (
                 <>
                   {this.renderEmotePlayButton()}
-                  {this.renderEmoteDropdownButton()}
+                  {!isPlayingEmote && this.renderEmoteDropdownButton()}
                 </>
               )}
             </Button.Group>

@@ -65,22 +65,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
   background-color: var(--light-gray);
-  font-size: 15px;
-  line-height: 17px;
-  min-width: 29.5px;
-  transform: translateY(0px);
-  padding: 6px 12px;
 }
 
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.unity-emote-dropdown {
-  color: transparent;
-}
-
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.unity-emote-dropdown .text {
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button,
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.avatar-animation .text {
   font-size: 15px;
   line-height: 17px;
   min-width: 29.5px;
