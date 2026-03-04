@@ -10,6 +10,7 @@
   "MARKETPLACE_API": "https://marketplace-api.decentraland.zone/v1",
   "DOCS_URL": "https://docs.decentraland.org",
   "MARKETPLACE_WEB_URL": "https://decentraland.zone/marketplace",
+  "CREATOR_HUB_DOWNLOAD_URL": "https://decentraland.zone/download/creator-hub/",
   "LAND_MANAGER_GRAPH_URL": "https://subgraph.decentraland.zone/land-manager-sepolia",
   "MARKETPLACE_GRAPH_URL": "https://subgraph.decentraland.org/marketplace-sepolia",
   "RENTALS_GRAPH_URL": "https://subgraph.decentraland.zone/rentals-ethereum-sepolia",

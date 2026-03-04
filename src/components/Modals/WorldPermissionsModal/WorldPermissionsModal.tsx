@@ -21,6 +21,7 @@ const WorldPermissionsModal = (props: Props) => {
     name,
     metadata,
     worldPermissions,
+    worldPermissionsSummary,
     isLoading,
     isLoadingNewUser,
     onPutWorldPermissionsRequest,
@@ -263,6 +264,7 @@ const WorldPermissionsModal = (props: Props) => {
             collaboratorUserList={collaboratorUserList}
             worldDeploymentPermissions={worldPermissions?.deployment}
             worldStreamingPermissions={worldPermissions?.streaming}
+            permissionsSummary={worldPermissionsSummary}
             showAddUserForm={showAddUserForm}
             onShowAddUserForm={handleShowAddUserForm}
             onNewAddressChange={handleNewAddressChange}

@@ -51,7 +51,9 @@
       "column_deploy_label": "deploy",
       "column_deploy_tooltip": "El usuario podrá implementar nuevas escenas en su mundo.",
       "column_stream_label": "transmisión",
-      "column_stream_tooltip": "El usuario podrá transmitir contenido a su mundo"
+      "column_stream_tooltip": "El usuario podrá transmitir contenido a su mundo",
+      "parcel_permissions_callout": "Los permisos a nivel de parcela solo pueden administrarse desde Creator Hub. <link>Descarga Creator Hub</link> para otorgar acceso a parcelas específicas dentro de este Mundo.",
+      "parcel_count_badge": "{count} {count, plural, one {parcela} other {parcelas}}"
     }
   },
   "asset_pack": {
@@ -619,7 +621,13 @@
       "world_url_description": "La URL para ingresar en tu mundo será:<br></br><b>{world_url}</b>",
       "world_has_content": "El contenido existente en {world} mundo se reemplazará con el nuevo contenido que está a punto de publicar.",
       "confirm_world_replace_content": "Entiendo que esta acción es irreversible",
-      "scene_information": "Información de escena"
+      "scene_information": "Información de escena",
+      "multi_scene_blocked": {
+        "title": "Este Mundo tiene múltiples escenas",
+        "description": "Este Mundo contiene múltiples escenas que solo pueden administrarse desde Creator Hub.\n Descarga Creator Hub para publicar en este mundo.",
+        "download_creator_hub": "Descargar Creator Hub",
+        "go_back": "Volver"
+      }
     },
     "title": "Publicar Escena {sceneName}",
     "subtitle": "Elige donde querés subir esta escena:",
@@ -2056,6 +2064,7 @@
       "reject": "Rechazar",
       "enable": "Habilitar",
       "disable": "Deshabilitar",
+      "deploy_missing_entities": "Subir Entidades Faltantes",
       "rejection_modal": {
         "veredict_explanation": "Puedes contarnos por qué?",
         "visit_activity": "Puedes visitar tu {activity_link} para monitoriear la transacción",
@@ -2174,6 +2183,12 @@
         "add_outcome": "Agregar una opción"
       }
     }
+  },
+  "deploy_entities_modal": {
+    "success_title": "Éxito",
+    "error_title": "Error",
+    "success_message": "Los elementos se subieron exitosamente para la colección: <b>{name}</b>",
+    "error_message": "Hubo un error al subir los elementos para la colección: <b>{name}</b>"
   },
   "video_showcase_modal": {
     "title": "Video detallado de su Vestimenta Interactiva",

@@ -367,8 +367,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action with the catalyst image', () => {
-        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contentsToSave
-        const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithCatalystImage.contents
+        const { [THUMBNAIL_PATH]: thumbnailContent, [IMAGE_PATH]: _imageContent, ...modelContents } = contentsToSave
+        const { [THUMBNAIL_PATH]: _, [IMAGE_PATH]: _itemImageContent, ...itemContents } = itemWithCatalystImage.contents
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -400,8 +400,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action without a new catalyst image', () => {
-        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
-        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
+        const { [THUMBNAIL_PATH]: thumbnailContent, [IMAGE_PATH]: _imageContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, [IMAGE_PATH]: _itemImageContent, ...itemContents } = item.contents
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -432,8 +432,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action with a new catalyst image', () => {
-        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = newContentsContainingNewCatalystImage
-        const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithCatalystImage.contents
+        const { [THUMBNAIL_PATH]: thumbnailContent, [IMAGE_PATH]: _imageContent, ...modelContents } = newContentsContainingNewCatalystImage
+        const { [THUMBNAIL_PATH]: _, [IMAGE_PATH]: _itemImageContent, ...itemContents } = itemWithCatalystImage.contents
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -471,8 +471,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should put a save item success action', () => {
-        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
-        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
+        const { [THUMBNAIL_PATH]: thumbnailContent, [IMAGE_PATH]: _imageContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, [IMAGE_PATH]: _itemImageContent, ...itemContents } = item.contents
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -498,8 +498,8 @@ describe('when handling the save item request action', () => {
       })
 
       it('should save item if it is already published', () => {
-        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = contents
-        const { [THUMBNAIL_PATH]: _, ...itemContents } = item.contents
+        const { [THUMBNAIL_PATH]: thumbnailContent, [IMAGE_PATH]: _imageContent, ...modelContents } = contents
+        const { [THUMBNAIL_PATH]: _, [IMAGE_PATH]: _itemImageContent, ...itemContents } = item.contents
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -553,8 +553,8 @@ describe('when handling the save item request action', () => {
       })
 
       it("should update the item's content with the new hash and upload the files", () => {
-        const { [THUMBNAIL_PATH]: thumbnailContent, ...modelContents } = newContents
-        const { [THUMBNAIL_PATH]: _, ...itemContents } = itemWithNewHashes.contents
+        const { [THUMBNAIL_PATH]: thumbnailContent, [IMAGE_PATH]: _imageContent, ...modelContents } = newContents
+        const { [THUMBNAIL_PATH]: _, [IMAGE_PATH]: _itemImageContent, ...itemContents } = itemWithNewHashes.contents
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [

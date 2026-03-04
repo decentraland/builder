@@ -1,10 +1,11 @@
 import { ButtonProps } from 'decentraland-ui'
-import { WorldPermissionNames } from 'lib/api/worlds'
+import { WorldCollaboratorPermission, WorldPermissionNames } from 'lib/api/worlds'
 
 export type Props = {
   walletAddress?: string
   hasWorldDeploymentPermission?: boolean
   hasWorldStreamingPermission?: boolean
+  permissionsSummary?: WorldCollaboratorPermission[]
   loading?: boolean
   onRemoveCollaborator?: (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps & { walletAddress: string }) => void
   onUserPermissionListChange?: (

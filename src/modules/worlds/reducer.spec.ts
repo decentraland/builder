@@ -162,6 +162,9 @@ describe('when handling the action to get worlds permissions for a world name', 
         loading: [],
         worldsPermissions: {
           [worldName]: worldPermissionsMock
+        },
+        worldsPermissionsSummary: {
+          [worldName]: {}
         }
       })
     })
@@ -380,6 +383,9 @@ describe('when handling the action to delete an address from deployment permissi
               wallets: []
             }
           }
+        },
+        worldsPermissionsSummary: {
+          [worldName]: {}
         }
       })
     })

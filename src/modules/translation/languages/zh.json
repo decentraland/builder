@@ -51,7 +51,9 @@
       "column_deploy_label": "部署",
       "column_deploy_tooltip": "用戶將能夠將新場景部署到您的世界",
       "column_stream_label": "流",
-      "column_stream_tooltip": "用戶將能夠將內容傳輸到您的世界"
+      "column_stream_tooltip": "用戶將能夠將內容傳輸到您的世界",
+      "parcel_permissions_callout": "地块级权限只能通过 Creator Hub 管理。<link>下载 Creator Hub</link> 以授予访问此世界中特定地块的权限。",
+      "parcel_count_badge": "{count} {count, plural, other {个地块}}"
     }
   },
   "asset_pack": {
@@ -612,7 +614,13 @@
       "world_url_description": "跳入您的世界的URL将是:<br></br><b>{world_url}</b>",
       "world_has_content": "{world}梦中的现有内容将被您即将发布的新内容替换。",
       "confirm_world_replace_content": "我知道这个动作是不可逆转的",
-      "scene_information": "场景信息"
+      "scene_information": "场景信息",
+      "multi_scene_blocked": {
+        "title": "此世界包含多个场景",
+        "description": "此世界包含多个场景，只能通过 Creator Hub 管理。\n请下载 Creator Hub 以发布到此世界。",
+        "download_creator_hub": "下载 Creator Hub",
+        "go_back": "返回"
+      }
     },
     "title": "正在发布场景 {sceneName}",
     "subtitle": "选择要部署此场景的位置：",
@@ -2037,6 +2045,7 @@
       "reject": "拒绝",
       "enable": "使",
       "disable": "禁用",
+      "deploy_missing_entities": "部署缺失实体",
       "rejection_modal": {
         "veredict_explanation": "你能告诉我们为什么吗？",
         "visit_activity": "您可以检查您的 {activity_link} 以监控交易",
@@ -2155,6 +2164,12 @@
         "add_outcome": "添加结果"
       }
     }
+  },
+  "deploy_entities_modal": {
+    "success_title": "成功",
+    "error_title": "错误",
+    "success_message": "集合的道具已成功上传：<b>{name}</b>",
+    "error_message": "上传集合的道具时出错：<b>{name}</b>"
   },
   "video_showcase_modal": {
     "title": "您智能可穿戴的详细视频",

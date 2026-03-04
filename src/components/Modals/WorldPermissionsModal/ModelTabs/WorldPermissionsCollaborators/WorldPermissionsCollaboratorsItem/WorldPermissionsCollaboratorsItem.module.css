@@ -1,0 +1,9 @@
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.parcelBadge {
+  margin-right: 100%;
+}

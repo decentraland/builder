@@ -94,7 +94,7 @@ describe('when fetching the world permissions for a wallet', () => {
     })
 
     it('should return an object with the permissions', async () => {
-      expect(await worldsApi.getPermissions(worldName)).toEqual(worldPermission)
+      expect(await worldsApi.getPermissions(worldName)).toEqual({ permissions: worldPermission })
     })
   })
 
