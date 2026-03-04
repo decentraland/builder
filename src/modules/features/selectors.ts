@@ -81,25 +81,22 @@ export const getIsUnityWearablePreviewEnabled = (state: RootState) => {
 }
 
 export const getIsOffchainPublicItemOrdersEnabledVariants = (state: RootState) => {
-  try {
+  if (hasLoadedInitialFlags(state)) {
     return getFeatureVariant(state, ApplicationName.DAPPS, FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS)
-  } catch (e) {
-    return null
   }
+  return null
 }
 
 export const getIsCreditsForCollectionsFeeEnabled = (state: RootState) => {
-  try {
+  if (hasLoadedInitialFlags(state)) {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREDITS_FOR_COLLECTIONS_FEE)
-  } catch (e) {
-    return false
   }
+  return false
 }
 
 export const getIsSocialEmotesEnabled = (state: RootState) => {
-  try {
+  if (hasLoadedInitialFlags(state)) {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.SOCIAL_EMOTES)
-  } catch (e) {
-    return false
   }
+  return false
 }
