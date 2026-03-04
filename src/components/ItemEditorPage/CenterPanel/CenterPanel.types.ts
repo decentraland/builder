@@ -33,6 +33,7 @@ export type Props = {
   isPlayingEmote: boolean
   isImportFilesModalOpen: boolean
   hasUserOrphanItems: boolean | undefined
+  isUnityWearablePreviewEnabled: boolean
   onSetBodyShape: ActionFunction<typeof setBodyShape>
   onSetAvatarAnimation: ActionFunction<typeof setEmote>
   onSetSkinColor: ActionFunction<typeof setSkinColor>

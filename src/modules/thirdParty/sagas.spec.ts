@@ -80,6 +80,7 @@ import { retry } from 'redux-saga/effects'
 
 jest.mock('modules/item/export')
 jest.mock('@dcl/crypto')
+jest.mock('modules/features/selectors')
 
 const mockBuilder = {
   fetchThirdParties: jest.fn(),
