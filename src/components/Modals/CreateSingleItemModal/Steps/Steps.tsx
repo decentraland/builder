@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import EditPriceAndBeneficiaryModal from '../../EditPriceAndBeneficiaryModal'
 import ImportStep from '../ImportStep/ImportStep'
-import EditThumbnailStep from '../EditThumbnailStep/EditThumbnailStep'
+import EditThumbnailStep from '../EditThumbnailStep'
 import { ItemDetailsStep } from '../ItemDetailsStep'
 import { toEmoteWithBlobs } from '../utils'
 import { createInitialState, createItemActions } from '../CreateSingleItemModal.reducer'
