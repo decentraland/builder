@@ -324,7 +324,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
           socialEmote={socialEmote || _socialEmote}
-          unity={isUnityWearablePreviewEnabled}
+          unity
           unityMode={PreviewUnityMode.BUILDER}
         />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (

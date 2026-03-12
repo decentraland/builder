@@ -1,4 +1,5 @@
 import React from 'react'
+import { Dispatch } from 'redux'
 import { EmoteWithBlobs, IPreviewController } from '@dcl/schemas'
 import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { Item } from 'modules/item/types'
@@ -10,6 +11,7 @@ export type Props = {
   base64s?: string[]
   wearablePreviewComponent?: React.ReactNode
   wearablePreviewController?: IPreviewController
+  isUnityWearablePreviewEnabled: boolean
   onSave: (screenshot: string) => void
   onBack: () => void
   onClose: () => void
@@ -30,3 +32,6 @@ export type CreateSingleItemModalMetadata = {
 }
 
 export type OwnProps = Pick<Props, 'wearablePreviewComponent' | 'wearablePreviewController'>
+export type MapStateProps = Pick<Props, 'isUnityWearablePreviewEnabled'>
+export type MapDispatchProps = Record<string, never>
+export type MapDispatch = Dispatch

@@ -25,6 +25,7 @@ export type Props = ModalProps & {
   metadata: CreateSingleItemModalMetadata
   isThirdPartyV2Enabled: boolean
   isSocialEmotesEnabled: boolean
+  isUnityWearablePreviewEnabled: boolean
   isLoading: boolean
   onSave: typeof saveItemRequest
 }
@@ -114,7 +115,14 @@ export type AcceptedFileProps = Pick<
 export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
 export type MapStateProps = Pick<
   Props,
-  'address' | 'error' | 'isLoading' | 'collection' | 'itemStatus' | 'isThirdPartyV2Enabled' | 'isSocialEmotesEnabled'
+  | 'address'
+  | 'error'
+  | 'isLoading'
+  | 'collection'
+  | 'itemStatus'
+  | 'isThirdPartyV2Enabled'
+  | 'isSocialEmotesEnabled'
+  | 'isUnityWearablePreviewEnabled'
 >
 export type MapDispatchProps = Pick<Props, 'onSave'>
 export type MapDispatch = Dispatch<SaveItemRequestAction>
