@@ -81,9 +81,12 @@
   margin-left: 5px;
 }
 
+.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.avatar-animation-play {
+  border-right-style: solid;
+  border-right-width: thin;
+}
+
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.dropdown {
-  border-left-style: solid;
-  border-left-width: thin;
   font-size: 20px;
 }
 
