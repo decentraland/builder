@@ -1,3 +1,2 @@
-import EditThumbnailStep from './EditThumbnailStep'
-
-export { EditThumbnailStep }
+export { default } from './EditThumbnailStep.container'
+export { default as EditThumbnailStep } from './EditThumbnailStep.container'

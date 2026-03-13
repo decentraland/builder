@@ -4,6 +4,7 @@ import { Item } from 'modules/item/types'
 
 export type Props = Omit<ModalProps, 'metadata'> & {
   metadata: EditThumbnailModalMetadata
+  isUnityWearablePreviewEnabled: boolean
 }
 
 export type State = {

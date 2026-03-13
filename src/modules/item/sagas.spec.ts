@@ -96,6 +96,8 @@ import * as toasts from './toasts'
 import { fromRemoteItem } from 'lib/api/transformations'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
+jest.mock('modules/features/selectors')
+
 const blob: Blob = new Blob()
 let contents: Record<string, Blob>
 
