@@ -9,8 +9,7 @@ import {
   PreviewProjection,
   WearableCategory,
   IPreviewController,
-  StartAnimation,
-  PreviewUnityMode
+  StartAnimation
 } from '@dcl/schemas'
 import {
   MAX_EMOTE_FILE_SIZE,
@@ -23,7 +22,6 @@ import { WearablePreview } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { config } from 'config'
 import { getImageType, dataURLToBlob } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
 import {
@@ -166,19 +164,7 @@ const validateItemDraft = (state: State, collection: Collection | null, isThirdP
 }
 
 export const CreateSingleItemModal: React.FC<Props> = props => {
-  const {
-    address,
-    collection,
-    error,
-    itemStatus,
-    metadata,
-    name,
-    onClose,
-    onSave,
-    isLoading,
-    isThirdPartyV2Enabled,
-    isUnityWearablePreviewEnabled
-  } = props
+  const { address, collection, error, itemStatus, metadata, name, onClose, onSave, isLoading, isThirdPartyV2Enabled } = props
   const thumbnailInput = useRef<HTMLInputElement>(null)
   const modalContainer = useRef<HTMLDivElement>(null)
   const previewControllerRef = useRef<IPreviewController | null>(null)
@@ -794,9 +780,6 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         disableBackground
         disableAutoRotate
         projection={PreviewProjection.ORTHOGRAPHIC}
-        baseUrl={config.get('WEARABLE_PREVIEW_URL')}
-        unity
-        unityMode={PreviewUnityMode.BUILDER}
         {...wearablePreviewExtraOptions}
         onUpdate={() => {
           queueMicrotask(() => dispatch(createItemActions.setWearablePreviewUpdated(true)))
@@ -806,7 +789,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         }}
       />
     )
-  }, [state, handleFileLoad, dispatch, isUnityWearablePreviewEnabled])
+  }, [state.model, state.contents, state.type, handleFileLoad])
 
   const contextValue = {
     // State

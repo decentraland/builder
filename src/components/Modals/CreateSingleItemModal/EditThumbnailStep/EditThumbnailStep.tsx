@@ -6,8 +6,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props, State } from './EditThumbnailStep.types'
 import { EmoteDataADR74 } from '@dcl/schemas/dist/platform/item/emote'
-import { PreviewUnityMode } from '@dcl/schemas'
-import { config } from 'config'
 import './EditThumbnailStep.css'
 
 export default class EditThumbnailStep extends React.PureComponent<Props, State> {
@@ -40,7 +38,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { onClose, onBack, title, isLoading, base64s, isUnityWearablePreviewEnabled } = this.props
+    const { onClose, onBack, title, isLoading, base64s } = this.props
     const { blob, hasBeenUpdated, socialEmote } = this.state
 
     let emoteData: EmoteDataADR74 | undefined = undefined
@@ -74,9 +72,6 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               skin="000000"
               zoom={100}
               wheelZoom={2}
-              baseUrl={config.get('WEARABLE_PREVIEW_URL')}
-              unity
-              unityMode={PreviewUnityMode.BUILDER}
               socialEmote={socialEmote || _socialEmote}
               onLoad={this.handleFileLoad}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
