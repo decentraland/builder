@@ -11,7 +11,7 @@ export type Props = {
   base64s?: string[]
   wearablePreviewComponent?: React.ReactNode
   wearablePreviewController?: IPreviewController
-  isUnityWearablePreviewEnabled: boolean
+  isUnityWearablePreviewEnabled?: boolean
   onSave: (screenshot: string) => void
   onBack: () => void
   onClose: () => void
@@ -31,7 +31,7 @@ export type CreateSingleItemModalMetadata = {
   changeItemFile?: boolean
 }
 
-export type OwnProps = Pick<Props, 'wearablePreviewComponent' | 'wearablePreviewController'>
+export type OwnProps = Omit<Props, 'isUnityWearablePreviewEnabled'>
 export type MapStateProps = Pick<Props, 'isUnityWearablePreviewEnabled'>
 export type MapDispatchProps = Record<string, never>
 export type MapDispatch = Dispatch
