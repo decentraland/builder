@@ -340,7 +340,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           </Center>
         )}
         <div className="footer">
-          {isRenderingAnEmote && !isLoading && wearableController && !isUnityWearablePreviewEnabled ? (
+          {isRenderingAnEmote && !isLoading && wearableController ? (
             <div className="emote-controls-container">
               <EmoteControls
                 className="emote-controls"
