@@ -100,8 +100,6 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
     const isEmpty = items.length === 0
     const isFull = items.length === totalCollectionItems
-    const isDisabled = this.isDisabled()
-
     const totalMints = Object.values(itemMints).reduce((accumulator, mints) => {
       const totalMintsPerItem = mints.reduce((acc, mint) => {
         const amount = mint.amount || 0
@@ -109,6 +107,9 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       }, 0)
       return accumulator + totalMintsPerItem
     }, 0)
+
+    const exceedsLimit = totalMints > MAX_NFTS_PER_MINT
+    const isDisabled = this.isDisabled() || exceedsLimit
 
     // ! this function goes inside render to re-trigger the rendering of the item dropdown when the selection of items changes
     const filterAddableItems = (item: Item) => {
@@ -211,9 +212,9 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   </Button>
                 )}
               </ModalActions>
-              {error ? (
+              {error || exceedsLimit ? (
                 <Row className="error" align="right">
-                  <p className="danger-text">{error}</p>
+                  <p className="danger-text">{error || t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })}</p>
                 </Row>
               ) : null}
             </Form>
