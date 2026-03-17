@@ -110,6 +110,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       return accumulator + totalMintsPerItem
     }, 0)
 
+    const exceedsLimit = totalMints > MAX_NFTS_PER_MINT
+
     // ! this function goes inside render to re-trigger the rendering of the item dropdown when the selection of items changes
     const filterAddableItems = (item: Item) => {
       const { collection, items, ethAddress } = this.props
@@ -206,12 +208,16 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                     {t('global.cancel')}
                   </Button>
                 ) : (
-                  <Button primary onClick={() => this.handleView(View.CONFIRM)} disabled={isDisabled}>
+                  <Button primary onClick={() => this.handleView(View.CONFIRM)} disabled={isDisabled || exceedsLimit}>
                     {t('mint_items_modal.next')}
                   </Button>
                 )}
               </ModalActions>
-              {error ? (
+              {exceedsLimit ? (
+                <Row className="error" align="right">
+                  <p className="danger-text">{t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })}</p>
+                </Row>
+              ) : error ? (
                 <Row className="error" align="right">
                   <p className="danger-text">{error}</p>
                 </Row>
