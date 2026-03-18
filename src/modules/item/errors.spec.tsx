@@ -41,9 +41,7 @@ describe('GLBValidationError', () => {
     let error: GLBValidationError
 
     beforeEach(() => {
-      const issues: ValidationIssue[] = [
-        { code: 'LEAF_BONES_FOUND', severity: ValidationSeverity.WARNING, messageKey: 'warning.bones' }
-      ]
+      const issues: ValidationIssue[] = [{ code: 'LEAF_BONES_FOUND', severity: ValidationSeverity.WARNING, messageKey: 'warning.bones' }]
       error = new GLBValidationError(issues)
     })
 

@@ -28,12 +28,7 @@ import {
   PROP_ARMATURE_NAME
 } from './constants'
 
-function makeAnimation(opts: {
-  duration: number
-  trackFrames?: number
-  trackName?: string
-  trackValues?: number[]
-}): AnimationClip {
+function makeAnimation(opts: { duration: number; trackFrames?: number; trackName?: string; trackValues?: number[] }): AnimationClip {
   const frames = opts.trackFrames ?? 30
   const times = Array.from({ length: frames }, (_, i) => i * (opts.duration / frames))
   return {
@@ -533,7 +528,14 @@ function createMockThree() {
   class MockBone {
     name: string = ''
   }
-  return { Mesh: MockMesh, Bone: MockBone, BufferGeometry: MockBufferGeometry, Geometry: class { faces: unknown[] = [] } }
+  return {
+    Mesh: MockMesh,
+    Bone: MockBone,
+    BufferGeometry: MockBufferGeometry,
+    Geometry: class {
+      faces: unknown[] = []
+    }
+  }
 }
 
 type MockThree = ReturnType<typeof createMockThree>

@@ -381,10 +381,7 @@ describe('validateTextures', () => {
     let issues: ValidationIssue[]
 
     beforeEach(() => {
-      const scene = createScene([
-        createMeshWithTexture(Three, 'Mat1', 'tex1', 512),
-        createMeshWithTexture(Three, 'Mat2', 'tex2', 256)
-      ])
+      const scene = createScene([createMeshWithTexture(Three, 'Mat1', 'tex1', 512), createMeshWithTexture(Three, 'Mat2', 'tex2', 256)])
       issues = validateTextures(asThree(Three), scene)
     })
 
@@ -397,9 +394,7 @@ describe('validateTextures', () => {
     let issues: ValidationIssue[]
 
     beforeEach(() => {
-      const nodes = Array.from({ length: MAX_TEXTURES_DEFAULT + 1 }, (_, i) =>
-        createMeshWithTexture(Three, `Mat${i}`, `tex${i}`, 256)
-      )
+      const nodes = Array.from({ length: MAX_TEXTURES_DEFAULT + 1 }, (_, i) => createMeshWithTexture(Three, `Mat${i}`, `tex${i}`, 256))
       issues = validateTextures(asThree(Three), createScene(nodes))
     })
 
