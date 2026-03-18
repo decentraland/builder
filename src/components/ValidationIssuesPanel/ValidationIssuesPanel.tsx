@@ -3,10 +3,17 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ValidationIssue, ValidationSeverity } from 'lib/glbValidation/types'
 import './ValidationIssuesPanel.css'
 
+/** Props for the {@link ValidationIssuesPanel} component. */
 type Props = {
+  /** List of validation issues to display. The panel hides itself when empty. */
   issues: ValidationIssue[]
 }
 
+/**
+ * Collapsible panel that displays GLB validation errors and warnings.
+ * Errors are listed first, followed by warnings. The panel header shows
+ * a summary count and the list can be toggled open or closed.
+ */
 export const ValidationIssuesPanel: React.FC<Props> = ({ issues }) => {
   const [isExpanded, setIsExpanded] = useState(true)
 

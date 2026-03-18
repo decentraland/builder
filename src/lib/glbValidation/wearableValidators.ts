@@ -41,6 +41,11 @@ function getTriangleCount(Three: ThreeModules, scene: THREE.Scene): number {
   return Math.floor(triangles)
 }
 
+/**
+ * Validates that the scene's total triangle count does not exceed the limit for the given category.
+ * Reports ERROR when the category is known and the limit is exceeded, or WARNING when no category
+ * is selected and the count exceeds the default 1500-triangle limit.
+ */
 export function validateTriangleCounts(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const triangles = getTriangleCount(Three, scene)
@@ -70,6 +75,10 @@ export function validateTriangleCounts(Three: ThreeModules, scene: THREE.Scene, 
   return issues
 }
 
+/**
+ * Validates that the scene's bounding-box dimensions do not exceed the maximum
+ * allowed size (2.42 m width, 2.42 m height, 1.4 m depth). Reports ERROR on violation.
+ */
 export function validateDimensions(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const size = new Three.Box3().setFromObject(scene).getSize(new Three.Vector3())
@@ -98,6 +107,10 @@ export function validateDimensions(Three: ThreeModules, scene: THREE.Scene): Val
   return issues
 }
 
+/**
+ * Validates that the number of unique materials (excluding AvatarSkin_MAT) does not exceed
+ * the allowed limit (2 for standard categories, 5 for skin). Reports ERROR on violation.
+ */
 export function validateMaterials(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const materials = new Set<string>()
@@ -126,6 +139,10 @@ export function validateMaterials(Three: ThreeModules, scene: THREE.Scene, categ
   return issues
 }
 
+/**
+ * Validates texture count and resolution. The texture limit is 2 (5 for skin).
+ * Resolution is capped at 512 px (256 px for facial categories). Reports ERROR on violation.
+ */
 export function validateTextures(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const textures = new Set<string>()
@@ -181,6 +198,10 @@ export function validateTextures(Three: ThreeModules, scene: THREE.Scene, catego
   return issues
 }
 
+/**
+ * Validates that no vertex has more than 4 bone influences in skinned meshes.
+ * Reports ERROR if the skinWeight attribute exceeds the allowed item size.
+ */
 export function validateBoneInfluences(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
@@ -213,6 +234,10 @@ export function validateBoneInfluences(Three: ThreeModules, scene: THREE.Scene):
   return issues
 }
 
+/**
+ * Detects leaf bones (names ending in "_end" or "_neutral") that are typically
+ * unnecessary export artifacts. Reports WARNING listing up to 5 bone names.
+ */
 export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const leafBones: string[] = []
@@ -238,6 +263,10 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
   return issues
 }
 
+/**
+ * Checks for objects that are not allowed in wearable GLBs: cameras, lights,
+ * and animation clips. Reports ERROR for each disallowed object type found.
+ */
 export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const { scene, animations } = gltf
@@ -282,6 +311,10 @@ export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): Va
   return issues
 }
 
+/**
+ * Validates that non-facial wearables do not use material names containing
+ * reserved facial patterns ("_mouth", "_eyebrows", "_eyes"). Reports WARNING per match.
+ */
 export function validateMaterialNaming(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 

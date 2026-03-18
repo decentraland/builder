@@ -18,6 +18,10 @@ import {
 
 type ThreeModules = typeof import('three')
 
+/**
+ * Validates that the emote's effective frame rate is within tolerance of 30 fps
+ * (allowed deviation: +/-5 fps). Reports WARNING when outside tolerance.
+ */
 export function validateEmoteFrameRate(animations: AnimationClip[]): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
@@ -44,6 +48,10 @@ export function validateEmoteFrameRate(animations: AnimationClip[]): ValidationI
   return issues
 }
 
+/**
+ * Validates that the emote animation does not exceed 300 frames.
+ * Reports ERROR when the frame count is exceeded.
+ */
 export function validateEmoteMaxFrames(animations: AnimationClip[]): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
@@ -67,6 +75,10 @@ export function validateEmoteMaxFrames(animations: AnimationClip[]): ValidationI
   return issues
 }
 
+/**
+ * Validates the number of animation clips: max 1 for basic emotes, max 2 when
+ * props are included. Reports ERROR when exceeded.
+ */
 export function validateEmoteAnimationClipCount(animations: AnimationClip[], hasProps: boolean): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const limit = hasProps ? EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS : EMOTE_MAX_ANIMATION_CLIPS_BASIC
@@ -83,6 +95,11 @@ export function validateEmoteAnimationClipCount(animations: AnimationClip[], has
   return issues
 }
 
+/**
+ * Checks that every deform bone in the scene has keyframes for position,
+ * quaternion, and scale in the primary animation clip. Reports WARNING
+ * listing bones with missing tracks (up to 5 shown).
+ */
 export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Scene, animations: AnimationClip[]): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
@@ -150,6 +167,10 @@ export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Sce
   return issues
 }
 
+/**
+ * Validates that the avatar's root bone (Hips) does not move more than 1 meter
+ * from its starting position during the animation. Reports ERROR on violation.
+ */
 export function validateEmoteDisplacement(animations: AnimationClip[]): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
@@ -197,6 +218,10 @@ export function validateEmoteDisplacement(animations: AnimationClip[]): Validati
   return issues
 }
 
+/**
+ * Validates that the prop armature's total triangle count does not exceed 3000.
+ * Reports ERROR when exceeded.
+ */
 export function validatePropTriangles(Three: ThreeModules, scene: Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   let propTriangles = 0
@@ -237,6 +262,10 @@ export function validatePropTriangles(Three: ThreeModules, scene: Scene): Valida
   return issues
 }
 
+/**
+ * Validates that the prop armature uses no more than 2 unique materials.
+ * Reports ERROR when exceeded.
+ */
 export function validatePropMaterials(Three: ThreeModules, scene: Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const materials = new Set<string>()
@@ -262,6 +291,10 @@ export function validatePropMaterials(Three: ThreeModules, scene: Scene): Valida
   return issues
 }
 
+/**
+ * Validates that the prop armature uses no more than 2 unique textures.
+ * Reports ERROR when exceeded.
+ */
 export function validatePropTextures(Three: ThreeModules, scene: Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const textures = new Set<string>()
@@ -293,6 +326,10 @@ export function validatePropTextures(Three: ThreeModules, scene: Scene): Validat
   return issues
 }
 
+/**
+ * Validates that the prop armature contains no more than 62 bones.
+ * Reports ERROR when exceeded.
+ */
 export function validatePropArmatureBones(Three: ThreeModules, scene: Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   let boneCount = 0
@@ -318,6 +355,10 @@ export function validatePropArmatureBones(Three: ThreeModules, scene: Scene): Va
   return issues
 }
 
+/**
+ * Validates that armature root nodes follow expected naming conventions
+ * ("Armature" or "Armature_Prop"). Reports WARNING for non-standard names.
+ */
 export function validateArmatureNaming(scene: Scene): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const armatureNames: string[] = []
@@ -345,6 +386,10 @@ export function validateArmatureNaming(scene: Scene): ValidationIssue[] {
   return issues
 }
 
+/**
+ * For emotes with props, validates that animation clip names end with "_Avatar"
+ * or "_Prop". Reports WARNING listing clips with non-standard names.
+ */
 export function validateAnimationNaming(animations: AnimationClip[], hasProps: boolean): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
@@ -371,6 +416,10 @@ export function validateAnimationNaming(animations: AnimationClip[], hasProps: b
   return issues
 }
 
+/**
+ * Validates that any audio files in the emote contents use an accepted format
+ * (.mp3 or .ogg). Reports ERROR for unsupported audio formats such as .wav or .aac.
+ */
 export function validateAudioFormat(contents: Record<string, Blob>): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 

@@ -28,6 +28,13 @@ import {
 export { ValidationSeverity } from './types'
 export type { ValidationIssue, ValidationResult } from './types'
 
+/**
+ * Runs all wearable-specific validations against a parsed GLTF model.
+ * Checks triangles, dimensions, materials, textures, bone influences,
+ * leaf bones, disallowed objects, and material naming conventions.
+ * @param gltf - The parsed GLTF loaded by Three.js.
+ * @param category - Optional wearable category; limits are adjusted when provided.
+ */
 export async function validateWearableGLTF(gltf: GLTF, category?: WearableCategory): Promise<ValidationResult> {
   const Three = await import('three')
   const { scene } = gltf
@@ -50,6 +57,16 @@ export async function validateWearableGLTF(gltf: GLTF, category?: WearableCatego
   }
 }
 
+/**
+ * Runs all emote-specific validations against a parsed GLTF model.
+ * Checks frame rate, max frames, clip count, deform-bone keyframes,
+ * root displacement, armature/animation naming, and (when props are present)
+ * prop triangle/material/texture/bone limits. Audio format is validated
+ * when {@link contents} is provided.
+ * @param gltf - The parsed GLTF loaded by Three.js.
+ * @param hasProps - Whether the emote includes prop assets.
+ * @param contents - Optional file map used for audio format validation.
+ */
 export async function validateEmoteGLTF(gltf: GLTF, hasProps: boolean, contents?: Record<string, Blob>): Promise<ValidationResult> {
   const Three = await import('three')
   const { scene, animations } = gltf
