@@ -21,7 +21,8 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
-import { EngineType, getModelData } from 'lib/getModelData'
+import { EngineType, getModelData, loadAndValidateModel } from 'lib/getModelData'
+import { ValidationSeverity } from 'lib/glbValidation/types'
 import { getExtension, toMB } from 'lib/file'
 import {
   buildThirdPartyURN,
@@ -203,6 +204,34 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
         }
 
         itemFactory.withThumbnail(thumbnail)
+
+        // Run GLB validation on the model
+        const modelPath = getModelPath(loadedFile.wearable.data.representations)
+        if (modelPath && loadedFile.content[modelPath]) {
+          const modelUrl = URL.createObjectURL(loadedFile.content[modelPath])
+          try {
+            const wearableCategory = loadedFile.wearable.data.category
+            const { validationResult } = await loadAndValidateModel(
+              modelUrl,
+              {
+                width: 1024,
+                height: 1024,
+                extension: getExtension(modelPath) || undefined,
+                engine: EngineType.BABYLON
+              },
+              wearableCategory,
+              loadedFile.content
+            )
+
+            const errorIssues = validationResult.issues.filter(i => i.severity === ValidationSeverity.ERROR)
+            if (errorIssues.length > 0) {
+              const errorMessages = errorIssues.map(i => t(i.messageKey, i.messageParams || {})).join('; ')
+              throw new Error(errorMessages)
+            }
+          } finally {
+            URL.revokeObjectURL(modelUrl)
+          }
+        }
 
         // Set the UNIQUE rarity so all items have this rarity as default although TP items don't require rarity
         itemFactory.withRarity(Rarity.UNIQUE)

@@ -93,7 +93,7 @@ import { Steps } from './Steps'
 import { CreateSingleItemModalProvider } from './CreateSingleItemModalProvider'
 import './CreateSingleItemModal.css'
 
-type ValidationResult = {
+type ItemValidationResult = {
   isValid: boolean
   errorMessage?: string
 }
@@ -104,7 +104,7 @@ const buildItemTooBigError = (limit: number, typeLabel: string) =>
     type: typeLabel
   })
 
-const validateItemDraft = (state: State, collection: Collection | null, isThirdPartyV2Enabled: boolean): ValidationResult => {
+const validateItemDraft = (state: State, collection: Collection | null, isThirdPartyV2Enabled: boolean): ItemValidationResult => {
   const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize, mappings, contents } =
     state
 
@@ -825,6 +825,9 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     renderMetrics,
     renderModalTitle,
     renderWearablePreview,
+
+    // Validation
+    validationIssues: state.validationIssues,
 
     // Flags
     isThirdPartyV2Enabled,

@@ -9,6 +9,9 @@ import { isImageFile } from 'modules/item/utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { EmoteAnimationsSyncError, EmoteWithMeshError, MissingExternalResourcesError } from 'modules/item/errors'
 import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
+import { validateWearableGLTF, validateEmoteGLTF } from './glbValidation'
+import type { ValidationResult } from './glbValidation'
+import { PROP_ARMATURE_NAME } from './glbValidation/constants'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
@@ -309,6 +312,42 @@ export async function getEmoteData(url: string, options: Partial<Options> = {}) 
       fps: frames / animation.duration,
       props: armatures.some(({ name }) => name === ARMATURES.PROP) ? 1 : 0,
       additionalArmatures
+    }
+  }
+}
+
+/**
+ * Loads a GLTF model, determines if it's an emote or wearable, and runs validation.
+ * This performs a single GLTF load instead of separate getIsEmote + validation loads.
+ */
+export async function loadAndValidateModel(
+  url: string,
+  options: Partial<Options> = {},
+  category?: WearableCategory,
+  contents?: Record<string, Blob>
+): Promise<{
+  isEmote: boolean
+  validationResult: ValidationResult
+}> {
+  const { gltf, renderer } = await loadGltf(url, options)
+
+  try {
+    const isEmote = gltf.animations.length > 0
+
+    let validationResult: ValidationResult
+
+    if (isEmote) {
+      const hasProps = gltf.scene.children.some(child => child.name === PROP_ARMATURE_NAME)
+      validationResult = await validateEmoteGLTF(gltf, hasProps, contents)
+    } else {
+      validationResult = await validateWearableGLTF(gltf, category)
+    }
+
+    return { isEmote, validationResult }
+  } finally {
+    renderer.dispose()
+    if (renderer.domElement.parentNode) {
+      document.body.removeChild(renderer.domElement)
     }
   }
 }

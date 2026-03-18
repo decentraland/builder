@@ -1,0 +1,85 @@
+.ValidationIssuesPanel {
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.ValidationIssuesPanel.has-errors {
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  background: rgba(255, 77, 77, 0.08);
+}
+
+.ValidationIssuesPanel.warnings-only {
+  border: 1px solid rgba(240, 173, 78, 0.4);
+  background: rgba(240, 173, 78, 0.08);
+}
+
+.ValidationIssuesPanel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.has-errors .ValidationIssuesPanel-header {
+  background: rgba(255, 77, 77, 0.15);
+}
+
+.warnings-only .ValidationIssuesPanel-header {
+  background: rgba(240, 173, 78, 0.15);
+}
+
+.ValidationIssuesPanel-title {
+  font-weight: 600;
+}
+
+.has-errors .ValidationIssuesPanel-title {
+  color: #ff6b6b;
+}
+
+.warnings-only .ValidationIssuesPanel-title {
+  color: #f0ad4e;
+}
+
+.ValidationIssuesPanel-toggle {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.ValidationIssuesPanel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ValidationIssuesPanel-issue {
+  display: flex;
+  align-items: flex-start;
+  padding: 6px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 8px;
+}
+
+.ValidationIssuesPanel-issue.error {
+  color: #ff6b6b;
+}
+
+.ValidationIssuesPanel-issue.warning {
+  color: #f0ad4e;
+}
+
+.ValidationIssuesPanel-icon {
+  flex-shrink: 0;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.ValidationIssuesPanel-message {
+  line-height: 18px;
+  color: rgba(255, 255, 255, 0.8);
+}

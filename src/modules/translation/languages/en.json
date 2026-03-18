@@ -375,7 +375,35 @@
       },
       "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections",
       "emote_animations_sync_error": "<b>Avatar and prop animations length are not the same</b><br></br>Please correct your animation and upload it again for a perfect sync.",
-      "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please re-export your Emote file and upload it again to proceed."
+      "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please re-export your Emote file and upload it again to proceed.",
+      "glb_validation": {
+        "title": "Your file has validation issues",
+        "has_errors": "Your file has validation errors that must be fixed before uploading.",
+        "triangle_count_exceeded": "Triangle count ({count}) exceeds the limit of {limit} for {category} wearables.",
+        "triangle_count_warning": "Triangle count ({count}) may exceed the limit for some wearable categories. The standard limit is 1,500 triangles.",
+        "dimensions_exceeded": "Model dimensions ({width}m x {height}m x {depth}m) exceed the maximum allowed ({maxWidth}m x {maxHeight}m x {maxDepth}m).",
+        "materials_exceeded": "Material count ({count}) exceeds the limit of {limit}.",
+        "textures_exceeded": "Texture count ({count}) exceeds the limit of {limit}.",
+        "texture_resolution_exceeded": "Texture \"{name}\" resolution ({width}x{height}) exceeds the maximum of {maxWidth}x{maxHeight}.",
+        "bone_influences_exceeded": "Some vertices have more than {limit} bone influences.",
+        "leaf_bones_found": "Leaf/end bones found: {bones}. Remove _end or _neutral suffixed bones before export.",
+        "cameras_found": "Cameras are not allowed in wearable/emote GLB files.",
+        "lights_found": "Lights are not allowed in wearable/emote GLB files.",
+        "animations_in_wearable": "Wearable GLB files must not contain animations. If this is an emote, animations are expected.",
+        "forbidden_material_name": "Material \"{name}\" uses a reserved naming pattern ({pattern}). This pattern is reserved for facial categories.",
+        "emote_frame_rate": "Animation frame rate ({fps} fps) differs from the expected {expected} fps.",
+        "emote_max_frames": "Animation has {frames} frames, exceeding the maximum of {limit}.",
+        "emote_max_clips": "File has {count} animation clips, exceeding the maximum of {limit}.",
+        "emote_missing_keyframes": "Some deform bones are missing keyframes at first/last frame: {bones}.",
+        "emote_displacement": "Avatar center displacement ({distance}m) exceeds the maximum of {limit}m.",
+        "prop_triangle_count": "Prop triangle count ({count}) exceeds the limit of {limit}.",
+        "prop_materials": "Prop material count ({count}) exceeds the limit of {limit}.",
+        "prop_textures": "Prop texture count ({count}) exceeds the limit of {limit}.",
+        "prop_armature_bones": "Prop armature has {count} bones, exceeding the limit of {limit}.",
+        "armature_naming": "Unexpected armature names found: {names}. Avatar armature should be named 'Armature' and prop armature 'Armature_Prop'.",
+        "animation_naming": "Animation clips should end with '_Avatar' or '_Prop' when props are present. Invalid names: {names}.",
+        "audio_format": "Audio file \"{name}\" has an unsupported format. Only .mp3 and .ogg are allowed."
+      }
     },
     "emote_notice": "Emotes are available for all body shapes.",
     "smart_wearable_details_title": "Complete your Smart Wearable Details",
@@ -1521,6 +1549,10 @@
       }
     }
   },
+  "validation_issues_panel": {
+    "title_errors": "{count, plural, one {# Validation Error} other {# Validation Errors}}",
+    "title_warnings": "{count, plural, one {# Validation Warning} other {# Validation Warnings}}"
+  },
   "video_modal": {
     "title": "Learn more about the Builder",
     "youtube_id": "cHEblD8xZwI"
@@ -2118,7 +2150,13 @@
       "stop": "Stop",
       "from_collection": "From Collection",
       "from_items": "From Items",
-      "default": "Default"
+      "default": "Default",
+      "validation_tooltip": "Validates the selected item against Decentraland's wearable/emote requirements",
+      "validation_running": "Validating item...",
+      "validation_pass": "Item passes all validation checks",
+      "validation_fail": "Item has validation errors. Click to view details.",
+      "validation_warnings": "Item has validation warnings. Click to view details.",
+      "validation_modal_title": "Validation Results"
     },
     "right_panel": {
       "properties": "Properties",

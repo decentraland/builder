@@ -6,6 +6,7 @@ import { getBackgroundStyle } from 'modules/item/utils'
 import { Item } from 'modules/item/types'
 import Icon from 'components/Icon'
 import ItemProperties from 'components/ItemProperties'
+import ValidationIssuesPanel from 'components/ValidationIssuesPanel/ValidationIssuesPanel'
 import { useCreateSingleItemModal } from '../CreateSingleItemModal.context'
 import { createItemActions } from '../CreateSingleItemModal.reducer'
 import CommonFields from '../CommonFields'
@@ -53,7 +54,8 @@ export const EmoteDetails: React.FC = () => {
     dispatch,
     isLoading,
     handleSubmit,
-    isDisabled
+    isDisabled,
+    validationIssues
   } = useCreateSingleItemModal()
   const { contents, metrics, thumbnail, rarity, playMode = '', hasScreenshotTaken } = state
   const title = renderModalTitle()
@@ -78,6 +80,7 @@ export const EmoteDetails: React.FC = () => {
 
   return (
     <>
+      {validationIssues && validationIssues.length > 0 && <ValidationIssuesPanel issues={validationIssues} />}
       <Row className="details">
         <Column>
           <Row>
