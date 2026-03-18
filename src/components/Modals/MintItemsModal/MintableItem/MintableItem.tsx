@@ -33,9 +33,10 @@ export default class MintableItem extends React.PureComponent<Props> {
   getChangeAmountHandler(index: number) {
     const { item, mints, onChange } = this.props
     return (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+      const sanitized = data.value.replace(/[^0-9]/g, '')
       const mint = {
         ...mints[index],
-        amount: data.value ? Number(data.value) : undefined
+        amount: sanitized ? Number(sanitized) : undefined
       }
       const newMints = [...mints.slice(0, index), mint, ...mints.slice(index + 1)]
 
@@ -111,11 +112,18 @@ export default class MintableItem extends React.PureComponent<Props> {
             />
             <Field
               className="rounded"
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder={t('global.amount')}
-              value={amount || ''}
+              value={amount !== undefined ? String(amount) : ''}
               message={undefined}
               error={!this.isValidAmount(amount)}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === '.' || e.key === ',' || e.key === '-' || e.key === 'e') {
+                  e.preventDefault()
+                }
+              }}
               onChange={this.getChangeAmountHandler(index)}
             />
             {mints.length > 1 ? <Icon name="minus" className="item-action" onClick={this.getRemoveMintHandler(index)} /> : null}
