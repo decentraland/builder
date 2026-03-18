@@ -83,11 +83,7 @@ export function validateEmoteAnimationClipCount(animations: AnimationClip[], has
   return issues
 }
 
-export function validateEmoteDeformBoneKeyframes(
-  Three: ThreeModules,
-  scene: Scene,
-  animations: AnimationClip[]
-): ValidationIssue[] {
+export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Scene, animations: AnimationClip[]): ValidationIssue[] {
   const issues: ValidationIssue[] = []
 
   if (animations.length === 0) return issues

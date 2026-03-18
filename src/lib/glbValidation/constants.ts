@@ -43,11 +43,7 @@ export const MAX_TEXTURE_RESOLUTION_DEFAULT = 512
 export const MAX_TEXTURE_RESOLUTION_FACIAL = 256
 
 // Facial categories that have stricter texture limits
-export const FACIAL_CATEGORIES: WearableCategory[] = [
-  WearableCategory.EYEBROWS,
-  WearableCategory.EYES,
-  WearableCategory.MOUTH
-]
+export const FACIAL_CATEGORIES: WearableCategory[] = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
 
 // Bone/rigging limits
 export const MAX_BONE_INFLUENCES_PER_VERTEX = 4

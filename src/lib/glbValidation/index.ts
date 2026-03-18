@@ -50,11 +50,7 @@ export async function validateWearableGLTF(gltf: GLTF, category?: WearableCatego
   }
 }
 
-export async function validateEmoteGLTF(
-  gltf: GLTF,
-  hasProps: boolean,
-  contents?: Record<string, Blob>
-): Promise<ValidationResult> {
+export async function validateEmoteGLTF(gltf: GLTF, hasProps: boolean, contents?: Record<string, Blob>): Promise<ValidationResult> {
   const Three = await import('three')
   const { scene, animations } = gltf
 
@@ -94,10 +90,7 @@ export async function validateEmoteGLTF(
  * Re-run only category-dependent validations for wearables.
  * Used when the user selects/changes a category in the details step.
  */
-export async function revalidateWearableForCategory(
-  gltf: GLTF,
-  category: WearableCategory
-): Promise<ValidationResult> {
+export async function revalidateWearableForCategory(gltf: GLTF, category: WearableCategory): Promise<ValidationResult> {
   const Three = await import('three')
   const { scene } = gltf
 

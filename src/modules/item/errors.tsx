@@ -175,9 +175,7 @@ export class GLBValidationError extends CustomErrorWithTitle {
     const message = createElement(
       'ul',
       { style: { margin: 0, paddingLeft: '20px', textAlign: 'left' as const } },
-      errorIssues.map((issue, index) =>
-        createElement('li', { key: index }, t(issue.messageKey, issue.messageParams || {}))
-      )
+      errorIssues.map((issue, index) => createElement('li', { key: index }, t(issue.messageKey, issue.messageParams || {})))
     )
     super(title, message)
     this.issues = issues

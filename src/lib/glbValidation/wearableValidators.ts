@@ -238,10 +238,7 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
   return issues
 }
 
-export function validateNoDisallowedObjects(
-  Three: ThreeModules,
-  gltf: GLTF
-): ValidationIssue[] {
+export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const { scene, animations } = gltf
 
