@@ -16,6 +16,43 @@
   margin-bottom: 2rem;
 }
 
+.MintItemsModal .mint-counter {
+  background-color: var(--secondary-on-modal);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--divider);
+}
+
+.MintItemsModal .mint-counter.warning {
+  background-color: rgba(255, 77, 79, 0.1);
+  border-color: var(--danger);
+}
+
+.MintItemsModal .mint-counter .count {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.MintItemsModal .mint-counter.warning .count {
+  color: var(--danger);
+}
+
+.MintItemsModal .mint-counter .label {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.MintItemsModal .mint-counter .warning-message {
+  margin: 0;
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .MintItemsModal .actions {
   width: 100%;
   text-align: right;
