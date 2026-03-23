@@ -3,6 +3,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toMB } from 'lib/file'
 import { MAX_EMOTE_DURATION, MAX_VIDEO_FILE_SIZE } from 'modules/item/utils'
 import { MAX_THUMBNAIL_FILE_SIZE, MAX_EMOTE_FILE_SIZE } from '@dcl/builder-client'
+import type { ValidationIssue } from 'lib/glbValidation/types'
+import { ValidationSeverity } from 'lib/glbValidation/types'
 
 class CustomError {
   message: ReactNode
@@ -161,6 +163,22 @@ export class EmoteWithMeshError extends CustomError {
         b: (text: string) => <b>{text}</b>
       })
     )
+  }
+}
+
+export class GLBValidationError extends CustomErrorWithTitle {
+  public issues: ValidationIssue[]
+
+  constructor(issues: ValidationIssue[]) {
+    const errorIssues = issues.filter(i => i.severity === ValidationSeverity.ERROR)
+    const title = t('create_single_item_modal.error.glb_validation.title')
+    const message = createElement(
+      'ul',
+      { style: { margin: 0, paddingLeft: '20px', textAlign: 'left' as const } },
+      errorIssues.map((issue, index) => createElement('li', { key: index }, t(issue.messageKey, issue.messageParams || {})))
+    )
+    super(title, message)
+    this.issues = issues
   }
 }
 

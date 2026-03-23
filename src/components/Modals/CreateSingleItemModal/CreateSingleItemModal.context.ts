@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react'
 import { Item, SyncStatus } from 'modules/item/types'
+import type { ValidationIssue } from 'lib/glbValidation/types'
 import { State, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { CreateItemAction } from './CreateSingleItemModal.reducer'
 import { Collection } from 'modules/collection/types'
@@ -38,6 +39,9 @@ export interface CreateSingleItemModalContextValue {
   renderMetrics: () => React.ReactNode
   renderModalTitle: () => string
   renderWearablePreview: () => React.ReactNode
+
+  // Validation
+  validationIssues?: ValidationIssue[]
 
   // Flags
   isThirdPartyV2Enabled: boolean

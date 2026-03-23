@@ -1,0 +1,93 @@
+.panel {
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  font-size: 13px;
+  width: 100%;
+}
+
+.hasErrors {
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  background: rgba(255, 77, 77, 0.08);
+}
+
+.warningsOnly {
+  border: 1px solid rgba(240, 173, 78, 0.4);
+  background: rgba(240, 173, 78, 0.08);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  user-select: none;
+}
+
+.headerCollapsible {
+  cursor: pointer;
+}
+
+.hasErrors .header {
+  background: rgba(255, 77, 77, 0.15);
+}
+
+.warningsOnly .header {
+  background: rgba(240, 173, 78, 0.15);
+}
+
+.title {
+  font-weight: 600;
+}
+
+.hasErrors .title {
+  color: #ff6b6b;
+}
+
+.warningsOnly .title {
+  color: #f0ad4e;
+}
+
+.toggle {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.listModal {
+  max-height: 60vh;
+}
+
+.issue {
+  display: flex;
+  align-items: flex-start;
+  padding: 6px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 8px;
+}
+
+.issueError {
+  color: #ff6b6b;
+}
+
+.issueWarning {
+  color: #f0ad4e;
+}
+
+.icon {
+  flex-shrink: 0;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.message {
+  line-height: 18px;
+  color: rgba(255, 255, 255, 0.8);
+}

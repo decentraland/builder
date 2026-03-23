@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { BodyShapeType, ItemType, Item } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import ItemDropdown from 'components/ItemDropdown'
+import { ValidationIssuesPanel } from 'components/ValidationIssuesPanel'
 import { createItemActions } from '../CreateSingleItemModal.reducer'
 import { useCreateSingleItemModal } from '../CreateSingleItemModal.context'
 import CommonFields from '../CommonFields'
@@ -23,7 +24,8 @@ export const WearableDetails: React.FC = () => {
     isAddingRepresentation,
     handleSubmit,
     isDisabled,
-    isLoading
+    isLoading,
+    validationIssues
   } = useCreateSingleItemModal()
   const { bodyShape, thumbnail, isRepresentation, rarity, item } = state
   const title = renderModalTitle()
@@ -98,6 +100,7 @@ export const WearableDetails: React.FC = () => {
 
   return (
     <>
+      {validationIssues && validationIssues.length > 0 && <ValidationIssuesPanel issues={validationIssues} />}
       <Row className="details">
         <div className="preview">
           <div className="thumbnail-container">

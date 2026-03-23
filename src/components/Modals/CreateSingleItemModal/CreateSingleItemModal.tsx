@@ -91,9 +91,11 @@ import {
 } from './CreateSingleItemModal.types'
 import { Steps } from './Steps'
 import { CreateSingleItemModalProvider } from './CreateSingleItemModalProvider'
+import { checkTriangleCount } from 'lib/glbValidation'
+import type { ValidationIssue } from 'lib/glbValidation/types'
 import './CreateSingleItemModal.css'
 
-type ValidationResult = {
+type ItemValidationResult = {
   isValid: boolean
   errorMessage?: string
 }
@@ -104,7 +106,7 @@ const buildItemTooBigError = (limit: number, typeLabel: string) =>
     type: typeLabel
   })
 
-const validateItemDraft = (state: State, collection: Collection | null, isThirdPartyV2Enabled: boolean): ValidationResult => {
+const validateItemDraft = (state: State, collection: Collection | null, isThirdPartyV2Enabled: boolean): ItemValidationResult => {
   const { name, thumbnail, metrics, bodyShape, category, playMode, rarity, item, isRepresentation, type, modelSize, mappings, contents } =
     state
 
@@ -178,6 +180,26 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   const isAddingRepresentation = useMemo(() => {
     return !!(metadata && metadata.item && !metadata.changeItemFile)
   }, [metadata])
+
+  // Merge import-time validation issues with category-dependent triangle check
+  const allValidationIssues = useMemo((): ValidationIssue[] | undefined => {
+    const { metrics, category, type, validationIssues } = state
+    if (type !== ItemType.WEARABLE || !metrics || !('triangles' in metrics)) {
+      return validationIssues
+    }
+
+    // Filter out any stale triangle issues from import-time
+    const nonTriangleIssues = (validationIssues ?? []).filter(i => i.code !== 'TRIANGLE_COUNT_EXCEEDED')
+
+    if (!category) return nonTriangleIssues.length > 0 ? nonTriangleIssues : validationIssues
+
+    // Run lightweight triangle check with the selected category (no hides available yet)
+    const triangleIssue = checkTriangleCount(metrics.triangles, category as WearableCategory)
+    if (triangleIssue) {
+      return [...nonTriangleIssues, triangleIssue]
+    }
+    return nonTriangleIssues.length > 0 ? nonTriangleIssues : undefined
+  }, [state])
 
   const validationResult = useMemo(
     () => validateItemDraft(state, collection, isThirdPartyV2Enabled),
@@ -825,6 +847,9 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     renderMetrics,
     renderModalTitle,
     renderWearablePreview,
+
+    // Validation
+    validationIssues: allValidationIssues,
 
     // Flags
     isThirdPartyV2Enabled,

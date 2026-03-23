@@ -374,7 +374,35 @@
       },
       "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas",
       "emote_animations_sync_error": "<b>Las longitudes de las animaciones del avatar y de las props no son iguales</b><br></br>Corrija su animación y vuelva a subirla para una sincronización perfecta.",
-      "emote_with_mesh": "<b>Su archivo incluye el mesh del Avatar.</b><br></br>Esta malla no es necesaria para este proceso. Por favor, simplemente vuelva a exportarlo y vuelva a subirlo para continuar."
+      "emote_with_mesh": "<b>Su archivo incluye el mesh del Avatar.</b><br></br>Esta malla no es necesaria para este proceso. Por favor, simplemente vuelva a exportarlo y vuelva a subirlo para continuar.",
+      "glb_validation": {
+        "title": "Tu archivo tiene problemas de validación",
+        "has_errors": "Tu archivo tiene errores de validación que deben corregirse antes de subir.",
+        "triangle_count_exceeded": "La cantidad de triángulos ({count}) supera el límite de {limit} para wearables de tipo {category}.",
+        "triangle_count_exceeded_with_hint": "La cantidad de triángulos ({count}) supera el límite base de {limit} para wearables de tipo {category}. Puedes aumentar este límite ocultando otras categorías de wearables en el Editor de Items.",
+        "dimensions_exceeded": "Las dimensiones del modelo ({width}m x {height}m x {depth}m) superan el máximo permitido ({maxWidth}m x {maxHeight}m x {maxDepth}m).",
+        "materials_exceeded": "La cantidad de materiales ({count}) supera el límite de {limit}.",
+        "textures_exceeded": "La cantidad de texturas ({count}) supera el límite de {limit}.",
+        "texture_resolution_exceeded": "La resolución de la textura \"{name}\" ({width}x{height}) supera el máximo de {maxWidth}x{maxHeight}.",
+        "bone_influences_exceeded": "Algunos vértices tienen más de {limit} influencias de huesos.",
+        "leaf_bones_found": "Se encontraron huesos terminales: {bones}. Elimina los huesos con sufijo _end o _neutral antes de exportar.",
+        "cameras_found": "No se permiten cámaras en archivos GLB de wearables/emotes.",
+        "lights_found": "No se permiten luces en archivos GLB de wearables/emotes.",
+        "animations_in_wearable": "Los archivos GLB de wearables no deben contener animaciones. Si es un emote, las animaciones son esperadas.",
+        "forbidden_material_name": "El material \"{name}\" usa un patrón de nombre reservado ({pattern}). Este patrón está reservado para categorías faciales.",
+        "emote_frame_rate": "La tasa de fotogramas de la animación ({fps} fps) difiere de los {expected} fps esperados.",
+        "emote_max_frames": "La animación tiene {frames} fotogramas, superando el máximo de {limit}.",
+        "emote_max_clips": "El archivo tiene {count} clips de animación, superando el máximo de {limit}.",
+        "emote_missing_keyframes": "Algunos huesos de deformación no tienen keyframes en el primer/último fotograma: {bones}.",
+        "emote_displacement": "El desplazamiento del centro del avatar ({distance}m) supera el máximo de {limit}m.",
+        "prop_triangle_count": "La cantidad de triángulos del prop ({count}) supera el límite de {limit}.",
+        "prop_materials": "La cantidad de materiales del prop ({count}) supera el límite de {limit}.",
+        "prop_textures": "La cantidad de texturas del prop ({count}) supera el límite de {limit}.",
+        "prop_armature_bones": "La armadura del prop tiene {count} huesos, superando el límite de {limit}.",
+        "armature_naming": "Se encontraron nombres de armadura inesperados: {names}. La armadura del avatar debe llamarse 'Armature' y la del prop 'Armature_Prop'.",
+        "animation_naming": "Los clips de animación deben terminar en '_Avatar' o '_Prop' cuando hay props. Nombres inválidos: {names}.",
+        "audio_format": "El archivo de audio \"{name}\" tiene un formato no soportado. Solo se permiten .mp3 y .ogg."
+      }
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
     "smart_wearable_details_title": "Completa los detalles de tu vestimenta interactiva",
@@ -1528,6 +1556,10 @@
       }
     }
   },
+  "validation_issues_panel": {
+    "title_errors": "{count, plural, one {# Error de Validación} other {# Errores de Validación}}",
+    "title_warnings": "{count, plural, one {# Advertencia de Validación} other {# Advertencias de Validación}}"
+  },
   "video_modal": {
     "title": "Aprende más sobre el Builder",
     "youtube_id": "4YSdIaxfg-E"
@@ -2136,7 +2168,13 @@
       "stop": "Parar",
       "from_collection": "Desde la Colección",
       "from_items": "Desde los Items",
-      "default": "Predeterminadas"
+      "default": "Predeterminadas",
+      "validation_tooltip": "Valida el item seleccionado contra los requisitos de wearables/emotes de Decentraland",
+      "validation_running": "Validando item...",
+      "validation_pass": "El item pasa todas las verificaciones de validación",
+      "validation_fail": "El item tiene errores de validación. Haz clic para ver los detalles.",
+      "validation_warnings": "El item tiene advertencias de validación. Haz clic para ver los detalles.",
+      "validation_modal_title": "Resultados de Validación"
     },
     "right_panel": {
       "properties": "Propiedades",
