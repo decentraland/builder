@@ -205,7 +205,9 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                       <p className="warning-message danger-text">{t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })}</p>
                     )}
                   </div>
-                  {items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)}
+                  {items.map(item => (
+                    <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />
+                  ))}
                 </>
               )}
               {isFull ? null : (
