@@ -34,7 +34,6 @@ import {
   EmotePlayMode,
   VIDEO_PATH,
   WearableData,
-  SyncStatus,
   EmoteData
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
@@ -442,13 +441,13 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         item.data.representations[representationIndex] = representations[0]
       }
 
-      if (itemStatus && [SyncStatus.UNPUBLISHED, SyncStatus.UNDER_REVIEW].includes(itemStatus) && isSmart(item) && VIDEO_PATH in contents) {
+      if (isSmart(item) && VIDEO_PATH in contents) {
         item.video = contents[VIDEO_PATH]
       }
 
       onSave(item as Item, sortedContents.all)
     },
-    [itemStatus, state, onSave]
+    [state, onSave]
   )
 
   // Thumbnail handling
