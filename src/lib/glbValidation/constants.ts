@@ -33,6 +33,31 @@ export const TRIANGLE_LIMITS: Partial<Record<WearableCategory, number>> = {
 /** Fallback triangle limit used when the wearable category is not yet known (most permissive non-skin limit). */
 export const MAX_TRIANGLE_LIMIT_UNKNOWN_CATEGORY = 1500
 
+/**
+ * Calculates the effective triangle limit for a wearable, taking into account
+ * the Tris Combiner rule: when a wearable hides other slots, their triangle
+ * budgets are added to the base limit.
+ *
+ * @param category - The wearable's own category.
+ * @param hides - The list of categories this wearable hides.
+ * @returns The effective triangle limit.
+ */
+export function getEffectiveTriangleLimit(category: WearableCategory, hides: string[] = []): number {
+  const baseLimit = TRIANGLE_LIMITS[category] ?? MAX_TRIANGLE_LIMIT_UNKNOWN_CATEGORY
+
+  if (hides.length === 0) return baseLimit
+
+  let combinedLimit = baseLimit
+  for (const hidden of hides) {
+    const hiddenLimit = TRIANGLE_LIMITS[hidden as WearableCategory]
+    if (hiddenLimit) {
+      combinedLimit += hiddenLimit
+    }
+  }
+
+  return combinedLimit
+}
+
 /** Maximum bounding-box dimensions for a wearable, in meters. */
 export const MAX_DIMENSIONS = {
   height: 2.42,

@@ -30,7 +30,7 @@ import { isEmote, getModelPath } from 'modules/item/utils'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
-import ValidationIssuesPanel from 'components/ValidationIssuesPanel/ValidationIssuesPanel'
+import { ValidationIssuesPanel } from 'components/ValidationIssuesPanel'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
@@ -82,8 +82,24 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.selectedItem?.id !== this.props.selectedItem?.id) {
+    const prev = prevProps.selectedItem
+    const curr = this.props.selectedItem
+
+    if (prev?.id !== curr?.id) {
       void this.runValidation()
+      return
+    }
+
+    // Re-validate when hides or category change (e.g. user edits overrides in the RightPanel)
+    if (prev && curr && 'hides' in prev.data && 'hides' in curr.data) {
+      const prevHides = (prev.data as { hides?: string[] }).hides
+      const currHides = (curr.data as { hides?: string[] }).hides
+      const prevCategory = prev.data.category
+      const currCategory = curr.data.category
+
+      if (prevCategory !== currCategory || JSON.stringify(prevHides) !== JSON.stringify(currHides)) {
+        void this.runValidation()
+      }
     }
   }
 
@@ -131,6 +147,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       }
 
       const category = selectedItem.data?.category as WearableCategory | undefined
+      const hides = ('hides' in selectedItem.data ? selectedItem.data.hides : undefined) as string[] | undefined
       const { validationResult } = await loadAndValidateModel(
         modelUrl,
         {
@@ -139,7 +156,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           height: 1024,
           engine: EngineType.BABYLON
         },
-        category
+        category,
+        undefined,
+        hides
       )
       this.setState({ validationIssues: validationResult.issues, isValidating: false })
     } catch (error) {
@@ -411,7 +430,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       <Modal open size="small" onClose={this.handleCloseValidationModal}>
         <ModalNavigation title={t('item_editor.center_panel.validation_modal_title')} onClose={this.handleCloseValidationModal} />
         <Modal.Content>
-          <ValidationIssuesPanel issues={validationIssues} />
+          <ValidationIssuesPanel issues={validationIssues} collapsible={false} />
         </Modal.Content>
       </Modal>
     )

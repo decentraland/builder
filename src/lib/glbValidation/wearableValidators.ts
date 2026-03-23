@@ -2,8 +2,7 @@ import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { WearableCategory } from '@dcl/schemas'
 import { ValidationIssue, ValidationSeverity } from './types'
 import {
-  TRIANGLE_LIMITS,
-  MAX_TRIANGLE_LIMIT_UNKNOWN_CATEGORY,
+  getEffectiveTriangleLimit,
   MAX_DIMENSIONS,
   MAX_MATERIALS_DEFAULT,
   MAX_MATERIALS_SKIN,
@@ -43,33 +42,40 @@ function getTriangleCount(Three: ThreeModules, scene: THREE.Scene): number {
 
 /**
  * Validates that the scene's total triangle count does not exceed the limit for the given category.
- * Reports ERROR when the category is known and the limit is exceeded, or WARNING when no category
- * is selected and the count exceeds the default 1500-triangle limit.
+ * Supports the Tris Combiner rule: when a wearable hides other slots, their triangle budgets are
+ * added to the base limit.
+ *
+ * When category is known but hides are not provided, reports ERROR if the base limit is exceeded,
+ * with a hint that hiding other slots in the item editor can increase the allowed budget.
+ *
+ * When both category and hides are provided, uses the full combined limit.
+ *
+ * @param hides - Categories this wearable hides (used for Tris Combiner calculation).
  */
-export function validateTriangleCounts(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
+export function validateTriangleCounts(
+  Three: ThreeModules,
+  scene: THREE.Scene,
+  category?: WearableCategory,
+  hides?: string[]
+): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const triangles = getTriangleCount(Three, scene)
 
-  if (category) {
-    const limit = TRIANGLE_LIMITS[category] ?? MAX_TRIANGLE_LIMIT_UNKNOWN_CATEGORY
-    if (triangles > limit) {
-      issues.push({
-        code: 'TRIANGLE_COUNT_EXCEEDED',
-        severity: ValidationSeverity.ERROR,
-        messageKey: 'create_single_item_modal.error.glb_validation.triangle_count_exceeded',
-        messageParams: { count: triangles, limit, category }
-      })
-    }
-  } else {
-    // No category known yet — warn if exceeds the standard limit
-    if (triangles > MAX_TRIANGLE_LIMIT_UNKNOWN_CATEGORY) {
-      issues.push({
-        code: 'TRIANGLE_COUNT_WARNING',
-        severity: ValidationSeverity.WARNING,
-        messageKey: 'create_single_item_modal.error.glb_validation.triangle_count_warning',
-        messageParams: { count: triangles }
-      })
-    }
+  if (!category) return issues
+
+  const limit = getEffectiveTriangleLimit(category, hides)
+  if (triangles > limit) {
+    // When hides are known the limit is final — report as a hard error
+    // When hides are not known (e.g. during item creation) add a hint about the Tris Combiner
+    const hasHidesInfo = hides !== undefined && hides.length > 0
+    issues.push({
+      code: 'TRIANGLE_COUNT_EXCEEDED',
+      severity: ValidationSeverity.WARNING,
+      messageKey: hasHidesInfo
+        ? 'create_single_item_modal.error.glb_validation.triangle_count_exceeded'
+        : 'create_single_item_modal.error.glb_validation.triangle_count_exceeded_with_hint',
+      messageParams: { count: triangles, limit, category }
+    })
   }
 
   return issues
@@ -91,7 +97,7 @@ export function validateDimensions(Three: ThreeModules, scene: THREE.Scene): Val
   if (width > MAX_DIMENSIONS.width || height > MAX_DIMENSIONS.height || depth > MAX_DIMENSIONS.depth) {
     issues.push({
       code: 'DIMENSIONS_EXCEEDED',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.dimensions_exceeded',
       messageParams: {
         width,
@@ -130,7 +136,7 @@ export function validateMaterials(Three: ThreeModules, scene: THREE.Scene, categ
   if (materials.size > limit) {
     issues.push({
       code: 'MATERIALS_EXCEEDED',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.materials_exceeded',
       messageParams: { count: materials.size, limit }
     })
@@ -170,7 +176,7 @@ export function validateTextures(Three: ThreeModules, scene: THREE.Scene, catego
           if (imgWidth > maxResolution || imgHeight > maxResolution) {
             issues.push({
               code: 'TEXTURE_RESOLUTION_EXCEEDED',
-              severity: ValidationSeverity.ERROR,
+              severity: ValidationSeverity.WARNING,
               messageKey: 'create_single_item_modal.error.glb_validation.texture_resolution_exceeded',
               messageParams: {
                 name: texName,
@@ -189,7 +195,7 @@ export function validateTextures(Three: ThreeModules, scene: THREE.Scene, catego
   if (textures.size > textureLimit) {
     issues.push({
       code: 'TEXTURES_EXCEEDED',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.textures_exceeded',
       messageParams: { count: textures.size, limit: textureLimit }
     })
@@ -222,7 +228,7 @@ export function validateBoneInfluences(Three: ThreeModules, scene: THREE.Scene):
         if (skinWeight.itemSize > MAX_BONE_INFLUENCES_PER_VERTEX) {
           issues.push({
             code: 'BONE_INFLUENCES_EXCEEDED',
-            severity: ValidationSeverity.ERROR,
+            severity: ValidationSeverity.WARNING,
             messageKey: 'create_single_item_modal.error.glb_validation.bone_influences_exceeded',
             messageParams: { limit: MAX_BONE_INFLUENCES_PER_VERTEX }
           })
@@ -286,7 +292,7 @@ export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): Va
   if (hasCameras) {
     issues.push({
       code: 'CAMERAS_FOUND',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.cameras_found'
     })
   }
@@ -294,7 +300,7 @@ export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): Va
   if (hasLights) {
     issues.push({
       code: 'LIGHTS_FOUND',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.lights_found'
     })
   }
@@ -303,7 +309,7 @@ export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): Va
   if (animations.length > 0) {
     issues.push({
       code: 'ANIMATIONS_IN_WEARABLE',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.animations_in_wearable'
     })
   }

@@ -373,7 +373,7 @@
         "title": "您的文件存在验证问题",
         "has_errors": "您的文件存在验证错误，需要在上传前修复。",
         "triangle_count_exceeded": "三角形数量 ({count}) 超过了 {category} 类型可穿戴物的限制 {limit}。",
-        "triangle_count_warning": "三角形数量 ({count}) 可能超过某些可穿戴物类别的限制。标准限制为 1,500 个三角形。",
+        "triangle_count_exceeded_with_hint": "三角形数量 ({count}) 超过了 {category} 类型可穿戴物的基础限制 {limit}。您可以在物品编辑器中通过隐藏其他可穿戴物类别来提高此限制。",
         "dimensions_exceeded": "模型尺寸 ({width}m x {height}m x {depth}m) 超过了允许的最大值 ({maxWidth}m x {maxHeight}m x {maxDepth}m)。",
         "materials_exceeded": "材质数量 ({count}) 超过了限制 {limit}。",
         "textures_exceeded": "贴图数量 ({count}) 超过了限制 {limit}。",

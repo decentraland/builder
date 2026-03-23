@@ -1,6 +1,7 @@
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { WearableCategory } from '@dcl/schemas'
-import { ValidationResult, ValidationSeverity } from './types'
+import { ValidationIssue, ValidationResult, ValidationSeverity } from './types'
+import { getEffectiveTriangleLimit } from './constants'
 import {
   validateTriangleCounts,
   validateDimensions,
@@ -27,20 +28,24 @@ import {
 } from './emoteValidators'
 export { ValidationSeverity } from './types'
 export type { ValidationIssue, ValidationResult } from './types'
+export { getEffectiveTriangleLimit } from './constants'
 
 /**
  * Runs all wearable-specific validations against a parsed GLTF model.
- * Checks triangles, dimensions, materials, textures, bone influences,
+ * Checks dimensions, materials, textures, bone influences,
  * leaf bones, disallowed objects, and material naming conventions.
+ * Triangle counts are only checked when a category is provided.
  * @param gltf - The parsed GLTF loaded by Three.js.
  * @param category - Optional wearable category; limits are adjusted when provided.
+ * @param hides - Optional list of categories this wearable hides (for Tris Combiner).
  */
-export async function validateWearableGLTF(gltf: GLTF, category?: WearableCategory): Promise<ValidationResult> {
+export async function validateWearableGLTF(gltf: GLTF, category?: WearableCategory, hides?: string[]): Promise<ValidationResult> {
   const Three = await import('three')
   const { scene } = gltf
 
   const issueArrays = [
-    validateTriangleCounts(Three, scene, category),
+    // Triangle counts require category + hides to be meaningful; skip at import time
+    ...(category ? [validateTriangleCounts(Three, scene, category, hides)] : []),
     validateDimensions(Three, scene),
     validateMaterials(Three, scene, category),
     validateTextures(Three, scene, category),
@@ -107,12 +112,12 @@ export async function validateEmoteGLTF(gltf: GLTF, hasProps: boolean, contents?
  * Re-run only category-dependent validations for wearables.
  * Used when the user selects/changes a category in the details step.
  */
-export async function revalidateWearableForCategory(gltf: GLTF, category: WearableCategory): Promise<ValidationResult> {
+export async function revalidateWearableForCategory(gltf: GLTF, category: WearableCategory, hides?: string[]): Promise<ValidationResult> {
   const Three = await import('three')
   const { scene } = gltf
 
   const issueArrays = [
-    validateTriangleCounts(Three, scene, category),
+    validateTriangleCounts(Three, scene, category, hides),
     validateMaterials(Three, scene, category),
     validateTextures(Three, scene, category),
     validateMaterialNaming(Three, scene, category)
@@ -122,5 +127,25 @@ export async function revalidateWearableForCategory(gltf: GLTF, category: Wearab
   return {
     issues,
     isValid: issues.every(i => i.severity !== ValidationSeverity.ERROR)
+  }
+}
+
+/**
+ * Lightweight triangle count check using pre-computed metrics (no GLTF reload needed).
+ * Used in the CreateSingleItemModal when the user selects a category but hides are not yet configured.
+ * Returns the triangle issue (with hint about Tris Combiner) or null if within limits.
+ */
+export function checkTriangleCount(triangles: number, category: WearableCategory, hides?: string[]): ValidationIssue | null {
+  const limit = getEffectiveTriangleLimit(category, hides)
+  if (triangles <= limit) return null
+
+  const hasHidesInfo = hides !== undefined && hides.length > 0
+  return {
+    code: 'TRIANGLE_COUNT_EXCEEDED',
+    severity: ValidationSeverity.WARNING,
+    messageKey: hasHidesInfo
+      ? 'create_single_item_modal.error.glb_validation.triangle_count_exceeded'
+      : 'create_single_item_modal.error.glb_validation.triangle_count_exceeded_with_hint',
+    messageParams: { count: triangles, limit, category }
   }
 }

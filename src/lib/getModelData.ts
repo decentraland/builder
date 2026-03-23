@@ -324,7 +324,8 @@ export async function loadAndValidateModel(
   url: string,
   options: Partial<Options> = {},
   category?: WearableCategory,
-  contents?: Record<string, Blob>
+  contents?: Record<string, Blob>,
+  hides?: string[]
 ): Promise<{
   isEmote: boolean
   validationResult: ValidationResult
@@ -340,7 +341,7 @@ export async function loadAndValidateModel(
       const hasProps = gltf.scene.children.some(child => child.name === PROP_ARMATURE_NAME)
       validationResult = await validateEmoteGLTF(gltf, hasProps, contents)
     } else {
-      validationResult = await validateWearableGLTF(gltf, category)
+      validationResult = await validateWearableGLTF(gltf, category, hides)
     }
 
     return { isEmote, validationResult }

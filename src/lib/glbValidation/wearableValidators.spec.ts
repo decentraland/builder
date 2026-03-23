@@ -14,7 +14,7 @@ import {
   validateMaterialNaming
 } from './wearableValidators'
 import { validateEmoteDisplacement } from './emoteValidators'
-import { MAX_MATERIALS_DEFAULT, MAX_MATERIALS_SKIN, MAX_TEXTURES_DEFAULT, AVATAR_SKIN_MAT } from './constants'
+import { MAX_MATERIALS_DEFAULT, MAX_MATERIALS_SKIN, MAX_TEXTURES_DEFAULT, AVATAR_SKIN_MAT, getEffectiveTriangleLimit } from './constants'
 
 // Mock Three.js classes that support instanceof checks.
 function createMockThree() {
@@ -152,7 +152,7 @@ describe('validateTriangleCounts', () => {
       it('should return an error with the TRIANGLE_COUNT_EXCEEDED code', () => {
         expect(issues).toHaveLength(1)
         expect(issues[0].code).toBe('TRIANGLE_COUNT_EXCEEDED')
-        expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+        expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
       })
 
       it('should include the actual count and limit in the params', () => {
@@ -176,19 +176,6 @@ describe('validateTriangleCounts', () => {
   })
 
   describe('when no category is provided', () => {
-    describe('and the triangle count is within the standard limit', () => {
-      let issues: ValidationIssue[]
-
-      beforeEach(() => {
-        const scene = createScene([createMeshNode(Three, { triangles: 1000 })])
-        issues = validateTriangleCounts(asThree(Three), scene)
-      })
-
-      it('should return no issues', () => {
-        expect(issues).toEqual([])
-      })
-    })
-
     describe('and the triangle count exceeds the standard limit', () => {
       let issues: ValidationIssue[]
 
@@ -197,10 +184,8 @@ describe('validateTriangleCounts', () => {
         issues = validateTriangleCounts(asThree(Three), scene)
       })
 
-      it('should return a warning with the TRIANGLE_COUNT_WARNING code', () => {
-        expect(issues).toHaveLength(1)
-        expect(issues[0].code).toBe('TRIANGLE_COUNT_WARNING')
-        expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+      it('should return no issues (triangle check is skipped without category)', () => {
+        expect(issues).toEqual([])
       })
     })
   })
@@ -291,7 +276,7 @@ describe('validateDimensions', () => {
     it('should return an error with the DIMENSIONS_EXCEEDED code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('DIMENSIONS_EXCEEDED')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
   })
 })
@@ -331,7 +316,7 @@ describe('validateMaterials', () => {
     it('should return an error with the MATERIALS_EXCEEDED code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('MATERIALS_EXCEEDED')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
   })
 
@@ -872,6 +857,151 @@ describe('edge cases', () => {
 
     it('should return no issues', () => {
       expect(issues).toEqual([])
+    })
+  })
+})
+
+describe('getEffectiveTriangleLimit', () => {
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('when no hides are provided', () => {
+    let limit: number
+
+    beforeEach(() => {
+      limit = getEffectiveTriangleLimit(WearableCategory.UPPER_BODY)
+    })
+
+    it('should return the base category limit', () => {
+      expect(limit).toBe(1500)
+    })
+  })
+
+  describe('when hides is an empty array', () => {
+    let limit: number
+
+    beforeEach(() => {
+      limit = getEffectiveTriangleLimit(WearableCategory.UPPER_BODY, [])
+    })
+
+    it('should return the base category limit', () => {
+      expect(limit).toBe(1500)
+    })
+  })
+
+  describe('when a jumpsuit hides lower_body', () => {
+    let limit: number
+
+    beforeEach(() => {
+      limit = getEffectiveTriangleLimit(WearableCategory.UPPER_BODY, [WearableCategory.LOWER_BODY])
+    })
+
+    it('should combine the budgets (1500 + 1500 = 3000)', () => {
+      expect(limit).toBe(3000)
+    })
+  })
+
+  describe('when a helmet hides hair and hat', () => {
+    let limit: number
+
+    beforeEach(() => {
+      limit = getEffectiveTriangleLimit(WearableCategory.HELMET, [WearableCategory.HAIR, WearableCategory.HAT])
+    })
+
+    it('should combine all budgets (1500 + 1500 + 1500 = 4500)', () => {
+      expect(limit).toBe(1500 + 1500 + 1500)
+    })
+  })
+
+  describe('when an upper_body hides multiple small categories', () => {
+    let limit: number
+
+    beforeEach(() => {
+      limit = getEffectiveTriangleLimit(WearableCategory.UPPER_BODY, [WearableCategory.MASK, WearableCategory.EYEWEAR])
+    })
+
+    it('should add each hidden budget (1500 + 500 + 500 = 2500)', () => {
+      expect(limit).toBe(2500)
+    })
+  })
+
+  describe('when hides includes a category without a triangle budget', () => {
+    let limit: number
+
+    beforeEach(() => {
+      limit = getEffectiveTriangleLimit(WearableCategory.UPPER_BODY, ['head' as WearableCategory])
+    })
+
+    it('should ignore the unknown category and return only the base limit', () => {
+      expect(limit).toBe(1500)
+    })
+  })
+})
+
+describe('validateTriangleCounts with Tris Combiner', () => {
+  let Three: MockThree
+
+  beforeEach(() => {
+    Three = createMockThree()
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('when a jumpsuit has 2500 tris and hides lower_body', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const scene = createScene([createMeshNode(Three, { triangles: 2500 })])
+      issues = validateTriangleCounts(asThree(Three), scene, WearableCategory.UPPER_BODY, [WearableCategory.LOWER_BODY])
+    })
+
+    it('should return no issues (combined limit is 3000)', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('when a jumpsuit has 3500 tris and hides lower_body', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const scene = createScene([createMeshNode(Three, { triangles: 3500 })])
+      issues = validateTriangleCounts(asThree(Three), scene, WearableCategory.UPPER_BODY, [WearableCategory.LOWER_BODY])
+    })
+
+    it('should return an error with the combined limit of 3000', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('TRIANGLE_COUNT_EXCEEDED')
+      expect(issues[0].messageParams?.limit).toBe(3000)
+    })
+  })
+
+  describe('when a helmet has 4000 tris and hides hair and hat', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const scene = createScene([createMeshNode(Three, { triangles: 4000 })])
+      issues = validateTriangleCounts(asThree(Three), scene, WearableCategory.HELMET, [WearableCategory.HAIR, WearableCategory.HAT])
+    })
+
+    it('should return no issues (combined limit is 1500 + 1500 + 1500 = 4500)', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('when a helmet has 5000 tris and hides hair and hat', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const scene = createScene([createMeshNode(Three, { triangles: 5000 })])
+      issues = validateTriangleCounts(asThree(Three), scene, WearableCategory.HELMET, [WearableCategory.HAIR, WearableCategory.HAT])
+    })
+
+    it('should return an error with the combined limit of 4500', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].messageParams?.limit).toBe(4500)
     })
   })
 })

@@ -379,7 +379,7 @@
         "title": "Tu archivo tiene problemas de validación",
         "has_errors": "Tu archivo tiene errores de validación que deben corregirse antes de subir.",
         "triangle_count_exceeded": "La cantidad de triángulos ({count}) supera el límite de {limit} para wearables de tipo {category}.",
-        "triangle_count_warning": "La cantidad de triángulos ({count}) podría superar el límite para algunas categorías de wearables. El límite estándar es de 1.500 triángulos.",
+        "triangle_count_exceeded_with_hint": "La cantidad de triángulos ({count}) supera el límite base de {limit} para wearables de tipo {category}. Puedes aumentar este límite ocultando otras categorías de wearables en el Editor de Items.",
         "dimensions_exceeded": "Las dimensiones del modelo ({width}m x {height}m x {depth}m) superan el máximo permitido ({maxWidth}m x {maxHeight}m x {maxDepth}m).",
         "materials_exceeded": "La cantidad de materiales ({count}) supera el límite de {limit}.",
         "textures_exceeded": "La cantidad de texturas ({count}) supera el límite de {limit}.",

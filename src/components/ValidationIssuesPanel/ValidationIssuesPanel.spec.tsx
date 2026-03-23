@@ -21,7 +21,7 @@ describe('ValidationIssuesPanel', () => {
   describe('when issues array is empty', () => {
     it('should render nothing', () => {
       const { container } = renderWithProviders(<ValidationIssuesPanel issues={[]} />)
-      expect(container.querySelector('.ValidationIssuesPanel')).toBeNull()
+      expect(container.querySelector('.panel')).toBeNull()
     })
   })
 
@@ -37,17 +37,17 @@ describe('ValidationIssuesPanel', () => {
       container = result.container
     })
 
-    it('should render the panel with has-errors class', () => {
-      expect(container.querySelector('.ValidationIssuesPanel.has-errors')).not.toBeNull()
+    it('should render the panel with hasErrors class', () => {
+      expect(container.querySelector('.panel.hasErrors')).not.toBeNull()
     })
 
     it('should render all issues in the list', () => {
-      const items = container.querySelectorAll('.ValidationIssuesPanel-issue')
+      const items = container.querySelectorAll('.issue')
       expect(items).toHaveLength(2)
     })
 
     it('should render error icons for each issue', () => {
-      const icons = container.querySelectorAll('.ValidationIssuesPanel-issue.error .ValidationIssuesPanel-icon')
+      const icons = container.querySelectorAll('.issue.issueError .icon')
       expect(icons).toHaveLength(2)
       icons.forEach(icon => {
         expect(icon.textContent).toBe('\u2716')
@@ -64,12 +64,12 @@ describe('ValidationIssuesPanel', () => {
       container = result.container
     })
 
-    it('should render the panel with warnings-only class', () => {
-      expect(container.querySelector('.ValidationIssuesPanel.warnings-only')).not.toBeNull()
+    it('should render the panel with warningsOnly class', () => {
+      expect(container.querySelector('.panel.warningsOnly')).not.toBeNull()
     })
 
     it('should render warning icons', () => {
-      const icon = container.querySelector('.ValidationIssuesPanel-issue.warning .ValidationIssuesPanel-icon')
+      const icon = container.querySelector('.issue.issueWarning .icon')
       expect(icon?.textContent).toBe('\u26A0')
     })
   })
@@ -87,40 +87,66 @@ describe('ValidationIssuesPanel', () => {
     })
 
     it('should render errors before warnings', () => {
-      const items = container.querySelectorAll('.ValidationIssuesPanel-issue')
-      expect(items[0].classList.contains('error')).toBe(true)
-      expect(items[1].classList.contains('warning')).toBe(true)
+      const items = container.querySelectorAll('.issue')
+      expect(items[0].classList.contains('issueError')).toBe(true)
+      expect(items[1].classList.contains('issueWarning')).toBe(true)
     })
 
-    it('should use has-errors class on the panel', () => {
-      expect(container.querySelector('.ValidationIssuesPanel.has-errors')).not.toBeNull()
+    it('should use hasErrors class on the panel', () => {
+      expect(container.querySelector('.panel.hasErrors')).not.toBeNull()
     })
   })
 
-  describe('when the header is clicked', () => {
+  describe('when collapsible is true (default)', () => {
+    describe('and the header is clicked', () => {
+      let container: HTMLElement
+
+      beforeEach(() => {
+        const issues: ValidationIssue[] = [makeIssue('CAMERAS_FOUND', ValidationSeverity.WARNING)]
+        const result = renderWithProviders(<ValidationIssuesPanel issues={issues} />)
+        container = result.container
+      })
+
+      it('should collapse the list', () => {
+        const header = container.querySelector('.header')!
+        expect(container.querySelector('.list')).not.toBeNull()
+
+        fireEvent.click(header)
+        expect(container.querySelector('.list')).toBeNull()
+      })
+
+      describe('and clicked again', () => {
+        it('should expand the list back', () => {
+          const header = container.querySelector('.header')!
+          fireEvent.click(header)
+          fireEvent.click(header)
+          expect(container.querySelector('.list')).not.toBeNull()
+        })
+      })
+    })
+  })
+
+  describe('when collapsible is false', () => {
     let container: HTMLElement
 
     beforeEach(() => {
-      const issues: ValidationIssue[] = [makeIssue('CAMERAS_FOUND', ValidationSeverity.ERROR)]
-      const result = renderWithProviders(<ValidationIssuesPanel issues={issues} />)
+      const issues: ValidationIssue[] = [makeIssue('CAMERAS_FOUND', ValidationSeverity.WARNING)]
+      const result = renderWithProviders(<ValidationIssuesPanel issues={issues} collapsible={false} />)
       container = result.container
     })
 
-    it('should collapse the list', () => {
-      const header = container.querySelector('.ValidationIssuesPanel-header')!
-      expect(container.querySelector('.ValidationIssuesPanel-list')).not.toBeNull()
-
-      fireEvent.click(header)
-      expect(container.querySelector('.ValidationIssuesPanel-list')).toBeNull()
+    it('should not render the toggle arrow', () => {
+      expect(container.querySelector('.toggle')).toBeNull()
     })
 
-    describe('and clicked again', () => {
-      it('should expand the list back', () => {
-        const header = container.querySelector('.ValidationIssuesPanel-header')!
-        fireEvent.click(header)
-        fireEvent.click(header)
-        expect(container.querySelector('.ValidationIssuesPanel-list')).not.toBeNull()
-      })
+    it('should always show the list', () => {
+      expect(container.querySelector('.list')).not.toBeNull()
+    })
+
+    it('should not collapse when header is clicked', () => {
+      const header = container.querySelector('.header')!
+      fireEvent.click(header)
+      expect(container.querySelector('.list')).not.toBeNull()
     })
   })
 })

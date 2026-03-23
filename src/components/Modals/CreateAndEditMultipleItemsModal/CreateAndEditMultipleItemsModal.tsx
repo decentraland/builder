@@ -211,6 +211,7 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
           const modelUrl = URL.createObjectURL(loadedFile.content[modelPath])
           try {
             const wearableCategory = loadedFile.wearable.data.category
+            const wearableHides = loadedFile.wearable.data.hides as string[] | undefined
             const { validationResult } = await loadAndValidateModel(
               modelUrl,
               {
@@ -220,7 +221,8 @@ export const CreateAndEditMultipleItemsModal: FC<Props> = (props: Props) => {
                 engine: EngineType.BABYLON
               },
               wearableCategory,
-              loadedFile.content
+              loadedFile.content,
+              wearableHides
             )
 
             const errorIssues = validationResult.issues.filter(i => i.severity === ValidationSeverity.ERROR)

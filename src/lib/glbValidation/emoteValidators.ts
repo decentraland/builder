@@ -66,7 +66,7 @@ export function validateEmoteMaxFrames(animations: AnimationClip[]): ValidationI
   if (maxFrames > EMOTE_MAX_FRAMES) {
     issues.push({
       code: 'EMOTE_MAX_FRAMES',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.emote_max_frames',
       messageParams: { frames: maxFrames, limit: EMOTE_MAX_FRAMES }
     })
@@ -86,7 +86,7 @@ export function validateEmoteAnimationClipCount(animations: AnimationClip[], has
   if (animations.length > limit) {
     issues.push({
       code: 'EMOTE_MAX_CLIPS',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.emote_max_clips',
       messageParams: { count: animations.length, limit }
     })
@@ -202,7 +202,7 @@ export function validateEmoteDisplacement(animations: AnimationClip[]): Validati
       if (maxDisplacement > EMOTE_MAX_DISPLACEMENT_METERS) {
         issues.push({
           code: 'EMOTE_DISPLACEMENT',
-          severity: ValidationSeverity.ERROR,
+          severity: ValidationSeverity.WARNING,
           messageKey: 'create_single_item_modal.error.glb_validation.emote_displacement',
           messageParams: {
             distance: parseFloat(maxDisplacement.toFixed(2)),
@@ -253,7 +253,7 @@ export function validatePropTriangles(Three: ThreeModules, scene: Scene): Valida
   if (propTriangles > PROP_MAX_TRIANGLES) {
     issues.push({
       code: 'PROP_TRIANGLE_COUNT',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.prop_triangle_count',
       messageParams: { count: propTriangles, limit: PROP_MAX_TRIANGLES }
     })
@@ -282,7 +282,7 @@ export function validatePropMaterials(Three: ThreeModules, scene: Scene): Valida
   if (materials.size > PROP_MAX_MATERIALS) {
     issues.push({
       code: 'PROP_MATERIALS',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.prop_materials',
       messageParams: { count: materials.size, limit: PROP_MAX_MATERIALS }
     })
@@ -317,7 +317,7 @@ export function validatePropTextures(Three: ThreeModules, scene: Scene): Validat
   if (textures.size > PROP_MAX_TEXTURES) {
     issues.push({
       code: 'PROP_TEXTURES',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.prop_textures',
       messageParams: { count: textures.size, limit: PROP_MAX_TEXTURES }
     })
@@ -346,7 +346,7 @@ export function validatePropArmatureBones(Three: ThreeModules, scene: Scene): Va
   if (boneCount > PROP_MAX_ARMATURE_BONES) {
     issues.push({
       code: 'PROP_ARMATURE_BONES',
-      severity: ValidationSeverity.ERROR,
+      severity: ValidationSeverity.WARNING,
       messageKey: 'create_single_item_modal.error.glb_validation.prop_armature_bones',
       messageParams: { count: boneCount, limit: PROP_MAX_ARMATURE_BONES }
     })
@@ -432,7 +432,7 @@ export function validateAudioFormat(contents: Record<string, Blob>): ValidationI
       if (!hasValidExt) {
         issues.push({
           code: 'AUDIO_FORMAT',
-          severity: ValidationSeverity.ERROR,
+          severity: ValidationSeverity.WARNING,
           messageKey: 'create_single_item_modal.error.glb_validation.audio_format',
           messageParams: { name: key }
         })

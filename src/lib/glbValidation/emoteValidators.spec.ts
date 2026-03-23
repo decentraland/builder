@@ -156,7 +156,7 @@ describe('validateEmoteMaxFrames', () => {
 
     it('should return an error', () => {
       expect(issues).toHaveLength(1)
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
 
     it('should report the actual frame count in the params', () => {
@@ -195,7 +195,7 @@ describe('validateEmoteAnimationClipCount', () => {
       it('should return an error with the EMOTE_MAX_CLIPS code', () => {
         expect(issues).toHaveLength(1)
         expect(issues[0].code).toBe('EMOTE_MAX_CLIPS')
-        expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+        expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
       })
     })
   })
@@ -282,7 +282,7 @@ describe('validateEmoteDisplacement', () => {
     it('should return an error with the EMOTE_DISPLACEMENT code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('EMOTE_DISPLACEMENT')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
   })
 
@@ -466,7 +466,7 @@ describe('validateAudioFormat', () => {
     it('should return an error with the AUDIO_FORMAT code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('AUDIO_FORMAT')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
 
     it('should include the file name in the params', () => {
@@ -718,7 +718,7 @@ describe('validatePropTriangles', () => {
     it('should return an error with the PROP_TRIANGLE_COUNT code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('PROP_TRIANGLE_COUNT')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
   })
 })
@@ -766,7 +766,7 @@ describe('validatePropMaterials', () => {
     it('should return an error with the PROP_MATERIALS code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('PROP_MATERIALS')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
   })
 })
@@ -832,7 +832,7 @@ describe('validatePropTextures', () => {
     it('should return an error with the PROP_TEXTURES code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('PROP_TEXTURES')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
   })
 })
@@ -880,7 +880,7 @@ describe('validatePropArmatureBones', () => {
     it('should return an error with the PROP_ARMATURE_BONES code', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('PROP_ARMATURE_BONES')
-      expect(issues[0].severity).toBe(ValidationSeverity.ERROR)
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
     })
 
     it('should report the actual bone count', () => {

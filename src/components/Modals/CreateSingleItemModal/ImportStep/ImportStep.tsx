@@ -129,11 +129,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       throw new MissingModelFileError()
     }
 
-    // Pass category from wearable config if available for more precise validation
+    // Pass category and hides from wearable config if available for more precise validation
     const wearableCategory = wearable?.data?.category as WearableCategory | undefined
+    const wearableHides = wearable?.data?.hides as string[] | undefined
 
     return {
-      modelData: await this.processModel(modelPath, content, wearableCategory),
+      modelData: await this.processModel(modelPath, content, wearableCategory, wearableHides),
       wearable,
       emote,
       scene
@@ -395,7 +396,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     this.setState({ error: new InvalidFilesError() })
   }
 
-  async processModel(model: string, contents: Record<string, Blob>, category?: WearableCategory): Promise<ModelData> {
+  async processModel(model: string, contents: Record<string, Blob>, category?: WearableCategory, hides?: string[]): Promise<ModelData> {
     const url = URL.createObjectURL(contents[model])
     const extension = getExtension(model) || undefined
     let isEmote = false
@@ -414,7 +415,8 @@ export default class ImportStep extends React.PureComponent<Props, State> {
             engine: EngineType.BABYLON
           },
           category,
-          contents
+          contents,
+          hides
         )
         isEmote = result.isEmote
         validationIssues = result.validationResult.issues
