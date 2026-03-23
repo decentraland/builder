@@ -2181,6 +2181,22 @@
         "optional": "opcional",
         "randomize_outcomes": "Aleatorizar opciones",
         "add_outcome": "Agregar una opción"
+      },
+      "spring_bones": {
+        "title": "Huesos de Resorte",
+        "stiffness": "Fuerza de Rigidez",
+        "gravity_power": "Fuerza de Gravedad",
+        "gravity_dir": "Dirección de Gravedad",
+        "drag_force": "Fuerza de Arrastre",
+        "center": "Centro (Opcional)",
+        "center_none": "Ninguno",
+        "actions": {
+          "select": "Seleccionar",
+          "add_bone": "Agregar un Hueso",
+          "remove_bone": "Eliminar Hueso",
+          "copy_params": "Copiar Parámetros",
+          "paste_params": "Pegar Parámetros"
+        }
       }
     }
   },

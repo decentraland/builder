@@ -1080,7 +1080,10 @@
         "title": "您的视频时长超过 {max_duration} 秒。",
         "message": "请减少持续时间并重试。"
       },
-      "invalid_video": { "title": "您的视频似乎无效或已损坏。", "message": "请检查您的文件并重试。" }
+      "invalid_video": {
+        "title": "您的视频似乎无效或已损坏。",
+        "message": "请检查您的文件并重试。"
+      }
     }
   },
   "itemdrawer": {
@@ -2162,6 +2165,22 @@
         "optional": "可选",
         "randomize_outcomes": "随机化结果",
         "add_outcome": "添加结果"
+      },
+      "spring_bones": {
+        "title": "弹簧骨",
+        "stiffness": "刚度力",
+        "gravity_power": "重力强度",
+        "gravity_dir": "重力方向",
+        "drag_force": "阻力",
+        "center": "中心（可选）",
+        "center_none": "无",
+        "actions": {
+          "select": "选择",
+          "add_bone": "添加骨骼",
+          "remove_bone": "移除骨骼",
+          "copy_params": "复制参数",
+          "paste_params": "粘贴参数"
+        }
       }
     }
   },

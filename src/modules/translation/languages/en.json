@@ -2163,6 +2163,22 @@
         "optional": "optional",
         "randomize_outcomes": "Randomize outcomes",
         "add_outcome": "Add an outcome"
+      },
+      "spring_bones": {
+        "title": "Spring Bones",
+        "stiffness": "Stiffness Force",
+        "gravity_power": "Gravity Power",
+        "gravity_dir": "Gravity Direction",
+        "drag_force": "Drag Force",
+        "center": "Center (Optional)",
+        "center_none": "None",
+        "actions": {
+          "select": "Select",
+          "add_bone": "Add a Bone",
+          "remove_bone": "Remove Bone",
+          "copy_params": "Copy Parameters",
+          "paste_params": "Paste Parameters"
+        }
       }
     }
   },
