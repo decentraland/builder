@@ -195,7 +195,18 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
               {isEmpty ? (
                 <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
               ) : (
-                items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+                <>
+                  <div className={classNames('mint-counter', { warning: totalMints > MAX_NFTS_PER_MINT })}>
+                    <span className="count">
+                      {totalMints} / {MAX_NFTS_PER_MINT}
+                    </span>
+                    <span className="label">{t('mint_items_modal.total_items')}</span>
+                    {totalMints > MAX_NFTS_PER_MINT && (
+                      <p className="warning-message danger-text">{t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })}</p>
+                    )}
+                  </div>
+                  {items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)}
+                </>
               )}
               {isFull ? null : (
                 <ItemDropdown placeholder={t('mint_items_modal.add_item')} onChange={this.handleAddItems} filter={filterAddableItems} />
@@ -206,7 +217,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                     {t('global.cancel')}
                   </Button>
                 ) : (
-                  <Button primary onClick={() => this.handleView(View.CONFIRM)} disabled={isDisabled}>
+                  <Button primary onClick={() => this.handleView(View.CONFIRM)} disabled={isDisabled || totalMints > MAX_NFTS_PER_MINT}>
                     {t('mint_items_modal.next')}
                   </Button>
                 )}
