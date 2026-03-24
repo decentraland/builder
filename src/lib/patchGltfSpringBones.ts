@@ -6,11 +6,7 @@ import { extractGlbChunks, GLB_MAGIC, JSON_CHUNK_TYPE, GLB_HEADER_SIZE, CHUNK_HE
  * Only modifies the JSON chunk; BIN chunk is copied verbatim.
  * Returns a new ArrayBuffer (does not mutate input).
  */
-export function patchGltfSpringBones(
-  buffer: ArrayBuffer,
-  bones: BoneNode[],
-  params: Record<string, SpringBoneParams>
-): ArrayBuffer {
+export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], params: Record<string, SpringBoneParams>): ArrayBuffer {
   const springBones = bones.filter(b => b.type === 'spring')
   const avatarBones = bones.filter(b => b.type === 'avatar')
   console.log('[SpringBones:patch] patchGltfSpringBones called', {

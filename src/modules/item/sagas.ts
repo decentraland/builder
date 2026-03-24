@@ -4,7 +4,7 @@ import { Contract, ethers, providers } from 'ethers'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { LOCATION_CHANGE, LocationChangeAction } from 'modules/location/actions'
 import { channel } from 'redux-saga'
-import { ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation, Trade, Item as DCLItem } from '@dcl/schemas'
+import { BodyShape, ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation, Trade, Item as DCLItem } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -138,7 +138,7 @@ import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
 import { hashV1 } from '@dcl/hashing'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { hasSpringBoneChanges, getBones, getSpringBoneParams } from 'modules/editor/selectors'
+import { hasSpringBoneChanges, getBones, getSpringBoneParams, getBodyShape } from 'modules/editor/selectors'
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { patchGltfSpringBones } from 'lib/patchGltfSpringBones'
 import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
@@ -519,9 +519,35 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           springBoneParams
         })
 
-        // Patch GLB for every representation (male, female, or both)
+        // When there are separate male/female GLB models, only patch the one
+        // matching the currently previewed body shape. When all representations
+        // share the same model (same content hash), patch all of them.
+        const bodyShape: BodyShape = yield select(getBodyShape)
+        const mainFileHashes = new Set(item.data.representations.map(r => r.mainFile && item.contents[r.mainFile]).filter(Boolean))
+        const hasSeparateModels = mainFileHashes.size > 1
+        const targetRepresentations = hasSeparateModels
+          ? item.data.representations.filter(r => r.bodyShapes.includes(bodyShape))
+          : item.data.representations
+
+        // Collect GLB paths that need fetching (not already in contents)
+        const glbPathsToFetch: Record<string, string> = {}
+        for (const representation of targetRepresentations) {
+          const glbPath = representation.mainFile
+          if (glbPath && !contents[glbPath] && item.contents[glbPath]) {
+            glbPathsToFetch[glbPath] = item.contents[glbPath]
+          }
+        }
+
+        // Fetch existing GLBs from the builder API
+        if (Object.keys(glbPathsToFetch).length > 0) {
+          console.log('[SpringBones:saga] Fetching existing GLBs:', Object.keys(glbPathsToFetch))
+          const fetchedBlobs: Record<string, Blob> = yield call([legacyBuilder, 'fetchContents'], glbPathsToFetch)
+          Object.assign(contents, fetchedBlobs)
+        }
+
+        // Patch GLB for the target representation(s)
         const patchedPaths = new Set<string>()
-        for (const representation of item.data.representations) {
+        for (const representation of targetRepresentations) {
           const glbPath = representation.mainFile
           if (!glbPath || !contents[glbPath] || patchedPaths.has(glbPath)) continue
           patchedPaths.add(glbPath)
