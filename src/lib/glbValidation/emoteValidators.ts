@@ -32,15 +32,6 @@ export function validateEmoteFrameRate(animations: AnimationClip[]): ValidationI
     maxFrames = Math.max(maxFrames, track.times.length)
   }
 
-  console.log(
-    '[GLB Validation] Frame rate — duration:',
-    animation.duration,
-    'maxFrames:',
-    maxFrames,
-    'fps:',
-    maxFrames / animation.duration
-  )
-
   if (animation.duration > 0) {
     const fps = Math.round(maxFrames / animation.duration)
     if (Math.abs(fps - EMOTE_EXPECTED_FPS) > EMOTE_FPS_TOLERANCE) {
@@ -91,17 +82,6 @@ export function validateEmoteAnimationClipCount(animations: AnimationClip[], has
   const issues: ValidationIssue[] = []
   const limit = hasProps ? EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS : EMOTE_MAX_ANIMATION_CLIPS_BASIC
 
-  console.log(
-    '[GLB Validation] Animation clips:',
-    animations.length,
-    '— names:',
-    animations.map(a => a.name),
-    '— hasProps:',
-    hasProps,
-    '— limit:',
-    limit
-  )
-
   if (animations.length > limit) {
     issues.push({
       code: 'EMOTE_MAX_CLIPS',
@@ -131,8 +111,6 @@ export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Sce
       deformBoneNames.add(node.name)
     }
   })
-
-  console.log('[GLB Validation] Deform bones in scene:', [...deformBoneNames])
 
   if (deformBoneNames.size === 0) return issues
 
@@ -174,14 +152,6 @@ export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Sce
       }
     }
   }
-
-  console.log(
-    '[GLB Validation] Deform bone keyframes — bones with tracks:',
-    [...boneTrackMap.keys()].length,
-    '— missing:',
-    missingBones.length,
-    missingBones.length > 0 ? missingBones.slice(0, 5) : ''
-  )
 
   if (missingBones.length > 0) {
     issues.push({
@@ -234,7 +204,6 @@ export function validatePropTriangles(Three: ThreeModules, scene: Scene): Valida
   })
 
   propTriangles = Math.floor(propTriangles)
-  console.log('[GLB Validation] Prop triangles:', propTriangles)
 
   if (propTriangles > PROP_MAX_TRIANGLES) {
     issues.push({
@@ -264,8 +233,6 @@ export function validatePropMaterials(Three: ThreeModules, scene: Scene): Valida
       materials.add((node.material as THREE.Material).name)
     }
   })
-
-  console.log('[GLB Validation] Prop materials:', materials.size, '—', [...materials])
 
   if (materials.size > PROP_MAX_MATERIALS) {
     issues.push({
@@ -301,8 +268,6 @@ export function validatePropTextures(Three: ThreeModules, scene: Scene): Validat
     }
   })
 
-  console.log('[GLB Validation] Prop textures (base color maps):', textures.size, '— UUIDs:', [...textures])
-
   if (textures.size > PROP_MAX_TEXTURES) {
     issues.push({
       code: 'PROP_TEXTURES',
@@ -331,8 +296,6 @@ export function validatePropArmatureBones(Three: ThreeModules, scene: Scene): Va
       boneCount++
     }
   })
-
-  console.log('[GLB Validation] Prop armature bones:', boneCount)
 
   if (boneCount > PROP_MAX_ARMATURE_BONES) {
     issues.push({
