@@ -6,7 +6,6 @@ import {
   EMOTE_MAX_FRAMES,
   EMOTE_MAX_ANIMATION_CLIPS_BASIC,
   EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS,
-  EMOTE_MAX_DISPLACEMENT_METERS,
   PROP_MAX_TRIANGLES,
   PROP_MAX_MATERIALS,
   PROP_MAX_TEXTURES,
@@ -32,6 +31,15 @@ export function validateEmoteFrameRate(animations: AnimationClip[]): ValidationI
   for (const track of animation.tracks) {
     maxFrames = Math.max(maxFrames, track.times.length)
   }
+
+  console.log(
+    '[GLB Validation] Frame rate — duration:',
+    animation.duration,
+    'maxFrames:',
+    maxFrames,
+    'fps:',
+    maxFrames / animation.duration
+  )
 
   if (animation.duration > 0) {
     const fps = Math.round(maxFrames / animation.duration)
@@ -83,6 +91,17 @@ export function validateEmoteAnimationClipCount(animations: AnimationClip[], has
   const issues: ValidationIssue[] = []
   const limit = hasProps ? EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS : EMOTE_MAX_ANIMATION_CLIPS_BASIC
 
+  console.log(
+    '[GLB Validation] Animation clips:',
+    animations.length,
+    '— names:',
+    animations.map(a => a.name),
+    '— hasProps:',
+    hasProps,
+    '— limit:',
+    limit
+  )
+
   if (animations.length > limit) {
     issues.push({
       code: 'EMOTE_MAX_CLIPS',
@@ -97,7 +116,7 @@ export function validateEmoteAnimationClipCount(animations: AnimationClip[], has
 
 /**
  * Checks that every deform bone in the scene has keyframes for position,
- * quaternion, and scale in the primary animation clip. Reports WARNING
+ * quaternion, and scale across all animation clips. Reports WARNING
  * listing bones with missing tracks (up to 5 shown).
  */
 export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Scene, animations: AnimationClip[]): ValidationIssue[] {
@@ -113,25 +132,28 @@ export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Sce
     }
   })
 
+  console.log('[GLB Validation] Deform bones in scene:', [...deformBoneNames])
+
   if (deformBoneNames.size === 0) return issues
 
-  const animation = animations[0]
-
-  // Group tracks by bone name. Track names follow pattern: "boneName.property"
+  // Group tracks by bone name across ALL animation clips.
+  // Emotes with props have separate clips for avatar and prop bones.
   const boneTrackMap = new Map<string, Set<string>>()
-  for (const track of animation.tracks) {
-    const dotIndex = track.name.lastIndexOf('.')
-    if (dotIndex === -1) continue
-    const boneName = track.name.substring(0, dotIndex)
-    const property = track.name.substring(dotIndex + 1)
+  for (const animation of animations) {
+    for (const track of animation.tracks) {
+      const dotIndex = track.name.lastIndexOf('.')
+      if (dotIndex === -1) continue
+      const boneName = track.name.substring(0, dotIndex)
+      const property = track.name.substring(dotIndex + 1)
 
-    // Only check standard transform properties
-    if (!['position', 'quaternion', 'scale'].includes(property)) continue
+      // Only check standard transform properties
+      if (!['position', 'quaternion', 'scale'].includes(property)) continue
 
-    if (!boneTrackMap.has(boneName)) {
-      boneTrackMap.set(boneName, new Set())
+      if (!boneTrackMap.has(boneName)) {
+        boneTrackMap.set(boneName, new Set())
+      }
+      boneTrackMap.get(boneName)!.add(property)
     }
-    boneTrackMap.get(boneName)!.add(property)
   }
 
   // Check each deform bone has keyframes for position, quaternion, scale
@@ -153,6 +175,14 @@ export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Sce
     }
   }
 
+  console.log(
+    '[GLB Validation] Deform bone keyframes — bones with tracks:',
+    [...boneTrackMap.keys()].length,
+    '— missing:',
+    missingBones.length,
+    missingBones.length > 0 ? missingBones.slice(0, 5) : ''
+  )
+
   if (missingBones.length > 0) {
     issues.push({
       code: 'EMOTE_MISSING_KEYFRAMES',
@@ -167,56 +197,11 @@ export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Sce
   return issues
 }
 
-/**
- * Validates that the avatar's root bone (Hips) does not move more than 1 meter
- * from its starting position during the animation. Reports ERROR on violation.
- */
-export function validateEmoteDisplacement(animations: AnimationClip[]): ValidationIssue[] {
-  const issues: ValidationIssue[] = []
-
-  if (animations.length === 0) return issues
-
-  const animation = animations[0]
-
-  // Find the root position track (Hips or the first position track)
-  for (const track of animation.tracks) {
-    if (track.name.endsWith('.position') && (track.name.includes('Hips') || track.name.includes('Hip'))) {
-      const values = track.values
-      if (values.length < 3) continue
-
-      // Initial position (first keyframe)
-      const startX = values[0]
-      const startY = values[1]
-      const startZ = values[2]
-
-      // Check max displacement across all keyframes
-      let maxDisplacement = 0
-      for (let i = 0; i < values.length; i += 3) {
-        const dx = values[i] - startX
-        const dy = values[i + 1] - startY
-        const dz = values[i + 2] - startZ
-        const displacement = Math.sqrt(dx * dx + dy * dy + dz * dz)
-        maxDisplacement = Math.max(maxDisplacement, displacement)
-      }
-
-      if (maxDisplacement > EMOTE_MAX_DISPLACEMENT_METERS) {
-        issues.push({
-          code: 'EMOTE_DISPLACEMENT',
-          severity: ValidationSeverity.WARNING,
-          messageKey: 'create_single_item_modal.error.glb_validation.emote_displacement',
-          messageParams: {
-            distance: parseFloat(maxDisplacement.toFixed(2)),
-            limit: EMOTE_MAX_DISPLACEMENT_METERS
-          }
-        })
-      }
-
-      break // Only check the root bone
-    }
-  }
-
-  return issues
-}
+// NOTE: Avatar displacement validation (1m limit) is not implemented because
+// the Hips bone position track values are in local bone space, not world space.
+// Computing world-space displacement would require resolving the full skeleton
+// hierarchy including the armature root's transform, which is not feasible
+// from raw animation track data alone.
 
 /**
  * Validates that the prop armature's total triangle count does not exceed 3000.
@@ -249,6 +234,7 @@ export function validatePropTriangles(Three: ThreeModules, scene: Scene): Valida
   })
 
   propTriangles = Math.floor(propTriangles)
+  console.log('[GLB Validation] Prop triangles:', propTriangles)
 
   if (propTriangles > PROP_MAX_TRIANGLES) {
     issues.push({
@@ -279,6 +265,8 @@ export function validatePropMaterials(Three: ThreeModules, scene: Scene): Valida
     }
   })
 
+  console.log('[GLB Validation] Prop materials:', materials.size, '—', [...materials])
+
   if (materials.size > PROP_MAX_MATERIALS) {
     issues.push({
       code: 'PROP_MATERIALS',
@@ -305,14 +293,15 @@ export function validatePropTextures(Three: ThreeModules, scene: Scene): Validat
   propArmature.traverse((node: THREE.Object3D) => {
     if (node instanceof Three.Mesh && node.material) {
       const mat = node.material as THREE.MeshStandardMaterial
-      const maps = [mat.map, mat.emissiveMap, mat.alphaMap, mat.aoMap, mat.normalMap, mat.roughnessMap, mat.metalnessMap]
-      for (const texture of maps) {
-        if (texture) {
-          textures.add(texture.uuid)
-        }
+      // Only count the base color texture (map) per material — this is what Decentraland means by "textures".
+      // Other map slots (normal, roughness, etc.) that share the same image are part of the same material, not separate textures.
+      if (mat.map) {
+        textures.add(mat.map.uuid)
       }
     }
   })
+
+  console.log('[GLB Validation] Prop textures (base color maps):', textures.size, '— UUIDs:', [...textures])
 
   if (textures.size > PROP_MAX_TEXTURES) {
     issues.push({
@@ -342,6 +331,8 @@ export function validatePropArmatureBones(Three: ThreeModules, scene: Scene): Va
       boneCount++
     }
   })
+
+  console.log('[GLB Validation] Prop armature bones:', boneCount)
 
   if (boneCount > PROP_MAX_ARMATURE_BONES) {
     issues.push({

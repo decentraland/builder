@@ -100,9 +100,6 @@ export const EMOTE_MAX_FRAMES = 300
 export const EMOTE_MAX_ANIMATION_CLIPS_BASIC = 1
 /** Maximum animation clips for an emote that includes props. */
 export const EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS = 2
-/** Maximum root-bone displacement in meters during an emote animation. */
-export const EMOTE_MAX_DISPLACEMENT_METERS = 1
-
 /** Maximum triangle count for the prop armature in an emote. */
 export const PROP_MAX_TRIANGLES = 3000
 /** Maximum number of materials allowed on emote props. */
