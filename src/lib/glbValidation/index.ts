@@ -17,7 +17,6 @@ import {
   validateEmoteMaxFrames,
   validateEmoteAnimationClipCount,
   validateEmoteDeformBoneKeyframes,
-  validateEmoteDisplacement,
   validatePropTriangles,
   validatePropMaterials,
   validatePropTextures,
@@ -81,7 +80,6 @@ export async function validateEmoteGLTF(gltf: GLTF, hasProps: boolean, contents?
     validateEmoteMaxFrames(animations),
     validateEmoteAnimationClipCount(animations, hasProps),
     validateEmoteDeformBoneKeyframes(Three, scene, animations),
-    validateEmoteDisplacement(animations),
     validateArmatureNaming(scene),
     validateAnimationNaming(animations, hasProps)
   ]

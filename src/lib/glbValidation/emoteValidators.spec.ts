@@ -5,7 +5,6 @@ import {
   validateEmoteFrameRate,
   validateEmoteMaxFrames,
   validateEmoteAnimationClipCount,
-  validateEmoteDisplacement,
   validateEmoteDeformBoneKeyframes,
   validatePropTriangles,
   validatePropMaterials,
@@ -20,7 +19,6 @@ import {
   EMOTE_MAX_FRAMES,
   EMOTE_MAX_ANIMATION_CLIPS_BASIC,
   EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS,
-  EMOTE_MAX_DISPLACEMENT_METERS,
   PROP_MAX_TRIANGLES,
   PROP_MAX_MATERIALS,
   PROP_MAX_TEXTURES,
@@ -226,81 +224,6 @@ describe('validateEmoteAnimationClipCount', () => {
         expect(issues).toHaveLength(1)
         expect(issues[0].code).toBe('EMOTE_MAX_CLIPS')
       })
-    })
-  })
-})
-
-describe('validateEmoteDisplacement', () => {
-  afterEach(() => {
-    jest.resetAllMocks()
-  })
-
-  describe('when animations are empty', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      issues = validateEmoteDisplacement([])
-    })
-
-    it('should return no issues', () => {
-      expect(issues).toEqual([])
-    })
-  })
-
-  describe('when the Hips displacement is within the limit', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      const anim = makeAnimation({
-        duration: 1,
-        trackFrames: 3,
-        trackName: 'Hips.position',
-        trackValues: [0, 0, 0, 0.5, 0, 0, 0, 0, 0]
-      })
-      issues = validateEmoteDisplacement([anim])
-    })
-
-    it('should return no issues', () => {
-      expect(issues).toEqual([])
-    })
-  })
-
-  describe('when the Hips displacement exceeds the limit', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      const bigDisplacement = EMOTE_MAX_DISPLACEMENT_METERS + 1
-      const anim = makeAnimation({
-        duration: 1,
-        trackFrames: 2,
-        trackName: 'Hips.position',
-        trackValues: [0, 0, 0, bigDisplacement, 0, 0]
-      })
-      issues = validateEmoteDisplacement([anim])
-    })
-
-    it('should return an error with the EMOTE_DISPLACEMENT code', () => {
-      expect(issues).toHaveLength(1)
-      expect(issues[0].code).toBe('EMOTE_DISPLACEMENT')
-      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
-    })
-  })
-
-  describe('when the track does not match the Hips bone', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      const anim = makeAnimation({
-        duration: 1,
-        trackFrames: 2,
-        trackName: 'LeftFoot.position',
-        trackValues: [0, 0, 0, 100, 0, 0]
-      })
-      issues = validateEmoteDisplacement([anim])
-    })
-
-    it('should return no issues', () => {
-      expect(issues).toEqual([])
     })
   })
 })
@@ -666,6 +589,43 @@ describe('validateEmoteDeformBoneKeyframes', () => {
       expect(issues[0].messageParams?.bones).toContain('Hips.scale')
     })
   })
+
+  describe('when prop bones have keyframes in a separate animation clip', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const avatarBone = new Three.Bone()
+      avatarBone.name = 'Hips'
+      const propBone = new Three.Bone()
+      propBone.name = 'DEF_prop_root'
+
+      const avatarAnim = {
+        name: 'Emote_Avatar',
+        duration: 1,
+        tracks: [
+          { name: 'Hips.position', times: [0, 1], values: [0, 0, 0, 0, 0, 0] },
+          { name: 'Hips.quaternion', times: [0, 1], values: [0, 0, 0, 1, 0, 0, 0, 1] },
+          { name: 'Hips.scale', times: [0, 1], values: [1, 1, 1, 1, 1, 1] }
+        ]
+      } as unknown as AnimationClip
+
+      const propAnim = {
+        name: 'Emote_Prop',
+        duration: 1,
+        tracks: [
+          { name: 'DEF_prop_root.position', times: [0, 1], values: [0, 0, 0, 0, 0, 0] },
+          { name: 'DEF_prop_root.quaternion', times: [0, 1], values: [0, 0, 0, 1, 0, 0, 0, 1] },
+          { name: 'DEF_prop_root.scale', times: [0, 1], values: [1, 1, 1, 1, 1, 1] }
+        ]
+      } as unknown as AnimationClip
+
+      issues = validateEmoteDeformBoneKeyframes(asThree(Three), createTraversableScene([avatarBone, propBone]), [avatarAnim, propAnim])
+    })
+
+    it('should return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
 })
 
 describe('validatePropTriangles', () => {
@@ -790,7 +750,7 @@ describe('validatePropTextures', () => {
         const m = new Three.Mesh()
         m.material = {
           name: `PropMat${i}`,
-          map: { uuid: `tex${i}` },
+          map: { uuid: `tex${i}`, image: { width: 256, height: 256, [`_id${i}`]: true } },
           emissiveMap: null,
           alphaMap: null,
           aoMap: null,
@@ -816,7 +776,7 @@ describe('validatePropTextures', () => {
         const m = new Three.Mesh()
         m.material = {
           name: `PropMat${i}`,
-          map: { uuid: `tex${i}` },
+          map: { uuid: `tex${i}`, image: { width: 256, height: 256, [`_id${i}`]: true } },
           emissiveMap: null,
           alphaMap: null,
           aoMap: null,

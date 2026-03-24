@@ -1,4 +1,3 @@
-import type { AnimationClip } from 'three'
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { WearableCategory } from '@dcl/schemas'
 import { ValidationSeverity } from './types'
@@ -13,7 +12,6 @@ import {
   validateNoDisallowedObjects,
   validateMaterialNaming
 } from './wearableValidators'
-import { validateEmoteDisplacement } from './emoteValidators'
 import { MAX_MATERIALS_DEFAULT, MAX_MATERIALS_SKIN, MAX_TEXTURES_DEFAULT, AVATAR_SKIN_MAT, getEffectiveTriangleLimit } from './constants'
 
 // Mock Three.js classes that support instanceof checks.
@@ -675,17 +673,6 @@ describe('validateMaterialNaming', () => {
   })
 })
 
-// --- Helpers for edge case tests ---
-
-function makeAnimation(opts: { duration: number; trackFrames: number; trackName: string; trackValues: number[] }): AnimationClip {
-  const times = Array.from({ length: opts.trackFrames }, (_, i) => i * (opts.duration / opts.trackFrames))
-  return {
-    name: 'Animation',
-    duration: opts.duration,
-    tracks: [{ name: opts.trackName, times, values: opts.trackValues }]
-  } as unknown as AnimationClip
-}
-
 // --- Edge case tests ---
 
 describe('edge cases', () => {
@@ -818,45 +805,6 @@ describe('edge cases', () => {
     it('should report the correct triangle count', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].messageParams?.count).toBe(600)
-    })
-  })
-
-  describe('when displacement involves all three axes', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      // Diagonal displacement: sqrt(0.6^2 + 0.6^2 + 0.6^2) ≈ 1.04 > 1m limit
-      const anim = makeAnimation({
-        duration: 1,
-        trackFrames: 2,
-        trackName: 'Hips.position',
-        trackValues: [0, 0, 0, 0.6, 0.6, 0.6]
-      })
-      issues = validateEmoteDisplacement([anim])
-    })
-
-    it('should calculate euclidean distance and report an error', () => {
-      expect(issues).toHaveLength(1)
-      expect(issues[0].code).toBe('EMOTE_DISPLACEMENT')
-    })
-  })
-
-  describe('when displacement is exactly at the boundary on all axes', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      // Diagonal displacement: sqrt(0.5^2 + 0.5^2 + 0.5^2) ≈ 0.866 < 1m limit
-      const anim = makeAnimation({
-        duration: 1,
-        trackFrames: 2,
-        trackName: 'Hips.position',
-        trackValues: [0, 0, 0, 0.5, 0.5, 0.5]
-      })
-      issues = validateEmoteDisplacement([anim])
-    })
-
-    it('should return no issues', () => {
-      expect(issues).toEqual([])
     })
   })
 })

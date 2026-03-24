@@ -152,6 +152,7 @@ export function validateMaterials(Three: ThreeModules, scene: THREE.Scene, categ
 export function validateTextures(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const textures = new Set<string>()
+  const checkedResolutions = new Set<string>()
   const isSkin = category === WearableCategory.SKIN
   const isFacial = category !== undefined && FACIAL_CATEGORIES.includes(category)
 
@@ -163,13 +164,18 @@ export function validateTextures(Three: ThreeModules, scene: THREE.Scene, catego
       const mat = node.material as THREE.MeshStandardMaterial
       if (mat.name === AVATAR_SKIN_MAT) return
 
-      // Check all texture maps on the material
+      // Count only the base color texture (map) per material for the texture count.
+      // Other map slots (normal, roughness, etc.) are part of the same material setup, not separate textures.
+      if (mat.map) {
+        textures.add(mat.map.uuid)
+      }
+
+      // Check resolution on all map slots that have images
       const maps = [mat.map, mat.emissiveMap, mat.alphaMap, mat.aoMap, mat.normalMap, mat.roughnessMap, mat.metalnessMap]
       for (const texture of maps) {
-        if (texture && texture.image) {
+        if (texture && texture.image && !checkedResolutions.has(texture.uuid)) {
+          checkedResolutions.add(texture.uuid)
           const texName = texture.name || mat.name
-          textures.add(texture.uuid)
-
           const imgWidth = texture.image.width
           const imgHeight = texture.image.height
 
