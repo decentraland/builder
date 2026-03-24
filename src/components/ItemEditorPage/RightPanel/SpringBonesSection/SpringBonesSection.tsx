@@ -1,0 +1,472 @@
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import classNames from 'classnames'
+import { Box, Dropdown, Header } from 'decentraland-ui'
+import { Button, Popover, Slider } from 'decentraland-ui2'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import Collapsable from 'components/Collapsable'
+import Icon from 'components/Icon'
+import CheckIcon from 'icons/check.svg'
+import MenuIcon from 'icons/ellipsis.svg'
+import { Props } from './SpringBonesSection.types'
+import './SpringBonesSection.css'
+
+type SpringBoneNode = Extract<BoneNode, { type: 'spring' }>
+
+function BoneTreeNode({
+  bone,
+  boneMap,
+  depth,
+  expanded,
+  onToggle,
+  disableType,
+  selected,
+  onSelect
+}: {
+  bone: BoneNode
+  boneMap: Map<number, BoneNode>
+  depth: number
+  expanded: Set<number>
+  selected?: Set<number>
+  disableType?: BoneNode['type']
+  onToggle: (nodeId: number) => void
+  onSelect: (bone: BoneNode) => void
+}) {
+  const hasChildren = bone.children.length > 0
+  const isExpanded = expanded.has(bone.nodeId)
+  const isSelected = !!selected?.has(bone.nodeId)
+  const isDisabled = isSelected || (!!disableType && bone.type === disableType)
+
+  return (
+    <>
+      <div
+        className={classNames('bone-tree-node', { disabled: isDisabled, children: hasChildren })}
+        style={{ paddingLeft: depth * 12 }}
+        onClick={hasChildren ? () => onToggle(bone.nodeId) : undefined}
+      >
+        <Icon name="chevron-right" className={classNames('bone-tree-chevron', { expanded: isExpanded, hidden: !hasChildren })} />
+        <span className="bone-tree-name" title={bone.name}>
+          {bone.name}
+        </span>
+        {isSelected && <img src={CheckIcon} className="bone-tree-checkmark" alt="Already added" />}
+        {!isDisabled && (
+          <Button size="small" className="bone-tree-select-button" onClick={() => onSelect(bone)}>
+            {t('item_editor.right_panel.spring_bones.actions.select')}
+          </Button>
+        )}
+      </div>
+      {hasChildren &&
+        isExpanded &&
+        bone.children.map(childId => {
+          const child = boneMap.get(childId)
+          if (!child) return null
+          return (
+            <BoneTreeNode
+              key={childId}
+              bone={child}
+              boneMap={boneMap}
+              depth={depth + 1}
+              expanded={expanded}
+              selected={selected}
+              disableType={disableType}
+              onToggle={onToggle}
+              onSelect={onSelect}
+            />
+          )
+        })}
+    </>
+  )
+}
+
+function BoneHierarchyPicker({
+  open,
+  bones,
+  selected,
+  disableType,
+  anchorEl,
+  onSelect,
+  onClose
+}: {
+  open: boolean
+  bones: BoneNode[]
+  selected?: Set<number>
+  disableType?: BoneNode['type']
+  anchorEl: HTMLElement | null
+  onSelect: (bone: BoneNode) => void
+  onClose: () => void
+}) {
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set(bones.map(b => b.nodeId))) // Start with all expanded
+
+  const { boneMap, roots } = useMemo(() => {
+    const boneMap = new Map<number, BoneNode>()
+    const childIds = new Set<number>()
+    for (const bone of bones) {
+      boneMap.set(bone.nodeId, bone)
+      for (const childId of bone.children) {
+        childIds.add(childId)
+      }
+    }
+    const roots = bones.filter(b => !childIds.has(b.nodeId))
+    return { boneMap, roots }
+  }, [bones])
+
+  const handleToggle = useCallback((nodeId: number) => {
+    setExpanded(prev => {
+      const next = new Set(prev)
+      next.has(nodeId) ? next.delete(nodeId) : next.add(nodeId)
+      return next
+    })
+  }, [])
+
+  return (
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      classes={{ paper: 'bone-hierarchy-picker' }}
+    >
+      {roots.map(root => (
+        <BoneTreeNode
+          key={root.nodeId}
+          bone={root}
+          boneMap={boneMap}
+          depth={0}
+          expanded={expanded}
+          onToggle={handleToggle}
+          selected={selected}
+          disableType={disableType}
+          onSelect={onSelect}
+        />
+      ))}
+    </Popover>
+  )
+}
+
+function InputNumber({ max, min, value, onChange }: { max?: number; min?: number; value: number; onChange: (value: number) => void }) {
+  const [localValue, setLocalValue] = useState(`${value}`)
+
+  useEffect(() => {
+    setLocalValue(`${value}`)
+  }, [value])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    if (raw === '' || /^-?\d*[.,]?\d*$/.test(raw)) {
+      setLocalValue(raw)
+    }
+  }
+
+  const handleBlur = () => {
+    console.log({ localValue })
+    let v = parseFloat((localValue || '0').replace(',', '.'))
+    if (!isNaN(v)) {
+      if (max !== undefined) v = Math.min(max, v)
+      if (min !== undefined) v = Math.max(min, v)
+      console.log({ commitedraw: v })
+      onChange(v)
+      setLocalValue(`${v}`)
+    } else {
+      setLocalValue(`${value}`)
+    }
+  }
+
+  return (
+    <input type="text" inputMode="decimal" value={localValue} onChange={handleChange} onBlur={handleBlur} className="spring-bones-number" />
+  )
+}
+
+function SliderInput({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange
+}: {
+  label: string
+  value: number
+  min: number
+  max: number
+  step: number
+  onChange: (value: number) => void
+}) {
+  const handleSliderChange = (_: Event, newValue: number | number[]) => onChange(newValue as number)
+
+  return (
+    <div className="spring-bones-slider-row">
+      <span className="spring-bones-label">{label}</span>
+      <Slider size="small" min={min} max={max} step={step} value={value} onChange={handleSliderChange} />
+      <InputNumber min={min} max={max} value={value} onChange={onChange} />
+    </div>
+  )
+}
+
+function Vec3Input({
+  label,
+  value,
+  onChange
+}: {
+  label: string
+  value: [number, number, number]
+  onChange: (value: [number, number, number]) => void
+}) {
+  const handleAxis = (index: number) => (v: number) => {
+    if (!isNaN(v)) {
+      const next: [number, number, number] = [...value]
+      next[index] = v
+      onChange(next)
+    }
+  }
+
+  return (
+    <div className="spring-bones-vec3-row">
+      <span className="spring-bones-label">{label}</span>
+      <div className="spring-bones-vec3-inputs">
+        <label>
+          X<InputNumber value={value[0]} onChange={handleAxis(0)} />
+        </label>
+        <label>
+          Y<InputNumber value={value[1]} onChange={handleAxis(1)} />
+        </label>
+        <label>
+          Z<InputNumber value={value[2]} onChange={handleAxis(2)} />
+        </label>
+      </div>
+    </div>
+  )
+}
+
+function CenterDropdown({
+  label,
+  value,
+  bones,
+  onChange
+}: {
+  label: string
+  value: number | undefined
+  bones: BoneNode[]
+  onChange: (value: number | undefined) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const pickerAnchorRef = useRef<HTMLSpanElement>(null)
+  const selectedBone = useMemo(() => bones.find(b => b.nodeId === value), [bones, value])
+
+  const handleCenterChange = (bone: BoneNode) => {
+    onChange(bone.nodeId)
+    setOpen(false)
+  }
+
+  return (
+    <div className="spring-bones-center-row">
+      <span className="spring-bones-label">{label}</span>
+      <span
+        className={classNames('spring-bones-center-value', { empty: !selectedBone })}
+        onClick={() => setOpen(!open)}
+        ref={pickerAnchorRef}
+      >
+        {selectedBone ? selectedBone.name : t('item_editor.right_panel.spring_bones.center_none')}
+      </span>
+      {selectedBone ? (
+        <Icon name="close" className="spring-bones-center-clear" onClick={() => onChange(undefined)} />
+      ) : (
+        <Icon name="arrow-down" className={classNames('spring-bones-center-arrow', { open })} onClick={() => setOpen(!open)} />
+      )}
+      <BoneHierarchyPicker
+        open={open}
+        bones={bones}
+        anchorEl={pickerAnchorRef.current}
+        disableType="spring"
+        selected={value ? new Set([value]) : undefined}
+        onSelect={handleCenterChange}
+        onClose={() => setOpen(false)}
+      />
+    </div>
+  )
+}
+
+function SpringBoneCard({
+  nodeName,
+  params,
+  allBones,
+  onParamChange,
+  onDelete,
+  onCopy,
+  onPaste
+}: {
+  nodeName: string
+  params: SpringBoneParams
+  allBones: BoneNode[]
+  onParamChange: (field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => void
+  onDelete: () => void
+  onCopy: () => void
+  onPaste: (() => void) | null
+}) {
+  const [isExpanded, setIsExpanded] = useState(true)
+
+  return (
+    <Box
+      className={classNames('spring-bone-card', { expanded: isExpanded })}
+      header={
+        <Header className="spring-bone-card-header" onClick={() => setIsExpanded(prev => !prev)}>
+          <Icon name="chevron-right" className="spring-bone-chevron" />
+          <h6 className="spring-bone-name">{nodeName}</h6>
+
+          <Dropdown trigger={<img src={MenuIcon} className="spring-bone-card-menu" alt="Actions" />} inline direction="left">
+            <Dropdown.Menu>
+              <Dropdown.Item text={t('item_editor.right_panel.spring_bones.actions.copy_params')} onClick={onCopy} />
+              <Dropdown.Item
+                text={t('item_editor.right_panel.spring_bones.actions.paste_params')}
+                onClick={onPaste || (() => {})}
+                disabled={!onPaste}
+              />
+              <Dropdown.Item text={t('item_editor.right_panel.spring_bones.actions.remove_bone')} onClick={onDelete} />
+            </Dropdown.Menu>
+          </Dropdown>
+        </Header>
+      }
+    >
+      {isExpanded && (
+        <div className="spring-bone-card-children">
+          <SliderInput
+            label={t('item_editor.right_panel.spring_bones.stiffness')}
+            value={params.stiffness}
+            min={0}
+            max={5}
+            step={0.01}
+            onChange={v => onParamChange('stiffness', v)}
+          />
+          <SliderInput
+            label={t('item_editor.right_panel.spring_bones.gravity_power')}
+            value={params.gravityPower}
+            min={0}
+            max={10}
+            step={0.01}
+            onChange={v => onParamChange('gravityPower', v)}
+          />
+          <Vec3Input
+            label={t('item_editor.right_panel.spring_bones.gravity_dir')}
+            value={params.gravityDir}
+            onChange={v => onParamChange('gravityDir', v)}
+          />
+          <SliderInput
+            label={t('item_editor.right_panel.spring_bones.drag_force')}
+            value={params.dragForce}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={v => onParamChange('dragForce', v)}
+          />
+          <CenterDropdown
+            label={t('item_editor.right_panel.spring_bones.center')}
+            value={params.center}
+            bones={allBones}
+            onChange={v => onParamChange('center', v)}
+          />
+        </div>
+      )}
+    </Box>
+  )
+}
+
+export default function SpringBonesSection({
+  bones,
+  springBoneParams,
+  onParamChange,
+  onAddSpringBoneParams,
+  onDeleteSpringBoneParams
+}: Props) {
+  const [copiedParams, setCopiedParams] = useState<SpringBoneParams | null>(null)
+  const [showBonePicker, setShowBonePicker] = useState(false)
+  const pickerAnchorRef = useRef<HTMLButtonElement>(null)
+  const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
+  const springBoneNamesToNodeId = useMemo(
+    () =>
+      springBones.reduce((map, bone) => {
+        map[bone.name] = bone.nodeId
+        return map
+      }, {} as Record<string, number>),
+    [springBones]
+  )
+
+  /** Sort spring bone params by node ID */
+  const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
+    return Object.entries(springBoneParams).sort(([boneNameA], [boneNameB]) => {
+      const nodeIdA = springBoneNamesToNodeId[boneNameA] ?? 0
+      const nodeIdB = springBoneNamesToNodeId[boneNameB] ?? 0
+      return nodeIdB - nodeIdA // Inverse order, node ids are assigned from the leaf up, we want to show root bones first.
+    })
+  }, [springBoneParams, springBoneNamesToNodeId])
+
+  const selectedSpringBonesIds: Set<number> = useMemo(
+    () =>
+      new Set(
+        Object.keys(springBoneParams)
+          .map(name => springBoneNamesToNodeId[name])
+          .filter(nodeId => nodeId !== undefined)
+      ),
+    [springBoneParams, springBoneNamesToNodeId]
+  )
+
+  const handleSelectBone = useCallback(
+    (bone: BoneNode) => {
+      onAddSpringBoneParams(bone.name)
+      setShowBonePicker(false)
+    },
+    [onAddSpringBoneParams]
+  )
+
+  const handlePasteParams = useCallback(
+    (nodeName: string) => {
+      if (!copiedParams) return
+      for (const field of Object.keys(copiedParams) as (keyof SpringBoneParams)[]) {
+        onParamChange(nodeName, field, copiedParams[field])
+      }
+    },
+    [copiedParams, onParamChange]
+  )
+
+  if (springBones.length === 0) return null
+
+  return (
+    <Collapsable label={t('item_editor.right_panel.spring_bones.title')}>
+      <div className="spring-bones-section">
+        {sortedSpringBoneParams.map(([nodeName, params]) => (
+          <SpringBoneCard
+            key={nodeName}
+            nodeName={nodeName}
+            params={params}
+            allBones={bones}
+            onParamChange={(field, value) => onParamChange(nodeName, field, value)}
+            onDelete={() => onDeleteSpringBoneParams(nodeName)}
+            onCopy={() => setCopiedParams({ ...params })}
+            onPaste={copiedParams ? () => handlePasteParams(nodeName) : null}
+          />
+        ))}
+        {sortedSpringBoneParams.length < springBones.length && (
+          <div className="spring-bone-add-box">
+            <Button
+              className="spring-bone-add-button"
+              color="secondary"
+              startIcon={<Icon name="add" />}
+              onClick={() => setShowBonePicker(prev => !prev)}
+              ref={pickerAnchorRef}
+            >
+              {t('item_editor.right_panel.spring_bones.actions.add_bone')}
+            </Button>
+            <BoneHierarchyPicker
+              open={showBonePicker}
+              bones={bones}
+              anchorEl={pickerAnchorRef.current}
+              selected={selectedSpringBonesIds}
+              disableType="avatar"
+              onSelect={handleSelectBone}
+              onClose={() => setShowBonePicker(false)}
+            />
+          </div>
+        )}
+      </div>
+    </Collapsable>
+  )
+}

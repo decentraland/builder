@@ -136,7 +136,11 @@ import { getIsLinkedWearablesV2Enabled, getIsOffchainPublicItemOrdersEnabled } f
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
+import { hashV1 } from '@dcl/hashing'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
+import { hasSpringBoneChanges, getBones, getSpringBoneParams } from 'modules/editor/selectors'
+import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import { patchGltfSpringBones } from 'lib/patchGltfSpringBones'
 import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
@@ -500,6 +504,37 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
         if (!isSkin && !isSmartWearable && !isEmoteItem && !isWearableFileSizeValid(finalSize)) {
           throw new ItemWearableTooBigError()
+        }
+      }
+
+      // Spring bone GLB patching
+      const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
+      console.log('[SpringBones:saga] Save item — springBoneHasChanges:', springBoneHasChanges, 'isWearable:', isWearable(item))
+      if (isWearable(item) && springBoneHasChanges) {
+        const bones: BoneNode[] = yield select(getBones)
+        const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
+        console.log('[SpringBones:saga] Patching GLB with spring bones', {
+          totalBones: bones.length,
+          springBoneNames: bones.filter(b => b.type === 'spring').map(n => n.name),
+          springBoneParams
+        })
+
+        // Patch GLB for every representation (male, female, or both)
+        const patchedPaths = new Set<string>()
+        for (const representation of item.data.representations) {
+          const glbPath = representation.mainFile
+          if (!glbPath || !contents[glbPath] || patchedPaths.has(glbPath)) continue
+          patchedPaths.add(glbPath)
+
+          console.log('[SpringBones:saga] Patching representation GLB:', glbPath)
+          const glbBlob: Blob = contents[glbPath]
+          const buffer: ArrayBuffer = yield call([glbBlob, 'arrayBuffer'])
+          const patchedBuffer = patchGltfSpringBones(buffer, bones, springBoneParams)
+          const patchedBlob = new Blob([patchedBuffer], { type: 'model/gltf-binary' })
+          const newHash: string = yield call(hashV1, new Uint8Array(patchedBuffer))
+          console.log('[SpringBones:saga] Patched', glbPath, '→ new hash:', newHash)
+          contents[glbPath] = patchedBlob
+          item.contents[glbPath] = newHash
         }
       }
 

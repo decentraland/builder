@@ -68,6 +68,7 @@ import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
+import SpringBonesSection from './SpringBonesSection'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
@@ -412,8 +413,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = async () => {
-    const { selectedItem, itemStatus, onSaveItem } = this.props
-    const { name, description, utility, rarity, contents, data, isDirty } = this.state
+    const { selectedItem, itemStatus, onSaveItem, hasSpringBoneChanges } = this.props
+    const { name, description, utility, rarity, contents, data, isDirty: isItemDirty } = this.state
+    const isDirty = isItemDirty || hasSpringBoneChanges
 
     if (isDirty && selectedItem) {
       let itemData = data
@@ -452,14 +454,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         this.analytics?.track('Edit Item', { contents })
       }
       this.setState({ isDirty: false })
-      this.handleOnResetItem()
     }
   }
 
   handleOnResetItem = () => {
-    const { selectedItem } = this.props
+    const { selectedItem, onResetSpringBoneParams } = this.props
     if (selectedItem) {
       this.setItem(selectedItem)
+      onResetSpringBoneParams()
     }
   }
 
@@ -746,9 +748,25 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       isCampaignEnabled,
       isVrmOptOutEnabled,
       campaignName,
-      campaignTag
+      campaignTag,
+      selectedBodyShape,
+      bones,
+      springBoneParams,
+      onSpringBoneParamChange,
+      onAddSpringBoneParams,
+      onDeleteSpringBoneParams,
+      hasSpringBoneChanges
     } = this.props
-    const { name, description, utility, rarity, data, isDirty, hasItem } = this.state
+    const { name, description, utility, rarity, data, isDirty: isItemDirty, hasItem } = this.state
+    const isDirty = isItemDirty || hasSpringBoneChanges
+    console.log('[SpringBones:RightPanel] render()', {
+      selectedItemId,
+      totalBones: bones.length,
+      springBoneNames: bones.filter(b => b.type === 'spring').map(n => n.name),
+      springBoneParams,
+      hasItem,
+      itemType: data?.category
+    })
     const rarities = Rarity.getRarities()
     const playModes = getEmotePlayModes()
 
@@ -1108,6 +1126,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           </div>
                         </div>
                       </Collapsable>
+                    )}
+                    {item?.type === ItemType.WEARABLE && (
+                      <SpringBonesSection
+                        key={`${item?.id}-${selectedBodyShape}`} // Reset the component state when changing the item or body shape
+                        bones={bones}
+                        springBoneParams={springBoneParams}
+                        onParamChange={onSpringBoneParamChange}
+                        onAddSpringBoneParams={onAddSpringBoneParams}
+                        onDeleteSpringBoneParams={onDeleteSpringBoneParams}
+                      />
                     )}
                     <div className="edit-buttons-container">
                       <div className="edit-buttons">

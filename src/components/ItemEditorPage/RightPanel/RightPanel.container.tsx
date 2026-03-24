@@ -11,6 +11,9 @@ import { useGetSelectedItemIdFromCurrentUrl } from 'modules/location/hooks'
 import { getCollection, hasViewAndEditRights } from 'modules/collection/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getIsCampaignEnabled, getIsVrmOptOutEnabled, getIsWearableUtilityEnabled } from 'modules/features/selectors'
+import { getBodyShape, getBones, getSpringBoneParams, hasSpringBoneChanges as hasSpringBoneChangesSelector } from 'modules/editor/selectors'
+import { setSpringBoneParam, addSpringBoneParams, deleteSpringBoneParams, resetSpringBoneParams } from 'modules/editor/actions'
+import { SpringBoneParams } from 'modules/editor/types'
 import { RightPanelContainerProps } from './RightPanel.types'
 import RightPanel from './RightPanel'
 
@@ -45,6 +48,10 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   })
 
   const itemStatus = useMemo(() => (selectedItemId ? statusByItemId[selectedItemId] : null), [selectedItemId, statusByItemId])
+  const selectedBodyShape = useSelector((state: RootState) => getBodyShape(state))
+  const bones = useSelector((state: RootState) => getBones(state))
+  const springBoneParams = useSelector((state: RootState) => getSpringBoneParams(state))
+  const hasSpringBoneChanges = useSelector((state: RootState) => hasSpringBoneChangesSelector(state))
   const onSaveItem: ActionFunction<typeof saveItemRequest> = useCallback(
     (item, contents) => dispatch(saveItemRequest(item, contents)),
     [dispatch]
@@ -53,6 +60,28 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   const onDeleteItem: ActionFunction<typeof deleteItemRequest> = useCallback(item => dispatch(deleteItemRequest(item)), [dispatch])
   const onOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
   const onDownload: ActionFunction<typeof downloadItemRequest> = useCallback(itemId => dispatch(downloadItemRequest(itemId)), [dispatch])
+  const onSpringBoneParamChange = useCallback(
+    (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => {
+      console.log('[SpringBones:RightPanel.container] onSpringBoneParamChange dispatching', { boneName, field, value })
+      dispatch(setSpringBoneParam(boneName, field, value))
+    },
+    [dispatch]
+  )
+  const onAddSpringBoneParams = useCallback(
+    (boneName: string) => {
+      dispatch(addSpringBoneParams(boneName))
+    },
+    [dispatch]
+  )
+  const onDeleteSpringBoneParams = useCallback(
+    (boneName: string) => {
+      dispatch(deleteSpringBoneParams(boneName))
+    },
+    [dispatch]
+  )
+  const onResetSpringBoneParams = useCallback(() => {
+    dispatch(resetSpringBoneParams())
+  }, [dispatch])
 
   return (
     <RightPanel
@@ -71,10 +100,18 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
       campaignName={campaignName}
       isVrmOptOutEnabled={isVrmOptOutEnabled}
       isWearableUtilityEnabled={isWearableUtilityEnabled}
+      selectedBodyShape={selectedBodyShape}
+      bones={bones}
+      springBoneParams={springBoneParams}
       onSaveItem={onSaveItem}
       onDeleteItem={onDeleteItem}
       onOpenModal={onOpenModal}
       onDownload={onDownload}
+      onSpringBoneParamChange={onSpringBoneParamChange}
+      onAddSpringBoneParams={onAddSpringBoneParams}
+      onDeleteSpringBoneParams={onDeleteSpringBoneParams}
+      hasSpringBoneChanges={hasSpringBoneChanges}
+      onResetSpringBoneParams={onResetSpringBoneParams}
     />
   )
 }

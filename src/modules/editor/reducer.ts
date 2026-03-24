@@ -10,8 +10,10 @@ import {
   ExportProjectRequestAction,
   ExportProjectSuccessAction
 } from 'modules/project/actions'
-import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
+import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS, SaveItemSuccessAction, SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
+import { BoneNode, SpringBoneParams } from './types'
+import { DEFAULT_SPRING_BONE_PARAMS } from 'lib/parseSpringBones'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 import { Color4 } from 'lib/colors'
 import {
@@ -64,7 +66,19 @@ import {
   FETCH_BASE_WEARABLES_FAILURE,
   FETCH_BASE_WEARABLES_REQUEST,
   FetchBaseWearablesRequestAction,
-  FetchBaseWearablesFailureAction
+  FetchBaseWearablesFailureAction,
+  CLEAR_SPRING_BONES,
+  SET_BONES,
+  SET_SPRING_BONE_PARAM,
+  RESET_SPRING_BONE_PARAMS,
+  ADD_SPRING_BONE_PARAMS,
+  DELETE_SPRING_BONE_PARAMS,
+  ClearSpringBonesAction,
+  SetBonesAction,
+  SetSpringBoneParamAction,
+  ResetSpringBoneParamsAction,
+  AddSpringBoneParamsAction,
+  DeleteSpringBoneParamsAction
 } from './actions'
 import { Gizmo } from './types'
 import { pickRandom, filterWearables } from './utils'
@@ -99,6 +113,10 @@ export type EditorState = {
   visibleItemIds: string[]
   loading: LoadingState
   fetchingBaseWearablesError: string | null
+  bones: BoneNode[]
+  selectedItemGlbHash: string | null
+  springBoneParams: Record<string, SpringBoneParams>
+  originalSpringBoneParams: Record<string, SpringBoneParams>
 }
 
 export const INITIAL_STATE: EditorState = {
@@ -130,7 +148,11 @@ export const INITIAL_STATE: EditorState = {
   selectedBaseWearablesByBodyShape: null,
   visibleItemIds: [],
   loading: [],
-  fetchingBaseWearablesError: null
+  fetchingBaseWearablesError: null,
+  bones: [],
+  selectedItemGlbHash: null,
+  springBoneParams: {},
+  originalSpringBoneParams: {}
 }
 
 export type EditorReducerAction =
@@ -164,6 +186,13 @@ export type EditorReducerAction =
   | FetchBaseWearablesRequestAction
   | FetchBaseWearablesSuccessAction
   | FetchBaseWearablesFailureAction
+  | ClearSpringBonesAction
+  | SetBonesAction
+  | SetSpringBoneParamAction
+  | ResetSpringBoneParamsAction
+  | AddSpringBoneParamsAction
+  | DeleteSpringBoneParamsAction
+  | SaveItemSuccessAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -392,6 +421,85 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         visibleItemIds: state.visibleItemIds.filter(id => id !== action.payload.item.id)
+      }
+    }
+    case CLEAR_SPRING_BONES: {
+      return {
+        ...state,
+        bones: [],
+        selectedItemGlbHash: null,
+        springBoneParams: {},
+        originalSpringBoneParams: {}
+      }
+    }
+    case SET_BONES: {
+      const { bones, selectedItemGlbHash } = action.payload
+      const springBoneParams: Record<string, SpringBoneParams> = {}
+      for (const bone of bones) {
+        if (bone.type === 'spring' && bone.params) {
+          springBoneParams[bone.name] = { ...bone.params }
+        }
+      }
+      console.log('[SpringBones:reducer] SET_BONES', {
+        totalBones: bones.length,
+        springBones: bones.filter(b => b.type === 'spring').map(b => b.name),
+        avatarBoneCount: bones.filter(b => b.type === 'avatar').length,
+        springBoneParams,
+        selectedItemGlbHash
+      })
+      return {
+        ...state,
+        bones,
+        selectedItemGlbHash,
+        springBoneParams,
+        originalSpringBoneParams: { ...springBoneParams }
+      }
+    }
+    case SET_SPRING_BONE_PARAM: {
+      const { boneName, field, value } = action.payload
+      console.log('[SpringBones:reducer] SET_SPRING_BONE_PARAM', { boneName, field, value })
+      return {
+        ...state,
+        springBoneParams: {
+          ...state.springBoneParams,
+          [boneName]: {
+            ...state.springBoneParams[boneName],
+            [field]: value
+          }
+        }
+      }
+    }
+    case ADD_SPRING_BONE_PARAMS: {
+      const { boneName } = action.payload
+      return {
+        ...state,
+        springBoneParams: {
+          ...state.springBoneParams,
+          [boneName]: { ...DEFAULT_SPRING_BONE_PARAMS }
+        }
+      }
+    }
+    case DELETE_SPRING_BONE_PARAMS: {
+      const { boneName } = action.payload
+      const { [boneName]: _, ...remainingParams } = state.springBoneParams
+      return {
+        ...state,
+        springBoneParams: remainingParams
+      }
+    }
+    case RESET_SPRING_BONE_PARAMS: {
+      console.log('[SpringBones:reducer] RESET_SPRING_BONE_PARAMS')
+      return {
+        ...state,
+        springBoneParams: { ...state.originalSpringBoneParams }
+      }
+    }
+    case SAVE_ITEM_SUCCESS: {
+      console.log('[SpringBones:reducer] SAVE_ITEM_SUCCESS - updating originalSpringBoneParams to current springBoneParams')
+      // After a successful save, the current params become the new original (clears the "changed" flag)
+      return {
+        ...state,
+        originalSpringBoneParams: { ...state.springBoneParams }
       }
     }
     default:

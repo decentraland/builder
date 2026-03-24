@@ -172,6 +172,11 @@ export function hasBodyShape(item: Item, bodyShape: BodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
+export function getRepresentationMainFile(item: Item, bodyShape: BodyShape): string | null {
+  const representation = item.data.representations.find(r => r.bodyShapes.includes(bodyShape))
+  return representation?.mainFile ?? item.data.representations[0]?.mainFile ?? null
+}
+
 export function toWearableBodyShapeType(wearableBodyShape: BodyShape) {
   // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (BodyShape.MALE) and we just want the "BaseMale" part
   return decodeURN(wearableBodyShape).suffix as WearableBodyShapeType

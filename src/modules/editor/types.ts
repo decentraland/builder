@@ -1,4 +1,4 @@
-import { BodyShape, HideableWearableCategory, WearableCategory } from '@dcl/schemas'
+import { BodyShape, HideableWearableCategory, SpringBoneParams, WearableCategory } from '@dcl/schemas'
 import type { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
 
 export enum Gizmo {
@@ -77,3 +77,18 @@ export type PatchedWearable = Wearable & {
   hides: string[]
   representations: BodyShapeRespresentation & { overrideReplaces: string[]; overrideHides: string[] }[]
 }
+
+export { SpringBoneParams }
+
+type BaseBoneNode = {
+  name: string
+  nodeId: number
+  children: number[]
+}
+
+export type BoneNode =
+  | (BaseBoneNode & { type: 'avatar' })
+  | (BaseBoneNode & {
+      type: 'spring'
+      params?: SpringBoneParams
+    })

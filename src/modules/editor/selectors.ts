@@ -135,3 +135,16 @@ export const getVisibleItemsFromUrl = (state: RootState, search: string) => {
       }
     })
 }
+
+export const getBones = (state: RootState) => getState(state).bones
+export const getSpringBones = (state: RootState) => getState(state).bones.filter(b => b.type === 'spring')
+export const getAvatarBones = (state: RootState) => getState(state).bones.filter(b => b.type === 'avatar')
+export const getSelectedItemGlbHash = (state: RootState) => getState(state).selectedItemGlbHash
+export const getSpringBoneParams = (state: RootState) => getState(state).springBoneParams
+export const getOriginalSpringBoneParams = (state: RootState) => getState(state).originalSpringBoneParams
+
+export const hasSpringBoneChanges = (state: RootState): boolean => {
+  const current = getState(state).springBoneParams
+  const original = getState(state).originalSpringBoneParams
+  return JSON.stringify(current) !== JSON.stringify(original)
+}

@@ -55,7 +55,11 @@ import {
   fetchBaseWearablesSuccess,
   fetchBaseWearablesFailure,
   setEmotePlaying,
-  SET_WEARABLE_PREVIEW_CONTROLLER
+  SET_WEARABLE_PREVIEW_CONTROLLER,
+  SET_SPRING_BONE_PARAM,
+  PUSH_SPRING_BONE_PARAMS,
+  ADD_SPRING_BONE_PARAMS,
+  DELETE_SPRING_BONE_PARAMS
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -108,7 +112,10 @@ import {
   hasLoadedAssetPacks,
   isMultiselectEnabled,
   getWearablePreviewController,
-  getVisibleItemsFromUrl
+  getVisibleItemsFromUrl,
+  getSpringBoneParams,
+  getSpringBones,
+  getSelectedItemGlbHash
 } from './selectors'
 import {
   getNewEditorScene,
@@ -150,6 +157,10 @@ export function* editorSaga() {
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
   yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
   yield takeLatest(FETCH_BASE_WEARABLES_REQUEST, handleFetchBaseWearables)
+  yield takeLatest(SET_SPRING_BONE_PARAM, handleSpringBoneParamDebounced)
+  yield takeLatest(PUSH_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
+  yield takeLatest(ADD_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
+  yield takeLatest(DELETE_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
 }
 
 function* pollEditor(scene: SceneSDK6) {
@@ -689,4 +700,34 @@ function* handleFetchBaseWearables() {
   } catch (e) {
     yield put(fetchBaseWearablesFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
   }
+}
+
+function* pushSpringBoneParamsToPreview() {
+  const controller: IPreviewController | null = yield select(getWearablePreviewController)
+  const selectedItemGlbHash: string | null = yield select(getSelectedItemGlbHash)
+  const springBones: ReturnType<typeof getSpringBones> = yield select(getSpringBones)
+  const springBoneParams: ReturnType<typeof getSpringBoneParams> = yield select(getSpringBoneParams)
+
+  if (!controller || !selectedItemGlbHash || springBones.length === 0) {
+    return
+  }
+
+  console.log('[SpringBones:saga] Pushing params to preview', { selectedItemGlbHash, springBoneParams })
+  try {
+    yield call([controller.physics, 'setSpringBonesParams'], selectedItemGlbHash, Object.values(springBoneParams))
+  } catch (error) {
+    console.warn('[SpringBones:saga] Failed to push params to preview:', error)
+  }
+}
+
+function* handleSpringBoneParamDebounced() {
+  yield delay(1000) // Debounce: wait 1s after last param change before pushing
+  console.log('[SpringBones:saga] DEBOUNCED Spring bone param changed, debouncing push to preview...')
+  yield call(pushSpringBoneParamsToPreview)
+}
+
+function* handlePushSpringBoneParams() {
+  console.log('[SpringBones:saga] INMEDIATE Received action to push spring bone params to preview...')
+  // Immediate push (used on preview load and emote play)
+  yield call(pushSpringBoneParamsToPreview)
 }

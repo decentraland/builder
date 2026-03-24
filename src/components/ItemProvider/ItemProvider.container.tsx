@@ -9,6 +9,9 @@ import { isLoggingIn } from 'modules/identity/selectors'
 import { getLoading, getItems } from 'modules/item/selectors'
 import { getCollections } from 'modules/collection/selectors'
 import { FETCH_ITEM_REQUEST, fetchItemRequest, SAVE_ITEM_REQUEST, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
+import { clearSpringBones, setBones } from 'modules/editor/actions'
+import { getBodyShape } from 'modules/editor/selectors'
+import { BoneNode } from 'modules/editor/types'
 import { ContainerProps } from './ItemProvider.types'
 import ItemProvider from './ItemProvider'
 
@@ -19,6 +22,7 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
 
   const items = useSelector(getItems)
   const collections = useSelector(getCollections)
+  const bodyShape = useSelector(getBodyShape)
   const isWalletConnected = useSelector(isConnected)
   const isLoading = useSelector(
     (state: RootState) =>
@@ -43,16 +47,21 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
     collectionId => dispatch(fetchCollectionRequest(collectionId)),
     [dispatch]
   )
+  const onClearSpringBones = useCallback(() => dispatch(clearSpringBones()), [dispatch])
+  const onSetBones = useCallback((bones: BoneNode[], glbHash: string | null) => dispatch(setBones(bones, glbHash)), [dispatch])
 
   return (
     <ItemProvider
       id={id}
       item={item}
       collection={collection}
+      bodyShape={bodyShape}
       isLoading={isLoading}
       isConnected={isWalletConnected}
       onFetchItem={onFetchItem}
       onFetchCollection={onFetchCollection}
+      onClearSpringBones={onClearSpringBones}
+      onSetBones={onSetBones}
     >
       {children}
     </ItemProvider>

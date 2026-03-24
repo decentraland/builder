@@ -14,7 +14,8 @@ import {
   setSkinColor,
   fetchBaseWearablesRequest,
   setWearablePreviewController,
-  setItems
+  setItems,
+  pushSpringBoneParams
 } from 'modules/editor/actions'
 import {
   getEmote,
@@ -117,6 +118,9 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
         params?: Parameters<typeof fetchCollectionItemsRequest>[1]
       ) => {
         dispatch(fetchCollectionItemsRequest(id, params))
+      },
+      onPushSpringBoneParams: () => {
+        dispatch(pushSpringBoneParams())
       }
     }),
     [dispatch]

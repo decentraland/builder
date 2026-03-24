@@ -279,3 +279,40 @@ export const fetchBaseWearablesFailure = (error: string) => action(FETCH_BASE_WE
 export type FetchBaseWearablesRequestAction = ReturnType<typeof fetchBaseWearablesRequest>
 export type FetchBaseWearablesSuccessAction = ReturnType<typeof fetchBaseWearablesSuccess>
 export type FetchBaseWearablesFailureAction = ReturnType<typeof fetchBaseWearablesFailure>
+
+// Spring Bones
+import { BoneNode, SpringBoneParams } from './types'
+
+export const CLEAR_SPRING_BONES = 'Clear spring bones'
+export const SET_BONES = 'Set bones'
+export const SET_SPRING_BONE_PARAM = 'Set spring bone param'
+export const RESET_SPRING_BONE_PARAMS = 'Reset spring bone params'
+export const PUSH_SPRING_BONE_PARAMS = 'Push spring bone params'
+export const ADD_SPRING_BONE_PARAMS = 'Add spring bone params'
+export const DELETE_SPRING_BONE_PARAMS = 'Delete spring bone params'
+
+export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
+
+export const setBones = (bones: BoneNode[], selectedItemGlbHash: string | null) => action(SET_BONES, { bones, selectedItemGlbHash })
+
+export const setSpringBoneParam = (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) =>
+  action(SET_SPRING_BONE_PARAM, { boneName, field, value })
+
+export const resetSpringBoneParams = () => action(RESET_SPRING_BONE_PARAMS)
+
+/** Triggers an immediate push of spring bone params to the wearable preview controller */
+export const pushSpringBoneParams = () => action(PUSH_SPRING_BONE_PARAMS)
+
+/** Initializes default params for a spring bone that has none configured */
+export const addSpringBoneParams = (boneName: string) => action(ADD_SPRING_BONE_PARAMS, { boneName })
+
+/** Removes spring bone params for a bone, effectively disabling spring physics on it */
+export const deleteSpringBoneParams = (boneName: string) => action(DELETE_SPRING_BONE_PARAMS, { boneName })
+
+export type ClearSpringBonesAction = ReturnType<typeof clearSpringBones>
+export type SetBonesAction = ReturnType<typeof setBones>
+export type SetSpringBoneParamAction = ReturnType<typeof setSpringBoneParam>
+export type ResetSpringBoneParamsAction = ReturnType<typeof resetSpringBoneParams>
+export type PushSpringBoneParamsAction = ReturnType<typeof pushSpringBoneParams>
+export type AddSpringBoneParamsAction = ReturnType<typeof addSpringBoneParams>
+export type DeleteSpringBoneParamsAction = ReturnType<typeof deleteSpringBoneParams>
