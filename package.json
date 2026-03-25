@@ -157,6 +157,7 @@
   },
   "homepage": "",
   "overrides": {
+    "@dcl/schemas": "$@dcl/schemas",
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
     "ripemd160": {
