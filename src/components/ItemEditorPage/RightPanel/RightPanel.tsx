@@ -759,14 +759,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     } = this.props
     const { name, description, utility, rarity, data, isDirty: isItemDirty, hasItem } = this.state
     const isDirty = isItemDirty || hasSpringBoneChanges
-    console.log('[SpringBones:RightPanel] render()', {
-      selectedItemId,
-      totalBones: bones.length,
-      springBoneNames: bones.filter(b => b.type === 'spring').map(n => n.name),
-      springBoneParams,
-      hasItem,
-      itemType: data?.category
-    })
     const rarities = Rarity.getRarities()
     const playModes = getEmotePlayModes()
 

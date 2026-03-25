@@ -502,45 +502,39 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
 
-    const wearablePreviewProps = {
-      id: 'wearable-editor',
-      baseUrl: config.get('WEARABLE_PREVIEW_URL'), // 'http://localhost:3030',
-      profile: 'default',
-      bodyShape,
-      emote,
-      zoom,
-      skin: toHex(skinColor),
-      eyes: toHex(eyeColor),
-      hair: toHex(hairColor),
-      urns: selectedBaseWearables
-        ? Object.values(selectedBaseWearables)
-            .map(wearable => (wearable ? wearable.id : null))
-            .filter(urn => urn !== null)
-        : [],
-      base64s: visibleItems.map(toBase64),
-      disableAutoRotate: true,
-      disableBackground: true,
-      wheelZoom: 1.5,
-      wheelStart: 100,
-      dev: isDevelopment,
-      onUpdate: () => this.setState({ isLoading: true }),
-      onError: (error: any) => {
-        console.log('WearablePreview error:', error)
-      },
-      onLoad: this.handleWearablePreviewLoad,
-      disableDefaultEmotes: isRenderingAnEmote,
-      showSceneBoundaries,
-      disableLoader: true,
-      socialEmote: socialEmote || _socialEmote,
-      unity: false, //isUnityWearablePreviewEnabled,
-      unityMode: PreviewUnityMode.BUILDER
-    }
-
-    console.log('WearablePreview props', visibleItems, wearablePreviewProps)
-
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
-        <WearablePreview {...wearablePreviewProps} />
+        <WearablePreview
+          id="wearable-editor"
+          baseUrl={config.get('WEARABLE_PREVIEW_URL')}
+          profile="default"
+          bodyShape={bodyShape}
+          emote={emote}
+          zoom={zoom}
+          skin={toHex(skinColor)}
+          eyes={toHex(eyeColor)}
+          hair={toHex(hairColor)}
+          urns={
+            selectedBaseWearables
+              ? Object.values(selectedBaseWearables)
+                  .map(wearable => (wearable ? wearable.id : null))
+                  .filter(urn => urn !== null)
+              : []
+          }
+          base64s={visibleItems.map(toBase64)}
+          disableAutoRotate
+          disableBackground
+          wheelZoom={1.5}
+          wheelStart={100}
+          dev={isDevelopment}
+          onUpdate={() => this.setState({ isLoading: true })}
+          onLoad={this.handleWearablePreviewLoad}
+          disableDefaultEmotes={isRenderingAnEmote}
+          showSceneBoundaries={showSceneBoundaries}
+          socialEmote={socialEmote || _socialEmote}
+          unity
+          unityMode={PreviewUnityMode.BUILDER}
+        />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
           <ZoomControls
             className="zoom-controls"

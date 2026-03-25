@@ -8,13 +8,6 @@ import { extractGlbChunks, GLB_MAGIC, JSON_CHUNK_TYPE, GLB_HEADER_SIZE, CHUNK_HE
  */
 export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], params: Record<string, SpringBoneParams>): ArrayBuffer {
   const springBones = bones.filter(b => b.type === 'spring')
-  const avatarBones = bones.filter(b => b.type === 'avatar')
-  console.log('[SpringBones:patch] patchGltfSpringBones called', {
-    bufferSize: buffer.byteLength,
-    springBoneCount: springBones.length,
-    paramKeys: Object.keys(params),
-    avatarBoneCount: avatarBones.length
-  })
 
   const chunks = extractGlbChunks(buffer)
   if (!chunks) return buffer

@@ -134,42 +134,24 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     const { bodyShape, onSetBones, onClearSpringBones } = this.props
     onClearSpringBones() // Clear previous spring bone data while loading new one
 
-    console.log(
-      '[SpringBones:ItemProvider] loadSpringBonesData called for item:',
-      item.id,
-      item.name,
-      'type:',
-      item.type,
-      'bodyShape:',
-      bodyShape
-    )
     if (!isWearable(item)) {
-      console.log('[SpringBones:ItemProvider] Skipping — item is not a wearable')
       return
     }
 
     const mainFile = getRepresentationMainFile(item, bodyShape)
     const hash = mainFile ? item.contents[mainFile] : null
-    console.log('[SpringBones:ItemProvider] GLB file lookup result:', mainFile ? { path: mainFile, hash } : 'NOT FOUND')
     if (!mainFile || !hash) {
-      console.log('[SpringBones:ItemProvider] No GLB file found for body shape, resetting bones')
       onSetBones([], null)
       return
     }
 
     try {
       const blob = await this.fetchGlbBlob(hash)
-      console.log('[SpringBones:ItemProvider] Fetched GLB blob, size:', blob.size)
       const buffer = await blob.arrayBuffer()
       const { bones } = parseSpringBones(buffer)
-      console.log('[SpringBones:ItemProvider] Parsed bones:', {
-        totalBones: bones.length,
-        springBones: bones.filter(b => b.type === 'spring').map(b => b.name),
-        avatarBoneCount: bones.filter(b => b.type === 'avatar').length
-      })
       onSetBones(bones, hash)
     } catch (error) {
-      console.warn('[SpringBones:ItemProvider] Failed to parse spring bones:', error)
+      console.warn("Failed to parse model's spring bones:", error)
       onSetBones([], null)
     }
   }

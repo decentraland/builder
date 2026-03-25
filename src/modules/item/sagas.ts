@@ -509,15 +509,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       // Spring bone GLB patching
       const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
-      console.log('[SpringBones:saga] Save item — springBoneHasChanges:', springBoneHasChanges, 'isWearable:', isWearable(item))
       if (isWearable(item) && springBoneHasChanges) {
         const bones: BoneNode[] = yield select(getBones)
         const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
-        console.log('[SpringBones:saga] Patching GLB with spring bones', {
-          totalBones: bones.length,
-          springBoneNames: bones.filter(b => b.type === 'spring').map(n => n.name),
-          springBoneParams
-        })
 
         // When there are separate male/female GLB models, only patch the one
         // matching the currently previewed body shape. When all representations
@@ -540,7 +534,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
         // Fetch existing GLBs from the builder API
         if (Object.keys(glbPathsToFetch).length > 0) {
-          console.log('[SpringBones:saga] Fetching existing GLBs:', Object.keys(glbPathsToFetch))
           const fetchedBlobs: Record<string, Blob> = yield call([legacyBuilder, 'fetchContents'], glbPathsToFetch)
           Object.assign(contents, fetchedBlobs)
         }
@@ -552,13 +545,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           if (!glbPath || !contents[glbPath] || patchedPaths.has(glbPath)) continue
           patchedPaths.add(glbPath)
 
-          console.log('[SpringBones:saga] Patching representation GLB:', glbPath)
           const glbBlob: Blob = contents[glbPath]
           const buffer: ArrayBuffer = yield call([glbBlob, 'arrayBuffer'])
           const patchedBuffer = patchGltfSpringBones(buffer, bones, springBoneParams)
           const patchedBlob = new Blob([patchedBuffer], { type: 'model/gltf-binary' })
           const newHash: string = yield call(hashV1, new Uint8Array(patchedBuffer))
-          console.log('[SpringBones:saga] Patched', glbPath, '→ new hash:', newHash)
           contents[glbPath] = patchedBlob
           item.contents[glbPath] = newHash
         }

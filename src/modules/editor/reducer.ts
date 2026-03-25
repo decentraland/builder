@@ -440,13 +440,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
           springBoneParams[bone.name] = { ...bone.params }
         }
       }
-      console.log('[SpringBones:reducer] SET_BONES', {
-        totalBones: bones.length,
-        springBones: bones.filter(b => b.type === 'spring').map(b => b.name),
-        avatarBoneCount: bones.filter(b => b.type === 'avatar').length,
-        springBoneParams,
-        selectedItemGlbHash
-      })
       return {
         ...state,
         bones,
@@ -457,7 +450,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     }
     case SET_SPRING_BONE_PARAM: {
       const { boneName, field, value } = action.payload
-      console.log('[SpringBones:reducer] SET_SPRING_BONE_PARAM', { boneName, field, value })
       return {
         ...state,
         springBoneParams: {
@@ -488,14 +480,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       }
     }
     case RESET_SPRING_BONE_PARAMS: {
-      console.log('[SpringBones:reducer] RESET_SPRING_BONE_PARAMS')
       return {
         ...state,
         springBoneParams: { ...state.originalSpringBoneParams }
       }
     }
     case SAVE_ITEM_SUCCESS: {
-      console.log('[SpringBones:reducer] SAVE_ITEM_SUCCESS - updating originalSpringBoneParams to current springBoneParams')
       // After a successful save, the current params become the new original (clears the "changed" flag)
       return {
         ...state,

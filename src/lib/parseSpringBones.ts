@@ -53,18 +53,14 @@ const isSpringBoneNode = (node: GltfNode): boolean => {
 }
 
 export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
-  console.log('[SpringBones:parse] Starting parseSpringBones, buffer size:', buffer.byteLength)
   const chunks = extractGlbChunks(buffer)
   if (!chunks) {
-    console.warn('[SpringBones:parse] No JSON chunk found in GLB')
     return { bones: [] }
   }
   const gltf = chunks.json as { nodes?: GltfNode[] }
   if (!gltf.nodes) {
-    console.warn('[SpringBones:parse] No nodes found in GLB')
     return { bones: [] }
   }
-  console.log('[SpringBones:parse] Found', gltf.nodes.length, 'total glTF nodes')
 
   // Build nodeId -> name map for center resolution (avatar bones only)
   const nodes = gltf.nodes
@@ -85,7 +81,6 @@ export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
 
     if (isSpringBoneNode(node)) {
       const bone: BoneNode = { name, nodeId: i, type: 'spring', children }
-      console.log(`[SpringBones:parse] Processing spring bone node:`, { node })
 
       if (node.extras && hasSpringBoneExtras(node.extras)) {
         const params = parseParams(node.extras)
@@ -107,10 +102,5 @@ export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
     }
   }
 
-  console.log('[SpringBones:parse] Result:', {
-    totalBones: bones.length,
-    springBones: bones.filter(b => b.type === 'spring').map(b => ({ name: b.name, nodeId: b.nodeId, params: b.params })),
-    avatarBoneCount: bones.filter(b => b.type === 'avatar').length
-  })
   return { bones }
 }

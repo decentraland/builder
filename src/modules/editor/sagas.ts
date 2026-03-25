@@ -712,22 +712,19 @@ function* pushSpringBoneParamsToPreview() {
     return
   }
 
-  console.log('[SpringBones:saga] Pushing params to preview', { selectedItemGlbHash, springBoneParams })
   try {
     yield call([controller.physics, 'setSpringBonesParams'], selectedItemGlbHash, Object.values(springBoneParams))
   } catch (error) {
-    console.warn('[SpringBones:saga] Failed to push params to preview:', error)
+    console.warn('Failed to push spring bones params to preview:', error)
   }
 }
 
 function* handleSpringBoneParamDebounced() {
   yield delay(1000) // Debounce: wait 1s after last param change before pushing
-  console.log('[SpringBones:saga] DEBOUNCED Spring bone param changed, debouncing push to preview...')
   yield call(pushSpringBoneParamsToPreview)
 }
 
 function* handlePushSpringBoneParams() {
-  console.log('[SpringBones:saga] INMEDIATE Received action to push spring bone params to preview...')
   // Immediate push (used on preview load and emote play)
   yield call(pushSpringBoneParamsToPreview)
 }

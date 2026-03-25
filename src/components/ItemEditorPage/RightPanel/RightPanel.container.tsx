@@ -62,7 +62,6 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   const onDownload: ActionFunction<typeof downloadItemRequest> = useCallback(itemId => dispatch(downloadItemRequest(itemId)), [dispatch])
   const onSpringBoneParamChange = useCallback(
     (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => {
-      console.log('[SpringBones:RightPanel.container] onSpringBoneParamChange dispatching', { boneName, field, value })
       dispatch(setSpringBoneParam(boneName, field, value))
     },
     [dispatch]
