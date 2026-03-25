@@ -159,12 +159,10 @@ function InputNumber({ max, min, value, onChange }: { max?: number; min?: number
   }
 
   const handleBlur = () => {
-    console.log({ localValue })
     let v = parseFloat((localValue || '0').replace(',', '.'))
     if (!isNaN(v)) {
       if (max !== undefined) v = Math.min(max, v)
       if (min !== undefined) v = Math.max(min, v)
-      console.log({ commitedraw: v })
       onChange(v)
       setLocalValue(`${v}`)
     } else {

@@ -60,27 +60,23 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   const onDeleteItem: ActionFunction<typeof deleteItemRequest> = useCallback(item => dispatch(deleteItemRequest(item)), [dispatch])
   const onOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
   const onDownload: ActionFunction<typeof downloadItemRequest> = useCallback(itemId => dispatch(downloadItemRequest(itemId)), [dispatch])
-  const onSpringBoneParamChange = useCallback(
-    (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => {
-      dispatch(setSpringBoneParam(boneName, field, value))
-    },
+  const onSpringBoneParamChange: ActionFunction<typeof setSpringBoneParam> = useCallback(
+    (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) =>
+      dispatch(setSpringBoneParam(boneName, field, value)),
     [dispatch]
   )
-  const onAddSpringBoneParams = useCallback(
-    (boneName: string) => {
-      dispatch(addSpringBoneParams(boneName))
-    },
+  const onAddSpringBoneParams: ActionFunction<typeof addSpringBoneParams> = useCallback(
+    (boneName: string) => dispatch(addSpringBoneParams(boneName)),
     [dispatch]
   )
-  const onDeleteSpringBoneParams = useCallback(
-    (boneName: string) => {
-      dispatch(deleteSpringBoneParams(boneName))
-    },
+  const onDeleteSpringBoneParams: ActionFunction<typeof deleteSpringBoneParams> = useCallback(
+    (boneName: string) => dispatch(deleteSpringBoneParams(boneName)),
     [dispatch]
   )
-  const onResetSpringBoneParams = useCallback(() => {
-    dispatch(resetSpringBoneParams())
-  }, [dispatch])
+  const onResetSpringBoneParams: ActionFunction<typeof resetSpringBoneParams> = useCallback(
+    () => dispatch(resetSpringBoneParams()),
+    [dispatch]
+  )
 
   return (
     <RightPanel

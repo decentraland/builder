@@ -12,10 +12,10 @@ import {
 } from 'modules/project/actions'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS, SaveItemSuccessAction, SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
-import { BoneNode, SpringBoneParams } from './types'
-import { DEFAULT_SPRING_BONE_PARAMS } from 'lib/parseSpringBones'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 import { Color4 } from 'lib/colors'
+import { DEFAULT_SPRING_BONE_PARAMS } from 'lib/parseSpringBones'
+import { BoneNode, SpringBoneParams } from './types'
 import {
   SetGizmoAction,
   TogglePreviewAction,

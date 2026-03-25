@@ -1,5 +1,5 @@
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
-import { extractGlbChunks, GLB_MAGIC, JSON_CHUNK_TYPE, GLB_HEADER_SIZE, CHUNK_HEADER_SIZE, JSON_CHUNK_DATA_OFFSET } from 'lib/glbUtils'
+import { extractGlbChunks, buildGlb, GLB_HEADER_SIZE, CHUNK_HEADER_SIZE } from 'lib/glbUtils'
 
 /**
  * Patches spring bone `extras` fields in a GLB binary.
@@ -54,41 +54,9 @@ export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], par
   }
 
   // For .glb, re-pack the binary container
-
-  // Pad to 4-byte alignment with 0x20 (space)
-  const paddedLength = Math.ceil(newJsonBytes.length / 4) * 4
-  const paddedJsonBytes = new Uint8Array(paddedLength)
-  paddedJsonBytes.fill(0x20) // fill with spaces
-  paddedJsonBytes.set(newJsonBytes)
-
-  // Find BIN chunk start
   const binChunkOffset = GLB_HEADER_SIZE + CHUNK_HEADER_SIZE + chunks.jsonChunkLength
   const hasBinChunk = buffer.byteLength > binChunkOffset
+  const trailingData = hasBinChunk ? new Uint8Array(buffer, binChunkOffset) : undefined
 
-  // Compute new total length
-  const newTotalLength = GLB_HEADER_SIZE + CHUNK_HEADER_SIZE + paddedLength + (hasBinChunk ? buffer.byteLength - binChunkOffset : 0)
-
-  const output = new ArrayBuffer(newTotalLength)
-  const outView = new DataView(output)
-  const outBytes = new Uint8Array(output)
-
-  // Write GLB header (12 bytes): magic, version, totalLength
-  outView.setUint32(0, GLB_MAGIC, true)
-  outView.setUint32(4, chunks.version, true)
-  outView.setUint32(8, newTotalLength, true)
-
-  // Write JSON chunk header (8 bytes): chunkLength, chunkType
-  outView.setUint32(GLB_HEADER_SIZE, paddedLength, true)
-  outView.setUint32(GLB_HEADER_SIZE + 4, JSON_CHUNK_TYPE, true)
-
-  // Write new JSON chunk bytes
-  outBytes.set(paddedJsonBytes, JSON_CHUNK_DATA_OFFSET)
-
-  // Copy BIN chunk verbatim
-  if (hasBinChunk) {
-    const binChunk = new Uint8Array(buffer, binChunkOffset)
-    outBytes.set(binChunk, JSON_CHUNK_DATA_OFFSET + paddedLength)
-  }
-
-  return output
+  return buildGlb(chunks.json, chunks.version, trailingData)
 }

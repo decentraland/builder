@@ -3,7 +3,19 @@ import { RootState } from 'modules/common/types'
 import { wearable } from 'specs/editor'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 import { INITIAL_STATE } from './reducer'
-import { getFetchingBaseWearablesError, getSelectedBaseWearablesByBodyShape, isLoadingBaseWearables } from './selectors'
+import { BoneNode } from './types'
+import {
+  getFetchingBaseWearablesError,
+  getSelectedBaseWearablesByBodyShape,
+  isLoadingBaseWearables,
+  getBones,
+  getSpringBones,
+  getAvatarBones,
+  getSelectedItemGlbHash,
+  getSpringBoneParams,
+  getOriginalSpringBoneParams,
+  hasSpringBoneChanges
+} from './selectors'
 
 let state: RootState
 const originalLocation = window.location
@@ -142,5 +154,195 @@ describe('when getting the fetching base wearable error', () => {
 
   it('should return the fetching base wearable error', () => {
     expect(getFetchingBaseWearablesError(state)).toEqual('someError')
+  })
+})
+
+describe('when getting bones', () => {
+  const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1] }
+  const springBone: BoneNode = { name: 'springbone_hair', nodeId: 1, type: 'spring', children: [] }
+
+  beforeEach(() => {
+    state = {
+      ...state,
+      editor: {
+        ...state.editor,
+        bones: [avatarBone, springBone]
+      }
+    }
+  })
+
+  it('should return all bones', () => {
+    expect(getBones(state)).toEqual([avatarBone, springBone])
+  })
+})
+
+describe('when getting spring bones', () => {
+  const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1] }
+  const springBone: BoneNode = { name: 'springbone_hair', nodeId: 1, type: 'spring', children: [] }
+
+  beforeEach(() => {
+    state = {
+      ...state,
+      editor: {
+        ...state.editor,
+        bones: [avatarBone, springBone]
+      }
+    }
+  })
+
+  it('should return only bones with type spring', () => {
+    expect(getSpringBones(state)).toEqual([springBone])
+  })
+})
+
+describe('when getting avatar bones', () => {
+  const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1] }
+  const springBone: BoneNode = { name: 'springbone_hair', nodeId: 1, type: 'spring', children: [] }
+
+  beforeEach(() => {
+    state = {
+      ...state,
+      editor: {
+        ...state.editor,
+        bones: [avatarBone, springBone]
+      }
+    }
+  })
+
+  it('should return only bones with type avatar', () => {
+    expect(getAvatarBones(state)).toEqual([avatarBone])
+  })
+})
+
+describe('when getting the selected item GLB hash', () => {
+  beforeEach(() => {
+    state = {
+      ...state,
+      editor: {
+        ...state.editor,
+        selectedItemGlbHash: 'aGlbHash'
+      }
+    }
+  })
+
+  it('should return the selected item GLB hash', () => {
+    expect(getSelectedItemGlbHash(state)).toBe('aGlbHash')
+  })
+})
+
+describe('when getting spring bone params', () => {
+  const params = {
+    springbone_hair: {
+      stiffness: 1,
+      gravityPower: 0,
+      gravityDir: [0, -1, 0] as [number, number, number],
+      dragForce: 0.4,
+      center: undefined
+    }
+  }
+
+  beforeEach(() => {
+    state = {
+      ...state,
+      editor: {
+        ...state.editor,
+        springBoneParams: params
+      }
+    }
+  })
+
+  it('should return the spring bone params', () => {
+    expect(getSpringBoneParams(state)).toEqual(params)
+  })
+})
+
+describe('when getting original spring bone params', () => {
+  const params = {
+    springbone_hair: {
+      stiffness: 1,
+      gravityPower: 0,
+      gravityDir: [0, -1, 0] as [number, number, number],
+      dragForce: 0.4,
+      center: undefined
+    }
+  }
+
+  beforeEach(() => {
+    state = {
+      ...state,
+      editor: {
+        ...state.editor,
+        originalSpringBoneParams: params
+      }
+    }
+  })
+
+  it('should return the original spring bone params', () => {
+    expect(getOriginalSpringBoneParams(state)).toEqual(params)
+  })
+})
+
+describe('when checking if spring bone params have changed', () => {
+  const originalParams = {
+    springbone_hair: {
+      stiffness: 1,
+      gravityPower: 0,
+      gravityDir: [0, -1, 0] as [number, number, number],
+      dragForce: 0.4,
+      center: undefined
+    }
+  }
+
+  describe('and springBoneParams equals originalSpringBoneParams', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        editor: {
+          ...state.editor,
+          springBoneParams: { ...originalParams },
+          originalSpringBoneParams: { ...originalParams }
+        }
+      }
+    })
+
+    it('should return false', () => {
+      expect(hasSpringBoneChanges(state)).toBe(false)
+    })
+  })
+
+  describe('and springBoneParams differs from originalSpringBoneParams', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        editor: {
+          ...state.editor,
+          springBoneParams: {
+            springbone_hair: { ...originalParams.springbone_hair, stiffness: 0.5 }
+          },
+          originalSpringBoneParams: { ...originalParams }
+        }
+      }
+    })
+
+    it('should return true', () => {
+      expect(hasSpringBoneChanges(state)).toBe(true)
+    })
+  })
+
+  describe('and both are empty', () => {
+    beforeEach(() => {
+      state = {
+        ...state,
+        editor: {
+          ...state.editor,
+          springBoneParams: {},
+          originalSpringBoneParams: {}
+        }
+      }
+    })
+
+    it('should return false', () => {
+      expect(hasSpringBoneChanges(state)).toBe(false)
+    })
   })
 })

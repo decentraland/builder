@@ -291,13 +291,17 @@ export const PUSH_SPRING_BONE_PARAMS = 'Push spring bone params'
 export const ADD_SPRING_BONE_PARAMS = 'Add spring bone params'
 export const DELETE_SPRING_BONE_PARAMS = 'Delete spring bone params'
 
+/** Clears all spring bone data from the editor state */
 export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
 
+/** Sets the full bones array, typically when loading a new wearable model */
 export const setBones = (bones: BoneNode[], selectedItemGlbHash: string | null) => action(SET_BONES, { bones, selectedItemGlbHash })
 
+/** Updates a single field from a spring bone */
 export const setSpringBoneParam = (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) =>
   action(SET_SPRING_BONE_PARAM, { boneName, field, value })
 
+/** Resets all spring bone params to their original saved value */
 export const resetSpringBoneParams = () => action(RESET_SPRING_BONE_PARAMS)
 
 /** Triggers an immediate push of spring bone params to the wearable preview controller */
