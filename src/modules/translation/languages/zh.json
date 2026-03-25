@@ -368,7 +368,35 @@
       },
       "item_not_allowed_in_third_party_collections": "此项目类型{type}在链接的可穿戴设备集合中不允许",
       "emote_animations_sync_error": "<b>头像和道具动画长度不一样</b><br></br>请更正您的动画，然后再次上传以获得完美的同步.",
-      "emote_with_mesh": "<b>您的文件包括头像网。</b><br></br>对于此过程，此网格不是必需的。请，只需重新出口并再次上传即可继续。"
+      "emote_with_mesh": "<b>您的文件包括头像网。</b><br></br>对于此过程，此网格不是必需的。请，只需重新出口并再次上传即可继续。",
+      "glb_validation": {
+        "title": "您的文件存在验证问题",
+        "has_errors": "您的文件存在验证错误，需要在上传前修复。",
+        "triangle_count_exceeded": "三角形数量 ({count}) 超过了 {category} 类型可穿戴物的限制 {limit}。",
+        "triangle_count_exceeded_with_hint": "三角形数量 ({count}) 超过了 {category} 类型可穿戴物的基础限制 {limit}。您可以在物品编辑器中通过隐藏其他可穿戴物类别来提高此限制。",
+        "dimensions_exceeded": "模型尺寸 ({width}m x {height}m x {depth}m) 超过了允许的最大值 ({maxWidth}m x {maxHeight}m x {maxDepth}m)。",
+        "materials_exceeded": "材质数量 ({count}) 超过了限制 {limit}。",
+        "textures_exceeded": "贴图数量 ({count}) 超过了限制 {limit}。",
+        "texture_resolution_exceeded": "贴图 \"{name}\" 的分辨率 ({width}x{height}) 超过了最大值 {maxWidth}x{maxHeight}。",
+        "bone_influences_exceeded": "部分顶点的骨骼影响超过了 {limit} 个。",
+        "leaf_bones_found": "发现末端骨骼：{bones}。请在导出前删除带有 _end 或 _neutral 后缀的骨骼。",
+        "cameras_found": "可穿戴物/表情的 GLB 文件中不允许包含摄像机。",
+        "lights_found": "可穿戴物/表情的 GLB 文件中不允许包含灯光。",
+        "animations_in_wearable": "可穿戴物的 GLB 文件不应包含动画。如果这是表情，动画是允许的。",
+        "forbidden_material_name": "材质 \"{name}\" 使用了保留的命名模式 ({pattern})。此模式仅用于面部类别。",
+        "emote_frame_rate": "动画帧率 ({fps} fps) 与期望的 {expected} fps 不同。",
+        "emote_max_frames": "动画有 {frames} 帧，超过了最大值 {limit}。",
+        "emote_max_clips": "文件有 {count} 个动画片段，超过了最大值 {limit}。",
+        "emote_missing_keyframes": "部分变形骨骼在第一帧/最后一帧缺少关键帧：{bones}。",
+        "emote_displacement": "角色中心位移 ({distance}m) 超过了最大值 {limit}m。",
+        "prop_triangle_count": "道具三角形数量 ({count}) 超过了限制 {limit}。",
+        "prop_materials": "道具材质数量 ({count}) 超过了限制 {limit}。",
+        "prop_textures": "道具贴图数量 ({count}) 超过了限制 {limit}。",
+        "prop_armature_bones": "道具骨架有 {count} 个骨骼，超过了限制 {limit}。",
+        "armature_naming": "发现意外的骨架名称：{names}。角色骨架应命名为 'Armature'，道具骨架应命名为 'Armature_Prop'。",
+        "animation_naming": "当存在道具时，动画片段应以 '_Avatar' 或 '_Prop' 结尾。无效名称：{names}。",
+        "audio_format": "音频文件 \"{name}\" 的格式不受支持。仅允许 .mp3 和 .ogg 格式。"
+      }
     },
     "emote_notice": "表情适用于所有体型。",
     "smart_wearable_details_title": "完善您的智能可穿戴设备详细信息",
@@ -1513,6 +1541,10 @@
       }
     }
   },
+  "validation_issues_panel": {
+    "title_errors": "{count, plural, one {# 个验证错误} other {# 个验证错误}}",
+    "title_warnings": "{count, plural, one {# 个验证警告} other {# 个验证警告}}"
+  },
   "video_modal": {
     "title": "更多",
     "youtube_id": "NhaP_M7tVc8"
@@ -2120,7 +2152,13 @@
       "stop": "停止",
       "from_collection": "从收藏",
       "from_items": "从项目",
-      "default": "默认"
+      "default": "默认",
+      "validation_tooltip": "根据 Decentraland 的可穿戴物/表情要求验证所选物品",
+      "validation_running": "正在验证物品...",
+      "validation_pass": "物品通过了所有验证检查",
+      "validation_fail": "物品存在验证错误。点击查看详情。",
+      "validation_warnings": "物品存在验证警告。点击查看详情。",
+      "validation_modal_title": "验证结果"
     },
     "right_panel": {
       "properties": "物产",

@@ -21,7 +21,8 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
 import { isThirdParty } from 'lib/urn'
-import { EngineType, getEmoteData, getIsEmote } from 'lib/getModelData'
+import { EngineType, getEmoteData, loadAndValidateModel } from 'lib/getModelData'
+import type { ValidationIssue } from 'lib/glbValidation/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL } from 'modules/asset/utils'
 import {
   FileTooBigError,
@@ -33,7 +34,8 @@ import {
   InvalidModelFileType,
   CustomErrorWithTitle,
   ItemNotAllowedInThirdPartyCollections,
-  MissingExternalResourcesError
+  MissingExternalResourcesError,
+  GLBValidationError
 } from 'modules/item/errors'
 import {
   BodyShapeType,
@@ -127,8 +129,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       throw new MissingModelFileError()
     }
 
+    // Pass category and hides from wearable config if available for more precise validation
+    const wearableCategory = wearable?.data?.category as WearableCategory | undefined
+    const wearableHides = wearable?.data?.hides as string[] | undefined
+
     return {
-      modelData: await this.processModel(modelPath, content),
+      modelData: await this.processModel(modelPath, content, wearableCategory, wearableHides),
       wearable,
       emote,
       scene
@@ -146,7 +152,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       [modelPath]: file
     }
 
-    const { model, contents: proccessedContent, type } = await this.processModel(modelPath, contents)
+    const { model, contents: proccessedContent, type, validationIssues } = await this.processModel(modelPath, contents)
 
     if (type === ItemType.EMOTE) {
       const { metrics }: { metrics: AnimationMetrics } = await getEmoteData(URL.createObjectURL(contents[model]))
@@ -165,7 +171,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       throw new FileTooBigError(maxFileSize)
     }
 
-    return { model, contents: proccessedContent, type }
+    return { model, contents: proccessedContent, type, validationIssues }
   }
 
   handleErrorsOnFile = (error: any) => {
@@ -174,7 +180,13 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     let errorTranslationId: string | null = null
     let wrongConfigurations: string[] = []
 
-    if (error instanceof MissingExternalResourcesError) {
+    if (error instanceof GLBValidationError) {
+      this.setState({
+        error: new CustomErrorWithTitle(error.title, error.message),
+        isLoading: false
+      })
+      return
+    } else if (error instanceof MissingExternalResourcesError) {
       // Handle missing external resources error with proper formatting
       this.setState({
         error: new CustomErrorWithTitle(error.title, error.message),
@@ -294,7 +306,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       if (extension === '.zip') {
         const { modelData, wearable, scene, emote } = await this.handleZippedModelFiles(file)
-        const { type, model, contents } = modelData
+        const { type, model, contents, validationIssues } = modelData
 
         if (scene) {
           contents[SCENE_PATH] = new Blob([JSON.stringify(scene)], { type: 'application/json' })
@@ -305,6 +317,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           type,
           model,
           contents,
+          validationIssues,
           thumbnail: THUMBNAIL_PATH in modelData.contents ? await blobToDataURL(modelData.contents[THUMBNAIL_PATH]) : undefined
         }
         if (wearable) {
@@ -347,13 +360,14 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           }
         }
       } else {
-        const { type, model, contents } = await this.handleModelFile(file)
+        const { type, model, contents, validationIssues } = await this.handleModelFile(file)
 
         acceptedFileProps = {
           ...acceptedFileProps,
           type,
           model,
-          contents
+          contents,
+          validationIssues
         }
       }
 
@@ -382,28 +396,37 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     this.setState({ error: new InvalidFilesError() })
   }
 
-  async processModel(model: string, contents: Record<string, Blob>): Promise<ModelData> {
+  async processModel(model: string, contents: Record<string, Blob>, category?: WearableCategory, hides?: string[]): Promise<ModelData> {
     const url = URL.createObjectURL(contents[model])
     const extension = getExtension(model) || undefined
     let isEmote = false
+    let validationIssues: ValidationIssue[] | undefined
 
     if (extension !== '.png') {
       const mappings = rawMappingsToObjectURL(contents)
       try {
-        isEmote = await getIsEmote(url, {
-          mappings,
-          width: 1024,
-          height: 1024,
-          extension,
-          engine: EngineType.BABYLON
-        })
+        const result = await loadAndValidateModel(
+          url,
+          {
+            mappings,
+            width: 1024,
+            height: 1024,
+            extension,
+            engine: EngineType.BABYLON
+          },
+          category,
+          contents,
+          hides
+        )
+        isEmote = result.isEmote
+        validationIssues = result.validationResult.issues
       } finally {
         // Clean up blob URLs to prevent memory leaks
         revokeMappingsObjectURL(mappings)
         URL.revokeObjectURL(url)
       }
     }
-    return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE }
+    return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE, validationIssues }
   }
 
   handleOpenMoreInformation = () => {

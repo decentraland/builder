@@ -3,6 +3,7 @@ import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Mappings, OutcomeGroup, Rarity, StartAnimation } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
+import type { ValidationIssue } from 'lib/glbValidation/types'
 import { Collection } from 'modules/collection/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemType, SyncStatus } from 'modules/item/types'
@@ -63,6 +64,7 @@ export type StateData = {
     animations: AnimationClip[]
     armatures: Object3D[]
   }
+  validationIssues?: ValidationIssue[]
 }
 
 export type State = {
@@ -82,6 +84,7 @@ export type ModelData = {
   type: ItemType
   model: string
   contents: Record<string, Blob>
+  validationIssues?: ValidationIssue[]
 }
 
 export type ZipModelData = ModelData & {
@@ -111,6 +114,7 @@ export type AcceptedFileProps = Pick<
   | 'playMode'
   | 'tags'
   | 'blockVrmExport'
+  | 'validationIssues'
 >
 export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
 export type MapStateProps = Pick<

@@ -1,0 +1,398 @@
+import type { AnimationClip, Scene } from 'three'
+import { ValidationIssue, ValidationSeverity } from './types'
+import {
+  EMOTE_EXPECTED_FPS,
+  EMOTE_FPS_TOLERANCE,
+  EMOTE_MAX_FRAMES,
+  EMOTE_MAX_ANIMATION_CLIPS_BASIC,
+  EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS,
+  PROP_MAX_TRIANGLES,
+  PROP_MAX_MATERIALS,
+  PROP_MAX_TEXTURES,
+  PROP_MAX_ARMATURE_BONES,
+  AVATAR_ARMATURE_NAME,
+  PROP_ARMATURE_NAME,
+  VALID_AUDIO_EXTENSIONS
+} from './constants'
+
+type ThreeModules = typeof import('three')
+
+/**
+ * Validates that the emote's effective frame rate is within tolerance of 30 fps
+ * (allowed deviation: +/-5 fps). Reports WARNING when outside tolerance.
+ */
+export function validateEmoteFrameRate(animations: AnimationClip[]): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+
+  if (animations.length === 0) return issues
+
+  const animation = animations[0]
+  let maxFrames = 0
+  for (const track of animation.tracks) {
+    maxFrames = Math.max(maxFrames, track.times.length)
+  }
+
+  if (animation.duration > 0) {
+    const fps = Math.round(maxFrames / animation.duration)
+    if (Math.abs(fps - EMOTE_EXPECTED_FPS) > EMOTE_FPS_TOLERANCE) {
+      issues.push({
+        code: 'EMOTE_FRAME_RATE',
+        severity: ValidationSeverity.WARNING,
+        messageKey: 'create_single_item_modal.error.glb_validation.emote_frame_rate',
+        messageParams: { fps, expected: EMOTE_EXPECTED_FPS }
+      })
+    }
+  }
+
+  return issues
+}
+
+/**
+ * Validates that the emote animation does not exceed 300 frames.
+ * Reports ERROR when the frame count is exceeded.
+ */
+export function validateEmoteMaxFrames(animations: AnimationClip[]): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+
+  if (animations.length === 0) return issues
+
+  const animation = animations[0]
+  let maxFrames = 0
+  for (const track of animation.tracks) {
+    maxFrames = Math.max(maxFrames, track.times.length)
+  }
+
+  if (maxFrames > EMOTE_MAX_FRAMES) {
+    issues.push({
+      code: 'EMOTE_MAX_FRAMES',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.emote_max_frames',
+      messageParams: { frames: maxFrames, limit: EMOTE_MAX_FRAMES }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates the number of animation clips: max 1 for basic emotes, max 2 when
+ * props are included. Reports ERROR when exceeded.
+ */
+export function validateEmoteAnimationClipCount(animations: AnimationClip[], hasProps: boolean): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  const limit = hasProps ? EMOTE_MAX_ANIMATION_CLIPS_WITH_PROPS : EMOTE_MAX_ANIMATION_CLIPS_BASIC
+
+  if (animations.length > limit) {
+    issues.push({
+      code: 'EMOTE_MAX_CLIPS',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.emote_max_clips',
+      messageParams: { count: animations.length, limit }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Checks that every deform bone in the scene has keyframes for position,
+ * quaternion, and scale across all animation clips. Reports WARNING
+ * listing bones with missing tracks (up to 5 shown).
+ */
+export function validateEmoteDeformBoneKeyframes(Three: ThreeModules, scene: Scene, animations: AnimationClip[]): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+
+  if (animations.length === 0) return issues
+
+  // Collect deform bone names from the scene
+  const deformBoneNames = new Set<string>()
+  scene.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.Bone) {
+      deformBoneNames.add(node.name)
+    }
+  })
+
+  if (deformBoneNames.size === 0) return issues
+
+  // Group tracks by bone name across ALL animation clips.
+  // Emotes with props have separate clips for avatar and prop bones.
+  const boneTrackMap = new Map<string, Set<string>>()
+  for (const animation of animations) {
+    for (const track of animation.tracks) {
+      const dotIndex = track.name.lastIndexOf('.')
+      if (dotIndex === -1) continue
+      const boneName = track.name.substring(0, dotIndex)
+      const property = track.name.substring(dotIndex + 1)
+
+      // Only check standard transform properties
+      if (!['position', 'quaternion', 'scale'].includes(property)) continue
+
+      if (!boneTrackMap.has(boneName)) {
+        boneTrackMap.set(boneName, new Set())
+      }
+      boneTrackMap.get(boneName)!.add(property)
+    }
+  }
+
+  // Check each deform bone has keyframes for position, quaternion, scale
+  const requiredProperties = ['position', 'quaternion', 'scale']
+  const missingBones: string[] = []
+
+  for (const boneName of deformBoneNames) {
+    const tracks = boneTrackMap.get(boneName)
+    if (!tracks) {
+      missingBones.push(boneName)
+      continue
+    }
+
+    for (const prop of requiredProperties) {
+      if (!tracks.has(prop)) {
+        missingBones.push(`${boneName}.${prop}`)
+        break
+      }
+    }
+  }
+
+  if (missingBones.length > 0) {
+    issues.push({
+      code: 'EMOTE_MISSING_KEYFRAMES',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.emote_missing_keyframes',
+      messageParams: {
+        bones: missingBones.slice(0, 5).join(', ') + (missingBones.length > 5 ? ` (+${missingBones.length - 5} more)` : '')
+      }
+    })
+  }
+
+  return issues
+}
+
+// NOTE: Avatar displacement validation (1m limit) is not implemented because
+// the Hips bone position track values are in local bone space, not world space.
+// Computing world-space displacement would require resolving the full skeleton
+// hierarchy including the armature root's transform, which is not feasible
+// from raw animation track data alone.
+
+/**
+ * Validates that the prop armature's total triangle count does not exceed 3000.
+ * Reports ERROR when exceeded.
+ */
+export function validatePropTriangles(Three: ThreeModules, scene: Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  let propTriangles = 0
+
+  // Find the Armature_Prop node and count triangles under it
+  const propArmature = scene.children.find(child => child.name === PROP_ARMATURE_NAME)
+  if (!propArmature) return issues
+
+  propArmature.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.Mesh) {
+      const geometry = node.geometry
+      if (geometry instanceof Three.BufferGeometry) {
+        if (geometry.index) {
+          propTriangles += geometry.index.count / 3
+        } else {
+          const position = geometry.getAttribute('position')
+          if (position) {
+            propTriangles += position.count / 3
+          }
+        }
+      } else if (geometry instanceof Three.Geometry) {
+        propTriangles += geometry.faces.length
+      }
+    }
+  })
+
+  propTriangles = Math.floor(propTriangles)
+
+  if (propTriangles > PROP_MAX_TRIANGLES) {
+    issues.push({
+      code: 'PROP_TRIANGLE_COUNT',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.prop_triangle_count',
+      messageParams: { count: propTriangles, limit: PROP_MAX_TRIANGLES }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates that the prop armature uses no more than 2 unique materials.
+ * Reports ERROR when exceeded.
+ */
+export function validatePropMaterials(Three: ThreeModules, scene: Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  const materials = new Set<string>()
+
+  const propArmature = scene.children.find(child => child.name === PROP_ARMATURE_NAME)
+  if (!propArmature) return issues
+
+  propArmature.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.Mesh && node.material) {
+      materials.add((node.material as THREE.Material).name)
+    }
+  })
+
+  if (materials.size > PROP_MAX_MATERIALS) {
+    issues.push({
+      code: 'PROP_MATERIALS',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.prop_materials',
+      messageParams: { count: materials.size, limit: PROP_MAX_MATERIALS }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates that the prop armature uses no more than 2 unique textures.
+ * Reports ERROR when exceeded.
+ */
+export function validatePropTextures(Three: ThreeModules, scene: Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  const textures = new Set<string>()
+
+  const propArmature = scene.children.find(child => child.name === PROP_ARMATURE_NAME)
+  if (!propArmature) return issues
+
+  propArmature.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.Mesh && node.material) {
+      const mat = node.material as THREE.MeshStandardMaterial
+      // Only count the base color texture (map) per material — this is what Decentraland means by "textures".
+      // Other map slots (normal, roughness, etc.) that share the same image are part of the same material, not separate textures.
+      if (mat.map) {
+        textures.add(mat.map.uuid)
+      }
+    }
+  })
+
+  if (textures.size > PROP_MAX_TEXTURES) {
+    issues.push({
+      code: 'PROP_TEXTURES',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.prop_textures',
+      messageParams: { count: textures.size, limit: PROP_MAX_TEXTURES }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates that the prop armature contains no more than 62 bones.
+ * Reports ERROR when exceeded.
+ */
+export function validatePropArmatureBones(Three: ThreeModules, scene: Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  let boneCount = 0
+
+  const propArmature = scene.children.find(child => child.name === PROP_ARMATURE_NAME)
+  if (!propArmature) return issues
+
+  propArmature.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.Bone) {
+      boneCount++
+    }
+  })
+
+  if (boneCount > PROP_MAX_ARMATURE_BONES) {
+    issues.push({
+      code: 'PROP_ARMATURE_BONES',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.prop_armature_bones',
+      messageParams: { count: boneCount, limit: PROP_MAX_ARMATURE_BONES }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates that armature root nodes follow expected naming conventions
+ * ("Armature" or "Armature_Prop"). Reports WARNING for non-standard names.
+ */
+export function validateArmatureNaming(scene: Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  const armatureNames: string[] = []
+
+  for (const child of scene.children) {
+    if (child.name.startsWith('Armature')) {
+      armatureNames.push(child.name)
+    }
+  }
+
+  if (armatureNames.length === 0) return issues
+
+  const validNames = [AVATAR_ARMATURE_NAME, PROP_ARMATURE_NAME]
+  const invalidNames = armatureNames.filter(name => !validNames.includes(name) && name !== 'Armature_Other')
+
+  if (invalidNames.length > 0) {
+    issues.push({
+      code: 'ARMATURE_NAMING',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.armature_naming',
+      messageParams: { names: invalidNames.join(', ') }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * For emotes with props, validates that animation clip names end with "_Avatar"
+ * or "_Prop". Reports WARNING listing clips with non-standard names.
+ */
+export function validateAnimationNaming(animations: AnimationClip[], hasProps: boolean): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+
+  if (!hasProps || animations.length < 2) return issues
+
+  const invalidNames: string[] = []
+
+  for (const anim of animations) {
+    const name = anim.name
+    if (!name.endsWith('_Avatar') && !name.endsWith('_Prop')) {
+      invalidNames.push(name)
+    }
+  }
+
+  if (invalidNames.length > 0) {
+    issues.push({
+      code: 'ANIMATION_NAMING',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.animation_naming',
+      messageParams: { names: invalidNames.join(', ') }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates that any audio files in the emote contents use an accepted format
+ * (.mp3 or .ogg). Reports ERROR for unsupported audio formats such as .wav or .aac.
+ */
+export function validateAudioFormat(contents: Record<string, Blob>): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+
+  for (const key of Object.keys(contents)) {
+    const lowerKey = key.toLowerCase()
+    const isAudio = lowerKey.endsWith('.mp3') || lowerKey.endsWith('.ogg') || lowerKey.endsWith('.wav') || lowerKey.endsWith('.aac')
+
+    if (isAudio) {
+      const hasValidExt = VALID_AUDIO_EXTENSIONS.some(ext => lowerKey.endsWith(ext))
+      if (!hasValidExt) {
+        issues.push({
+          code: 'AUDIO_FORMAT',
+          severity: ValidationSeverity.WARNING,
+          messageKey: 'create_single_item_modal.error.glb_validation.audio_format',
+          messageParams: { name: key }
+        })
+      }
+    }
+  }
+
+  return issues
+}
