@@ -29,6 +29,7 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
 import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
+import { hasSpringBoneChanges } from 'modules/editor/selectors'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -342,6 +343,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -378,6 +380,7 @@ describe('when handling the save item request action', () => {
             [select(getOpenModals), { EditItemURNModal: true }],
             [select(getItem, item.id), undefined],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [select(getAddress), mockAddress],
             [
               call(generateCatalystImage, item, {
@@ -412,6 +415,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
@@ -447,6 +451,7 @@ describe('when handling the save item request action', () => {
             ],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [
               call(generateCatalystImage, item, {
                 thumbnail: contents[THUMBNAIL_PATH]
@@ -483,6 +488,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
@@ -510,6 +516,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], item, contents), Promise.resolve(item)],
@@ -535,6 +542,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), undefined],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [call([builderAPI, 'saveItem'], item, {}), Promise.resolve(item)],
             [put(saveItemSuccess(item, {})), undefined]
           ])
@@ -570,6 +578,7 @@ describe('when handling the save item request action', () => {
             [select(getItem, item.id), item],
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
+            [select(hasSpringBoneChanges), false],
             [call(calculateModelFinalSize, itemContents, modelContents, item.type, builderAPI), Promise.resolve(1)],
             [call(calculateFileSize, thumbnailContent), 1],
             [call([builderAPI, 'saveItem'], itemWithNewHashes, newContents), Promise.resolve(itemWithNewHashes)],
