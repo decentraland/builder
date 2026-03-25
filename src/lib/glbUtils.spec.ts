@@ -1,4 +1,12 @@
-import { extractGlbChunks, buildGlb, GLB_MAGIC, JSON_CHUNK_TYPE, GLB_HEADER_SIZE, CHUNK_HEADER_SIZE, JSON_CHUNK_DATA_OFFSET } from './glbUtils'
+import {
+  extractGlbChunks,
+  buildGlb,
+  GLB_MAGIC,
+  JSON_CHUNK_TYPE,
+  GLB_HEADER_SIZE,
+  CHUNK_HEADER_SIZE,
+  JSON_CHUNK_DATA_OFFSET
+} from './glbUtils'
 
 function buildGlbWithBin(jsonObj: Record<string, unknown>, binData: Uint8Array): ArrayBuffer {
   const trailing = new ArrayBuffer(CHUNK_HEADER_SIZE + binData.length)

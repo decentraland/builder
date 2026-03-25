@@ -50,10 +50,7 @@ describe('when patching spring bones in a GLB', () => {
   describe('and the buffer is a valid glTF with spring bone nodes', () => {
     it('should update extras on spring bone nodes with the provided params', () => {
       const gltfJson = {
-        nodes: [
-          { name: 'Hips' },
-          { name: 'springbone_hair', extras: { stiffness: 1 } }
-        ]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 1 } }]
       }
       const buffer = buildGltfBuffer(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], { springbone_hair: defaultParams })
@@ -67,10 +64,7 @@ describe('when patching spring bones in a GLB', () => {
 
     it('should set center in extras when params.center is defined', () => {
       const gltfJson = {
-        nodes: [
-          { name: 'Hips' },
-          { name: 'springbone_hair', extras: {} }
-        ]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: {} }]
       }
       const paramsWithCenter: SpringBoneParams = { ...defaultParams, center: 0 }
       const buffer = buildGltfBuffer(gltfJson)
@@ -82,10 +76,7 @@ describe('when patching spring bones in a GLB', () => {
 
     it('should delete center from extras when params.center is undefined', () => {
       const gltfJson = {
-        nodes: [
-          { name: 'Hips' },
-          { name: 'springbone_hair', extras: { stiffness: 1, center: 5 } }
-        ]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 1, center: 5 } }]
       }
       const buffer = buildGltfBuffer(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], { springbone_hair: defaultParams })
@@ -96,10 +87,7 @@ describe('when patching spring bones in a GLB', () => {
 
     it('should create extras object when node has none', () => {
       const gltfJson = {
-        nodes: [
-          { name: 'Hips' },
-          { name: 'springbone_hair' }
-        ]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair' }]
       }
       const buffer = buildGltfBuffer(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], { springbone_hair: defaultParams })
@@ -111,10 +99,7 @@ describe('when patching spring bones in a GLB', () => {
 
     it('should skip spring bone nodes not present in the params map', () => {
       const gltfJson = {
-        nodes: [
-          { name: 'Hips' },
-          { name: 'springbone_hair', extras: { stiffness: 99 } }
-        ]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 99 } }]
       }
       const buffer = buildGltfBuffer(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], {})
@@ -188,10 +173,7 @@ describe('when patching spring bones in a GLB', () => {
 
     it('should produce a valid GLB that can be re-parsed', () => {
       const gltfJson = {
-        nodes: [
-          { name: 'Hips' },
-          { name: 'springbone_hair', extras: { stiffness: 1 } }
-        ]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 1 } }]
       }
       const buffer = buildGlb(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], { springbone_hair: defaultParams })

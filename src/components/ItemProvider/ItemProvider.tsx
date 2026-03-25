@@ -33,7 +33,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, item, collection, onFetchItem, onFetchCollection, isConnected } = this.props
+    const { id, item, collection, bodyShape, onFetchItem, onFetchCollection, isConnected } = this.props
     const { loadedItemId } = this.state
 
     if (isConnected && id && !item && loadedItemId !== id) {
@@ -46,12 +46,10 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     // Load animation data when item changes
     if (isConnected && id && item && item.id !== prevProps.item?.id) {
       void this.loadAnimationData(item)
-      void this.loadSpringBonesData(item)
     }
 
-    /// TODO: it would be called twice??
-    // Re-parse spring bones when body shape changes (different representation's GLB)
-    if (isConnected && item && this.props.bodyShape !== prevProps.bodyShape) {
+    // Re-parse spring bones when item or body shape changes (different GLB)
+    if (isConnected && item && (item.id !== prevProps.item?.id || bodyShape !== prevProps.bodyShape)) {
       void this.loadSpringBonesData(item)
     }
   }
@@ -141,7 +139,6 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     const mainFile = getRepresentationMainFile(item, bodyShape)
     const hash = mainFile ? item.contents[mainFile] : null
     if (!mainFile || !hash) {
-      onSetBones([], null)
       return
     }
 
@@ -152,7 +149,6 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       onSetBones(bones, hash)
     } catch (error) {
       console.warn("Failed to parse model's spring bones:", error)
-      onSetBones([], null)
     }
   }
 

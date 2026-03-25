@@ -173,6 +173,7 @@ export function hasBodyShape(item: Item, bodyShape: BodyShape) {
 }
 
 export function getRepresentationMainFile(item: Item, bodyShape: BodyShape): string | null {
+  if (!Array.isArray(item.data.representations)) return null
   const representation = item.data.representations.find(r => r.bodyShapes.includes(bodyShape))
   return representation?.mainFile ?? item.data.representations[0]?.mainFile ?? null
 }

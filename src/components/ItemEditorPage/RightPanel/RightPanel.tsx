@@ -454,15 +454,21 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         this.analytics?.track('Edit Item', { contents })
       }
       this.setState({ isDirty: false })
+      this.handleOnResetItem()
     }
   }
 
   handleOnResetItem = () => {
-    const { selectedItem, onResetSpringBoneParams } = this.props
+    const { selectedItem } = this.props
     if (selectedItem) {
       this.setItem(selectedItem)
-      onResetSpringBoneParams()
     }
+  }
+
+  handleResetButtonClick = () => {
+    const { onResetSpringBoneParams } = this.props
+    this.handleOnResetItem()
+    onResetSpringBoneParams()
   }
 
   handleOpenThumbnailDialog = () => {
@@ -1131,7 +1137,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     )}
                     <div className="edit-buttons-container">
                       <div className="edit-buttons">
-                        <Button secondary onClick={this.handleOnResetItem} disabled={!isDirty || isLoading} loading={isLoading}>
+                        <Button secondary onClick={this.handleResetButtonClick} disabled={!isDirty || isLoading} loading={isLoading}>
                           {t('global.revert')}
                         </Button>
                         <NetworkButton
