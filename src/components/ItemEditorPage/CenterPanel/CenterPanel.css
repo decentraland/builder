@@ -39,9 +39,9 @@
   margin-left: 2px;
 }
 
-.CenterPanel .footer .option.show-scene-boundaries-option {
+.CenterPanel .footer .option.validation-status {
+  margin-left: 8px;
   margin-right: 16px;
-  margin-left: auto;
 }
 
 .CenterPanel .footer .option.active {
@@ -53,6 +53,7 @@
 }
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option {
+  margin-right: auto;
   padding: 0;
 }
 
@@ -197,6 +198,46 @@
       }
     }
   }
+}
+
+.CenterPanel .footer .option.validation-status {
+  padding: 4px 10px 6px 10px;
+}
+
+.CenterPanel .footer .option.validation-status .icon {
+  font-size: 18px;
+  line-height: 20px;
+  margin: 0 !important;
+}
+
+.CenterPanel .footer .option.validation-status .validation-icon.pass {
+  color: #21ba45;
+}
+
+.CenterPanel .footer .option.validation-status .validation-icon.fail {
+  color: #ff4d4d;
+}
+
+.CenterPanel .footer .option.validation-status .validation-icon.warn {
+  color: #f0ad4e;
+}
+
+.CenterPanel .footer .option.validation-status .ui.loader {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.CenterPanel .footer .option.validation-fail {
+  background-color: rgba(255, 77, 77, 0.2);
+}
+
+.CenterPanel .footer .option.validation-warn {
+  background-color: rgba(240, 173, 78, 0.2);
+}
+
+.CenterPanel .footer .option.validation-pass {
+  background-color: rgba(33, 186, 69, 0.2);
 }
 
 .CenterPanel.import-files-modal-is-open {

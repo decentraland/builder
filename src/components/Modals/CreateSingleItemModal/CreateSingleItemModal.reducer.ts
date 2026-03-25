@@ -11,6 +11,7 @@ import {
 } from '@dcl/schemas'
 import { Item, BodyShapeType, ItemType } from 'modules/item/types'
 import { Metrics } from 'modules/models/types'
+import type { ValidationIssue } from 'lib/glbValidation/types'
 import { CreateItemView, State, AcceptedFileProps, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { Collection } from 'modules/collection/types'
 import { getBodyShapeType, getMissingBodyShapeType } from 'modules/item/utils'
@@ -100,7 +101,8 @@ export const CREATE_ITEM_ACTIONS = {
   SET_ACCEPTED_PROPS: 'SET_ACCEPTED_PROPS',
   RESET_STATE: 'RESET_STATE',
   UPDATE_THUMBNAIL_BY_CATEGORY: 'UPDATE_THUMBNAIL_BY_CATEGORY',
-  CLEAR_ERROR: 'CLEAR_ERROR'
+  CLEAR_ERROR: 'CLEAR_ERROR',
+  SET_VALIDATION_ISSUES: 'SET_VALIDATION_ISSUES'
 } as const
 
 // Action Type Union
@@ -143,6 +145,7 @@ export type CreateItemAction =
   | { type: typeof CREATE_ITEM_ACTIONS.RESET_STATE; payload: Partial<State> }
   | { type: typeof CREATE_ITEM_ACTIONS.UPDATE_THUMBNAIL_BY_CATEGORY; payload: { thumbnail: string; isLoading: boolean } }
   | { type: typeof CREATE_ITEM_ACTIONS.CLEAR_ERROR }
+  | { type: typeof CREATE_ITEM_ACTIONS.SET_VALIDATION_ISSUES; payload: ValidationIssue[] | undefined }
 
 // Action Creators
 export const createItemActions = {
@@ -318,6 +321,11 @@ export const createItemActions = {
 
   clearError: (): CreateItemAction => ({
     type: CREATE_ITEM_ACTIONS.CLEAR_ERROR
+  }),
+
+  setValidationIssues: (issues: ValidationIssue[] | undefined): CreateItemAction => ({
+    type: CREATE_ITEM_ACTIONS.SET_VALIDATION_ISSUES,
+    payload: issues
   })
 }
 
@@ -432,6 +440,9 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
 
     case CREATE_ITEM_ACTIONS.CLEAR_ERROR:
       return { ...state, error: undefined }
+
+    case CREATE_ITEM_ACTIONS.SET_VALIDATION_ISSUES:
+      return { ...state, validationIssues: action.payload }
 
     case CREATE_ITEM_ACTIONS.RESET_STATE:
       return { ...state, ...action.payload }
