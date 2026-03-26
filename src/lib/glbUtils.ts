@@ -24,6 +24,8 @@ function parseGlb(buffer: ArrayBuffer): GlbChunks | null {
   const jsonChunkType = view.getUint32(GLB_HEADER_SIZE + 4, true)
   if (jsonChunkType !== JSON_CHUNK_TYPE) return null
 
+  if (JSON_CHUNK_DATA_OFFSET + jsonChunkLength > buffer.byteLength) return null
+
   const jsonBytes = new Uint8Array(buffer, JSON_CHUNK_DATA_OFFSET, jsonChunkLength)
   try {
     const json = JSON.parse(new TextDecoder().decode(jsonBytes)) as Record<string, unknown>

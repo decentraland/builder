@@ -25,9 +25,18 @@ export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], par
 
     const nodeName = sbNode.name
     const updatedParams = params[nodeName]
-    if (!updatedParams) continue
-
     const node = json.nodes[nodeId]
+
+    if (!updatedParams) {
+      if (node.extras) {
+        delete node.extras.stiffness
+        delete node.extras.gravityPower
+        delete node.extras.gravityDir
+        delete node.extras.dragForce
+        delete node.extras.center
+      }
+      continue
+    }
     if (!node.extras) node.extras = {}
 
     node.extras.stiffness = updatedParams.stiffness

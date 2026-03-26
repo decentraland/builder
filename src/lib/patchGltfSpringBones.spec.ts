@@ -97,15 +97,20 @@ describe('when patching spring bones in a GLB', () => {
       expect(parsed.nodes[1].extras.stiffness).toBe(0.5)
     })
 
-    it('should skip spring bone nodes not present in the params map', () => {
+    it('should clean spring bone extras when node is not present in the params map', () => {
       const gltfJson = {
-        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 99 } }]
+        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 99, gravityPower: 1, gravityDir: [0, -1, 0], dragForce: 0.3, center: 0, customField: 'keep' } }]
       }
       const buffer = buildGltfBuffer(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], {})
 
       const parsed = JSON.parse(new TextDecoder().decode(result))
-      expect(parsed.nodes[1].extras.stiffness).toBe(99)
+      expect(parsed.nodes[1].extras.stiffness).toBeUndefined()
+      expect(parsed.nodes[1].extras.gravityPower).toBeUndefined()
+      expect(parsed.nodes[1].extras.gravityDir).toBeUndefined()
+      expect(parsed.nodes[1].extras.dragForce).toBeUndefined()
+      expect(parsed.nodes[1].extras.center).toBeUndefined()
+      expect(parsed.nodes[1].extras.customField).toBe('keep')
     })
 
     it('should not mutate the avatar bone nodes', () => {

@@ -50,7 +50,14 @@ function BoneTreeNode({
         </span>
         {isSelected && <img src={CheckIcon} className="bone-tree-checkmark" alt="Already added" />}
         {!isDisabled && (
-          <Button size="small" className="bone-tree-select-button" onClick={() => onSelect(bone)}>
+          <Button
+            size="small"
+            className="bone-tree-select-button"
+            onClick={e => {
+              e.stopPropagation()
+              onSelect(bone)
+            }}
+          >
             {t('item_editor.right_panel.spring_bones.actions.select')}
           </Button>
         )}
@@ -276,7 +283,7 @@ function CenterDropdown({
         bones={bones}
         anchorEl={pickerAnchorRef.current}
         disableType="spring"
-        selected={value ? new Set([value]) : undefined}
+        selected={value !== undefined ? new Set([value]) : undefined}
         onSelect={handleCenterChange}
         onClose={() => setOpen(false)}
       />
