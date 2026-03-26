@@ -713,7 +713,7 @@ function* pushSpringBoneParamsToPreview() {
   }
 
   try {
-    yield call([controller.physics, 'setSpringBonesParams'], selectedItemGlbHash, Object.values(springBoneParams))
+    yield call([controller.physics, 'setSpringBonesParams'], selectedItemGlbHash, springBoneParams)
   } catch (error) {
     console.warn('Failed to push spring bones params to preview:', error)
   }
