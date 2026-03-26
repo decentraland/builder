@@ -99,7 +99,13 @@ describe('when patching spring bones in a GLB', () => {
 
     it('should clean spring bone extras when node is not present in the params map', () => {
       const gltfJson = {
-        nodes: [{ name: 'Hips' }, { name: 'springbone_hair', extras: { stiffness: 99, gravityPower: 1, gravityDir: [0, -1, 0], dragForce: 0.3, center: 0, customField: 'keep' } }]
+        nodes: [
+          { name: 'Hips' },
+          {
+            name: 'springbone_hair',
+            extras: { stiffness: 99, gravityPower: 1, gravityDir: [0, -1, 0], dragForce: 0.3, center: 0, customField: 'keep' }
+          }
+        ]
       }
       const buffer = buildGltfBuffer(gltfJson)
       const result = patchGltfSpringBones(buffer, [avatarBone, springBone], {})
