@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import equal from 'fast-deep-equal'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape } from '@dcl/schemas'
 
@@ -143,8 +144,8 @@ export const getSelectedItemGlbHash = (state: RootState) => getState(state).sele
 export const getSpringBoneParams = (state: RootState) => getState(state).springBoneParams
 export const getOriginalSpringBoneParams = (state: RootState) => getState(state).originalSpringBoneParams
 
-export const hasSpringBoneChanges = (state: RootState): boolean => {
-  const current = getState(state).springBoneParams
-  const original = getState(state).originalSpringBoneParams
-  return JSON.stringify(current) !== JSON.stringify(original)
-}
+export const hasSpringBoneChanges = createSelector(
+  getSpringBoneParams,
+  getOriginalSpringBoneParams,
+  (current, original) => !equal(current, original)
+)
