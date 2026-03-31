@@ -386,28 +386,20 @@ export default function SpringBonesSection({
   const [showBonePicker, setShowBonePicker] = useState(false)
   const pickerAnchorRef = useRef<HTMLButtonElement>(null)
   const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
-  const springBoneNamesToNodeId = useMemo(
-    () =>
-      springBones.reduce((map, bone) => {
-        map[bone.name] = bone.nodeId
-        return map
-      }, {} as Record<string, number>),
-    [springBones]
-  )
+  const selectedSpringBoneNames: Set<string> = useMemo(() => new Set(Object.keys(springBoneParams)), [springBoneParams])
 
   /** Sort spring bone params by node ID */
   const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
+    const springBoneNamesToNodeId = springBones.reduce((map, bone) => {
+      map[bone.name] = bone.nodeId
+      return map
+    }, {} as Record<string, number>)
     return Object.entries(springBoneParams).sort(([boneNameA], [boneNameB]) => {
       const nodeIdA = springBoneNamesToNodeId[boneNameA] ?? 0
       const nodeIdB = springBoneNamesToNodeId[boneNameB] ?? 0
       return nodeIdB - nodeIdA // Inverse order, node ids are assigned from the leaf up, we want to show root bones first.
     })
-  }, [springBoneParams, springBoneNamesToNodeId])
-
-  const selectedSpringBoneNames: Set<string> = useMemo(
-    () => new Set(Object.keys(springBoneParams)),
-    [springBoneParams]
-  )
+  }, [springBoneParams])
 
   const handleSelectBone = useCallback(
     (bone: BoneNode) => {
