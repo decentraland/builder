@@ -1,15 +1,14 @@
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { extractGlbChunks } from 'lib/glbUtils'
 
-const SPRING_BONE_PARAM_KEYS = ['stiffness', 'gravityPower', 'gravityDir', 'dragForce', 'center'] as const
-
 export const SPRING_BONE_PREFIX = 'springbone'
+export const DCL_SPRING_BONE_EXTENSION = 'DCL_spring_bone_joint'
 
 export const DEFAULT_SPRING_BONE_PARAMS: SpringBoneParams = {
   stiffness: 1,
   gravityPower: 0,
   gravityDir: [0, -1, 0],
-  dragForce: 0.4,
+  drag: 0.4,
   center: undefined
 }
 
@@ -17,39 +16,51 @@ export type SpringBonesParseResult = {
   bones: BoneNode[]
 }
 
-type GltfNode = {
-  name?: string
-  extras?: Record<string, unknown>
-  children?: number[]
+type GltfExtension = {
+  version?: number
+  stiffness?: number
+  gravityPower?: number
+  gravityDir?: [number, number, number]
+  drag?: number
+  hitRadius?: number
+  isRoot?: boolean
+  center?: string
 }
 
-function hasSpringBoneExtras(extras: Record<string, unknown>): boolean {
-  return SPRING_BONE_PARAM_KEYS.some(key => key in extras)
+type GltfNode = {
+  name?: string
+  extensions?: Record<string, unknown>
+  children?: number[]
 }
 
 function formatNumber(value: number | string): number {
   return Number(Number(value).toFixed(3))
 }
 
-function parseParams(extras: Record<string, unknown>): SpringBoneParams {
-  const stiffness = typeof extras.stiffness === 'number' ? formatNumber(extras.stiffness) : DEFAULT_SPRING_BONE_PARAMS.stiffness
-  const gravityPower = typeof extras.gravityPower === 'number' ? formatNumber(extras.gravityPower) : DEFAULT_SPRING_BONE_PARAMS.gravityPower
-  const dragForce = typeof extras.dragForce === 'number' ? formatNumber(extras.dragForce) : DEFAULT_SPRING_BONE_PARAMS.dragForce
-  const center = typeof extras.center === 'number' ? formatNumber(extras.center) : DEFAULT_SPRING_BONE_PARAMS.center
+function parseParams(ext: GltfExtension): SpringBoneParams {
+  const stiffness = typeof ext.stiffness === 'number' ? formatNumber(ext.stiffness) : DEFAULT_SPRING_BONE_PARAMS.stiffness
+  const gravityPower = typeof ext.gravityPower === 'number' ? formatNumber(ext.gravityPower) : DEFAULT_SPRING_BONE_PARAMS.gravityPower
+  const drag = typeof ext.drag === 'number' ? formatNumber(ext.drag) : DEFAULT_SPRING_BONE_PARAMS.drag
+  const center = typeof ext.center === 'string' ? ext.center : DEFAULT_SPRING_BONE_PARAMS.center
 
   let gravityDir: [number, number, number] = DEFAULT_SPRING_BONE_PARAMS.gravityDir
-  if (Array.isArray(extras.gravityDir) && extras.gravityDir.length === 3) {
-    const [x, y, z] = extras.gravityDir
+  if (Array.isArray(ext.gravityDir) && ext.gravityDir.length === 3) {
+    const [x, y, z] = ext.gravityDir
     if (typeof x === 'number' && typeof y === 'number' && typeof z === 'number') {
       gravityDir = [formatNumber(x), formatNumber(y), formatNumber(z)]
     }
   }
 
-  return { stiffness, gravityPower, gravityDir, dragForce, center }
+  return { stiffness, gravityPower, gravityDir, drag, center }
 }
 
 const isSpringBoneNode = (node: GltfNode): boolean => {
   return !!node.name && node.name.toLowerCase().includes(SPRING_BONE_PREFIX)
+}
+
+function getSpringBoneExtension(node: GltfNode): GltfExtension | null {
+  const extension = node.extensions?.[DCL_SPRING_BONE_EXTENSION]
+  return extension && typeof extension === 'object' ? (extension as GltfExtension) : null
 }
 
 export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
@@ -57,20 +68,12 @@ export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
   if (!chunks) {
     return { bones: [] }
   }
-  const gltf = chunks.json as { nodes?: GltfNode[] }
+  const gltf = chunks.json as { nodes?: GltfNode[]; extensionsUsed?: string[] }
   if (!gltf.nodes) {
     return { bones: [] }
   }
 
-  // Build nodeId -> name map for center resolution (avatar bones only)
   const nodes = gltf.nodes
-  const nodeIdToName = new Map<number, string>()
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i]
-    if (!isSpringBoneNode(node)) {
-      nodeIdToName.set(i, node.name ?? `node_${i}`)
-    }
-  }
 
   // Single pass: build unified bones array
   const bones: BoneNode[] = []
@@ -82,17 +85,15 @@ export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
     if (isSpringBoneNode(node)) {
       const bone: BoneNode = { name, nodeId: i, type: 'spring', children }
 
-      if (node.extras && hasSpringBoneExtras(node.extras)) {
-        const params = parseParams(node.extras)
+      const extension = getSpringBoneExtension(node)
+      if (extension) {
+        const params = parseParams(extension)
 
-        // Resolve center node index -> name
-        if (typeof params.center === 'number') {
-          const centerName = nodeIdToName.get(params.center)
-          if (centerName === undefined) {
-            // Center index doesn't resolve to an avatar bone — drop it
-            params.center = undefined
-          }
+        // Validate center: must not point to a spring bone node
+        if (typeof params.center === 'string' && params.center.toLowerCase().includes(SPRING_BONE_PREFIX)) {
+          params.center = undefined
         }
+
         bone.params = params
       }
 

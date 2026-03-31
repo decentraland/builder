@@ -153,7 +153,7 @@ describe('when reducing the action that sets bones', () => {
     nodeId: 1,
     type: 'spring',
     children: [],
-    params: { stiffness: 0.5, gravityPower: 1, gravityDir: [0, -1, 0], dragForce: 0.3, center: undefined }
+    params: { stiffness: 0.5, gravityPower: 1, gravityDir: [0, -1, 0], drag: 0.3, center: undefined }
   }
   const springBoneWithoutParams: BoneNode = {
     name: 'springbone_tail',
@@ -207,11 +207,11 @@ describe('when reducing the action that sets a spring bone param', () => {
     state = {
       ...state,
       springBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.4, center: undefined },
-        springbone_tail: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.2, center: undefined }
+        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined },
+        springbone_tail: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.2, center: undefined }
       },
       originalSpringBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.4, center: undefined }
+        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
       }
     }
   })
@@ -240,7 +240,7 @@ describe('when reducing the action that adds spring bone params', () => {
     state = {
       ...state,
       springBoneParams: {
-        springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.4, center: undefined }
+        springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
       }
     }
   })
@@ -263,8 +263,8 @@ describe('when reducing the action that deletes spring bone params', () => {
     state = {
       ...state,
       springBoneParams: {
-        springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.4, center: undefined },
-        springbone_tail: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.2, center: undefined }
+        springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined },
+        springbone_tail: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.2, center: undefined }
       }
     }
   })
@@ -287,10 +287,10 @@ describe('when reducing the action that resets spring bone params', () => {
     state = {
       ...state,
       springBoneParams: {
-        springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], dragForce: 0.1, center: undefined }
+        springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined }
       },
       originalSpringBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.4, center: undefined }
+        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
       }
     }
   })
@@ -307,10 +307,10 @@ describe('when reducing a save item success action', () => {
     state = {
       ...state,
       springBoneParams: {
-        springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], dragForce: 0.1, center: undefined }
+        springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined }
       },
       originalSpringBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], dragForce: 0.4, center: undefined }
+        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
       }
     }
   })

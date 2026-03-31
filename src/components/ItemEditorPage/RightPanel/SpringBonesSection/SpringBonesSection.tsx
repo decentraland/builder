@@ -27,14 +27,14 @@ function BoneTreeNode({
   boneMap: Map<number, BoneNode>
   depth: number
   expanded: Set<number>
-  selected?: Set<number>
+  selected?: Set<string>
   disableType?: BoneNode['type']
   onToggle: (nodeId: number) => void
   onSelect: (bone: BoneNode) => void
 }) {
   const hasChildren = bone.children.length > 0
   const isExpanded = expanded.has(bone.nodeId)
-  const isSelected = !!selected?.has(bone.nodeId)
+  const isSelected = !!selected?.has(bone.name)
   const isDisabled = isSelected || (!!disableType && bone.type === disableType)
 
   return (
@@ -96,7 +96,7 @@ function BoneHierarchyPicker({
 }: {
   open: boolean
   bones: BoneNode[]
-  selected?: Set<number>
+  selected?: Set<string>
   disableType?: BoneNode['type']
   anchorEl: HTMLElement | null
   onSelect: (bone: BoneNode) => void
@@ -250,16 +250,16 @@ function CenterDropdown({
   onChange
 }: {
   label: string
-  value: number | undefined
+  value: string | undefined
   bones: BoneNode[]
-  onChange: (value: number | undefined) => void
+  onChange: (value: string | undefined) => void
 }) {
   const [open, setOpen] = useState(false)
   const pickerAnchorRef = useRef<HTMLSpanElement>(null)
-  const selectedBone = useMemo(() => bones.find(b => b.nodeId === value), [bones, value])
+  const selectedBone = useMemo(() => bones.find(b => b.name === value), [bones, value])
 
   const handleCenterChange = (bone: BoneNode) => {
-    onChange(bone.nodeId)
+    onChange(bone.name)
     setOpen(false)
   }
 
@@ -357,11 +357,11 @@ function SpringBoneCard({
           />
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.drag_force')}
-            value={params.dragForce}
+            value={params.drag}
             min={0}
             max={1}
             step={0.01}
-            onChange={v => onParamChange('dragForce', v)}
+            onChange={v => onParamChange('drag', v)}
           />
           <CenterDropdown
             label={t('item_editor.right_panel.spring_bones.center')}
@@ -404,14 +404,9 @@ export default function SpringBonesSection({
     })
   }, [springBoneParams, springBoneNamesToNodeId])
 
-  const selectedSpringBonesIds: Set<number> = useMemo(
-    () =>
-      new Set(
-        Object.keys(springBoneParams)
-          .map(name => springBoneNamesToNodeId[name])
-          .filter(nodeId => nodeId !== undefined)
-      ),
-    [springBoneParams, springBoneNamesToNodeId]
+  const selectedSpringBoneNames: Set<string> = useMemo(
+    () => new Set(Object.keys(springBoneParams)),
+    [springBoneParams]
   )
 
   const handleSelectBone = useCallback(
@@ -464,7 +459,7 @@ export default function SpringBonesSection({
               open={showBonePicker}
               bones={bones}
               anchorEl={pickerAnchorRef.current}
-              selected={selectedSpringBonesIds}
+              selected={selectedSpringBoneNames}
               disableType="avatar"
               onSelect={handleSelectBone}
               onClose={() => setShowBonePicker(false)}

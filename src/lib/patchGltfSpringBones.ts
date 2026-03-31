@@ -1,8 +1,16 @@
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { extractGlbChunks, buildGlb, GLB_HEADER_SIZE, CHUNK_HEADER_SIZE } from 'lib/glbUtils'
+import { DCL_SPRING_BONE_EXTENSION } from 'lib/parseSpringBones'
+
+type GltfNodeWithExtensions = {
+  name?: string
+  extras?: Record<string, unknown>
+  extensions?: Record<string, unknown>
+}
 
 /**
- * Patches spring bone `extras` fields in a GLB binary.
+ * Patches spring bone parameters into the `DCL_spring_bone_joint` extension
+ * of each spring bone node in a GLB binary.
  * Only modifies the JSON chunk; BIN chunk is copied verbatim.
  * Returns a new ArrayBuffer (does not mutate input).
  */
@@ -12,8 +20,16 @@ export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], par
   const chunks = extractGlbChunks(buffer)
   if (!chunks) return buffer
 
-  const json = chunks.json as { nodes?: Array<{ name?: string; extras?: Record<string, unknown> }> }
+  const json = chunks.json as { nodes?: GltfNodeWithExtensions[]; extensionsUsed?: string[] }
   if (!json.nodes) return buffer
+
+  // Ensure extensionsUsed includes our extension
+  if (!json.extensionsUsed) {
+    json.extensionsUsed = []
+  }
+  if (!json.extensionsUsed.includes(DCL_SPRING_BONE_EXTENSION)) {
+    json.extensionsUsed.push(DCL_SPRING_BONE_EXTENSION)
+  }
 
   // Apply params to spring bone nodes
   for (const sbNode of springBones) {
@@ -28,28 +44,30 @@ export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], par
     const node = json.nodes[nodeId]
 
     if (!updatedParams) {
-      if (node.extras) {
-        delete node.extras.stiffness
-        delete node.extras.gravityPower
-        delete node.extras.gravityDir
-        delete node.extras.dragForce
-        delete node.extras.center
+      // Remove extension data if params were deleted
+      if (node.extensions) {
+        delete node.extensions[DCL_SPRING_BONE_EXTENSION]
       }
       continue
     }
-    if (!node.extras) node.extras = {}
 
-    node.extras.stiffness = updatedParams.stiffness
-    node.extras.gravityPower = updatedParams.gravityPower
-    node.extras.gravityDir = updatedParams.gravityDir
-    node.extras.dragForce = updatedParams.dragForce
-
-    // Resolve center: params.center is already a nodeId (or undefined)
-    if (updatedParams.center !== undefined) {
-      node.extras.center = updatedParams.center
-    } else {
-      delete node.extras.center
+    // Build the extension object
+    if (!node.extensions) node.extensions = {}
+    const extension: Record<string, unknown> = {
+      version: 1,
+      stiffness: updatedParams.stiffness,
+      gravityPower: updatedParams.gravityPower,
+      gravityDir: updatedParams.gravityDir,
+      drag: updatedParams.drag,
+      hitRadius: 0.02,
+      isRoot: true
     }
+
+    if (updatedParams.center !== undefined) {
+      extension.center = updatedParams.center
+    }
+
+    node.extensions[DCL_SPRING_BONE_EXTENSION] = extension
   }
 
   // Re-serialize JSON

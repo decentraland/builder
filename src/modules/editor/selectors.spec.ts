@@ -236,7 +236,7 @@ describe('when getting spring bone params', () => {
       stiffness: 1,
       gravityPower: 0,
       gravityDir: [0, -1, 0] as [number, number, number],
-      dragForce: 0.4,
+      drag: 0.4,
       center: undefined
     }
   }
@@ -262,7 +262,7 @@ describe('when getting original spring bone params', () => {
       stiffness: 1,
       gravityPower: 0,
       gravityDir: [0, -1, 0] as [number, number, number],
-      dragForce: 0.4,
+      drag: 0.4,
       center: undefined
     }
   }
@@ -288,7 +288,7 @@ describe('when checking if spring bone params have changed', () => {
       stiffness: 1,
       gravityPower: 0,
       gravityDir: [0, -1, 0] as [number, number, number],
-      dragForce: 0.4,
+      drag: 0.4,
       center: undefined
     }
   }
