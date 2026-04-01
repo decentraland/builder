@@ -8,8 +8,6 @@ import {
   MAX_MATERIALS_SKIN,
   MAX_TEXTURES_DEFAULT,
   MAX_TEXTURES_SKIN,
-  MAX_TEXTURE_RESOLUTION_DEFAULT,
-  MAX_TEXTURE_RESOLUTION_FACIAL,
   FACIAL_CATEGORIES,
   MAX_BONE_INFLUENCES_PER_VERTEX,
   AVATAR_SKIN_MAT,
@@ -146,17 +144,13 @@ export function validateMaterials(Three: ThreeModules, scene: THREE.Scene, categ
 }
 
 /**
- * Validates texture count and resolution. The texture limit is 2 (5 for skin).
- * Resolution is capped at 512 px (256 px for facial categories). Reports ERROR on violation.
+ * Validates that the number of unique textures (base color maps) does not exceed the limit.
+ * The limit is 2 for standard categories, 5 for skin. Excludes AvatarSkin_MAT materials.
  */
 export function validateTextures(Three: ThreeModules, scene: THREE.Scene, category?: WearableCategory): ValidationIssue[] {
   const issues: ValidationIssue[] = []
   const textures = new Set<string>()
-  const checkedResolutions = new Set<string>()
   const isSkin = category === WearableCategory.SKIN
-  const isFacial = category !== undefined && FACIAL_CATEGORIES.includes(category)
-
-  const maxResolution = isFacial ? MAX_TEXTURE_RESOLUTION_FACIAL : MAX_TEXTURE_RESOLUTION_DEFAULT
   const textureLimit = isSkin ? MAX_TEXTURES_SKIN : MAX_TEXTURES_DEFAULT
 
   scene.traverse((node: THREE.Object3D) => {
@@ -168,32 +162,6 @@ export function validateTextures(Three: ThreeModules, scene: THREE.Scene, catego
       // Other map slots (normal, roughness, etc.) are part of the same material setup, not separate textures.
       if (mat.map) {
         textures.add(mat.map.uuid)
-      }
-
-      // Check resolution on all map slots that have images
-      const maps = [mat.map, mat.emissiveMap, mat.alphaMap, mat.aoMap, mat.normalMap, mat.roughnessMap, mat.metalnessMap]
-      for (const texture of maps) {
-        if (texture && texture.image && !checkedResolutions.has(texture.uuid)) {
-          checkedResolutions.add(texture.uuid)
-          const texName = texture.name || mat.name
-          const imgWidth = texture.image.width
-          const imgHeight = texture.image.height
-
-          if (imgWidth > maxResolution || imgHeight > maxResolution) {
-            issues.push({
-              code: 'TEXTURE_RESOLUTION_EXCEEDED',
-              severity: ValidationSeverity.WARNING,
-              messageKey: 'create_single_item_modal.error.glb_validation.texture_resolution_exceeded',
-              messageParams: {
-                name: texName,
-                width: imgWidth,
-                height: imgHeight,
-                maxWidth: maxResolution,
-                maxHeight: maxResolution
-              }
-            })
-          }
-        }
       }
     }
   })
@@ -276,8 +244,54 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
 }
 
 /**
+ * Detects non-deformation bones that were exported with the model.
+ * Deformation bones are those bound to a SkinnedMesh skeleton. Any Bone in the
+ * scene that is not part of any skeleton is likely a control, IK, or mechanism
+ * bone that should have been excluded via "Export Deformation Bones Only".
+ * Reports WARNING because non-deformation bones increase file size and reduce performance.
+ */
+export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+
+  // Collect all bone names bound to skinned meshes (deformation bones)
+  const deformBoneNames = new Set<string>()
+  scene.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.SkinnedMesh && node.skeleton) {
+      for (const bone of node.skeleton.bones) {
+        deformBoneNames.add(bone.name)
+      }
+    }
+  })
+
+  // Collect all bones in the scene
+  const allBones: string[] = []
+  scene.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.Bone) {
+      allBones.push(node.name)
+    }
+  })
+
+  // Non-deformation bones are those not bound to any skeleton
+  const nonDeformBones = allBones.filter(name => !deformBoneNames.has(name))
+
+  if (nonDeformBones.length > 0) {
+    issues.push({
+      code: 'NON_DEFORM_BONES_FOUND',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.non_deform_bones_found',
+      messageParams: {
+        count: nonDeformBones.length,
+        bones: nonDeformBones.slice(0, 5).join(', ') + (nonDeformBones.length > 5 ? ` (+${nonDeformBones.length - 5} more)` : '')
+      }
+    })
+  }
+
+  return issues
+}
+
+/**
  * Checks for objects that are not allowed in wearable GLBs: cameras, lights,
- * and animation clips. Reports ERROR for each disallowed object type found.
+ * and animation clips. Reports WARNING for each disallowed object type found.
  */
 export function validateNoDisallowedObjects(Three: ThreeModules, gltf: GLTF): ValidationIssue[] {
   const issues: ValidationIssue[] = []

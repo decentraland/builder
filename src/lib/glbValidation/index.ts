@@ -10,7 +10,8 @@ import {
   validateBoneInfluences,
   validateNoLeafBones,
   validateNoDisallowedObjects,
-  validateMaterialNaming
+  validateMaterialNaming,
+  validateNoNonDeformBones
 } from './wearableValidators'
 import {
   validateEmoteFrameRate,
@@ -50,6 +51,7 @@ export async function validateWearableGLTF(gltf: GLTF, category?: WearableCatego
     validateTextures(Three, scene, category),
     validateBoneInfluences(Three, scene),
     validateNoLeafBones(Three, scene),
+    validateNoNonDeformBones(Three, scene),
     validateNoDisallowedObjects(Three, gltf),
     validateMaterialNaming(Three, scene, category)
   ]
@@ -80,6 +82,7 @@ export async function validateEmoteGLTF(gltf: GLTF, hasProps: boolean, contents?
     validateEmoteMaxFrames(animations),
     validateEmoteAnimationClipCount(animations, hasProps),
     validateEmoteDeformBoneKeyframes(Three, scene, animations),
+    validateNoNonDeformBones(Three, scene),
     validateArmatureNaming(scene),
     validateAnimationNaming(animations, hasProps)
   ]
