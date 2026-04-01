@@ -33,7 +33,7 @@ import { useGetVisibleItems } from 'modules/editor/hook'
 import { useGetSelectedCollectionIdFromCurrentUrl, useGetSelectedItemIdFromCurrentUrl } from 'modules/location/hooks'
 import { CenterPanelContainerProps } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
-import { getIsUnityWearablePreviewEnabled } from 'modules/features/selectors'
+// import { getIsUnityWearablePreviewEnabled } from 'modules/features/selectors'
 
 const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
   const dispatch = useDispatch()
@@ -52,7 +52,7 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
   const openModals = useSelector(getOpenModals)
   const userHasOrphanItems = useSelector(hasUserOrphanItems)
   const collections = useSelector(getCollections)
-  const isUnityWearablePreviewEnabled = useSelector(getIsUnityWearablePreviewEnabled)
+  // const isUnityWearablePreviewEnabled = useSelector(getIsUnityWearablePreviewEnabled)
 
   const collectionId = useGetSelectedCollectionIdFromCurrentUrl()
   const selectedItemId = useGetSelectedItemIdFromCurrentUrl()
@@ -139,7 +139,7 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
       isPlayingEmote={isPlayingEmoteState}
       isImportFilesModalOpen={isImportFilesModalOpen}
       hasUserOrphanItems={userHasOrphanItems}
-      isUnityWearablePreviewEnabled={isUnityWearablePreviewEnabled}
+      isUnityWearablePreviewEnabled={false} // {isUnityWearablePreviewEnabled} - Disabled until unity wearable-preview is fully supported in builder mode
       {...actions}
     />
   )

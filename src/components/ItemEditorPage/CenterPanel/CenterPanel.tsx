@@ -18,7 +18,6 @@ import { AnimationControls, WearablePreview, ZoomControls } from 'decentraland-u
 import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { config } from 'config'
 import { Color4 } from 'lib/colors'
 import { isDevelopment } from 'lib/environment'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
@@ -501,7 +500,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
           id="wearable-editor"
-          baseUrl={config.get('WEARABLE_PREVIEW_URL')}
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
@@ -527,7 +525,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
           socialEmote={socialEmote || _socialEmote}
-          unity
+          unity={isUnityWearablePreviewEnabled}
           unityMode={PreviewUnityMode.BUILDER}
         />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
