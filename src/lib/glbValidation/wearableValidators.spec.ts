@@ -10,7 +10,8 @@ import {
   validateBoneInfluences,
   validateNoLeafBones,
   validateNoDisallowedObjects,
-  validateMaterialNaming
+  validateMaterialNaming,
+  validateNoNonDeformBones
 } from './wearableValidators'
 import { MAX_MATERIALS_DEFAULT, MAX_MATERIALS_SKIN, MAX_TEXTURES_DEFAULT, AVATAR_SKIN_MAT, getEffectiveTriangleLimit } from './constants'
 
@@ -386,18 +387,6 @@ describe('validateTextures', () => {
     })
   })
 
-  describe('when a texture resolution exceeds the default limit', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      issues = validateTextures(asThree(Three), createScene([createMeshWithTexture(Three, 'Mat1', 'tex1', 1024)]))
-    })
-
-    it('should include a TEXTURE_RESOLUTION_EXCEEDED error', () => {
-      expect(issues.some(i => i.code === 'TEXTURE_RESOLUTION_EXCEEDED')).toBe(true)
-    })
-  })
-
   describe('when the material is AvatarSkin_MAT', () => {
     let issues: ValidationIssue[]
 
@@ -407,18 +396,6 @@ describe('validateTextures', () => {
 
     it('should skip its textures entirely', () => {
       expect(issues).toEqual([])
-    })
-  })
-
-  describe('when the category is a facial category', () => {
-    let issues: ValidationIssue[]
-
-    beforeEach(() => {
-      issues = validateTextures(asThree(Three), createScene([createMeshWithTexture(Three, 'Mat1', 'tex1', 512)]), WearableCategory.EYES)
-    })
-
-    it('should use the stricter 256 px resolution limit', () => {
-      expect(issues.some(i => i.code === 'TEXTURE_RESOLUTION_EXCEEDED')).toBe(true)
     })
   })
 })
@@ -521,6 +498,88 @@ describe('validateNoLeafBones', () => {
     it('should return a warning', () => {
       expect(issues).toHaveLength(1)
       expect(issues[0].code).toBe('LEAF_BONES_FOUND')
+    })
+  })
+})
+
+describe('validateNoNonDeformBones', () => {
+  let Three: MockThree
+
+  beforeEach(() => {
+    Three = createMockThree()
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('when all bones are bound to a skinned mesh', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const bone1 = new Three.Bone()
+      bone1.name = 'Hips'
+      const bone2 = new Three.Bone()
+      bone2.name = 'Spine'
+      const skinnedMesh = new Three.SkinnedMesh()
+      ;(skinnedMesh as any).skeleton = { bones: [bone1, bone2] }
+      issues = validateNoNonDeformBones(asThree(Three), createScene([bone1, bone2, skinnedMesh]))
+    })
+
+    it('should return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('when there are bones not bound to any skinned mesh', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const deformBone = new Three.Bone()
+      deformBone.name = 'Hips'
+      const controlBone = new Three.Bone()
+      controlBone.name = 'CTRL_IK_Foot'
+      const skinnedMesh = new Three.SkinnedMesh()
+      ;(skinnedMesh as any).skeleton = { bones: [deformBone] }
+      issues = validateNoNonDeformBones(asThree(Three), createScene([deformBone, controlBone, skinnedMesh]))
+    })
+
+    it('should return a warning with the NON_DEFORM_BONES_FOUND code', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('NON_DEFORM_BONES_FOUND')
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+    })
+
+    it('should report the count and bone names', () => {
+      expect(issues[0].messageParams?.count).toBe(1)
+      expect(issues[0].messageParams?.bones).toContain('CTRL_IK_Foot')
+    })
+  })
+
+  describe('when there are no skinned meshes at all', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const bone = new Three.Bone()
+      bone.name = 'OrphanBone'
+      issues = validateNoNonDeformBones(asThree(Three), createScene([bone]))
+    })
+
+    it('should report all bones as non-deformation', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].messageParams?.count).toBe(1)
+    })
+  })
+
+  describe('when there are no bones at all', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      issues = validateNoNonDeformBones(asThree(Three), createScene([]))
+    })
+
+    it('should return no issues', () => {
+      expect(issues).toEqual([])
     })
   })
 })

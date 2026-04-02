@@ -74,12 +74,7 @@ export const MAX_TEXTURES_DEFAULT = 2
 /** Maximum number of textures for the skin category. */
 export const MAX_TEXTURES_SKIN = 5
 
-/** Maximum texture width/height in pixels for standard wearables. */
-export const MAX_TEXTURE_RESOLUTION_DEFAULT = 512
-/** Maximum texture width/height in pixels for facial wearables (eyebrows, eyes, mouth). */
-export const MAX_TEXTURE_RESOLUTION_FACIAL = 256
-
-/** Wearable categories that use the stricter facial texture resolution limit. */
+/** Wearable categories classified as facial (eyebrows, eyes, mouth). */
 export const FACIAL_CATEGORIES: WearableCategory[] = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
 
 /** Maximum number of bone influences per vertex allowed in skinned meshes. */
