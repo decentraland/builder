@@ -299,7 +299,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     const text = isPlayingEmote ? t('item_editor.center_panel.stop') : t('item_editor.center_panel.play_emote')
 
     return (
-      <Button icon onClick={this.handlePlayEmote} className="avatar-animation-play">
+      <Button icon onClick={this.handlePlayEmote}>
         <Icon name={icon} />
         <span>{text}</span>
       </Button>

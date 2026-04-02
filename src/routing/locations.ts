@@ -50,7 +50,11 @@ export const locations = {
   thirdPartyCollectionDetail: (collectionId = ':collectionId', options?: PaginationOptions) =>
     injectPagination(`/thirdPartyCollections/${collectionId}`, options),
   itemEditor: (options?: ItemEditorParams) =>
-    injectParams('/item-editor', { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItem: 'newItem', unity: 'unity' }, options),
+    injectParams(
+      '/item-editor',
+      { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing', newItem: 'newItem', unity: 'unity' },
+      options
+    ),
   ens: () => '/names',
   ensDetail: (name = ':name') => `/names/${name}`,
   worlds: () => '/worlds',
