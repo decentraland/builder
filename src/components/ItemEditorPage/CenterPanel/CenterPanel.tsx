@@ -465,7 +465,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
-          baseUrl="http://localhost:3030"
           zoom={zoom}
           skin={toHex(skinColor)}
           eyes={toHex(eyeColor)}
