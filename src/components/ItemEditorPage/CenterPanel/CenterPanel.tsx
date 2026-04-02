@@ -472,6 +472,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           profile="default"
           bodyShape={bodyShape}
           emote={emote}
+          // TODO: remove baseUrl before merging.
+          baseUrl="https://wearable-preview-git-feat-builder-mode-support-decentraland1.vercel.app"
           zoom={zoom}
           skin={toHex(skinColor)}
           eyes={toHex(eyeColor)}
