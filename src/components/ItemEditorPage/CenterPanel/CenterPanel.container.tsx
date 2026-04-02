@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { PreviewEmote } from '@dcl/schemas'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -38,6 +39,7 @@ import { getIsUnityWearablePreviewEnabled } from 'modules/features/selectors'
 
 const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
   const dispatch = useDispatch()
+  const location = useLocation()
 
   const address = useSelector(getAddress)
   const bodyShape = useSelector(getBodyShape)
@@ -53,7 +55,12 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
   const openModals = useSelector(getOpenModals)
   const userHasOrphanItems = useSelector(hasUserOrphanItems)
   const collections = useSelector(getCollections)
-  const isUnityWearablePreviewEnabled = useSelector(getIsUnityWearablePreviewEnabled)
+  const isUnityFeatureFlagEnabled = useSelector(getIsUnityWearablePreviewEnabled)
+
+  const isUnityWearablePreviewEnabled = useMemo(() => {
+    const params = new URLSearchParams(location.search)
+    return params.get('unity') === 'true' && isUnityFeatureFlagEnabled
+  }, [location.search, isUnityFeatureFlagEnabled])
 
   const collectionId = useGetSelectedCollectionIdFromCurrentUrl()
   const selectedItemId = useGetSelectedItemIdFromCurrentUrl()

@@ -39,6 +39,12 @@
   margin-left: 2px;
 }
 
+.CenterPanel .footer .right-container {
+  margin-left: auto;
+  display: inline-flex;
+  width: max-content;
+}
+
 .CenterPanel .footer .option.validation-status {
   margin-left: 8px;
   margin-right: 16px;
@@ -53,7 +59,6 @@
 }
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option {
-  margin-right: auto;
   padding: 0;
 }
 
@@ -63,14 +68,7 @@
 }
 
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-color: var(--light-gray);
-}
-
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button,
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.avatar-animation .text {
   font-size: 15px;
   line-height: 17px;
   min-width: 29.5px;
@@ -82,12 +80,9 @@
   margin-left: 5px;
 }
 
-.CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.avatar-animation-play {
-  border-right-style: solid;
-  border-right-width: thin;
-}
-
 .CenterPanel .footer .avatar-animation-dropdown-wrapper.option .ui.buttons .ui.button.dropdown {
+  border-left-style: solid;
+  border-left-width: thin;
   font-size: 20px;
 }
 

@@ -810,7 +810,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         }}
       />
     )
-  }, [state.model, state.contents, state.type, handleFileLoad])
+  }, [state, handleFileLoad, dispatch])
 
   const contextValue = {
     // State
