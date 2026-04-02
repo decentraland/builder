@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { PreviewEmote } from '@dcl/schemas'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -33,10 +34,11 @@ import { useGetVisibleItems } from 'modules/editor/hook'
 import { useGetSelectedCollectionIdFromCurrentUrl, useGetSelectedItemIdFromCurrentUrl } from 'modules/location/hooks'
 import { CenterPanelContainerProps } from './CenterPanel.types'
 import CenterPanel from './CenterPanel'
-// import { getIsUnityWearablePreviewEnabled } from 'modules/features/selectors'
+import { getIsUnityWearablePreviewEnabled } from 'modules/features/selectors'
 
 const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
   const dispatch = useDispatch()
+  const location = useLocation()
 
   const address = useSelector(getAddress)
   const bodyShape = useSelector(getBodyShape)
@@ -52,7 +54,12 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
   const openModals = useSelector(getOpenModals)
   const userHasOrphanItems = useSelector(hasUserOrphanItems)
   const collections = useSelector(getCollections)
-  // const isUnityWearablePreviewEnabled = useSelector(getIsUnityWearablePreviewEnabled)
+  const isUnityFeatureFlagEnabled = useSelector(getIsUnityWearablePreviewEnabled)
+
+  const isUnityWearablePreviewEnabled = useMemo(() => {
+    const params = new URLSearchParams(location.search)
+    return params.get('unity') === 'true' && isUnityFeatureFlagEnabled
+  }, [location.search, isUnityFeatureFlagEnabled])
 
   const collectionId = useGetSelectedCollectionIdFromCurrentUrl()
   const selectedItemId = useGetSelectedItemIdFromCurrentUrl()
@@ -139,7 +146,7 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
       isPlayingEmote={isPlayingEmoteState}
       isImportFilesModalOpen={isImportFilesModalOpen}
       hasUserOrphanItems={userHasOrphanItems}
-      isUnityWearablePreviewEnabled={false} // {isUnityWearablePreviewEnabled} - Disabled until unity wearable-preview is fully supported in builder mode
+      isUnityWearablePreviewEnabled={isUnityWearablePreviewEnabled}
       {...actions}
     />
   )
