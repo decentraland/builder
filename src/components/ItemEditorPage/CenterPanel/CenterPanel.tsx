@@ -458,6 +458,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
 
+    const unity = isUnityWearablePreviewEnabled && !socialEmote && !_socialEmote
+
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
@@ -487,7 +489,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
           socialEmote={socialEmote || _socialEmote}
-          unity={isUnityWearablePreviewEnabled}
+          unity={unity}
           unityMode={PreviewUnityMode.BUILDER}
         />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
