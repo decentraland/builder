@@ -22,7 +22,6 @@ type GltfExtension = {
   gravityPower?: number
   gravityDir?: [number, number, number]
   drag?: number
-  hitRadius?: number
   isRoot?: boolean
   center?: string
 }

@@ -59,7 +59,6 @@ export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], par
       gravityPower: updatedParams.gravityPower,
       gravityDir: updatedParams.gravityDir,
       drag: updatedParams.drag,
-      hitRadius: 0.02,
       isRoot: true
     }
 

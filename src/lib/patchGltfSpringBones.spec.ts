@@ -64,7 +64,6 @@ describe('when patching spring bones in a GLB', () => {
       expect(ext.gravityPower).toBe(1)
       expect(ext.gravityDir).toEqual([0, -1, 0])
       expect(ext.drag).toBe(0.3)
-      expect(ext.hitRadius).toBe(0.02)
     })
 
     it('should add DCL_spring_bone_joint to extensionsUsed', () => {
