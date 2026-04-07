@@ -5,10 +5,10 @@ export const SPRING_BONE_PREFIX = 'springbone'
 export const DCL_SPRING_BONE_EXTENSION = 'DCL_spring_bone_joint'
 
 export const DEFAULT_SPRING_BONE_PARAMS: SpringBoneParams = {
-  stiffness: 1,
-  gravityPower: 1,
+  stiffness: 2,
+  gravityPower: 0,
   gravityDir: [0, -1, 0],
-  drag: 0.4,
+  drag: 0.5,
   center: undefined
 }
 
