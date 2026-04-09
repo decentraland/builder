@@ -10,7 +10,7 @@ const Navbar: React.FC<Props> = ({ address, ...props }: Props) => {
 
   const identity = useMemo(() => {
     if (address) {
-      return localStorageGetIdentity(address)
+      return localStorageGetIdentity(address) ?? undefined
     }
     return undefined
   }, [address])
@@ -25,13 +25,9 @@ const Navbar: React.FC<Props> = ({ address, ...props }: Props) => {
   }, [])
 
   return (
-    <BaseNavbar
-      {...props}
-      withNotifications
-      activePage="create"
-      identity={identity}
-      onSignIn={handleOnSignIn}
-    />
+    <div style={{ marginBottom: 36 }}>
+      <BaseNavbar {...props} withNotifications withCredits={false} activePage="create" identity={identity} onSignIn={handleOnSignIn} />
+    </div>
   )
 }
 
