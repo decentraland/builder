@@ -1,7 +1,8 @@
-import { getIsFeatureEnabled } from 'decentraland-dapps/dist/modules/features/selectors'
+import { getIsFeatureEnabled, hasLoadedInitialFlags } from 'decentraland-dapps/dist/modules/features/selectors'
 import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import {
+  getIsCampaignEnabled,
   getIsCreateSceneOnlySDK7Enabled,
   getIsLinkedWearablesPaymentsEnabled,
   getIsLinkedWearablesV2Enabled,
@@ -9,6 +10,8 @@ import {
   getIsOffchainPublicItemOrdersEnabled,
   getIsPublishCollectionsWertEnabled,
   getIsSocialEmotesEnabled,
+  getIsUnityWearablePreviewEnabled,
+  getIsCreditsForCollectionsFeeEnabled,
   getIsVrmOptOutEnabled,
   getIsWearableUtilityEnabled,
   getIsWorldContributorEnabled
@@ -18,10 +21,14 @@ import { FeatureName } from './types'
 jest.mock('decentraland-dapps/dist/modules/features/selectors')
 
 const mockGetIsFeatureEnabled = getIsFeatureEnabled as jest.MockedFunction<typeof getIsFeatureEnabled>
+const mockHasLoadedInitialFlags = hasLoadedInitialFlags as jest.MockedFunction<typeof hasLoadedInitialFlags>
 let state: RootState
 
 beforeEach(() => {
   state = {} as any
+  mockGetIsFeatureEnabled.mockClear()
+  mockHasLoadedInitialFlags.mockClear()
+  mockHasLoadedInitialFlags.mockReturnValue(true)
 })
 
 describe('when getting if maintainance is enabled', () => {
@@ -49,11 +56,9 @@ describe('when getting if maintainance is enabled', () => {
     })
   })
 
-  describe('when getIsFeatureEnabled throws an exception', () => {
+  describe('when hasLoadedInitialFlags returns false', () => {
     beforeEach(() => {
-      mockGetIsFeatureEnabled.mockImplementationOnce(() => {
-        throw new Error('error')
-      })
+      mockHasLoadedInitialFlags.mockReturnValueOnce(false)
     })
 
     it('should return false', () => {
@@ -65,6 +70,7 @@ describe('when getting if maintainance is enabled', () => {
 })
 
 const ffSelectors = [
+  { selector: getIsCampaignEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CAMPAIGN },
   { selector: getIsCreateSceneOnlySDK7Enabled, app: ApplicationName.BUILDER, feature: FeatureName.CREATE_SCENE_ONLY_SDK7 },
   { selector: getIsPublishCollectionsWertEnabled, app: ApplicationName.BUILDER, feature: FeatureName.PUBLISH_COLLECTIONS_WERT },
   { selector: getIsVrmOptOutEnabled, app: ApplicationName.BUILDER, feature: FeatureName.VRM_OPTOUT },
@@ -73,6 +79,8 @@ const ffSelectors = [
   { selector: getIsLinkedWearablesV2Enabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_V2 },
   { selector: getIsLinkedWearablesPaymentsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.LINKED_WEARABLES_PAYMENTS },
   { selector: getIsOffchainPublicItemOrdersEnabled, app: ApplicationName.DAPPS, feature: FeatureName.OFFCHAIN_PUBLIC_ITEM_ORDERS },
+  { selector: getIsUnityWearablePreviewEnabled, app: ApplicationName.DAPPS, feature: FeatureName.UNITY_WEARABLE_PREVIEW },
+  { selector: getIsCreditsForCollectionsFeeEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_FOR_COLLECTIONS_FEE },
   { selector: getIsSocialEmotesEnabled, app: ApplicationName.DAPPS, feature: FeatureName.SOCIAL_EMOTES }
 ]
 
@@ -104,18 +112,16 @@ ffSelectors.forEach(({ selector, app, feature }) => {
       })
     })
 
-    describe('when getIsFeatureEnabled throws an exception', () => {
+    describe('when hasLoadedInitialFlags returns false', () => {
       beforeEach(() => {
-        mockGetIsFeatureEnabled.mockImplementationOnce(() => {
-          throw new Error('error')
-        })
+        mockHasLoadedInitialFlags.mockReturnValueOnce(false)
       })
 
       it('should return false', () => {
         const result = selector(state)
 
         expect(result).toEqual(false)
-        expect(mockGetIsFeatureEnabled).toHaveBeenCalledWith(state, app, feature)
+        expect(mockGetIsFeatureEnabled).not.toHaveBeenCalled()
       })
     })
   })

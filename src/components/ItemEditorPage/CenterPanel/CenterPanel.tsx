@@ -1,6 +1,6 @@
 import * as React from 'react'
 import type { Wearable } from 'decentraland-ecs'
-import { BodyShape, PreviewEmote, WearableCategory } from '@dcl/schemas'
+import { BodyShape, PreviewEmote, PreviewUnityMode, WearableCategory } from '@dcl/schemas'
 import {
   Dropdown,
   DropdownProps,
@@ -77,7 +77,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       }
     }
 
-    // Setting the editor as loading as soon as it mounts. It will be turned of by the WearablePreview component once it's ready.
     this.setState({ isLoading: true })
   }
 
@@ -447,7 +446,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       selectedItem,
       visibleItems,
       isImportFilesModalOpen,
-      wearableController
+      wearableController,
+      isUnityWearablePreviewEnabled
     } = this.props
     const { isShowingAvatarAttributes, showSceneBoundaries, isLoading, socialEmote } = this.state
     const isRenderingAnEmote = visibleItems.some(isEmote) && selectedItem?.type === ItemType.EMOTE
@@ -457,6 +457,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     if (!socialEmote && selectedItem?.type === ItemType.EMOTE && (selectedItem.data as unknown as EmoteData).startAnimation) {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
+
+    const unity = isUnityWearablePreviewEnabled && !socialEmote && !_socialEmote
 
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
@@ -487,8 +489,10 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
           socialEmote={socialEmote || _socialEmote}
+          unity={unity}
+          unityMode={PreviewUnityMode.BUILDER}
         />
-        {isRenderingAnEmote && !isLoading && wearableController ? (
+        {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
           <ZoomControls
             className="zoom-controls"
             wearablePreviewId="wearable-editor"
@@ -527,13 +531,17 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             ) : (
               this.renderEmoteSelector()
             )}
-            <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
-              <BuilderIcon
-                name="cylinder"
-                onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
-              />
+            <div className="right-container">
+              {!isUnityWearablePreviewEnabled && (
+                <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
+                  <BuilderIcon
+                    name="cylinder"
+                    onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
+                  />
+                </div>
+              )}
+              {this.renderValidationStatus()}
             </div>
-            {this.renderValidationStatus()}
           </div>
           <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
             <div className="dropdown-container">

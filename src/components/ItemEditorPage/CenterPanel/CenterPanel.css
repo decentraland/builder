@@ -20,7 +20,6 @@
   margin-bottom: 16px;
   display: inline-flex;
   width: 100%;
-  /* justify-content: space-between; */
 }
 
 .CenterPanel .footer .option {
@@ -40,8 +39,10 @@
   margin-left: 2px;
 }
 
-.CenterPanel .footer .option.scene-boundaries {
+.CenterPanel .footer .right-container {
   margin-left: auto;
+  display: inline-flex;
+  width: max-content;
 }
 
 .CenterPanel .footer .option.validation-status {
