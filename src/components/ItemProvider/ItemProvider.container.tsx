@@ -48,7 +48,7 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
     [dispatch]
   )
   const onClearSpringBones = useCallback(() => dispatch(clearSpringBones()), [dispatch])
-  const onSetBones = useCallback((bones: BoneNode[], glbHash: string | null) => dispatch(setBones(bones, glbHash)), [dispatch])
+  const onSetBones = useCallback((bones: BoneNode[], itemId: string | null) => dispatch(setBones(bones, itemId)), [dispatch])
 
   return (
     <ItemProvider

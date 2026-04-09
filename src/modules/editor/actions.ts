@@ -295,7 +295,7 @@ export const DELETE_SPRING_BONE_PARAMS = 'Delete spring bone params'
 export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
 
 /** Sets the full bones array, typically when loading a new wearable model */
-export const setBones = (bones: BoneNode[], selectedItemGlbHash: string | null) => action(SET_BONES, { bones, selectedItemGlbHash })
+export const setBones = (bones: BoneNode[], selectedItemId: string | null) => action(SET_BONES, { bones, selectedItemId })
 
 /** Updates a single field from a spring bone */
 export const setSpringBoneParam = (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) =>

@@ -130,17 +130,17 @@ describe('when reducing the action that clears spring bones', () => {
     state = {
       ...state,
       bones: [{ name: 'springbone_hair', nodeId: 0, type: 'spring', children: [] }],
-      selectedItemGlbHash: 'aHash',
+      selectedItemId: 'aHash',
       springBoneParams: { springbone_hair: { ...DEFAULT_SPRING_BONE_PARAMS } },
       originalSpringBoneParams: { springbone_hair: { ...DEFAULT_SPRING_BONE_PARAMS } }
     }
   })
 
-  it('should reset bones, selectedItemGlbHash, springBoneParams, and originalSpringBoneParams to initial values', () => {
+  it('should reset bones, selectedItemId, springBoneParams, and originalSpringBoneParams to initial values', () => {
     expect(editorReducer(state, clearSpringBones())).toEqual({
       ...state,
       bones: [],
-      selectedItemGlbHash: null,
+      selectedItemId: null,
       springBoneParams: {},
       originalSpringBoneParams: {}
     })
@@ -163,12 +163,12 @@ describe('when reducing the action that sets bones', () => {
   }
   const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1, 2] }
 
-  it('should set bones and selectedItemGlbHash from action payload', () => {
+  it('should set bones and selectedItemId from action payload', () => {
     const bones = [avatarBone, springBoneWithParams]
     const result = editorReducer(state, setBones(bones, 'glbHash123'))
 
     expect(result.bones).toEqual(bones)
-    expect(result.selectedItemGlbHash).toBe('glbHash123')
+    expect(result.selectedItemId).toBe('glbHash123')
   })
 
   it('should extract springBoneParams from spring-type bones that have params', () => {

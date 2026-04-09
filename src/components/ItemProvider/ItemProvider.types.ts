@@ -21,7 +21,7 @@ export type Props = {
   onFetchItem: (id: string) => void
   onFetchCollection: (id: string) => void
   onClearSpringBones: () => void
-  onSetBones: (bones: BoneNode[], selectedItemGlbHash: string | null) => void
+  onSetBones: (bones: BoneNode[], selectedItemId: string | null) => void
   children: (item: Item | null, collection: Collection | null, isLoading: boolean, animationData: AnimationData) => React.ReactNode
 }
 export type State = {

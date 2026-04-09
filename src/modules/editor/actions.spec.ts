@@ -56,11 +56,11 @@ describe('when creating the action that clears spring bones', () => {
 })
 
 describe('when creating the action that sets bones', () => {
-  it('should return an action with bones and selectedItemGlbHash payload', () => {
+  it('should return an action with bones and selectedItemId payload', () => {
     const bones: BoneNode[] = [{ name: 'Hips', nodeId: 0, type: 'avatar', children: [] }]
     expect(setBones(bones, 'aHash')).toEqual({
       type: SET_BONES,
-      payload: { bones, selectedItemGlbHash: 'aHash' }
+      payload: { bones, selectedItemId: 'aHash' }
     })
   })
 })

@@ -397,7 +397,7 @@ export default function SpringBonesSection({
     return Object.entries(springBoneParams).sort(([boneNameA], [boneNameB]) => {
       const nodeIdA = springBoneNamesToNodeId[boneNameA] ?? 0
       const nodeIdB = springBoneNamesToNodeId[boneNameB] ?? 0
-      return nodeIdB - nodeIdA // Inverse order, node ids are assigned from the leaf up, we want to show root bones first.
+      return nodeIdA - nodeIdB // Inverse order, node ids are assigned from the leaf up, we want to show root bones first.
     })
   }, [springBoneParams])
 

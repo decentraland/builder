@@ -11,7 +11,7 @@ import {
   getBones,
   getSpringBones,
   getAvatarBones,
-  getSelectedItemGlbHash,
+  getSelectedItemId,
   getSpringBoneParams,
   getOriginalSpringBoneParams,
   hasSpringBoneChanges
@@ -220,13 +220,13 @@ describe('when getting the selected item GLB hash', () => {
       ...state,
       editor: {
         ...state.editor,
-        selectedItemGlbHash: 'aGlbHash'
+        selectedItemId: 'aGlbHash'
       }
     }
   })
 
   it('should return the selected item GLB hash', () => {
-    expect(getSelectedItemGlbHash(state)).toBe('aGlbHash')
+    expect(getSelectedItemId(state)).toBe('aGlbHash')
   })
 })
 

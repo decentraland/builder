@@ -115,7 +115,7 @@ import {
   getVisibleItemsFromUrl,
   getSpringBoneParams,
   getSpringBones,
-  getSelectedItemGlbHash
+  getSelectedItemId
 } from './selectors'
 import {
   getNewEditorScene,
@@ -704,16 +704,16 @@ function* handleFetchBaseWearables() {
 
 function* pushSpringBoneParamsToPreview() {
   const controller: IPreviewController | null = yield select(getWearablePreviewController)
-  const selectedItemGlbHash: string | null = yield select(getSelectedItemGlbHash)
+  const selectedItemId: string | null = yield select(getSelectedItemId)
   const springBones: ReturnType<typeof getSpringBones> = yield select(getSpringBones)
   const springBoneParams: ReturnType<typeof getSpringBoneParams> = yield select(getSpringBoneParams)
 
-  if (!controller || !selectedItemGlbHash || springBones.length === 0) {
+  if (!controller || !selectedItemId || springBones.length === 0) {
     return
   }
 
   try {
-    yield call([controller.physics, 'setSpringBonesParams'], selectedItemGlbHash, springBoneParams)
+    yield call([controller.physics, 'setSpringBonesParams'], selectedItemId, springBoneParams)
   } catch (error) {
     console.warn('Failed to push spring bones params to preview:', error)
   }

@@ -146,7 +146,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       const blob = await this.fetchGlbBlob(hash)
       const buffer = await blob.arrayBuffer()
       const { bones } = parseSpringBones(buffer)
-      onSetBones(bones, hash)
+      onSetBones(bones, item.id)
     } catch (error) {
       console.warn("Failed to parse model's spring bones:", error)
     }

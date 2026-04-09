@@ -114,7 +114,7 @@ export type EditorState = {
   loading: LoadingState
   fetchingBaseWearablesError: string | null
   bones: BoneNode[]
-  selectedItemGlbHash: string | null
+  selectedItemId: string | null
   springBoneParams: Record<string, SpringBoneParams>
   originalSpringBoneParams: Record<string, SpringBoneParams>
 }
@@ -150,7 +150,7 @@ export const INITIAL_STATE: EditorState = {
   loading: [],
   fetchingBaseWearablesError: null,
   bones: [],
-  selectedItemGlbHash: null,
+  selectedItemId: null,
   springBoneParams: {},
   originalSpringBoneParams: {}
 }
@@ -427,13 +427,13 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         bones: [],
-        selectedItemGlbHash: null,
+        selectedItemId: null,
         springBoneParams: {},
         originalSpringBoneParams: {}
       }
     }
     case SET_BONES: {
-      const { bones, selectedItemGlbHash } = action.payload
+      const { bones, selectedItemId } = action.payload
       const springBoneParams: Record<string, SpringBoneParams> = {}
       for (const bone of bones) {
         if (bone.type === 'spring' && bone.params) {
@@ -443,7 +443,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         bones,
-        selectedItemGlbHash,
+        selectedItemId,
         springBoneParams,
         originalSpringBoneParams: { ...springBoneParams }
       }
