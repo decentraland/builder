@@ -7,6 +7,7 @@ import { isValid } from 'lib/address'
 import ItemImage from 'components/ItemImage'
 import Icon from 'components/Icon'
 import { getMaxSupply } from 'modules/item/utils'
+import { Mint } from 'modules/collection/types'
 import { Props } from './MintableItem.types'
 import ItemStatus from 'components/ItemStatus'
 
@@ -20,10 +21,12 @@ export default class MintableItem extends React.PureComponent<Props> {
 
   getChangeAddressHandler(index: number) {
     const { item, mints, onChange } = this.props
-    return (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      const mint = {
+    return (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+      if (!data.error) event.target.blur() // Remove the focus on the input after entering a valid address
+      const mint: Partial<Mint> = {
         ...mints[index],
-        address: data.value ? data.value : undefined
+        address: data.value ? data.value : undefined,
+        amount: !data.error && !mints[index].amount ? 1 : mints[index].amount
       }
       const newMints = [...mints.slice(0, index), mint, ...mints.slice(index + 1)]
       onChange(item, newMints)
@@ -33,7 +36,7 @@ export default class MintableItem extends React.PureComponent<Props> {
   getChangeAmountHandler(index: number) {
     const { item, mints, onChange } = this.props
     return (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      const mint = {
+      const mint: Partial<Mint> = {
         ...mints[index],
         amount: data.value ? Number(data.value) : undefined
       }
