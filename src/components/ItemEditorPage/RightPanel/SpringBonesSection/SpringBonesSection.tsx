@@ -211,10 +211,14 @@ function SliderInput({
 function Vec3Input({
   label,
   value,
+  min,
+  max,
   onChange
 }: {
   label: string
   value: [number, number, number]
+  min?: number
+  max?: number
   onChange: (value: [number, number, number]) => void
 }) {
   const handleAxis = (index: number) => (v: number) => {
@@ -230,13 +234,13 @@ function Vec3Input({
       <span className="spring-bones-label">{label}</span>
       <div className="spring-bones-vec3-inputs">
         <label>
-          X<InputNumber value={value[0]} onChange={handleAxis(0)} />
+          X<InputNumber min={min} max={max} value={value[0]} onChange={handleAxis(0)} />
         </label>
         <label>
-          Y<InputNumber value={value[1]} onChange={handleAxis(1)} />
+          Y<InputNumber min={min} max={max} value={value[1]} onChange={handleAxis(1)} />
         </label>
         <label>
-          Z<InputNumber value={value[2]} onChange={handleAxis(2)} />
+          Z<InputNumber min={min} max={max} value={value[2]} onChange={handleAxis(2)} />
         </label>
       </div>
     </div>
@@ -353,6 +357,8 @@ function SpringBoneCard({
           <Vec3Input
             label={t('item_editor.right_panel.spring_bones.gravity_dir')}
             value={params.gravityDir}
+            min={-10}
+            max={10}
             onChange={v => onParamChange('gravityDir', v)}
           />
           <SliderInput
