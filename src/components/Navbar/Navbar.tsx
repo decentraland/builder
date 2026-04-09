@@ -1,14 +1,11 @@
 import React, { useCallback, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Navbar2 as BaseNavbar } from 'decentraland-dapps/dist/containers/Navbar'
-import { NavbarPages } from 'decentraland-ui/dist/components/Navbar/Navbar.types'
 import { localStorageGetIdentity } from '@dcl/single-sign-on-client'
 import { config } from 'config/index'
 import { Props } from './Navbar.types'
 
-import './Navbar.css'
-
-const Navbar: React.FC<Props> = ({ hasPendingTransactions, address, ...props }: Props) => {
+const Navbar: React.FC<Props> = ({ address, ...props }: Props) => {
   const { pathname, search } = useLocation()
 
   const identity = useMemo(() => {
@@ -31,8 +28,7 @@ const Navbar: React.FC<Props> = ({ hasPendingTransactions, address, ...props }: 
     <BaseNavbar
       {...props}
       withNotifications
-      activePage={NavbarPages.CREATE}
-      hasActivity={hasPendingTransactions}
+      activePage="create"
       identity={identity}
       onSignIn={handleOnSignIn}
     />
