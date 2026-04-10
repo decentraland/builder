@@ -4,6 +4,17 @@ import { Box, Dropdown, Header } from 'decentraland-ui'
 import { Button, Popover, Slider } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import {
+  MAX_SPRING_BONES,
+  SPRING_BONE_STIFFNESS_MIN,
+  SPRING_BONE_STIFFNESS_MAX,
+  SPRING_BONE_GRAVITY_POWER_MIN,
+  SPRING_BONE_GRAVITY_POWER_MAX,
+  SPRING_BONE_DRAG_MIN,
+  SPRING_BONE_DRAG_MAX,
+  SPRING_BONE_GRAVITY_DIR_MIN,
+  SPRING_BONE_GRAVITY_DIR_MAX
+} from 'lib/glbValidation/constants'
 import Collapsable from 'components/Collapsable'
 import Icon from 'components/Icon'
 import CheckIcon from 'icons/check.svg'
@@ -148,6 +159,15 @@ function BoneHierarchyPicker({
         />
       ))}
     </Popover>
+  )
+}
+
+function BonesCounter({ count, limit }: { count: number; limit: number }) {
+  return (
+    <span className="spring-bones-counter">
+      <span className="bone-icon" />
+      {count}/{limit}
+    </span>
   )
 }
 
@@ -341,31 +361,31 @@ function SpringBoneCard({
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.stiffness')}
             value={params.stiffness}
-            min={0}
-            max={5}
+            min={SPRING_BONE_STIFFNESS_MIN}
+            max={SPRING_BONE_STIFFNESS_MAX}
             step={0.01}
             onChange={v => onParamChange('stiffness', v)}
           />
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.gravity_power')}
             value={params.gravityPower}
-            min={0}
-            max={10}
+            min={SPRING_BONE_GRAVITY_POWER_MIN}
+            max={SPRING_BONE_GRAVITY_POWER_MAX}
             step={0.01}
             onChange={v => onParamChange('gravityPower', v)}
           />
           <Vec3Input
             label={t('item_editor.right_panel.spring_bones.gravity_dir')}
             value={params.gravityDir}
-            min={-10}
-            max={10}
+            min={SPRING_BONE_GRAVITY_DIR_MIN}
+            max={SPRING_BONE_GRAVITY_DIR_MAX}
             onChange={v => onParamChange('gravityDir', v)}
           />
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.drag_force')}
             value={params.drag}
-            min={0}
-            max={1}
+            min={SPRING_BONE_DRAG_MIN}
+            max={SPRING_BONE_DRAG_MAX}
             step={0.01}
             onChange={v => onParamChange('drag', v)}
           />
@@ -407,6 +427,9 @@ export default function SpringBonesSection({
     })
   }, [springBoneParams])
 
+  const configuredCount = sortedSpringBoneParams.length
+  const canAddMore = configuredCount < springBones.length && configuredCount < MAX_SPRING_BONES
+
   const handleSelectBone = useCallback(
     (bone: BoneNode) => {
       onAddSpringBoneParams(bone.name)
@@ -428,7 +451,14 @@ export default function SpringBonesSection({
   if (springBones.length === 0) return null
 
   return (
-    <Collapsable label={t('item_editor.right_panel.spring_bones.title')}>
+    <Collapsable
+      label={
+        <div className="spring-bones-header-label">
+          {t('item_editor.right_panel.spring_bones.title')}
+          <BonesCounter count={configuredCount} limit={MAX_SPRING_BONES} />
+        </div>
+      }
+    >
       <div className="spring-bones-section">
         {sortedSpringBoneParams.map(([nodeName, params]) => (
           <SpringBoneCard
@@ -442,7 +472,7 @@ export default function SpringBonesSection({
             onPaste={copiedParams ? () => handlePasteParams(nodeName) : null}
           />
         ))}
-        {sortedSpringBoneParams.length < springBones.length && (
+        {canAddMore && (
           <div className="spring-bone-add-box">
             <Button
               className="spring-bone-add-button"

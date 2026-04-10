@@ -111,3 +111,17 @@ export const PROP_ARMATURE_NAME = 'Armature_Prop'
 
 /** Accepted audio file extensions for emote sound effects. */
 export const VALID_AUDIO_EXTENSIONS = ['.mp3', '.ogg']
+
+/** Maximum number of spring bones allowed per wearable representation. */
+export const MAX_SPRING_BONES = 15
+
+/** Spring bone parameter ranges (from @dcl/schemas). */
+export const SPRING_BONE_STIFFNESS_MIN = 0
+export const SPRING_BONE_STIFFNESS_MAX = 5
+export const SPRING_BONE_GRAVITY_POWER_MIN = 0
+export const SPRING_BONE_GRAVITY_POWER_MAX = 10
+export const SPRING_BONE_DRAG_MIN = 0
+export const SPRING_BONE_DRAG_MAX = 1
+export const SPRING_BONE_GRAVITY_DIR_LENGTH = 3
+export const SPRING_BONE_GRAVITY_DIR_MIN = -10
+export const SPRING_BONE_GRAVITY_DIR_MAX = 10

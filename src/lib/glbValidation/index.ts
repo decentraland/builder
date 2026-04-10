@@ -11,7 +11,9 @@ import {
   validateNoLeafBones,
   validateNoDisallowedObjects,
   validateMaterialNaming,
-  validateNoNonDeformBones
+  validateNoNonDeformBones,
+  validateSpringBoneCount,
+  validateSpringBoneParams
 } from './wearableValidators'
 import {
   validateEmoteFrameRate,
@@ -53,7 +55,9 @@ export async function validateWearableGLTF(gltf: GLTF, category?: WearableCatego
     validateNoLeafBones(Three, scene),
     validateNoNonDeformBones(Three, scene),
     validateNoDisallowedObjects(Three, gltf),
-    validateMaterialNaming(Three, scene, category)
+    validateMaterialNaming(Three, scene, category),
+    validateSpringBoneCount(gltf),
+    validateSpringBoneParams(gltf)
   ]
 
   const issues = issueArrays.flat()

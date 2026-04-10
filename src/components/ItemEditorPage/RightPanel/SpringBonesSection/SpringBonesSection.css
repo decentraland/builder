@@ -1,9 +1,41 @@
+/* Section */
+
+.spring-bones-header-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-right: 10px;
+}
+
 .spring-bones-section {
   margin-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   --base-gray: #5e5b67;
+}
+
+.bone-icon {
+  width: 12px;
+  height: 12px;
+  background: url('../../../../icons/bone.svg') no-repeat;
+  object-fit: contain;
+}
+
+/* Spring Bone Counter */
+
+.spring-bones-counter {
+  font-size: 12px;
+  color: var(--secondary-text);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.spring-bones-counter .bone-icon {
+  opacity: 0.3;
 }
 
 /* Spring Bone Card */
