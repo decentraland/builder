@@ -12,8 +12,7 @@ import {
   validateNoDisallowedObjects,
   validateMaterialNaming,
   validateNoNonDeformBones,
-  validateSpringBoneCount,
-  validateSpringBoneParams
+  validateSpringBones
 } from './wearableValidators'
 import {
   MAX_MATERIALS_DEFAULT,
@@ -767,10 +766,10 @@ describe('validateMaterialNaming', () => {
   })
 })
 
-describe('validateSpringBoneCount', () => {
+describe('validateSpringBones', () => {
   it('returns no issues when there are 0 spring bones', () => {
     const gltf = createGltfWithNodes([{ name: 'Armature' }, { name: 'Head' }])
-    expect(validateSpringBoneCount(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('returns no issues when spring bone count is at the limit', () => {
@@ -778,7 +777,7 @@ describe('validateSpringBoneCount', () => {
       name: `Hair.springbone.${i}`
     }))
     const gltf = createGltfWithNodes(nodes)
-    expect(validateSpringBoneCount(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('returns a WARNING when spring bone count exceeds the limit', () => {
@@ -786,7 +785,7 @@ describe('validateSpringBoneCount', () => {
       name: `Hair.springbone.${i}`
     }))
     const gltf = createGltfWithNodes(nodes)
-    const issues = validateSpringBoneCount(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('SPRING_BONE_COUNT_EXCEEDED')
     expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
@@ -796,12 +795,12 @@ describe('validateSpringBoneCount', () => {
   it('identifies spring bones case-insensitively', () => {
     const gltf = createGltfWithNodes([{ name: 'Hair.SpringBone.000' }, { name: 'SPRINGBONE_tail' }, { name: 'NotABone' }])
     // 2 spring bones, under limit
-    expect(validateSpringBoneCount(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('returns empty issues when gltf.parser is undefined', () => {
     const gltf = {} as unknown as GLTF
-    expect(validateSpringBoneCount(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('does not count nodes with extension but without springbone name', () => {
@@ -811,7 +810,7 @@ describe('validateSpringBoneCount', () => {
         extensions: { DCL_spring_bone_joint: { stiffness: 2 } }
       }
     ])
-    expect(validateSpringBoneCount(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('counts nodes with springbone name but no extension', () => {
@@ -819,13 +818,13 @@ describe('validateSpringBoneCount', () => {
       name: `springbone_${i}`
     }))
     const gltf = createGltfWithNodes(nodes)
-    const issues = validateSpringBoneCount(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('SPRING_BONE_COUNT_EXCEEDED')
   })
-})
 
-describe('validateSpringBoneParams', () => {
+  // --- Parameter validation ---
+
   it('returns no issues for valid params', () => {
     const gltf = createGltfWithNodes([
       createSpringBoneNode('Hair.springbone.000', {
@@ -835,17 +834,17 @@ describe('validateSpringBoneParams', () => {
         gravityDir: [0, -1, 0]
       })
     ])
-    expect(validateSpringBoneParams(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('returns no issues when spring bone has no extension', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000')])
-    expect(validateSpringBoneParams(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('warns when stiffness exceeds max', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { stiffness: 6 })])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('SPRING_BONE_PARAM_OUT_OF_RANGE')
     expect(issues[0].messageParams?.paramName).toBe('stiffness')
@@ -853,35 +852,35 @@ describe('validateSpringBoneParams', () => {
 
   it('warns when gravityPower is negative', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityPower: -1 })])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].messageParams?.paramName).toBe('gravityPower')
   })
 
   it('warns when drag exceeds max', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { drag: 1.5 })])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].messageParams?.paramName).toBe('drag')
   })
 
   it('warns when gravityDir has only 2 numbers', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityDir: [0, -1] })])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('SPRING_BONE_INVALID_GRAVITY_DIR')
   })
 
   it('warns when gravityDir is not an array', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityDir: 'not an array' as any })])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('SPRING_BONE_INVALID_GRAVITY_DIR')
   })
 
   it('warns when gravityDir components are out of range', () => {
     const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityDir: [0, -20, 0] })])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('SPRING_BONE_PARAM_OUT_OF_RANGE')
     expect(issues[0].messageParams?.paramName).toBe('gravityDir')
@@ -889,7 +888,7 @@ describe('validateSpringBoneParams', () => {
 
   it('returns empty issues when gltf.parser is undefined', () => {
     const gltf = {} as unknown as GLTF
-    expect(validateSpringBoneParams(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('skips nodes that are not spring bones', () => {
@@ -899,7 +898,7 @@ describe('validateSpringBoneParams', () => {
         extensions: { DCL_spring_bone_joint: { stiffness: 99 } }
       }
     ])
-    expect(validateSpringBoneParams(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 
   it('reports multiple issues for multiple invalid params on same bone', () => {
@@ -910,7 +909,7 @@ describe('validateSpringBoneParams', () => {
         drag: 2
       })
     ])
-    const issues = validateSpringBoneParams(gltf)
+    const issues = validateSpringBones(gltf)
     expect(issues).toHaveLength(3)
     expect(issues.map(i => i.messageParams?.paramName)).toEqual(['stiffness', 'gravityPower', 'drag'])
   })
@@ -924,7 +923,7 @@ describe('validateSpringBoneParams', () => {
         gravityDir: [0, -1, 0]
       })
     ])
-    expect(validateSpringBoneParams(gltf)).toEqual([])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 })
 

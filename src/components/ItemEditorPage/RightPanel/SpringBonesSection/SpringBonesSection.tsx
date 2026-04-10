@@ -433,30 +433,23 @@ export default function SpringBonesSection({
   const pickerAnchorRef = useRef<HTMLButtonElement>(null)
   const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
   const selectedSpringBoneNames: Set<string> = useMemo(() => new Set(Object.keys(springBoneParams)), [springBoneParams])
-  const boneMap = useMemo(() => new Map<number, BoneNode>(bones.map(b => [b.nodeId, b])), [bones])
 
-  /** Count a bone plus all its descendants (the simulation cost) */
-  const subtreeSize = useCallback(
-    (nodeId: number): number => {
+  /** Map of spring bone name to the count of bones in its subtree (simulation cost) */
+  const boneSubtreeSizes: Map<string, number> = useMemo(() => {
+    const boneMap = new Map<number, BoneNode>(bones.map(b => [b.nodeId, b]))
+
+    function countSubtreeSize(nodeId: number): number {
       const bone = boneMap.get(nodeId)
       if (!bone) return 0
       let count = 1
       for (const childId of bone.children) {
-        count += subtreeSize(childId)
+        count += countSubtreeSize(childId)
       }
       return count
-    },
-    [boneMap]
-  )
-
-  /** Map of spring bone name to the count of bones in its subtree (simulation cost) */
-  const boneSubtreeSizes: Map<string, number> = useMemo(() => {
-    const sizes = new Map<string, number>()
-    for (const bone of springBones) {
-      sizes.set(bone.name, subtreeSize(bone.nodeId))
     }
-    return sizes
-  }, [springBones, subtreeSize])
+
+    return new Map(springBones.map(b => [b.name, countSubtreeSize(b.nodeId)]))
+  }, [bones, springBones])
 
   /** Sort spring bone params by node ID */
   const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
@@ -464,7 +457,7 @@ export default function SpringBonesSection({
     return Object.entries(springBoneParams).sort(([boneNameA], [boneNameB]) => {
       const nodeIdA = springBoneNameToNodeId.get(boneNameA) ?? 0
       const nodeIdB = springBoneNameToNodeId.get(boneNameB) ?? 0
-      return nodeIdA - nodeIdB // Inverse order, node ids are assigned from the leaf up, we want to show root bones first.
+      return nodeIdA - nodeIdB // Sort by node ID ascending (root bones have lower IDs).
     })
   }, [springBoneParams])
 
