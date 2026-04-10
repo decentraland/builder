@@ -26,7 +26,15 @@ const Navbar: React.FC<Props> = ({ address, ...props }: Props) => {
 
   return (
     <div style={{ marginBottom: 36 }}>
-      <BaseNavbar {...props} withNotifications withCredits={false} activePage="create" identity={identity} onSignIn={handleOnSignIn} />
+      <BaseNavbar
+        {...props}
+        withChainSelector
+        withNotifications
+        withCredits={false}
+        activePage="create"
+        identity={identity}
+        onSignIn={handleOnSignIn}
+      />
     </div>
   )
 }
