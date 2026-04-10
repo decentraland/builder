@@ -2233,6 +2233,7 @@
         "center_none": "Ninguno",
         "actions": {
           "select": "Seleccionar",
+          "add": "Agregar",
           "add_bone": "Agregar un Hueso",
           "remove_bone": "Eliminar Hueso",
           "copy_params": "Copiar Parámetros",

@@ -2217,6 +2217,7 @@
         "center_none": "无",
         "actions": {
           "select": "选择",
+          "add": "添加",
           "add_bone": "添加骨骼",
           "remove_bone": "移除骨骼",
           "copy_params": "复制参数",

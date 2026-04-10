@@ -180,9 +180,11 @@
 }
 
 /* Bone Hierarchy Picker */
-.bone-hierarchy-picker {
+.bone-hierarchy-picker.MuiPaper-root {
   overflow: auto;
-  width: calc(var(--item-editor-panel-width) - 16px);
+  min-width: calc(var(--item-editor-panel-width) - 16px);
+  max-width: calc(var(--item-editor-panel-width) * 1.5);
+  width: max-content;
   height: 430px;
   padding: 8px 0;
   border-radius: 8px;
@@ -200,7 +202,7 @@
 }
 
 .bone-tree-node.disabled {
-  color: #a0a0a0;
+  color: #a09ba8;
 }
 
 .bone-tree-node.children {
@@ -209,6 +211,14 @@
 
 .bone-tree-node:not(.disabled):hover {
   background: rgba(0, 0, 0, 0.15);
+}
+
+.bone-tree-node .bone-icon {
+  margin: 0 2px;
+}
+
+.bone-tree-node.disabled .bone-icon {
+  opacity: 0.4;
 }
 
 .bone-tree-chevron.Icon {
@@ -233,6 +243,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 100px;
+}
+
+.bone-tree-name .children-count {
+  font-size: 11px;
+  color: #a09ba8;
+  margin-left: 4px;
 }
 
 .bone-tree-checkmark {

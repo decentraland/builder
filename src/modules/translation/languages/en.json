@@ -2215,6 +2215,7 @@
         "center_none": "None",
         "actions": {
           "select": "Select",
+          "add": "Add",
           "add_bone": "Add a Bone",
           "remove_bone": "Remove Bone",
           "copy_params": "Copy Parameters",
