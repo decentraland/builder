@@ -434,6 +434,22 @@ export default function SpringBonesSection({
   const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
   const selectedSpringBoneNames: Set<string> = useMemo(() => new Set(Object.keys(springBoneParams)), [springBoneParams])
 
+  /** Sort spring bone params by hierarchy */
+  const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
+    const dfsOrder = new Map<string, number>()
+    const boneMap = new Map(bones.map(bone => [bone.nodeId, bone]))
+    const childIds = new Set(bones.flatMap(bone => bone.children))
+    let order = 0
+    const recursiveVisit = (id: number) => {
+      const bone = boneMap.get(id)
+      if (!bone) return
+      dfsOrder.set(bone.name, order++)
+      bone.children.forEach(recursiveVisit)
+    }
+    bones.filter(bone => !childIds.has(bone.nodeId)).forEach(bone => recursiveVisit(bone.nodeId))
+    return Object.entries(springBoneParams).sort(([a], [b]) => (dfsOrder.get(a) ?? 0) - (dfsOrder.get(b) ?? 0))
+  }, [springBoneParams, bones])
+
   /** Map of spring bone name to the count of bones in its subtree (simulation cost) */
   const boneSubtreeSizes: Map<string, number> = useMemo(() => {
     const boneMap = new Map<number, BoneNode>(bones.map(b => [b.nodeId, b]))
@@ -450,16 +466,6 @@ export default function SpringBonesSection({
 
     return new Map(springBones.map(b => [b.name, countSubtreeSize(b.nodeId)]))
   }, [bones, springBones])
-
-  /** Sort spring bone params by node ID */
-  const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
-    const springBoneNameToNodeId = new Map<string, number>(springBones.map(bone => [bone.name, bone.nodeId]))
-    return Object.entries(springBoneParams).sort(([boneNameA], [boneNameB]) => {
-      const nodeIdA = springBoneNameToNodeId.get(boneNameA) ?? 0
-      const nodeIdB = springBoneNameToNodeId.get(boneNameB) ?? 0
-      return nodeIdA - nodeIdB // Sort by node ID ascending (root bones have lower IDs).
-    })
-  }, [springBoneParams])
 
   const configuredBonesCount = useMemo(() => {
     let total = 0
