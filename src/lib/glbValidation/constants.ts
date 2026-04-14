@@ -117,9 +117,9 @@ export const MAX_SPRING_BONES = 15
 
 /** Spring bone parameter ranges (from @dcl/schemas). */
 export const SPRING_BONE_STIFFNESS_MIN = 0
-export const SPRING_BONE_STIFFNESS_MAX = 5
+export const SPRING_BONE_STIFFNESS_MAX = 4
 export const SPRING_BONE_GRAVITY_POWER_MIN = 0
-export const SPRING_BONE_GRAVITY_POWER_MAX = 10
+export const SPRING_BONE_GRAVITY_POWER_MAX = 2
 export const SPRING_BONE_DRAG_MIN = 0
 export const SPRING_BONE_DRAG_MAX = 1
 export const SPRING_BONE_GRAVITY_DIR_LENGTH = 3

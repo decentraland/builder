@@ -235,7 +235,7 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
   scene.traverse((node: THREE.Object3D) => {
     if (node instanceof Three.Bone) {
       const name = node.name.toLowerCase()
-      if (name.endsWith('_end') || name.endsWith('_neutral')) {
+      if (!isSpringBoneName(name) && (name.endsWith('_end') || name.endsWith('_neutral'))) {
         leafBones.push(node.name)
       }
     }
