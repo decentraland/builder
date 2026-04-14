@@ -394,18 +394,21 @@ export default function SpringBonesSection({
   const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
   const selectedSpringBoneNames: Set<string> = useMemo(() => new Set(Object.keys(springBoneParams)), [springBoneParams])
 
-  /** Sort spring bone params by node ID */
+  /** Sort spring bone params by hierarchy */
   const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
-    const springBoneNamesToNodeId = springBones.reduce((map, bone) => {
-      map[bone.name] = bone.nodeId
-      return map
-    }, {} as Record<string, number>)
-    return Object.entries(springBoneParams).sort(([boneNameA], [boneNameB]) => {
-      const nodeIdA = springBoneNamesToNodeId[boneNameA] ?? 0
-      const nodeIdB = springBoneNamesToNodeId[boneNameB] ?? 0
-      return nodeIdA - nodeIdB // Inverse order, node ids are assigned from the leaf up, we want to show root bones first.
-    })
-  }, [springBoneParams])
+    const dfsOrder = new Map<string, number>()
+    const boneMap = new Map(bones.map(bone => [bone.nodeId, bone]))
+    const childIds = new Set(bones.flatMap(bone => bone.children))
+    let order = 0
+    const recursiveVisit = (id: number) => {
+      const bone = boneMap.get(id)
+      if (!bone) return
+      dfsOrder.set(bone.name, order++)
+      bone.children.forEach(recursiveVisit)
+    }
+    bones.filter(bone => !childIds.has(bone.nodeId)).forEach(bone => recursiveVisit(bone.nodeId))
+    return Object.entries(springBoneParams).sort(([a], [b]) => (dfsOrder.get(a) ?? 0) - (dfsOrder.get(b) ?? 0))
+  }, [springBoneParams, bones])
 
   const handleSelectBone = useCallback(
     (bone: BoneNode) => {
