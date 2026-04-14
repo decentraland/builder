@@ -58,7 +58,7 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
 
   const isUnityWearablePreviewEnabled = useMemo(() => {
     const params = new URLSearchParams(location.search)
-    return params.get('unity') === 'true' && isUnityFeatureFlagEnabled
+    return params.get('unity') !== 'false' && isUnityFeatureFlagEnabled
   }, [location.search, isUnityFeatureFlagEnabled])
 
   const collectionId = useGetSelectedCollectionIdFromCurrentUrl()
