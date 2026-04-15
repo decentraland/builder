@@ -283,7 +283,7 @@ describe('when getting original spring bone params', () => {
 })
 
 describe('when checking if spring bone params have changed', () => {
-  const originalParams = {
+  const boneParams = {
     springbone_hair: {
       stiffness: 1,
       gravityPower: 0,
@@ -292,15 +292,18 @@ describe('when checking if spring bone params have changed', () => {
       center: undefined
     }
   }
+  const originalParamsByShape = {
+    [BodyShape.MALE]: { ...boneParams }
+  }
 
-  describe('and springBoneParams equals originalSpringBoneParams', () => {
+  describe('and springBoneParamsByShape equals originalSpringBoneParamsByShape', () => {
     beforeEach(() => {
       state = {
         ...state,
         editor: {
           ...state.editor,
-          springBoneParams: { ...originalParams },
-          originalSpringBoneParams: { ...originalParams }
+          springBoneParamsByShape: { [BodyShape.MALE]: { ...boneParams } },
+          originalSpringBoneParamsByShape: { [BodyShape.MALE]: { ...boneParams } }
         }
       }
     })
@@ -310,16 +313,18 @@ describe('when checking if spring bone params have changed', () => {
     })
   })
 
-  describe('and springBoneParams differs from originalSpringBoneParams', () => {
+  describe('and springBoneParamsByShape differs from originalSpringBoneParamsByShape', () => {
     beforeEach(() => {
       state = {
         ...state,
         editor: {
           ...state.editor,
-          springBoneParams: {
-            springbone_hair: { ...originalParams.springbone_hair, stiffness: 0.5 }
+          springBoneParamsByShape: {
+            [BodyShape.MALE]: {
+              springbone_hair: { ...boneParams.springbone_hair, stiffness: 0.5 }
+            }
           },
-          originalSpringBoneParams: { ...originalParams }
+          originalSpringBoneParamsByShape: { ...originalParamsByShape }
         }
       }
     })
@@ -335,8 +340,8 @@ describe('when checking if spring bone params have changed', () => {
         ...state,
         editor: {
           ...state.editor,
-          springBoneParams: {},
-          originalSpringBoneParams: {}
+          springBoneParamsByShape: {},
+          originalSpringBoneParamsByShape: {}
         }
       }
     })

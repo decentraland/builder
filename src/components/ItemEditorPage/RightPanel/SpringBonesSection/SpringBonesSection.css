@@ -78,10 +78,11 @@
 }
 
 .bone-icon {
+  display: inline-block;
   width: 12px;
   height: 12px;
   background: url('../../../../icons/bone.svg') no-repeat;
-  object-fit: contain;
+  background-size: contain;
 }
 
 /* Spring Bone Counter */

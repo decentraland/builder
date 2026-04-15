@@ -141,7 +141,17 @@ import { hasSpringBoneChanges, getBones, getSpringBoneParams, getSpringBoneParam
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { patchGltfSpringBones } from 'lib/patchGltfSpringBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH, WearableRepresentation } from './types'
+import {
+  Item,
+  BlockchainRarity,
+  CatalystItem,
+  BodyShapeType,
+  IMAGE_PATH,
+  THUMBNAIL_PATH,
+  WearableData,
+  VIDEO_PATH,
+  WearableRepresentation
+} from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
   ItemEmoteTooBigError,
@@ -542,7 +552,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       if (isWearable(item) && springBoneHasChanges) {
         if (hasMultipleModels(item)) {
           // Two distinct GLBs: patch each body shape's GLB with its own spring bone params
-          const springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = yield select(getSpringBoneParamsByShape)
+          const springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = yield select(
+            getSpringBoneParamsByShape
+          )
           const bonesByShape: Partial<Record<BodyShape, BoneNode[]>> = yield select(getBonesByShape)
 
           for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {

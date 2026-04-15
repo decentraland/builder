@@ -336,13 +336,15 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     }
     case SET_BODY_SHAPE: {
       const { bodyShape: newBodyShape } = action.payload
-      const restoredBones = state.bonesByShape[newBodyShape]
-      const restoredParams = state.springBoneParamsByShape[newBodyShape]
+      // If we don't have separate models, we don't have separate spring bone data, so just switch the shape without changing the shared bones/params
+      if (!state.bonesByShape[BodyShape.MALE] || !state.bonesByShape[BodyShape.FEMALE]) {
+        return { ...state, bodyShape: newBodyShape }
+      }
       return {
         ...state,
         bodyShape: newBodyShape,
-        ...(restoredBones ? { bones: restoredBones } : {}),
-        ...(restoredParams ? { springBoneParams: restoredParams } : {})
+        bones: state.bonesByShape[newBodyShape] ?? state.bones,
+        springBoneParams: state.springBoneParamsByShape[newBodyShape] ?? state.springBoneParams
       }
     }
     case SET_EMOTE: {

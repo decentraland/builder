@@ -20,6 +20,7 @@ import {
   SPRING_BONE_GRAVITY_POWER_MAX,
   SPRING_BONE_DRAG_MIN,
   SPRING_BONE_DRAG_MAX,
+  SPRING_BONE_GRAVITY_DIR_LENGTH,
   SPRING_BONE_GRAVITY_DIR_MIN,
   SPRING_BONE_GRAVITY_DIR_MAX
 } from './constants'
@@ -453,7 +454,7 @@ export function validateSpringBones(gltf: GLTF): ValidationIssue[] {
     // Validate gravityDir structure and range
     if ('gravityDir' in params) {
       const gd = params.gravityDir
-      if (!Array.isArray(gd) || gd.length !== 3 || !gd.every((v: unknown) => typeof v === 'number')) {
+      if (!Array.isArray(gd) || gd.length !== SPRING_BONE_GRAVITY_DIR_LENGTH || !gd.every((v: unknown) => typeof v === 'number')) {
         issues.push({
           code: 'SPRING_BONE_INVALID_GRAVITY_DIR',
           severity: ValidationSeverity.WARNING,

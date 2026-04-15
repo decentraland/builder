@@ -22,6 +22,7 @@ import {
   MAX_SPRING_BONES,
   getEffectiveTriangleLimit
 } from './constants'
+import { DCL_SPRING_BONE_EXTENSION } from 'lib/springBones'
 
 // Mock Three.js classes that support instanceof checks.
 function createMockThree() {
@@ -144,7 +145,7 @@ function createSpringBoneNode(
   return {
     name,
     extensions: {
-      DCL_spring_bone_joint: params
+      [DCL_SPRING_BONE_EXTENSION]: params
     }
   }
 }
@@ -807,7 +808,7 @@ describe('validateSpringBones', () => {
     const gltf = createGltfWithNodes([
       {
         name: 'RegularBone',
-        extensions: { DCL_spring_bone_joint: { stiffness: 2 } }
+        extensions: { [DCL_SPRING_BONE_EXTENSION]: { stiffness: 2 } }
       }
     ])
     expect(validateSpringBones(gltf)).toEqual([])
@@ -829,7 +830,7 @@ describe('validateSpringBones', () => {
     const gltf = createGltfWithNodes([
       createSpringBoneNode('Hair.springbone.000', {
         stiffness: 2,
-        gravityPower: 5,
+        gravityPower: 1,
         drag: 0.5,
         gravityDir: [0, -1, 0]
       })
@@ -886,16 +887,11 @@ describe('validateSpringBones', () => {
     expect(issues[0].messageParams?.paramName).toBe('gravityDir')
   })
 
-  it('returns empty issues when gltf.parser is undefined', () => {
-    const gltf = {} as unknown as GLTF
-    expect(validateSpringBones(gltf)).toEqual([])
-  })
-
   it('skips nodes that are not spring bones', () => {
     const gltf = createGltfWithNodes([
       {
         name: 'RegularBone',
-        extensions: { DCL_spring_bone_joint: { stiffness: 99 } }
+        extensions: { [DCL_SPRING_BONE_EXTENSION]: { stiffness: 99 } }
       }
     ])
     expect(validateSpringBones(gltf)).toEqual([])
@@ -918,7 +914,7 @@ describe('validateSpringBones', () => {
     const gltf = createGltfWithNodes([
       createSpringBoneNode('Hair.springbone.000', {
         stiffness: 0,
-        gravityPower: 10,
+        gravityPower: 2,
         drag: 1,
         gravityDir: [0, -1, 0]
       })

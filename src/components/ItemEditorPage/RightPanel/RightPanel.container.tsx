@@ -137,6 +137,7 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
       onResetSpringBoneParams={onResetSpringBoneParams}
       hasTwoRepresentations={hasTwoRepresentations}
       springBoneParamsByShape={springBoneParamsByShape}
+      bonesByShape={bonesByShape}
       onBodyShapeTabChange={onBodyShapeTabChange}
     />
   )

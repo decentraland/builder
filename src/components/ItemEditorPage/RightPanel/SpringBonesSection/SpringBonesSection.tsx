@@ -22,8 +22,9 @@ import CheckIcon from 'icons/check.svg'
 import MenuIcon from 'icons/ellipsis.svg'
 import { Props } from './SpringBonesSection.types'
 import './SpringBonesSection.css'
+import { buildSubtreeSizes, sumConfiguredBones } from './utils'
 
-type SpringBoneNode = Extract<BoneNode, { type: 'spring' }>
+export type SpringBoneNode = Extract<BoneNode, { type: 'spring' }>
 
 function BoneTreeNode({
   bone,
@@ -432,6 +433,7 @@ export default function SpringBonesSection({
   hasTwoRepresentations = false,
   activeBodyShape,
   springBoneParamsByShape,
+  bonesByShape,
   onBodyShapeTabChange
 }: Props) {
   const [copiedParams, setCopiedParams] = useState<SpringBoneParams | null>(null)
@@ -439,6 +441,24 @@ export default function SpringBonesSection({
   const pickerAnchorRef = useRef<HTMLButtonElement>(null)
   const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
   const selectedSpringBoneNames: Set<string> = useMemo(() => new Set(Object.keys(springBoneParams)), [springBoneParams])
+  const boneSubtreeSizes: Map<string, number> = useMemo(() => buildSubtreeSizes(bones), [bones])
+  const configuredBonesCount = useMemo(() => sumConfiguredBones(boneSubtreeSizes, springBoneParams), [springBoneParams, boneSubtreeSizes])
+
+  /** Precomputed subtree-aware configured bone counts per body shape (used for tab badges) */
+  const configuredBonesCountByShape: Map<BodyShape, number> = useMemo(() => {
+    if (!hasTwoRepresentations) return new Map() // Only compute if we have multiple representations, otherwise it's not going to be shown and we can save the computation
+    const result = new Map<BodyShape, number>()
+    for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
+      const shapeParams = springBoneParamsByShape?.[shape]
+      const shapeBones = bonesByShape?.[shape]
+      if (!shapeParams || !shapeBones) {
+        result.set(shape, 0)
+        continue
+      }
+      result.set(shape, sumConfiguredBones(buildSubtreeSizes(shapeBones), shapeParams))
+    }
+    return result
+  }, [springBoneParamsByShape, bonesByShape])
 
   /** Sort spring bone params by hierarchy */
   const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
@@ -456,30 +476,6 @@ export default function SpringBonesSection({
     return Object.entries(springBoneParams).sort(([a], [b]) => (dfsOrder.get(a) ?? 0) - (dfsOrder.get(b) ?? 0))
   }, [springBoneParams, bones])
 
-  /** Map of spring bone name to the count of bones in its subtree (simulation cost) */
-  const boneSubtreeSizes: Map<string, number> = useMemo(() => {
-    const boneMap = new Map<number, BoneNode>(bones.map(b => [b.nodeId, b]))
-
-    function countSubtreeSize(nodeId: number): number {
-      const bone = boneMap.get(nodeId)
-      if (!bone) return 0
-      let count = 1
-      for (const childId of bone.children) {
-        count += countSubtreeSize(childId)
-      }
-      return count
-    }
-
-    return new Map(springBones.map(b => [b.name, countSubtreeSize(b.nodeId)]))
-  }, [bones, springBones])
-
-  const configuredBonesCount = useMemo(() => {
-    let total = 0
-    for (const name of Object.keys(springBoneParams)) {
-      total += boneSubtreeSizes.get(name) ?? 1
-    }
-    return total
-  }, [springBoneParams, boneSubtreeSizes])
   const canAddMore = sortedSpringBoneParams.length < springBones.length && configuredBonesCount < MAX_SPRING_BONES
 
   const handleSelectBone = useCallback(
@@ -515,7 +511,7 @@ export default function SpringBonesSection({
         <div className="spring-bones-body-shape-tabs">
           <span className="spring-bones-body-shape-label">{t('item_editor.right_panel.spring_bones.body_shape')}</span>
           {[BodyShape.MALE, BodyShape.FEMALE].map(shape => {
-            const shapeBonesCount = Object.keys(springBoneParamsByShape?.[shape] ?? {}).length
+            const shapeBonesCount = configuredBonesCountByShape.get(shape) ?? 0
             const isActive = shape === activeBodyShape
             return (
               <button

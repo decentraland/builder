@@ -788,6 +788,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       hasSpringBonesInGlb,
       hasTwoRepresentations,
       springBoneParamsByShape,
+      bonesByShape,
       onBodyShapeTabChange
     } = this.props
     const { name, description, utility, rarity, data, isDirty: isItemDirty, hasItem } = this.state
@@ -1164,6 +1165,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         hasTwoRepresentations={hasTwoRepresentations}
                         activeBodyShape={selectedBodyShape}
                         springBoneParamsByShape={springBoneParamsByShape}
+                        bonesByShape={bonesByShape}
                         onBodyShapeTabChange={onBodyShapeTabChange}
                       />
                     )}

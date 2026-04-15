@@ -157,7 +157,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       await Promise.all(
         [BodyShape.MALE, BodyShape.FEMALE].map(async shape => {
           const bones = await this.getSpringBonesForBodyShape(item, shape)
-          if (bones !== null) {
+          if (bones !== null && this.props.item?.id === item.id) {
             onSetBonesForShape(shape, bones, item.id)
             if (shape === bodyShape) {
               onSetCurrentBones(bones, item.id)
@@ -168,7 +168,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     } else {
       // Single GLB path, parse once and use for both body shapes
       const bones = await this.getSpringBonesForBodyShape(item, bodyShape)
-      if (bones !== null) {
+      if (bones !== null && this.props.item?.id === item.id) {
         onSetCurrentBones(bones, item.id)
       }
     }

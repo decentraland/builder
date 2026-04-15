@@ -11,5 +11,6 @@ export type Props = {
   hasTwoRepresentations?: boolean
   activeBodyShape?: BodyShape
   springBoneParamsByShape?: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  bonesByShape?: Partial<Record<BodyShape, BoneNode[]>>
   onBodyShapeTabChange?: (shape: BodyShape) => void
 }
