@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
+import { BodyShape } from '@dcl/schemas'
 import { Box, Dropdown, Header } from 'decentraland-ui'
 import { Button, Popover, Slider } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -426,7 +427,12 @@ export default function SpringBonesSection({
   springBoneParams,
   onParamChange,
   onAddSpringBoneParams,
-  onDeleteSpringBoneParams
+  onDeleteSpringBoneParams,
+  hasSpringBonesInGlb,
+  hasTwoRepresentations = false,
+  activeBodyShape,
+  springBoneParamsByShape,
+  onBodyShapeTabChange
 }: Props) {
   const [copiedParams, setCopiedParams] = useState<SpringBoneParams | null>(null)
   const [showBonePicker, setShowBonePicker] = useState(false)
@@ -494,17 +500,38 @@ export default function SpringBonesSection({
     [copiedParams, onParamChange]
   )
 
-  if (springBones.length === 0) return null
+  if (!hasSpringBonesInGlb) return null
 
   return (
     <Collapsable
       label={
         <div className="spring-bones-header-label">
           {t('item_editor.right_panel.spring_bones.title')}
-          <BonesCounter count={configuredBonesCount} limit={MAX_SPRING_BONES} />
+          {!hasTwoRepresentations && <BonesCounter count={configuredBonesCount} limit={MAX_SPRING_BONES} />}
         </div>
       }
     >
+      {hasTwoRepresentations && activeBodyShape && onBodyShapeTabChange && (
+        <div className="spring-bones-body-shape-tabs">
+          <span className="spring-bones-body-shape-label">{t('item_editor.right_panel.spring_bones.body_shape')}</span>
+          {[BodyShape.MALE, BodyShape.FEMALE].map(shape => {
+            const shapeBonesCount = Object.keys(springBoneParamsByShape?.[shape] ?? {}).length
+            const isActive = shape === activeBodyShape
+            return (
+              <button
+                key={shape}
+                className={classNames('spring-bones-tab', { active: isActive })}
+                onClick={() => !isActive && onBodyShapeTabChange(shape)}
+              >
+                {shape === BodyShape.MALE
+                  ? t('item_editor.right_panel.spring_bones.tab_male')
+                  : t('item_editor.right_panel.spring_bones.tab_female')}
+                <BonesCounter count={shapeBonesCount} limit={MAX_SPRING_BONES} />
+              </button>
+            )
+          })}
+        </div>
+      )}
       <div className="spring-bones-section">
         {sortedSpringBoneParams.map(([nodeName, params]) => (
           <SpringBoneCard

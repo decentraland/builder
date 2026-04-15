@@ -2207,6 +2207,9 @@
       },
       "spring_bones": {
         "title": "Spring Bones",
+        "body_shape": "Body Shape",
+        "tab_male": "Male",
+        "tab_female": "Female",
         "stiffness": "Stiffness Force",
         "gravity_power": "Gravity Power",
         "gravity_dir": "Gravity Direction",
@@ -2220,6 +2223,15 @@
           "remove_bone": "Remove Bone",
           "copy_params": "Copy Parameters",
           "paste_params": "Paste Parameters"
+        },
+        "warning": {
+          "title": "{name} is missing some spring bone settings",
+          "subtitle": "Continuing will result in missing features in the wearable. Are you sure you want to proceed?",
+          "missing_settings": "Missing settings:",
+          "missing_male": "Male body shape spring bones",
+          "missing_female": "Female body shape spring bones",
+          "save_anyway": "Save Anyway",
+          "go_back": "Go Back"
         }
       }
     }

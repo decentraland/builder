@@ -143,9 +143,13 @@ export const getAvatarBones = (state: RootState) => getState(state).bones.filter
 export const getSelectedItemId = (state: RootState) => getState(state).selectedItemId
 export const getSpringBoneParams = (state: RootState) => getState(state).springBoneParams
 export const getOriginalSpringBoneParams = (state: RootState) => getState(state).originalSpringBoneParams
+export const getSpringBoneParamsByShape = (state: RootState) => getState(state).springBoneParamsByShape
+export const getOriginalSpringBoneParamsByShape = (state: RootState) => getState(state).originalSpringBoneParamsByShape
+export const getBonesByShape = (state: RootState) => getState(state).bonesByShape
+export const getBonesLoadingByShape = (state: RootState) => getState(state).bonesLoadingByShape
 
 export const hasSpringBoneChanges = createSelector(
-  getSpringBoneParams,
-  getOriginalSpringBoneParams,
+  getSpringBoneParamsByShape,
+  getOriginalSpringBoneParamsByShape,
   (current, original) => !equal(current, original)
 )

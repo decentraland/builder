@@ -1,0 +1,35 @@
+.ui.modal > div.header.SpringBoneWarningModalHeader {
+  font-size: 24px;
+}
+
+.SpringBoneWarningModalContent > p {
+  font-size: 16px;
+}
+
+.SpringBoneWarningModalContent .WarningBox {
+  border: 1px solid #fe9c2a;
+  color: #ffbc5b;
+  border-radius: 6px;
+  padding: 6px 16px;
+}
+
+.SpringBoneWarningModalContent .WarningDescription {
+  color: #ffbc5b;
+  font-weight: 500px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.SpringBoneWarningModalContent .WarningBox > ul {
+  margin: 4px;
+  padding-left: 45px;
+  font-size: 14px;
+}
+
+.ui.modal > .actions.SpringBoneWarningModalButtonsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}

@@ -290,6 +290,10 @@ export const RESET_SPRING_BONE_PARAMS = 'Reset spring bone params'
 export const PUSH_SPRING_BONE_PARAMS = 'Push spring bone params'
 export const ADD_SPRING_BONE_PARAMS = 'Add spring bone params'
 export const DELETE_SPRING_BONE_PARAMS = 'Delete spring bone params'
+export const SET_BONES_BY_SHAPE = 'Set bones by shape'
+export const SET_SPRING_BONE_PARAMS_BY_SHAPE = 'Set spring bone params by shape'
+export const STASH_SPRING_BONE_PARAMS = 'Stash spring bone params'
+export const CHANGE_BODY_SHAPE_TAB = 'Change body shape tab'
 
 /** Clears all spring bone data from the editor state */
 export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
@@ -313,6 +317,20 @@ export const addSpringBoneParams = (boneName: string) => action(ADD_SPRING_BONE_
 /** Removes spring bone params for a bone, effectively disabling spring physics on it */
 export const deleteSpringBoneParams = (boneName: string) => action(DELETE_SPRING_BONE_PARAMS, { boneName })
 
+/** Sets bones for a specific body shape (used during eager dual-GLB parse) */
+export const setBonesByShape = (bodyShape: BodyShape, bones: BoneNode[], selectedItemId: string | null) =>
+  action(SET_BONES_BY_SHAPE, { bodyShape, bones, selectedItemId })
+
+/** Replaces the full spring bone param map for a specific body shape */
+export const setSpringBoneParamsByShape = (bodyShape: BodyShape, params: Record<string, SpringBoneParams>) =>
+  action(SET_SPRING_BONE_PARAMS_BY_SHAPE, { bodyShape, params })
+
+/** Copies current springBoneParams into springBoneParamsByShape[bodyShape] before switching tabs */
+export const stashSpringBoneParams = (bodyShape: BodyShape) => action(STASH_SPRING_BONE_PARAMS, { bodyShape })
+
+/** Fired by a body shape tab click; handled by saga which stashes then switches body shape */
+export const changeBodyShapeTab = (from: BodyShape, to: BodyShape) => action(CHANGE_BODY_SHAPE_TAB, { from, to })
+
 export type ClearSpringBonesAction = ReturnType<typeof clearSpringBones>
 export type SetBonesAction = ReturnType<typeof setBones>
 export type SetSpringBoneParamAction = ReturnType<typeof setSpringBoneParam>
@@ -320,3 +338,7 @@ export type ResetSpringBoneParamsAction = ReturnType<typeof resetSpringBoneParam
 export type PushSpringBoneParamsAction = ReturnType<typeof pushSpringBoneParams>
 export type AddSpringBoneParamsAction = ReturnType<typeof addSpringBoneParams>
 export type DeleteSpringBoneParamsAction = ReturnType<typeof deleteSpringBoneParams>
+export type SetBonesByShapeAction = ReturnType<typeof setBonesByShape>
+export type SetSpringBoneParamsByShapeAction = ReturnType<typeof setSpringBoneParamsByShape>
+export type StashSpringBoneParamsAction = ReturnType<typeof stashSpringBoneParams>
+export type ChangeBodyShapeTabAction = ReturnType<typeof changeBodyShapeTab>

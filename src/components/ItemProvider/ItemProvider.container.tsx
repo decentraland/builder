@@ -9,7 +9,8 @@ import { isLoggingIn } from 'modules/identity/selectors'
 import { getLoading, getItems } from 'modules/item/selectors'
 import { getCollections } from 'modules/collection/selectors'
 import { FETCH_ITEM_REQUEST, fetchItemRequest, SAVE_ITEM_REQUEST, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
-import { clearSpringBones, setBones } from 'modules/editor/actions'
+import { BodyShape } from '@dcl/schemas'
+import { clearSpringBones, setBones, setBonesByShape } from 'modules/editor/actions'
 import { getBodyShape } from 'modules/editor/selectors'
 import { BoneNode } from 'modules/editor/types'
 import { ContainerProps } from './ItemProvider.types'
@@ -48,7 +49,11 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
     [dispatch]
   )
   const onClearSpringBones = useCallback(() => dispatch(clearSpringBones()), [dispatch])
-  const onSetBones = useCallback((bones: BoneNode[], itemId: string | null) => dispatch(setBones(bones, itemId)), [dispatch])
+  const onSetCurrentBones = useCallback((bones: BoneNode[], itemId: string | null) => dispatch(setBones(bones, itemId)), [dispatch])
+  const onSetBonesForShape = useCallback(
+    (bodyShape: BodyShape, bones: BoneNode[], itemId: string | null) => dispatch(setBonesByShape(bodyShape, bones, itemId)),
+    [dispatch]
+  )
 
   return (
     <ItemProvider
@@ -61,7 +66,8 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
       onFetchItem={onFetchItem}
       onFetchCollection={onFetchCollection}
       onClearSpringBones={onClearSpringBones}
-      onSetBones={onSetBones}
+      onSetCurrentBones={onSetCurrentBones}
+      onSetBonesForShape={onSetBonesForShape}
     >
       {children}
     </ItemProvider>

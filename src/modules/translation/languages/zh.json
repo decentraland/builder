@@ -2209,6 +2209,9 @@
       },
       "spring_bones": {
         "title": "弹簧骨",
+        "body_shape": "体型",
+        "tab_male": "男性",
+        "tab_female": "女性",
         "stiffness": "刚度力",
         "gravity_power": "重力强度",
         "gravity_dir": "重力方向",
@@ -2222,6 +2225,15 @@
           "remove_bone": "移除骨骼",
           "copy_params": "复制参数",
           "paste_params": "粘贴参数"
+        },
+        "warning": {
+          "title": "{name} 缺少一些弹簧骨设置",
+          "subtitle": "继续将导致可穿戴设备中缺少功能。您确定要继续吗？",
+          "missing_settings": "缺少的设置：",
+          "missing_male": "男性体型弹簧骨",
+          "missing_female": "女性体型弹簧骨",
+          "save_anyway": "仍然保存",
+          "go_back": "返回"
         }
       }
     }

@@ -8,6 +8,67 @@
   padding-right: 10px;
 }
 
+/* Body shape tabs */
+
+.spring-bones-body-shape-tabs {
+  --base-gray: #5e5b67;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--base-gray);
+}
+
+.spring-bones-body-shape-label {
+  font-size: 11px;
+  color: var(--base-gray);
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+.spring-bones-tab {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid var(--base-gray);
+  border-bottom-width: 0;
+  background: transparent;
+  color: var(--base-gray);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s linear;
+}
+
+.spring-bones-tab.active {
+  color: #ffffff;
+}
+
+.spring-bones-tab.active::after {
+  content: '';
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  height: 2px;
+  background: #242229;
+}
+
+.spring-bones-tab:not(.active):hover {
+  color: #a09ba8;
+}
+
+.spring-bones-tab .spring-bones-counter {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* Section content */
+
 .spring-bones-section {
   margin-top: 12px;
   display: flex;
