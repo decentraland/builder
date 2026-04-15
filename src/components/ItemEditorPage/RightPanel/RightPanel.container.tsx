@@ -26,7 +26,7 @@ import {
   addSpringBoneParams,
   deleteSpringBoneParams,
   resetSpringBoneParams,
-  changeBodyShapeTab
+  setBodyShape
 } from 'modules/editor/actions'
 import { SpringBoneParams } from 'modules/editor/types'
 import { RightPanelContainerProps } from './RightPanel.types'
@@ -101,8 +101,8 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
     [dispatch]
   )
   const onBodyShapeTabChange = useCallback(
-    (to: BodyShape) => dispatch(changeBodyShapeTab(selectedBodyShape, to)),
-    [dispatch, selectedBodyShape]
+    (to: BodyShape) => dispatch(setBodyShape(to)),
+    [dispatch]
   )
 
   return (

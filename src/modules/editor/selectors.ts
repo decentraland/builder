@@ -146,7 +146,6 @@ export const getOriginalSpringBoneParams = (state: RootState) => getState(state)
 export const getSpringBoneParamsByShape = (state: RootState) => getState(state).springBoneParamsByShape
 export const getOriginalSpringBoneParamsByShape = (state: RootState) => getState(state).originalSpringBoneParamsByShape
 export const getBonesByShape = (state: RootState) => getState(state).bonesByShape
-export const getBonesLoadingByShape = (state: RootState) => getState(state).bonesLoadingByShape
 
 export const hasSpringBoneChanges = createSelector(
   getSpringBoneParamsByShape,

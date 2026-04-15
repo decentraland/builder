@@ -60,10 +60,6 @@ import {
   PUSH_SPRING_BONE_PARAMS,
   ADD_SPRING_BONE_PARAMS,
   DELETE_SPRING_BONE_PARAMS,
-  CHANGE_BODY_SHAPE_TAB,
-  ChangeBodyShapeTabAction,
-  stashSpringBoneParams,
-  setBodyShape
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -165,7 +161,6 @@ export function* editorSaga() {
   yield takeLatest(PUSH_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
   yield takeLatest(ADD_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
   yield takeLatest(DELETE_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
-  yield takeLatest(CHANGE_BODY_SHAPE_TAB, handleBodyShapeTabChange)
 }
 
 function* pollEditor(scene: SceneSDK6) {
@@ -734,10 +729,3 @@ function* handlePushSpringBoneParams() {
   yield call(pushSpringBoneParamsToPreview)
 }
 
-function* handleBodyShapeTabChange(action: ChangeBodyShapeTabAction) {
-  const { from, to } = action.payload
-  // Stash current in-memory params for the departing shape before switching.
-  // SET_BODY_SHAPE reducer will restore bones + springBoneParams from the cached per-shape state.
-  yield put(stashSpringBoneParams(from))
-  yield put(setBodyShape(to))
-}

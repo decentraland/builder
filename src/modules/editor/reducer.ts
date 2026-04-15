@@ -75,7 +75,6 @@ import {
   DELETE_SPRING_BONE_PARAMS,
   SET_BONES_BY_SHAPE,
   SET_SPRING_BONE_PARAMS_BY_SHAPE,
-  STASH_SPRING_BONE_PARAMS,
   ClearSpringBonesAction,
   SetBonesAction,
   SetSpringBoneParamAction,
@@ -83,8 +82,7 @@ import {
   AddSpringBoneParamsAction,
   DeleteSpringBoneParamsAction,
   SetBonesByShapeAction,
-  SetSpringBoneParamsByShapeAction,
-  StashSpringBoneParamsAction
+  SetSpringBoneParamsByShapeAction
 } from './actions'
 import { Gizmo } from './types'
 import { pickRandom, filterWearables } from './utils'
@@ -127,7 +125,6 @@ export type EditorState = {
   springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
   originalSpringBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
   bonesByShape: Partial<Record<BodyShape, BoneNode[]>>
-  bonesLoadingByShape: Partial<Record<BodyShape, boolean>>
 }
 
 export const INITIAL_STATE: EditorState = {
@@ -166,8 +163,7 @@ export const INITIAL_STATE: EditorState = {
   originalSpringBoneParams: {},
   springBoneParamsByShape: {},
   originalSpringBoneParamsByShape: {},
-  bonesByShape: {},
-  bonesLoadingByShape: {}
+  bonesByShape: {}
 }
 
 export type EditorReducerAction =
@@ -209,7 +205,6 @@ export type EditorReducerAction =
   | DeleteSpringBoneParamsAction
   | SetBonesByShapeAction
   | SetSpringBoneParamsByShapeAction
-  | StashSpringBoneParamsAction
   | SaveItemSuccessAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
@@ -457,8 +452,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         originalSpringBoneParams: {},
         springBoneParamsByShape: {},
         originalSpringBoneParamsByShape: {},
-        bonesByShape: {},
-        bonesLoadingByShape: {}
+        bonesByShape: {}
       }
     }
     case SET_BONES: {
@@ -488,10 +482,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         bonesByShape: {
           ...state.bonesByShape,
           [activeShape]: bones
-        },
-        bonesLoadingByShape: {
-          ...state.bonesLoadingByShape,
-          [activeShape]: false
         }
       }
     }
@@ -519,10 +509,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         bonesByShape: {
           ...state.bonesByShape,
           [bodyShape]: bones
-        },
-        bonesLoadingByShape: {
-          ...state.bonesLoadingByShape,
-          [bodyShape]: false
         }
       }
     }
@@ -533,16 +519,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         springBoneParamsByShape: {
           ...state.springBoneParamsByShape,
           [bodyShape]: params
-        }
-      }
-    }
-    case STASH_SPRING_BONE_PARAMS: {
-      const { bodyShape } = action.payload
-      return {
-        ...state,
-        springBoneParamsByShape: {
-          ...state.springBoneParamsByShape,
-          [bodyShape]: { ...state.springBoneParams }
         }
       }
     }
