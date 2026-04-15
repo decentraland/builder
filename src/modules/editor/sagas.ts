@@ -59,7 +59,7 @@ import {
   SET_SPRING_BONE_PARAM,
   PUSH_SPRING_BONE_PARAMS,
   ADD_SPRING_BONE_PARAMS,
-  DELETE_SPRING_BONE_PARAMS,
+  DELETE_SPRING_BONE_PARAMS
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -728,4 +728,3 @@ function* handlePushSpringBoneParams() {
   // Immediate push (used on preview load and emote play)
   yield call(pushSpringBoneParamsToPreview)
 }
-

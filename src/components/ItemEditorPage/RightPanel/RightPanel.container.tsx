@@ -100,10 +100,7 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
     () => dispatch(resetSpringBoneParams()),
     [dispatch]
   )
-  const onBodyShapeTabChange = useCallback(
-    (to: BodyShape) => dispatch(setBodyShape(to)),
-    [dispatch]
-  )
+  const onBodyShapeTabChange: ActionFunction<typeof setBodyShape> = useCallback((to: BodyShape) => dispatch(setBodyShape(to)), [dispatch])
 
   return (
     <RightPanel
