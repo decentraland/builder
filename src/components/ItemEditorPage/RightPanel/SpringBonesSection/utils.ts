@@ -1,5 +1,4 @@
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
-import { SpringBoneNode } from './SpringBonesSection'
+import { BoneNode, SpringBoneNode, SpringBoneParams } from 'modules/editor/types'
 
 /** Recursively counts the number of bones in the subtree rooted at the given node. */
 export function countSubtreeSize(boneMap: Map<number, BoneNode>, nodeId: number): number {

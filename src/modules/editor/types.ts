@@ -86,9 +86,11 @@ type BaseBoneNode = {
   children: number[]
 }
 
-export type BoneNode =
-  | (BaseBoneNode & { type: 'avatar' })
-  | (BaseBoneNode & {
-      type: 'spring'
-      params?: SpringBoneParams
-    })
+export type AvatarBoneNode = BaseBoneNode & { type: 'avatar' }
+
+export type SpringBoneNode = BaseBoneNode & {
+  type: 'spring'
+  params?: SpringBoneParams
+}
+
+export type BoneNode = AvatarBoneNode | SpringBoneNode

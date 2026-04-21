@@ -4,7 +4,7 @@ import { BodyShape } from '@dcl/schemas'
 import { Box, Dropdown, Header } from 'decentraland-ui'
 import { Button, Popover, Slider } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import { BoneNode, SpringBoneNode, SpringBoneParams } from 'modules/editor/types'
 import {
   MAX_SPRING_BONES,
   SPRING_BONE_STIFFNESS_MIN,
@@ -23,8 +23,6 @@ import MenuIcon from 'icons/ellipsis.svg'
 import { Props } from './SpringBonesSection.types'
 import './SpringBonesSection.css'
 import { buildSubtreeSizes, sumConfiguredBones } from './utils'
-
-export type SpringBoneNode = Extract<BoneNode, { type: 'spring' }>
 
 function BoneTreeNode({
   bone,
