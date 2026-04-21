@@ -473,7 +473,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         originalSpringBoneParams: { ...springBoneParams },
         springBoneParamsByShape: {
           ...state.springBoneParamsByShape,
-          [activeShape]: springBoneParams
+          [activeShape]: { ...springBoneParams },
         },
         originalSpringBoneParamsByShape: {
           ...state.originalSpringBoneParamsByShape,
