@@ -45,11 +45,28 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       onFetchCollection(item.collectionId)
     }
 
-    // Load animation data & re-parse spring bones when item changes
-    if (isConnected && id && item && item.id !== prevProps.item?.id) {
+    if (isConnected && id && item && item.id !== prevProps.item?.id && item.type === 'emote') {
       void this.loadAnimationData(item)
-      void this.loadSpringBonesData(item)
     }
+
+    // Reload spring bone data if wearable item changes
+    if (isConnected && id && item && item.type === 'wearable') {
+      const modelChanged = prevProps.item != null && this.hasModelContentChanged(prevProps.item, item)
+      if (item.id !== prevProps.item?.id || modelChanged) {
+        void this.loadAnimationData(item)
+        void this.loadSpringBonesData(item)
+      }
+    }
+  }
+
+  private hasModelContentChanged(prevItem: Item, nextItem: Item): boolean {
+    if (prevItem.contents === nextItem.contents) return false
+    for (const [path, hash] of Object.entries(nextItem.contents)) {
+      if ((path.endsWith('.glb') || path.endsWith('.gltf')) && hash !== prevItem.contents[path]) {
+        return true
+      }
+    }
+    return false
   }
 
   private findGlbFile(contents: Record<string, string>): { path: string; hash: string } | null {
