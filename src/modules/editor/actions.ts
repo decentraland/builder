@@ -300,7 +300,7 @@ export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
 export const setBones = (bones: BoneNode[], selectedItemId: string | null) => action(SET_BONES, { bones, selectedItemId })
 
 /** Updates a single field from a spring bone */
-export const setSpringBoneParam = (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) =>
+export const setSpringBoneParam = <K extends keyof SpringBoneParams>(boneName: string, field: K, value: SpringBoneParams[K]) =>
   action(SET_SPRING_BONE_PARAM, { boneName, field, value })
 
 /** Resets all spring bone params to their original saved value */

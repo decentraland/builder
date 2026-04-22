@@ -470,7 +470,9 @@ export default function SpringBonesSection({
       dfsOrder.set(bone.name, order++)
       bone.children.forEach(recursiveVisit)
     }
-    bones.filter(bone => !childIds.has(bone.nodeId)).forEach(bone => recursiveVisit(bone.nodeId))
+    bones.forEach(bone => {
+      if (!childIds.has(bone.nodeId)) recursiveVisit(bone.nodeId)
+    })
     return Object.entries(springBoneParams).sort(([a], [b]) => (dfsOrder.get(a) ?? 0) - (dfsOrder.get(b) ?? 0))
   }, [springBoneParams, bones])
 

@@ -14,7 +14,7 @@ import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS, SaveItemSuccessAction, SA
 import { hasBodyShape } from 'modules/item/utils'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 import { Color4 } from 'lib/colors'
-import { DEFAULT_SPRING_BONE_PARAMS } from 'lib/parseSpringBones'
+import { getDefaultSpringBoneParams } from 'lib/parseSpringBones'
 import { BoneNode, SpringBoneParams } from './types'
 import {
   SetGizmoAction,
@@ -524,29 +524,32 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     }
     case SET_SPRING_BONE_PARAM: {
       const { boneName, field, value } = action.payload
-      const activeShape = state.bodyShape
-      const updatedParams = {
-        ...state.springBoneParams,
-        [boneName]: {
-          ...state.springBoneParams[boneName],
-          [field]: value
+      if (state.springBoneParams[boneName]) {
+        const activeShape = state.bodyShape
+        const updatedParams = {
+          ...state.springBoneParams,
+          [boneName]: {
+            ...state.springBoneParams[boneName],
+            [field]: value
+          }
+        }
+        return {
+          ...state,
+          springBoneParams: updatedParams,
+          springBoneParamsByShape: {
+            ...state.springBoneParamsByShape,
+            [activeShape]: updatedParams
+          }
         }
       }
-      return {
-        ...state,
-        springBoneParams: updatedParams,
-        springBoneParamsByShape: {
-          ...state.springBoneParamsByShape,
-          [activeShape]: updatedParams
-        }
-      }
+      return state
     }
     case ADD_SPRING_BONE_PARAMS: {
       const { boneName } = action.payload
       const activeShape = state.bodyShape
       const updatedParams = {
         ...state.springBoneParams,
-        [boneName]: { ...DEFAULT_SPRING_BONE_PARAMS }
+        [boneName]: getDefaultSpringBoneParams()
       }
       return {
         ...state,
@@ -585,16 +588,19 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       }
     }
     case SAVE_ITEM_SUCCESS: {
-      // After a successful save, current params become the new originals for all shapes
-      const updatedOriginalsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = {}
-      for (const shape of Object.keys(state.springBoneParamsByShape) as BodyShape[]) {
-        updatedOriginalsByShape[shape] = { ...state.springBoneParamsByShape[shape] }
+      if (action.payload.item.id === state.selectedItemId) {
+        // After a successful save, current params become the new originals for all shapes
+        const updatedOriginalsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = {}
+        for (const shape of Object.keys(state.springBoneParamsByShape) as BodyShape[]) {
+          updatedOriginalsByShape[shape] = { ...state.springBoneParamsByShape[shape] }
+        }
+        return {
+          ...state,
+          originalSpringBoneParams: { ...state.springBoneParams },
+          originalSpringBoneParamsByShape: updatedOriginalsByShape
+        }
       }
-      return {
-        ...state,
-        originalSpringBoneParams: { ...state.springBoneParams },
-        originalSpringBoneParamsByShape: updatedOriginalsByShape
-      }
+      return state
     }
     default:
       return state

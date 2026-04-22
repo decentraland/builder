@@ -306,6 +306,7 @@ describe('when reducing a save item success action', () => {
   beforeEach(() => {
     state = {
       ...state,
+      selectedItemId: mockedItem.id,
       springBoneParams: {
         springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined }
       },
