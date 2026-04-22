@@ -290,6 +290,8 @@ export const RESET_SPRING_BONE_PARAMS = 'Reset spring bone params'
 export const PUSH_SPRING_BONE_PARAMS = 'Push spring bone params'
 export const ADD_SPRING_BONE_PARAMS = 'Add spring bone params'
 export const DELETE_SPRING_BONE_PARAMS = 'Delete spring bone params'
+export const SET_BONES_BY_SHAPE = 'Set bones by shape'
+export const SET_SPRING_BONE_PARAMS_BY_SHAPE = 'Set spring bone params by shape'
 
 /** Clears all spring bone data from the editor state */
 export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
@@ -313,6 +315,14 @@ export const addSpringBoneParams = (boneName: string) => action(ADD_SPRING_BONE_
 /** Removes spring bone params for a bone, effectively disabling spring physics on it */
 export const deleteSpringBoneParams = (boneName: string) => action(DELETE_SPRING_BONE_PARAMS, { boneName })
 
+/** Sets bones for a specific body shape (used during eager dual-GLB parse) */
+export const setBonesByShape = (bodyShape: BodyShape, bones: BoneNode[], selectedItemId: string | null) =>
+  action(SET_BONES_BY_SHAPE, { bodyShape, bones, selectedItemId })
+
+/** Replaces the full spring bone param map for a specific body shape */
+export const setSpringBoneParamsByShape = (bodyShape: BodyShape, params: Record<string, SpringBoneParams>) =>
+  action(SET_SPRING_BONE_PARAMS_BY_SHAPE, { bodyShape, params })
+
 export type ClearSpringBonesAction = ReturnType<typeof clearSpringBones>
 export type SetBonesAction = ReturnType<typeof setBones>
 export type SetSpringBoneParamAction = ReturnType<typeof setSpringBoneParam>
@@ -320,3 +330,5 @@ export type ResetSpringBoneParamsAction = ReturnType<typeof resetSpringBoneParam
 export type PushSpringBoneParamsAction = ReturnType<typeof pushSpringBoneParams>
 export type AddSpringBoneParamsAction = ReturnType<typeof addSpringBoneParams>
 export type DeleteSpringBoneParamsAction = ReturnType<typeof deleteSpringBoneParams>
+export type SetBonesByShapeAction = ReturnType<typeof setBonesByShape>
+export type SetSpringBoneParamsByShapeAction = ReturnType<typeof setSpringBoneParamsByShape>

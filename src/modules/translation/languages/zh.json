@@ -395,7 +395,10 @@
         "prop_armature_bones": "道具骨架有 {count} 个骨骼，超过了限制 {limit}。",
         "armature_naming": "发现意外的骨架名称：{names}。角色骨架应命名为 'Armature'，道具骨架应命名为 'Armature_Prop'。",
         "animation_naming": "当存在道具时，动画片段应以 '_Avatar' 或 '_Prop' 结尾。无效名称：{names}。",
-        "audio_format": "音频文件 \"{name}\" 的格式不受支持。仅允许 .mp3 和 .ogg 格式。"
+        "audio_format": "音频文件 \"{name}\" 的格式不受支持。仅允许 .mp3 和 .ogg 格式。",
+        "spring_bone_count_exceeded": "此模型有 {count} 个弹簧骨骼（最大值：{limit}）。请在 3D 编辑器中减少弹簧骨骼节点的数量，然后重新上传。",
+        "spring_bone_param_out_of_range": "弹簧骨骼 \"{boneName}\" 的 {paramName} 值为 {value}，超出了允许范围（{min}–{max}）。",
+        "spring_bone_invalid_gravity_dir": "弹簧骨骼 \"{boneName}\" 的 gravityDir 无效（需要恰好 3 个数字）。"
       }
     },
     "emote_notice": "表情适用于所有体型。",
@@ -2206,6 +2209,9 @@
       },
       "spring_bones": {
         "title": "弹簧骨",
+        "body_shape": "体型",
+        "tab_male": "男性",
+        "tab_female": "女性",
         "stiffness": "刚度力",
         "gravity_power": "重力强度",
         "gravity_dir": "重力方向",
@@ -2214,10 +2220,20 @@
         "center_none": "无",
         "actions": {
           "select": "选择",
+          "add": "添加",
           "add_bone": "添加骨骼",
           "remove_bone": "移除骨骼",
           "copy_params": "复制参数",
           "paste_params": "粘贴参数"
+        },
+        "warning": {
+          "title": "{name} 缺少一些弹簧骨设置",
+          "subtitle": "继续将导致可穿戴设备中缺少功能。您确定要继续吗？",
+          "missing_settings": "缺少的设置：",
+          "missing_male": "男性体型弹簧骨",
+          "missing_female": "女性体型弹簧骨",
+          "save_anyway": "仍然保存",
+          "go_back": "返回"
         }
       }
     }

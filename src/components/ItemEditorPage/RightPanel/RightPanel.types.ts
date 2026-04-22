@@ -48,6 +48,11 @@ export type Props = {
   onDeleteSpringBoneParams: (boneName: string) => void
   hasSpringBoneChanges: boolean
   onResetSpringBoneParams: ActionFunction<typeof resetSpringBoneParams>
+  hasSpringBonesInGlb: boolean
+  hasTwoRepresentations: boolean
+  springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  bonesByShape: Partial<Record<BodyShape, BoneNode[]>>
+  onBodyShapeTabChange: (shape: BodyShape) => void
 }
 
 export type State = {
@@ -84,6 +89,10 @@ export type MapStateProps = Pick<
   | 'bones'
   | 'springBoneParams'
   | 'hasSpringBoneChanges'
+  | 'hasSpringBonesInGlb'
+  | 'hasTwoRepresentations'
+  | 'springBoneParamsByShape'
+  | 'bonesByShape'
 >
 export type MapDispatchProps = Pick<
   Props,
@@ -95,6 +104,7 @@ export type MapDispatchProps = Pick<
   | 'onAddSpringBoneParams'
   | 'onDeleteSpringBoneParams'
   | 'onResetSpringBoneParams'
+  | 'onBodyShapeTabChange'
 >
 export type MapDispatch = Dispatch<
   | SaveItemRequestAction

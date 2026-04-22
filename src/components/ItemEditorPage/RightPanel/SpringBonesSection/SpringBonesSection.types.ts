@@ -1,3 +1,4 @@
+import { BodyShape } from '@dcl/schemas'
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 
 export type Props = {
@@ -6,4 +7,10 @@ export type Props = {
   onParamChange: (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => void
   onAddSpringBoneParams: (boneName: string) => void
   onDeleteSpringBoneParams: (boneName: string) => void
+  hasSpringBonesInGlb: boolean
+  hasTwoRepresentations?: boolean
+  activeBodyShape?: BodyShape
+  springBoneParamsByShape?: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  bonesByShape?: Partial<Record<BodyShape, BoneNode[]>>
+  onBodyShapeTabChange?: (shape: BodyShape) => void
 }

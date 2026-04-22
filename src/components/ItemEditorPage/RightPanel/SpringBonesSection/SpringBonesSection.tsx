@@ -1,17 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
+import { BodyShape } from '@dcl/schemas'
 import { Box, Dropdown, Header } from 'decentraland-ui'
 import { Button, Popover, Slider } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import { BoneNode, SpringBoneNode, SpringBoneParams } from 'modules/editor/types'
+import {
+  MAX_SPRING_BONES,
+  SPRING_BONE_STIFFNESS_MIN,
+  SPRING_BONE_STIFFNESS_MAX,
+  SPRING_BONE_GRAVITY_POWER_MIN,
+  SPRING_BONE_GRAVITY_POWER_MAX,
+  SPRING_BONE_DRAG_MIN,
+  SPRING_BONE_DRAG_MAX,
+  SPRING_BONE_GRAVITY_DIR_MIN,
+  SPRING_BONE_GRAVITY_DIR_MAX
+} from 'lib/glbValidation/constants'
 import Collapsable from 'components/Collapsable'
 import Icon from 'components/Icon'
 import CheckIcon from 'icons/check.svg'
 import MenuIcon from 'icons/ellipsis.svg'
 import { Props } from './SpringBonesSection.types'
 import './SpringBonesSection.css'
-
-type SpringBoneNode = Extract<BoneNode, { type: 'spring' }>
+import { buildSubtreeSizes, sumConfiguredBones } from './utils'
 
 function BoneTreeNode({
   bone,
@@ -20,8 +31,10 @@ function BoneTreeNode({
   expanded,
   onToggle,
   disableType,
+  boneSubtreeSizes,
   selected,
-  onSelect
+  onSelect,
+  selectLabel
 }: {
   bone: BoneNode
   boneMap: Map<number, BoneNode>
@@ -29,6 +42,8 @@ function BoneTreeNode({
   expanded: Set<number>
   selected?: Set<string>
   disableType?: BoneNode['type']
+  boneSubtreeSizes?: Map<string, number>
+  selectLabel?: string
   onToggle: (nodeId: number) => void
   onSelect: (bone: BoneNode) => void
 }) {
@@ -45,8 +60,12 @@ function BoneTreeNode({
         onClick={hasChildren ? () => onToggle(bone.nodeId) : undefined}
       >
         <Icon name="chevron-right" className={classNames('bone-tree-chevron', { expanded: isExpanded, hidden: !hasChildren })} />
+        {bone.type === 'spring' && <span className="bone-icon" />}
         <span className="bone-tree-name" title={bone.name}>
           {bone.name}
+          {bone.type === 'spring' && boneSubtreeSizes && (boneSubtreeSizes.get(bone.name) ?? 0) > 1 && (
+            <span className="children-count">({boneSubtreeSizes.get(bone.name)})</span>
+          )}
         </span>
         {isSelected && <img src={CheckIcon} className="bone-tree-checkmark" alt="Already added" />}
         {!isDisabled && (
@@ -58,7 +77,7 @@ function BoneTreeNode({
               onSelect(bone)
             }}
           >
-            {t('item_editor.right_panel.spring_bones.actions.select')}
+            {selectLabel || t('item_editor.right_panel.spring_bones.actions.select')}
           </Button>
         )}
       </div>
@@ -75,6 +94,8 @@ function BoneTreeNode({
               depth={depth + 1}
               expanded={expanded}
               selected={selected}
+              selectLabel={selectLabel}
+              boneSubtreeSizes={boneSubtreeSizes}
               disableType={disableType}
               onToggle={onToggle}
               onSelect={onSelect}
@@ -91,6 +112,8 @@ function BoneHierarchyPicker({
   selected,
   disableType,
   anchorEl,
+  boneSubtreeSizes,
+  selectLabel,
   onSelect,
   onClose
 }: {
@@ -99,6 +122,8 @@ function BoneHierarchyPicker({
   selected?: Set<string>
   disableType?: BoneNode['type']
   anchorEl: HTMLElement | null
+  boneSubtreeSizes?: Map<string, number>
+  selectLabel?: string
   onSelect: (bone: BoneNode) => void
   onClose: () => void
 }) {
@@ -142,12 +167,24 @@ function BoneHierarchyPicker({
           depth={0}
           expanded={expanded}
           onToggle={handleToggle}
+          boneSubtreeSizes={boneSubtreeSizes}
           selected={selected}
+          selectLabel={selectLabel}
           disableType={disableType}
           onSelect={onSelect}
         />
       ))}
     </Popover>
+  )
+}
+
+function BonesCounter({ count, limit }: { count: number; limit?: number }) {
+  return (
+    <span className="spring-bones-counter">
+      <span className="bone-icon" />
+      {count}
+      {limit !== undefined && `/${limit}`}
+    </span>
   )
 }
 
@@ -298,6 +335,7 @@ function CenterDropdown({
 function SpringBoneCard({
   nodeName,
   params,
+  boneCount,
   allBones,
   onParamChange,
   onDelete,
@@ -306,6 +344,7 @@ function SpringBoneCard({
 }: {
   nodeName: string
   params: SpringBoneParams
+  boneCount: number
   allBones: BoneNode[]
   onParamChange: (field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => void
   onDelete: () => void
@@ -321,6 +360,7 @@ function SpringBoneCard({
         <Header className="spring-bone-card-header" onClick={() => setIsExpanded(prev => !prev)}>
           <Icon name="chevron-right" className="spring-bone-chevron" />
           <h6 className="spring-bone-name">{nodeName}</h6>
+          <BonesCounter count={boneCount} />
 
           <Dropdown trigger={<img src={MenuIcon} className="spring-bone-card-menu" alt="Actions" />} inline direction="left">
             <Dropdown.Menu>
@@ -341,31 +381,31 @@ function SpringBoneCard({
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.stiffness')}
             value={params.stiffness}
-            min={0}
-            max={5}
+            min={SPRING_BONE_STIFFNESS_MIN}
+            max={SPRING_BONE_STIFFNESS_MAX}
             step={0.01}
             onChange={v => onParamChange('stiffness', v)}
           />
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.gravity_power')}
             value={params.gravityPower}
-            min={0}
-            max={10}
+            min={SPRING_BONE_GRAVITY_POWER_MIN}
+            max={SPRING_BONE_GRAVITY_POWER_MAX}
             step={0.01}
             onChange={v => onParamChange('gravityPower', v)}
           />
           <Vec3Input
             label={t('item_editor.right_panel.spring_bones.gravity_dir')}
             value={params.gravityDir}
-            min={-10}
-            max={10}
+            min={SPRING_BONE_GRAVITY_DIR_MIN}
+            max={SPRING_BONE_GRAVITY_DIR_MAX}
             onChange={v => onParamChange('gravityDir', v)}
           />
           <SliderInput
             label={t('item_editor.right_panel.spring_bones.drag_force')}
             value={params.drag}
-            min={0}
-            max={1}
+            min={SPRING_BONE_DRAG_MIN}
+            max={SPRING_BONE_DRAG_MAX}
             step={0.01}
             onChange={v => onParamChange('drag', v)}
           />
@@ -386,13 +426,37 @@ export default function SpringBonesSection({
   springBoneParams,
   onParamChange,
   onAddSpringBoneParams,
-  onDeleteSpringBoneParams
+  onDeleteSpringBoneParams,
+  hasSpringBonesInGlb,
+  hasTwoRepresentations = false,
+  activeBodyShape,
+  springBoneParamsByShape,
+  bonesByShape,
+  onBodyShapeTabChange
 }: Props) {
   const [copiedParams, setCopiedParams] = useState<SpringBoneParams | null>(null)
   const [showBonePicker, setShowBonePicker] = useState(false)
   const pickerAnchorRef = useRef<HTMLButtonElement>(null)
   const springBones: SpringBoneNode[] = useMemo(() => bones.filter(b => b.type === 'spring'), [bones])
   const selectedSpringBoneNames: Set<string> = useMemo(() => new Set(Object.keys(springBoneParams)), [springBoneParams])
+  const boneSubtreeSizes: Map<string, number> = useMemo(() => buildSubtreeSizes(bones), [bones])
+  const configuredBonesCount = useMemo(() => sumConfiguredBones(boneSubtreeSizes, springBoneParams), [springBoneParams, boneSubtreeSizes])
+
+  /** Precomputed subtree-aware configured bone counts per body shape (used for tab badges) */
+  const configuredBonesCountByShape: Map<BodyShape, number> = useMemo(() => {
+    if (!hasTwoRepresentations) return new Map() // Only compute if we have multiple representations, otherwise it's not going to be shown and we can save the computation
+    const result = new Map<BodyShape, number>()
+    for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
+      const shapeParams = springBoneParamsByShape?.[shape]
+      const shapeBones = bonesByShape?.[shape]
+      if (!shapeParams || !shapeBones) {
+        result.set(shape, 0)
+        continue
+      }
+      result.set(shape, sumConfiguredBones(buildSubtreeSizes(shapeBones), shapeParams))
+    }
+    return result
+  }, [springBoneParamsByShape, bonesByShape])
 
   /** Sort spring bone params by hierarchy */
   const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {
@@ -412,6 +476,8 @@ export default function SpringBonesSection({
     return Object.entries(springBoneParams).sort(([a], [b]) => (dfsOrder.get(a) ?? 0) - (dfsOrder.get(b) ?? 0))
   }, [springBoneParams, bones])
 
+  const canAddMore = sortedSpringBoneParams.length < springBones.length && configuredBonesCount < MAX_SPRING_BONES
+
   const handleSelectBone = useCallback(
     (bone: BoneNode) => {
       onAddSpringBoneParams(bone.name)
@@ -430,16 +496,45 @@ export default function SpringBonesSection({
     [copiedParams, onParamChange]
   )
 
-  if (springBones.length === 0) return null
+  if (!hasSpringBonesInGlb) return null
 
   return (
-    <Collapsable label={t('item_editor.right_panel.spring_bones.title')}>
+    <Collapsable
+      label={
+        <div className="spring-bones-header-label">
+          {t('item_editor.right_panel.spring_bones.title')}
+          {!hasTwoRepresentations && <BonesCounter count={configuredBonesCount} limit={MAX_SPRING_BONES} />}
+        </div>
+      }
+    >
+      {hasTwoRepresentations && activeBodyShape && onBodyShapeTabChange && (
+        <div className="spring-bones-body-shape-tabs">
+          <span className="spring-bones-body-shape-label">{t('item_editor.right_panel.spring_bones.body_shape')}</span>
+          {[BodyShape.MALE, BodyShape.FEMALE].map(shape => {
+            const shapeBonesCount = configuredBonesCountByShape.get(shape) ?? 0
+            const isActive = shape === activeBodyShape
+            return (
+              <button
+                key={shape}
+                className={classNames('spring-bones-tab', { active: isActive })}
+                onClick={() => !isActive && onBodyShapeTabChange(shape)}
+              >
+                {shape === BodyShape.MALE
+                  ? t('item_editor.right_panel.spring_bones.tab_male')
+                  : t('item_editor.right_panel.spring_bones.tab_female')}
+                <BonesCounter count={shapeBonesCount} limit={MAX_SPRING_BONES} />
+              </button>
+            )
+          })}
+        </div>
+      )}
       <div className="spring-bones-section">
         {sortedSpringBoneParams.map(([nodeName, params]) => (
           <SpringBoneCard
             key={nodeName}
             nodeName={nodeName}
             params={params}
+            boneCount={boneSubtreeSizes.get(nodeName) ?? 1}
             allBones={bones}
             onParamChange={(field, value) => onParamChange(nodeName, field, value)}
             onDelete={() => onDeleteSpringBoneParams(nodeName)}
@@ -447,7 +542,7 @@ export default function SpringBonesSection({
             onPaste={copiedParams ? () => handlePasteParams(nodeName) : null}
           />
         ))}
-        {sortedSpringBoneParams.length < springBones.length && (
+        {canAddMore && (
           <div className="spring-bone-add-box">
             <Button
               className="spring-bone-add-button"
@@ -464,6 +559,8 @@ export default function SpringBonesSection({
               anchorEl={pickerAnchorRef.current}
               selected={selectedSpringBoneNames}
               disableType="avatar"
+              selectLabel={t('item_editor.right_panel.spring_bones.actions.add')}
+              boneSubtreeSizes={boneSubtreeSizes}
               onSelect={handleSelectBone}
               onClose={() => setShowBonePicker(false)}
             />

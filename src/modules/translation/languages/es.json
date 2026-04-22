@@ -401,7 +401,10 @@
         "prop_armature_bones": "La armadura del prop tiene {count} huesos, superando el límite de {limit}.",
         "armature_naming": "Se encontraron nombres de armadura inesperados: {names}. La armadura del avatar debe llamarse 'Armature' y la del prop 'Armature_Prop'.",
         "animation_naming": "Los clips de animación deben terminar en '_Avatar' o '_Prop' cuando hay props. Nombres inválidos: {names}.",
-        "audio_format": "El archivo de audio \"{name}\" tiene un formato no soportado. Solo se permiten .mp3 y .ogg."
+        "audio_format": "El archivo de audio \"{name}\" tiene un formato no soportado. Solo se permiten .mp3 y .ogg.",
+        "spring_bone_count_exceeded": "Este modelo tiene {count} spring bones (máximo: {limit}). Reduce la cantidad de nodos de spring bones en tu editor 3D y vuelve a subir el archivo.",
+        "spring_bone_param_out_of_range": "El spring bone \"{boneName}\" tiene un valor de {paramName} de {value}, fuera del rango permitido ({min}–{max}).",
+        "spring_bone_invalid_gravity_dir": "El spring bone \"{boneName}\" tiene un gravityDir inválido (se esperan exactamente 3 números)."
       }
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
@@ -2222,6 +2225,9 @@
       },
       "spring_bones": {
         "title": "Huesos de Resorte",
+        "body_shape": "Cuerpo",
+        "tab_male": "Masculino",
+        "tab_female": "Femenino",
         "stiffness": "Fuerza de Rigidez",
         "gravity_power": "Fuerza de Gravedad",
         "gravity_dir": "Dirección de Gravedad",
@@ -2230,10 +2236,20 @@
         "center_none": "Ninguno",
         "actions": {
           "select": "Seleccionar",
+          "add": "Agregar",
           "add_bone": "Agregar un Hueso",
           "remove_bone": "Eliminar Hueso",
           "copy_params": "Copiar Parámetros",
           "paste_params": "Pegar Parámetros"
+        },
+        "warning": {
+          "title": "{name} no tiene algunas configuraciones de spring bones",
+          "subtitle": "Continuar resultará en funciones faltantes en el wearable. ¿Estás seguro de que deseas continuar?",
+          "missing_settings": "Configuraciones faltantes:",
+          "missing_male": "Spring bones para cuerpo masculino",
+          "missing_female": "Spring bones para cuerpo femenino",
+          "save_anyway": "Guardar de Todos Modos",
+          "go_back": "Volver"
         }
       }
     }

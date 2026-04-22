@@ -1,8 +1,8 @@
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { extractGlbChunks } from 'lib/glbUtils'
+import { SPRING_BONE_PREFIX, DCL_SPRING_BONE_EXTENSION, isSpringBoneName } from 'lib/springBones'
 
-export const SPRING_BONE_PREFIX = 'springbone'
-export const DCL_SPRING_BONE_EXTENSION = 'DCL_spring_bone_joint'
+export { SPRING_BONE_PREFIX, DCL_SPRING_BONE_EXTENSION }
 
 export const DEFAULT_SPRING_BONE_PARAMS: SpringBoneParams = {
   stiffness: 2,
@@ -62,7 +62,7 @@ function parseParams(ext: GltfExtension): SpringBoneParams {
 }
 
 const isSpringBoneNode = (node: GltfNode): boolean => {
-  return !!node.name && node.name.toLowerCase().includes(SPRING_BONE_PREFIX)
+  return !!node.name && isSpringBoneName(node.name)
 }
 
 function getSpringBoneExtension(node: GltfNode): GltfExtension | null {

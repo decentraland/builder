@@ -172,6 +172,16 @@ export function hasBodyShape(item: Item, bodyShape: BodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
+/** Checks if the item has different models for each body shape */
+export function hasMultipleModels(item: Item) {
+  const mainFileHashes = new Set(item.data.representations.map(r => r.mainFile && item.contents[r.mainFile]).filter(Boolean))
+  return mainFileHashes.size > 1
+}
+
+/**
+ * Returns the main file path for the given body shape's representation.
+ * Falls back to the first representation's main file if no representation matches the requested body shape
+ */
 export function getRepresentationMainFile(item: Item, bodyShape: BodyShape): string | null {
   if (!Array.isArray(item.data.representations)) return null
   const representation = item.data.representations.find(r => r.bodyShapes.includes(bodyShape))

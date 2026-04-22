@@ -1,18 +1,33 @@
 import React, { useCallback, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import equal from 'fast-deep-equal'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getCampaignName, getContentfulNormalizedLocale, getMainTag } from 'decentraland-dapps/dist/modules/campaign'
 import { RootState } from 'modules/common/types'
 import { getItem, getError as getItemError, getStatusByItemId, isDownloading } from 'modules/item/selectors'
 import { deleteItemRequest, downloadItemRequest, saveItemRequest } from 'modules/item/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { isOwner } from 'modules/item/utils'
+import { hasMultipleModels, isOwner } from 'modules/item/utils'
 import { useGetSelectedItemIdFromCurrentUrl } from 'modules/location/hooks'
 import { getCollection, hasViewAndEditRights } from 'modules/collection/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { getIsCampaignEnabled, getIsVrmOptOutEnabled, getIsWearableUtilityEnabled } from 'modules/features/selectors'
-import { getBodyShape, getBones, getSpringBoneParams, hasSpringBoneChanges as hasSpringBoneChangesSelector } from 'modules/editor/selectors'
-import { setSpringBoneParam, addSpringBoneParams, deleteSpringBoneParams, resetSpringBoneParams } from 'modules/editor/actions'
+import { BodyShape } from '@dcl/schemas'
+import {
+  getBodyShape,
+  getBones,
+  getBonesByShape,
+  getSpringBoneParams,
+  getSpringBoneParamsByShape,
+  hasSpringBoneChanges as hasSpringBoneChangesSelector
+} from 'modules/editor/selectors'
+import {
+  setSpringBoneParam,
+  addSpringBoneParams,
+  deleteSpringBoneParams,
+  resetSpringBoneParams,
+  setBodyShape
+} from 'modules/editor/actions'
 import { SpringBoneParams } from 'modules/editor/types'
 import { RightPanelContainerProps } from './RightPanel.types'
 import RightPanel from './RightPanel'
@@ -49,9 +64,17 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
 
   const itemStatus = useMemo(() => (selectedItemId ? statusByItemId[selectedItemId] : null), [selectedItemId, statusByItemId])
   const selectedBodyShape = useSelector((state: RootState) => getBodyShape(state))
-  const bones = useSelector((state: RootState) => getBones(state))
-  const springBoneParams = useSelector((state: RootState) => getSpringBoneParams(state))
+  const bones = useSelector((state: RootState) => getBones(state), shallowEqual)
+  const bonesByShape = useSelector((state: RootState) => getBonesByShape(state), equal)
+  const springBoneParams = useSelector((state: RootState) => getSpringBoneParams(state), equal)
+  const springBoneParamsByShape = useSelector((state: RootState) => getSpringBoneParamsByShape(state), equal)
   const hasSpringBoneChanges = useSelector((state: RootState) => hasSpringBoneChangesSelector(state))
+
+  const hasTwoRepresentations = useMemo(() => (selectedItem ? hasMultipleModels(selectedItem) : false), [selectedItem])
+  const hasSpringBonesInGlb = useMemo(
+    () => Object.values(bonesByShape).some(bones => bones?.some(b => b.type === 'spring')),
+    [bonesByShape]
+  )
   const onSaveItem: ActionFunction<typeof saveItemRequest> = useCallback(
     (item, contents) => dispatch(saveItemRequest(item, contents)),
     [dispatch]
@@ -77,6 +100,7 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
     () => dispatch(resetSpringBoneParams()),
     [dispatch]
   )
+  const onBodyShapeTabChange: ActionFunction<typeof setBodyShape> = useCallback((to: BodyShape) => dispatch(setBodyShape(to)), [dispatch])
 
   return (
     <RightPanel
@@ -106,7 +130,12 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
       onAddSpringBoneParams={onAddSpringBoneParams}
       onDeleteSpringBoneParams={onDeleteSpringBoneParams}
       hasSpringBoneChanges={hasSpringBoneChanges}
+      hasSpringBonesInGlb={hasSpringBonesInGlb}
       onResetSpringBoneParams={onResetSpringBoneParams}
+      hasTwoRepresentations={hasTwoRepresentations}
+      springBoneParamsByShape={springBoneParamsByShape}
+      bonesByShape={bonesByShape}
+      onBodyShapeTabChange={onBodyShapeTabChange}
     />
   )
 }

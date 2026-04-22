@@ -1,5 +1,6 @@
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { WearableCategory } from '@dcl/schemas'
+import { isSpringBoneName, DCL_SPRING_BONE_EXTENSION } from 'lib/springBones'
 import { ValidationIssue, ValidationSeverity } from './types'
 import {
   getEffectiveTriangleLimit,
@@ -11,7 +12,17 @@ import {
   FACIAL_CATEGORIES,
   MAX_BONE_INFLUENCES_PER_VERTEX,
   AVATAR_SKIN_MAT,
-  FORBIDDEN_MATERIAL_PATTERNS
+  FORBIDDEN_MATERIAL_PATTERNS,
+  MAX_SPRING_BONES,
+  SPRING_BONE_STIFFNESS_MIN,
+  SPRING_BONE_STIFFNESS_MAX,
+  SPRING_BONE_GRAVITY_POWER_MIN,
+  SPRING_BONE_GRAVITY_POWER_MAX,
+  SPRING_BONE_DRAG_MIN,
+  SPRING_BONE_DRAG_MAX,
+  SPRING_BONE_GRAVITY_DIR_LENGTH,
+  SPRING_BONE_GRAVITY_DIR_MIN,
+  SPRING_BONE_GRAVITY_DIR_MAX
 } from './constants'
 
 type ThreeModules = typeof import('three')
@@ -225,7 +236,7 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
   scene.traverse((node: THREE.Object3D) => {
     if (node instanceof Three.Bone) {
       const name = node.name.toLowerCase()
-      if (name.endsWith('_end') || name.endsWith('_neutral')) {
+      if (!isSpringBoneName(name) && (name.endsWith('_end') || name.endsWith('_neutral'))) {
         leafBones.push(node.name)
       }
     }
@@ -365,6 +376,116 @@ export function validateMaterialNaming(Three: ThreeModules, scene: THREE.Scene, 
       }
     }
   })
+
+  return issues
+}
+
+// ── Spring bone validators ──────────────────────────────────────────────
+
+type GltfJsonNode = {
+  name?: string
+  extensions?: Record<string, unknown>
+}
+
+/** Typed wrapper for the undocumented Three.js GLTFLoader parser internal. */
+type GltfWithParser = GLTF & {
+  parser?: { json?: { nodes?: GltfJsonNode[] } }
+}
+
+function getGltfJsonNodes(gltf: GLTF): GltfJsonNode[] | null {
+  const json = (gltf as GltfWithParser).parser?.json
+  if (!json || !Array.isArray(json.nodes)) {
+    // parser.json is an undocumented Three.js internal — warn if absent so
+    // silent validation bypass is detectable after a Three.js upgrade.
+    if ((gltf as GltfWithParser).parser === undefined) {
+      console.warn('Spring bone validation: gltf.parser is unavailable — spring bone checks will be skipped.')
+    }
+    return null
+  }
+  return json.nodes
+}
+
+function checkNumericRange(
+  issues: ValidationIssue[],
+  boneName: string,
+  params: Record<string, unknown>,
+  paramName: string,
+  min: number,
+  max: number
+): void {
+  const value = params[paramName]
+  if (typeof value !== 'number') return
+  if (value < min || value > max) {
+    issues.push({
+      code: 'SPRING_BONE_PARAM_OUT_OF_RANGE',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.spring_bone_param_out_of_range',
+      messageParams: { boneName, paramName, value, min, max }
+    })
+  }
+}
+
+/**
+ * Validates spring bone count and parameter ranges in a single pass.
+ * Checks that the number of spring bone nodes does not exceed the limit,
+ * and that DCL_spring_bone_joint extension params are within valid ranges.
+ */
+export function validateSpringBones(gltf: GLTF): ValidationIssue[] {
+  const nodes = getGltfJsonNodes(gltf)
+  if (!nodes) return []
+
+  const issues: ValidationIssue[] = []
+  let springBoneCount = 0
+
+  for (const node of nodes) {
+    if (!node.name || !isSpringBoneName(node.name)) continue
+    springBoneCount++
+
+    const ext = node.extensions?.[DCL_SPRING_BONE_EXTENSION]
+    if (!ext || typeof ext !== 'object') continue
+
+    const boneName = node.name
+    const params = ext as Record<string, unknown>
+
+    checkNumericRange(issues, boneName, params, 'stiffness', SPRING_BONE_STIFFNESS_MIN, SPRING_BONE_STIFFNESS_MAX)
+    checkNumericRange(issues, boneName, params, 'gravityPower', SPRING_BONE_GRAVITY_POWER_MIN, SPRING_BONE_GRAVITY_POWER_MAX)
+    checkNumericRange(issues, boneName, params, 'drag', SPRING_BONE_DRAG_MIN, SPRING_BONE_DRAG_MAX)
+
+    // Validate gravityDir structure and range
+    if ('gravityDir' in params) {
+      const gd = params.gravityDir
+      if (!Array.isArray(gd) || gd.length !== SPRING_BONE_GRAVITY_DIR_LENGTH || !gd.every((v: unknown) => typeof v === 'number')) {
+        issues.push({
+          code: 'SPRING_BONE_INVALID_GRAVITY_DIR',
+          severity: ValidationSeverity.WARNING,
+          messageKey: 'create_single_item_modal.error.glb_validation.spring_bone_invalid_gravity_dir',
+          messageParams: { boneName }
+        })
+      } else if (gd.some((v: number) => v < SPRING_BONE_GRAVITY_DIR_MIN || v > SPRING_BONE_GRAVITY_DIR_MAX)) {
+        issues.push({
+          code: 'SPRING_BONE_PARAM_OUT_OF_RANGE',
+          severity: ValidationSeverity.WARNING,
+          messageKey: 'create_single_item_modal.error.glb_validation.spring_bone_param_out_of_range',
+          messageParams: {
+            boneName,
+            paramName: 'gravityDir',
+            value: `[${gd.join(', ')}]`,
+            min: SPRING_BONE_GRAVITY_DIR_MIN,
+            max: SPRING_BONE_GRAVITY_DIR_MAX
+          }
+        })
+      }
+    }
+  }
+
+  if (springBoneCount > MAX_SPRING_BONES) {
+    issues.push({
+      code: 'SPRING_BONE_COUNT_EXCEEDED',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.spring_bone_count_exceeded',
+      messageParams: { count: springBoneCount, limit: MAX_SPRING_BONES }
+    })
+  }
 
   return issues
 }

@@ -73,12 +73,16 @@ import {
   RESET_SPRING_BONE_PARAMS,
   ADD_SPRING_BONE_PARAMS,
   DELETE_SPRING_BONE_PARAMS,
+  SET_BONES_BY_SHAPE,
+  SET_SPRING_BONE_PARAMS_BY_SHAPE,
   ClearSpringBonesAction,
   SetBonesAction,
   SetSpringBoneParamAction,
   ResetSpringBoneParamsAction,
   AddSpringBoneParamsAction,
-  DeleteSpringBoneParamsAction
+  DeleteSpringBoneParamsAction,
+  SetBonesByShapeAction,
+  SetSpringBoneParamsByShapeAction
 } from './actions'
 import { Gizmo } from './types'
 import { pickRandom, filterWearables } from './utils'
@@ -117,6 +121,10 @@ export type EditorState = {
   selectedItemId: string | null
   springBoneParams: Record<string, SpringBoneParams>
   originalSpringBoneParams: Record<string, SpringBoneParams>
+  // Per-shape spring bone data for wearables with 2 distinct GLBs (hasSeparateModels)
+  springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  originalSpringBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  bonesByShape: Partial<Record<BodyShape, BoneNode[]>>
 }
 
 export const INITIAL_STATE: EditorState = {
@@ -152,7 +160,10 @@ export const INITIAL_STATE: EditorState = {
   bones: [],
   selectedItemId: null,
   springBoneParams: {},
-  originalSpringBoneParams: {}
+  originalSpringBoneParams: {},
+  springBoneParamsByShape: {},
+  originalSpringBoneParamsByShape: {},
+  bonesByShape: {}
 }
 
 export type EditorReducerAction =
@@ -192,6 +203,8 @@ export type EditorReducerAction =
   | ResetSpringBoneParamsAction
   | AddSpringBoneParamsAction
   | DeleteSpringBoneParamsAction
+  | SetBonesByShapeAction
+  | SetSpringBoneParamsByShapeAction
   | SaveItemSuccessAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
@@ -317,9 +330,16 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       }
     }
     case SET_BODY_SHAPE: {
+      const { bodyShape: newBodyShape } = action.payload
+      // If we don't have separate models, we don't have separate spring bone data, so just switch the shape without changing the shared bones/params
+      if (!state.bonesByShape[BodyShape.MALE] || !state.bonesByShape[BodyShape.FEMALE]) {
+        return { ...state, bodyShape: newBodyShape }
+      }
       return {
         ...state,
-        bodyShape: action.payload.bodyShape
+        bodyShape: newBodyShape,
+        bones: state.bonesByShape[newBodyShape] ?? state.bones,
+        springBoneParams: state.springBoneParamsByShape[newBodyShape] ?? state.springBoneParams
       }
     }
     case SET_EMOTE: {
@@ -429,7 +449,10 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         bones: [],
         selectedItemId: null,
         springBoneParams: {},
-        originalSpringBoneParams: {}
+        originalSpringBoneParams: {},
+        springBoneParamsByShape: {},
+        originalSpringBoneParamsByShape: {},
+        bonesByShape: {}
       }
     }
     case SET_BONES: {
@@ -440,25 +463,82 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
           springBoneParams[bone.name] = { ...bone.params }
         }
       }
+      // Also sync into the per-shape map for the currently active body shape
+      const activeShape = state.bodyShape
       return {
         ...state,
         bones,
         selectedItemId,
         springBoneParams,
-        originalSpringBoneParams: { ...springBoneParams }
+        originalSpringBoneParams: { ...springBoneParams },
+        springBoneParamsByShape: {
+          ...state.springBoneParamsByShape,
+          [activeShape]: { ...springBoneParams },
+        },
+        originalSpringBoneParamsByShape: {
+          ...state.originalSpringBoneParamsByShape,
+          [activeShape]: { ...springBoneParams }
+        },
+        bonesByShape: {
+          ...state.bonesByShape,
+          [activeShape]: bones
+        }
+      }
+    }
+    case SET_BONES_BY_SHAPE: {
+      const { bodyShape, bones, selectedItemId } = action.payload
+      const springBoneParams: Record<string, SpringBoneParams> = {}
+      for (const bone of bones) {
+        if (bone.type === 'spring' && bone.params) {
+          springBoneParams[bone.name] = { ...bone.params }
+        }
+      }
+      // Preserve existing params if already set — a late GLB fetch must not overwrite user edits
+      const existingParams = state.springBoneParamsByShape[bodyShape]
+      return {
+        ...state,
+        selectedItemId,
+        springBoneParamsByShape: {
+          ...state.springBoneParamsByShape,
+          [bodyShape]: existingParams ?? springBoneParams
+        },
+        originalSpringBoneParamsByShape: {
+          ...state.originalSpringBoneParamsByShape,
+          [bodyShape]: { ...springBoneParams }
+        },
+        bonesByShape: {
+          ...state.bonesByShape,
+          [bodyShape]: bones
+        }
+      }
+    }
+    case SET_SPRING_BONE_PARAMS_BY_SHAPE: {
+      const { bodyShape, params } = action.payload
+      return {
+        ...state,
+        springBoneParamsByShape: {
+          ...state.springBoneParamsByShape,
+          [bodyShape]: params
+        }
       }
     }
     case SET_SPRING_BONE_PARAM: {
       const { boneName, field, value } = action.payload
       if (state.springBoneParams[boneName]) {
+        const activeShape = state.bodyShape
+        const updatedParams = {
+          ...state.springBoneParams,
+          [boneName]: {
+            ...state.springBoneParams[boneName],
+            [field]: value
+          }
+        }
         return {
           ...state,
-          springBoneParams: {
-            ...state.springBoneParams,
-            [boneName]: {
-              ...state.springBoneParams[boneName],
-              [field]: value
-            }
+          springBoneParams: updatedParams,
+          springBoneParamsByShape: {
+            ...state.springBoneParamsByShape,
+            [activeShape]: updatedParams
           }
         }
       }
@@ -466,32 +546,59 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     }
     case ADD_SPRING_BONE_PARAMS: {
       const { boneName } = action.payload
+      const activeShape = state.bodyShape
+      const updatedParams = {
+        ...state.springBoneParams,
+        [boneName]: getDefaultSpringBoneParams()
+      }
       return {
         ...state,
-        springBoneParams: {
-          ...state.springBoneParams,
-          [boneName]: getDefaultSpringBoneParams()
+        springBoneParams: updatedParams,
+        springBoneParamsByShape: {
+          ...state.springBoneParamsByShape,
+          [activeShape]: updatedParams
         }
       }
     }
     case DELETE_SPRING_BONE_PARAMS: {
       const { boneName } = action.payload
+      const activeShape = state.bodyShape
       const { [boneName]: _, ...remainingParams } = state.springBoneParams
       return {
         ...state,
-        springBoneParams: remainingParams
+        springBoneParams: remainingParams,
+        springBoneParamsByShape: {
+          ...state.springBoneParamsByShape,
+          [activeShape]: remainingParams
+        }
       }
     }
     case RESET_SPRING_BONE_PARAMS: {
+      const activeShape = state.bodyShape
+      const original = state.originalSpringBoneParamsByShape[activeShape] ?? state.originalSpringBoneParams
+      // Reset all shapes so stashed edits from tab-switching don't leave a dirty state
+      const revertedByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = {}
+      for (const shape of Object.keys(state.originalSpringBoneParamsByShape) as BodyShape[]) {
+        revertedByShape[shape] = { ...state.originalSpringBoneParamsByShape[shape] }
+      }
       return {
         ...state,
-        springBoneParams: { ...state.originalSpringBoneParams }
+        springBoneParams: { ...original },
+        springBoneParamsByShape: revertedByShape
       }
     }
     case SAVE_ITEM_SUCCESS: {
       if (action.payload.item.id === state.selectedItemId) {
-        // After a successful save, the current params become the new original (clears the "changed" flag)
-        return { ...state, originalSpringBoneParams: { ...state.springBoneParams } }
+        // After a successful save, current params become the new originals for all shapes
+        const updatedOriginalsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = {}
+        for (const shape of Object.keys(state.springBoneParamsByShape) as BodyShape[]) {
+          updatedOriginalsByShape[shape] = { ...state.springBoneParamsByShape[shape] }
+        }
+        return {
+          ...state,
+          originalSpringBoneParams: { ...state.springBoneParams },
+          originalSpringBoneParamsByShape: updatedOriginalsByShape
+        }
       }
       return state
     }

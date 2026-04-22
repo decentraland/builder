@@ -11,9 +11,18 @@ import {
   validateNoLeafBones,
   validateNoDisallowedObjects,
   validateMaterialNaming,
-  validateNoNonDeformBones
+  validateNoNonDeformBones,
+  validateSpringBones
 } from './wearableValidators'
-import { MAX_MATERIALS_DEFAULT, MAX_MATERIALS_SKIN, MAX_TEXTURES_DEFAULT, AVATAR_SKIN_MAT, getEffectiveTriangleLimit } from './constants'
+import {
+  MAX_MATERIALS_DEFAULT,
+  MAX_MATERIALS_SKIN,
+  MAX_TEXTURES_DEFAULT,
+  AVATAR_SKIN_MAT,
+  MAX_SPRING_BONES,
+  getEffectiveTriangleLimit
+} from './constants'
+import { DCL_SPRING_BONE_EXTENSION } from 'lib/springBones'
 
 // Mock Three.js classes that support instanceof checks.
 function createMockThree() {
@@ -113,6 +122,32 @@ function createMeshWithTexture(Three: MockThree, matName: string, texUuid: strin
   mesh.material.roughnessMap = null
   mesh.material.metalnessMap = null
   return mesh
+}
+
+function createGltfWithNodes(nodes: Array<{ name: string; extensions?: Record<string, unknown> }>): GLTF {
+  return {
+    parser: {
+      json: { nodes }
+    }
+  } as unknown as GLTF
+}
+
+function createSpringBoneNode(
+  name: string,
+  params?: {
+    stiffness?: number
+    gravityPower?: number
+    drag?: number
+    gravityDir?: unknown
+  }
+) {
+  if (!params) return { name }
+  return {
+    name,
+    extensions: {
+      [DCL_SPRING_BONE_EXTENSION]: params
+    }
+  }
 }
 
 describe('validateTriangleCounts', () => {
@@ -729,6 +764,162 @@ describe('validateMaterialNaming', () => {
     it('should return a warning for each forbidden material', () => {
       expect(issues).toHaveLength(2)
     })
+  })
+})
+
+describe('validateSpringBones', () => {
+  it('returns no issues when there are 0 spring bones', () => {
+    const gltf = createGltfWithNodes([{ name: 'Armature' }, { name: 'Head' }])
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('returns no issues when spring bone count is at the limit', () => {
+    const nodes = Array.from({ length: MAX_SPRING_BONES }, (_, i) => ({
+      name: `Hair.springbone.${i}`
+    }))
+    const gltf = createGltfWithNodes(nodes)
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('returns a WARNING when spring bone count exceeds the limit', () => {
+    const nodes = Array.from({ length: MAX_SPRING_BONES + 1 }, (_, i) => ({
+      name: `Hair.springbone.${i}`
+    }))
+    const gltf = createGltfWithNodes(nodes)
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].code).toBe('SPRING_BONE_COUNT_EXCEEDED')
+    expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+    expect(issues[0].messageParams).toEqual({ count: MAX_SPRING_BONES + 1, limit: MAX_SPRING_BONES })
+  })
+
+  it('identifies spring bones case-insensitively', () => {
+    const gltf = createGltfWithNodes([{ name: 'Hair.SpringBone.000' }, { name: 'SPRINGBONE_tail' }, { name: 'NotABone' }])
+    // 2 spring bones, under limit
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('returns empty issues when gltf.parser is undefined', () => {
+    const gltf = {} as unknown as GLTF
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('does not count nodes with extension but without springbone name', () => {
+    const gltf = createGltfWithNodes([
+      {
+        name: 'RegularBone',
+        extensions: { [DCL_SPRING_BONE_EXTENSION]: { stiffness: 2 } }
+      }
+    ])
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('counts nodes with springbone name but no extension', () => {
+    const nodes = Array.from({ length: MAX_SPRING_BONES + 1 }, (_, i) => ({
+      name: `springbone_${i}`
+    }))
+    const gltf = createGltfWithNodes(nodes)
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].code).toBe('SPRING_BONE_COUNT_EXCEEDED')
+  })
+
+  // --- Parameter validation ---
+
+  it('returns no issues for valid params', () => {
+    const gltf = createGltfWithNodes([
+      createSpringBoneNode('Hair.springbone.000', {
+        stiffness: 2,
+        gravityPower: 1,
+        drag: 0.5,
+        gravityDir: [0, -1, 0]
+      })
+    ])
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('returns no issues when spring bone has no extension', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000')])
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('warns when stiffness exceeds max', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { stiffness: 6 })])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].code).toBe('SPRING_BONE_PARAM_OUT_OF_RANGE')
+    expect(issues[0].messageParams?.paramName).toBe('stiffness')
+  })
+
+  it('warns when gravityPower is negative', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityPower: -1 })])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].messageParams?.paramName).toBe('gravityPower')
+  })
+
+  it('warns when drag exceeds max', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { drag: 1.5 })])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].messageParams?.paramName).toBe('drag')
+  })
+
+  it('warns when gravityDir has only 2 numbers', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityDir: [0, -1] })])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].code).toBe('SPRING_BONE_INVALID_GRAVITY_DIR')
+  })
+
+  it('warns when gravityDir is not an array', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityDir: 'not an array' as any })])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].code).toBe('SPRING_BONE_INVALID_GRAVITY_DIR')
+  })
+
+  it('warns when gravityDir components are out of range', () => {
+    const gltf = createGltfWithNodes([createSpringBoneNode('Hair.springbone.000', { gravityDir: [0, -20, 0] })])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(1)
+    expect(issues[0].code).toBe('SPRING_BONE_PARAM_OUT_OF_RANGE')
+    expect(issues[0].messageParams?.paramName).toBe('gravityDir')
+  })
+
+  it('skips nodes that are not spring bones', () => {
+    const gltf = createGltfWithNodes([
+      {
+        name: 'RegularBone',
+        extensions: { [DCL_SPRING_BONE_EXTENSION]: { stiffness: 99 } }
+      }
+    ])
+    expect(validateSpringBones(gltf)).toEqual([])
+  })
+
+  it('reports multiple issues for multiple invalid params on same bone', () => {
+    const gltf = createGltfWithNodes([
+      createSpringBoneNode('Hair.springbone.000', {
+        stiffness: 6,
+        gravityPower: 11,
+        drag: 2
+      })
+    ])
+    const issues = validateSpringBones(gltf)
+    expect(issues).toHaveLength(3)
+    expect(issues.map(i => i.messageParams?.paramName)).toEqual(['stiffness', 'gravityPower', 'drag'])
+  })
+
+  it('validates params at boundary values (min/max)', () => {
+    const gltf = createGltfWithNodes([
+      createSpringBoneNode('Hair.springbone.000', {
+        stiffness: 0,
+        gravityPower: 2,
+        drag: 1,
+        gravityDir: [0, -1, 0]
+      })
+    ])
+    expect(validateSpringBones(gltf)).toEqual([])
   })
 })
 

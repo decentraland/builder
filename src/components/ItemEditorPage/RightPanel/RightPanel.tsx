@@ -4,6 +4,7 @@ import equal from 'fast-deep-equal'
 import { Loader, Dropdown, Button, Checkbox, CheckboxProps, TextAreaField, TextAreaProps, Row, Box, Header } from 'decentraland-ui'
 import {
   BodyPartCategory,
+  BodyShape,
   EmoteCategory,
   Rarity,
   EmoteDataADR74,
@@ -412,6 +413,28 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
+  handleOnSaveConfirmation = () => {
+    const { onOpenModal, hasSpringBoneChanges, hasTwoRepresentations, springBoneParamsByShape } = this.props
+    const isDirty = this.state.isDirty || hasSpringBoneChanges
+
+    // Warn if saving a 2-GLB wearable where one shape has spring bones and the other doesn't
+    if (hasTwoRepresentations && isDirty) {
+      const missingShapes = [BodyShape.MALE, BodyShape.FEMALE].filter(
+        shape => Object.keys(springBoneParamsByShape[shape] ?? {}).length === 0
+      )
+      if (missingShapes.length === 1) {
+        onOpenModal('SpringBoneWarningModal', {
+          itemName: this.state.name,
+          missingShapes,
+          onSaveAnyway: this.handleOnSaveItem
+        })
+        return
+      }
+    }
+
+    void this.handleOnSaveItem()
+  }
+
   handleOnSaveItem = async () => {
     const { selectedItem, itemStatus, onSaveItem, hasSpringBoneChanges } = this.props
     const { name, description, utility, rarity, contents, data, isDirty: isItemDirty } = this.state
@@ -761,7 +784,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       onSpringBoneParamChange,
       onAddSpringBoneParams,
       onDeleteSpringBoneParams,
-      hasSpringBoneChanges
+      hasSpringBoneChanges,
+      hasSpringBonesInGlb,
+      hasTwoRepresentations,
+      springBoneParamsByShape,
+      bonesByShape,
+      onBodyShapeTabChange
     } = this.props
     const { name, description, utility, rarity, data, isDirty: isItemDirty, hasItem } = this.state
     const isDirty = isItemDirty || hasSpringBoneChanges
@@ -1127,12 +1155,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     )}
                     {item?.type === ItemType.WEARABLE && (
                       <SpringBonesSection
-                        key={`${item?.id}-${selectedBodyShape}`} // Reset the component state when changing the item or body shape
+                        key={item?.id}
                         bones={bones}
                         springBoneParams={springBoneParams}
                         onParamChange={onSpringBoneParamChange}
                         onAddSpringBoneParams={onAddSpringBoneParams}
                         onDeleteSpringBoneParams={onDeleteSpringBoneParams}
+                        hasSpringBonesInGlb={hasSpringBonesInGlb}
+                        hasTwoRepresentations={hasTwoRepresentations}
+                        activeBodyShape={selectedBodyShape}
+                        springBoneParamsByShape={springBoneParamsByShape}
+                        bonesByShape={bonesByShape}
+                        onBodyShapeTabChange={onBodyShapeTabChange}
                       />
                     )}
                     <div className="edit-buttons-container">
@@ -1142,7 +1176,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         </Button>
                         <NetworkButton
                           primary
-                          onClick={this.handleOnSaveItem}
+                          onClick={this.handleOnSaveConfirmation}
                           network={Network.MATIC}
                           disabled={!isDirty || isLoading}
                           loading={isLoading}

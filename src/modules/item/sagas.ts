@@ -137,11 +137,21 @@ import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
 import { hashV1 } from '@dcl/hashing'
-import { hasSpringBoneChanges, getBones, getSpringBoneParams, getBodyShape } from 'modules/editor/selectors'
+import { hasSpringBoneChanges, getBones, getSpringBoneParams, getSpringBoneParamsByShape, getBonesByShape } from 'modules/editor/selectors'
 import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { patchGltfSpringBones } from 'lib/patchGltfSpringBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
+import {
+  Item,
+  BlockchainRarity,
+  CatalystItem,
+  BodyShapeType,
+  IMAGE_PATH,
+  THUMBNAIL_PATH,
+  WearableData,
+  VIDEO_PATH,
+  WearableRepresentation
+} from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
   ItemEmoteTooBigError,
@@ -165,7 +175,8 @@ import {
   isEmoteFileSizeValid,
   isSkinFileSizeValid,
   isSmartWearableFileSizeValid,
-  createItemOrderTrade
+  createItemOrderTrade,
+  hasMultipleModels
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -406,6 +417,35 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
+  function* patchGlbRepresentations(
+    representations: WearableRepresentation[],
+    bones: BoneNode[],
+    params: Record<string, SpringBoneParams>,
+    contents: Record<string, Blob>,
+    item: Item
+  ) {
+    const glbPathsToFetch: Record<string, string> = {}
+    for (const r of representations) {
+      if (r.mainFile && !contents[r.mainFile] && item.contents[r.mainFile]) {
+        glbPathsToFetch[r.mainFile] = item.contents[r.mainFile]
+      }
+    }
+    if (Object.keys(glbPathsToFetch).length > 0) {
+      const fetched: Record<string, Blob> = yield call([legacyBuilder, 'fetchContents'], glbPathsToFetch)
+      Object.assign(contents, fetched)
+    }
+    const patchedPaths = new Set<string>()
+    for (const r of representations) {
+      if (!r.mainFile || !contents[r.mainFile] || patchedPaths.has(r.mainFile)) continue
+      patchedPaths.add(r.mainFile)
+      const buffer: ArrayBuffer = yield call([contents[r.mainFile], 'arrayBuffer'])
+      const patchedBuffer = patchGltfSpringBones(buffer, bones, params)
+      const newHash: string = yield call(hashV1, new Uint8Array(patchedBuffer))
+      contents[r.mainFile] = new Blob([patchedBuffer], { type: 'model/gltf-binary' })
+      item.contents[r.mainFile] = newHash
+    }
+  }
+
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
     const { item: actionItem, contents: actionContents, options } = action.payload
 
@@ -510,48 +550,26 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       // Spring bone GLB patching
       const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
       if (isWearable(item) && springBoneHasChanges) {
-        const bones: BoneNode[] = yield select(getBones)
-        const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
+        if (hasMultipleModels(item)) {
+          // Two distinct GLBs: patch each body shape's GLB with its own spring bone params
+          const springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = yield select(
+            getSpringBoneParamsByShape
+          )
+          const bonesByShape: Partial<Record<BodyShape, BoneNode[]>> = yield select(getBonesByShape)
 
-        // When there are separate male/female GLB models, only patch the one
-        // matching the currently previewed body shape. When all representations
-        // share the same model (same content hash), patch all of them.
-        const bodyShape: BodyShape = yield select(getBodyShape)
-        const mainFileHashes = new Set(item.data.representations.map(r => r.mainFile && item.contents[r.mainFile]).filter(Boolean))
-        const hasSeparateModels = mainFileHashes.size > 1
-        const targetRepresentations = hasSeparateModels
-          ? item.data.representations.filter(r => r.bodyShapes.includes(bodyShape))
-          : item.data.representations
-
-        // Collect GLB paths that need fetching (not already in contents)
-        const glbPathsToFetch: Record<string, string> = {}
-        for (const representation of targetRepresentations) {
-          const glbPath = representation.mainFile
-          if (glbPath && !contents[glbPath] && item.contents[glbPath]) {
-            glbPathsToFetch[glbPath] = item.contents[glbPath]
+          for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
+            const shapeParams = springBoneParamsByShape[shape]
+            const shapeBones = bonesByShape[shape]
+            // Skip shapes that were never parsed (no GLB for this shape)
+            if (shapeParams === undefined || !shapeBones) continue
+            const reps = item.data.representations.filter(r => r.bodyShapes.includes(shape))
+            yield call(patchGlbRepresentations, reps, shapeBones, shapeParams, contents, item)
           }
-        }
-
-        // Fetch existing GLBs from the builder API
-        if (Object.keys(glbPathsToFetch).length > 0) {
-          const fetchedBlobs: Record<string, Blob> = yield call([legacyBuilder, 'fetchContents'], glbPathsToFetch)
-          Object.assign(contents, fetchedBlobs)
-        }
-
-        // Patch GLB for the target representation(s)
-        const patchedPaths = new Set<string>()
-        for (const representation of targetRepresentations) {
-          const glbPath = representation.mainFile
-          if (!glbPath || !contents[glbPath] || patchedPaths.has(glbPath)) continue
-          patchedPaths.add(glbPath)
-
-          const glbBlob: Blob = contents[glbPath]
-          const buffer: ArrayBuffer = yield call([glbBlob, 'arrayBuffer'])
-          const patchedBuffer = patchGltfSpringBones(buffer, bones, springBoneParams)
-          const patchedBlob = new Blob([patchedBuffer], { type: 'model/gltf-binary' })
-          const newHash: string = yield call(hashV1, new Uint8Array(patchedBuffer))
-          contents[glbPath] = patchedBlob
-          item.contents[glbPath] = newHash
+        } else {
+          // Single shared GLB: patch all representations with the active shape's params
+          const bones: BoneNode[] = yield select(getBones)
+          const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
+          yield call(patchGlbRepresentations, item.data.representations, bones, springBoneParams, contents, item)
         }
       }
 
