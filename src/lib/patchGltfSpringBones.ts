@@ -69,14 +69,10 @@ export function patchGltfSpringBones(buffer: ArrayBuffer, bones: BoneNode[], par
     node.extensions[DCL_SPRING_BONE_EXTENSION] = extension
   }
 
-  // Re-serialize JSON
-  const newJsonString = JSON.stringify(json)
-  const encoder = new TextEncoder()
-  const newJsonBytes = encoder.encode(newJsonString)
-
   // For .gltf (plain JSON), just return the re-serialized JSON
   if (!chunks.isGlb) {
-    return newJsonBytes.buffer
+    const encoder = new TextEncoder()
+    return encoder.encode(JSON.stringify(json)).buffer
   }
 
   // For .glb, re-pack the binary container

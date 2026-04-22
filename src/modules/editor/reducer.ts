@@ -14,7 +14,7 @@ import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS, SaveItemSuccessAction, SA
 import { hasBodyShape } from 'modules/item/utils'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 import { Color4 } from 'lib/colors'
-import { DEFAULT_SPRING_BONE_PARAMS } from 'lib/parseSpringBones'
+import { getDefaultSpringBoneParams } from 'lib/parseSpringBones'
 import { BoneNode, SpringBoneParams } from './types'
 import {
   SetGizmoAction,
@@ -450,16 +450,19 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     }
     case SET_SPRING_BONE_PARAM: {
       const { boneName, field, value } = action.payload
-      return {
-        ...state,
-        springBoneParams: {
-          ...state.springBoneParams,
-          [boneName]: {
-            ...state.springBoneParams[boneName],
-            [field]: value
+      if (state.springBoneParams[boneName]) {
+        return {
+          ...state,
+          springBoneParams: {
+            ...state.springBoneParams,
+            [boneName]: {
+              ...state.springBoneParams[boneName],
+              [field]: value
+            }
           }
         }
       }
+      return state
     }
     case ADD_SPRING_BONE_PARAMS: {
       const { boneName } = action.payload
@@ -467,7 +470,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         ...state,
         springBoneParams: {
           ...state.springBoneParams,
-          [boneName]: { ...DEFAULT_SPRING_BONE_PARAMS }
+          [boneName]: getDefaultSpringBoneParams()
         }
       }
     }
@@ -486,11 +489,11 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       }
     }
     case SAVE_ITEM_SUCCESS: {
-      // After a successful save, the current params become the new original (clears the "changed" flag)
-      return {
-        ...state,
-        originalSpringBoneParams: { ...state.springBoneParams }
+      if (action.payload.item.id === state.selectedItemId) {
+        // After a successful save, the current params become the new original (clears the "changed" flag)
+        return { ...state, originalSpringBoneParams: { ...state.springBoneParams } }
       }
+      return state
     }
     default:
       return state

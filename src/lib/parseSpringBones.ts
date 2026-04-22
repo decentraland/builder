@@ -32,20 +32,28 @@ type GltfNode = {
   children?: number[]
 }
 
+export function getDefaultSpringBoneParams(): SpringBoneParams {
+  return { ...DEFAULT_SPRING_BONE_PARAMS, gravityDir: [...DEFAULT_SPRING_BONE_PARAMS.gravityDir] }
+}
+
 function formatNumber(value: number | string): number {
   return Number(Number(value).toFixed(3))
 }
 
 function parseParams(ext: GltfExtension): SpringBoneParams {
-  const stiffness = typeof ext.stiffness === 'number' ? formatNumber(ext.stiffness) : DEFAULT_SPRING_BONE_PARAMS.stiffness
-  const gravityPower = typeof ext.gravityPower === 'number' ? formatNumber(ext.gravityPower) : DEFAULT_SPRING_BONE_PARAMS.gravityPower
-  const drag = typeof ext.drag === 'number' ? formatNumber(ext.drag) : DEFAULT_SPRING_BONE_PARAMS.drag
+  const stiffness =
+    typeof ext.stiffness === 'number' && isFinite(ext.stiffness) ? formatNumber(ext.stiffness) : DEFAULT_SPRING_BONE_PARAMS.stiffness
+  const gravityPower =
+    typeof ext.gravityPower === 'number' && isFinite(ext.gravityPower)
+      ? formatNumber(ext.gravityPower)
+      : DEFAULT_SPRING_BONE_PARAMS.gravityPower
+  const drag = typeof ext.drag === 'number' && isFinite(ext.drag) ? formatNumber(ext.drag) : DEFAULT_SPRING_BONE_PARAMS.drag
   const center = typeof ext.center === 'string' ? ext.center : DEFAULT_SPRING_BONE_PARAMS.center
 
-  let gravityDir: [number, number, number] = DEFAULT_SPRING_BONE_PARAMS.gravityDir
+  let gravityDir: [number, number, number] = [...DEFAULT_SPRING_BONE_PARAMS.gravityDir]
   if (Array.isArray(ext.gravityDir) && ext.gravityDir.length === 3) {
     const [x, y, z] = ext.gravityDir
-    if (typeof x === 'number' && typeof y === 'number' && typeof z === 'number') {
+    if (typeof x === 'number' && typeof y === 'number' && typeof z === 'number' && isFinite(x) && isFinite(y) && isFinite(z)) {
       gravityDir = [formatNumber(x), formatNumber(y), formatNumber(z)]
     }
   }

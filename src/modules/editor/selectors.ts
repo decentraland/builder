@@ -138,8 +138,8 @@ export const getVisibleItemsFromUrl = (state: RootState, search: string) => {
 }
 
 export const getBones = (state: RootState) => getState(state).bones
-export const getSpringBones = (state: RootState) => getState(state).bones.filter(b => b.type === 'spring')
-export const getAvatarBones = (state: RootState) => getState(state).bones.filter(b => b.type === 'avatar')
+export const getSpringBones = createSelector(getBones, bones => bones.filter(b => b.type === 'spring'))
+export const getAvatarBones = createSelector(getBones, bones => bones.filter(b => b.type === 'avatar'))
 export const getSelectedItemId = (state: RootState) => getState(state).selectedItemId
 export const getSpringBoneParams = (state: RootState) => getState(state).springBoneParams
 export const getOriginalSpringBoneParams = (state: RootState) => getState(state).originalSpringBoneParams
