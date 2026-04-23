@@ -270,6 +270,24 @@ export async function buildItemEntity(
     // Emotes will be deployed as Wearables ultil they are released
     metadata = buildWearableEntityMetadata(collection, item)
   }
+  if (!isEmote) {
+    // Strip directory entries and 0-byte files from representations to stay in sync
+    // with what makeContentFiles includes in the entity content payload. Items already
+    // stored with these in their representations (from older builder-client versions)
+    // would otherwise fail Catalyst content validation on every deploy.
+    const validFiles = new Set(files.keys())
+    const wearableMetadata = metadata as Wearable
+    metadata = {
+      ...wearableMetadata,
+      data: {
+        ...wearableMetadata.data,
+        representations: wearableMetadata.data.representations.map(rep => ({
+          ...rep,
+          contents: rep.contents.filter(f => validFiles.has(f))
+        }))
+      }
+    }
+  }
   return buildEntity({
     type: isEmote ? EntityType.EMOTE : EntityType.WEARABLE,
     pointers: [metadata.id],
