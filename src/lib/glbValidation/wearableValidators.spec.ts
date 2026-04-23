@@ -503,9 +503,11 @@ describe('validateNoLeafBones', () => {
 })
 
 function createAnimations(trackNames: string[]): THREE.AnimationClip[] {
-  return [{
-    tracks: trackNames.map(name => ({ name }))
-  }] as unknown as THREE.AnimationClip[]
+  return [
+    {
+      tracks: trackNames.map(name => ({ name }))
+    }
+  ] as unknown as THREE.AnimationClip[]
 }
 
 describe('validateNoNonDeformBones', () => {
