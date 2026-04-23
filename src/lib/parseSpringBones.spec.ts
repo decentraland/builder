@@ -35,7 +35,7 @@ describe('when parsing spring bones', () => {
     })
 
     describe('and nodes contain spring bone names', () => {
-      it('should classify nodes with "springbone" in the name as spring type', () => {
+      it('should classify nodes with "springbone" in the name as spring type with default params', () => {
         const buffer = buildGltfBuffer({
           nodes: [{ name: 'Hips' }, { name: 'springbone_hair', children: [2] }, { name: 'Hair_end' }]
         })
@@ -43,7 +43,16 @@ describe('when parsing spring bones', () => {
 
         expect(result.bones).toHaveLength(3)
         expect(result.bones[0].type).toBe('avatar')
-        expect(result.bones[1]).toEqual({ name: 'springbone_hair', nodeId: 1, type: 'spring', children: [2] })
+        expect(result.bones[1]).toEqual({
+          name: 'springbone_hair', nodeId: 1, type: 'spring', children: [2],
+          params: {
+            stiffness: DEFAULT_SPRING_BONE_PARAMS.stiffness,
+            gravityPower: DEFAULT_SPRING_BONE_PARAMS.gravityPower,
+            gravityDir: [...DEFAULT_SPRING_BONE_PARAMS.gravityDir],
+            drag: DEFAULT_SPRING_BONE_PARAMS.drag,
+            center: DEFAULT_SPRING_BONE_PARAMS.center
+          }
+        })
         expect(result.bones[2].type).toBe('avatar')
       })
 
@@ -59,7 +68,7 @@ describe('when parsing spring bones', () => {
     })
 
     describe('and spring bone nodes have DCL_spring_bone_joint extension', () => {
-      it('should parse spring bone params from the extension', () => {
+      it('should ignore extension params and assign defaults', () => {
         const buffer = buildGltfBuffer({
           extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
           nodes: [
@@ -82,182 +91,32 @@ describe('when parsing spring bones', () => {
 
         expect(result.bones[0].type).toBe('spring')
         const bone = result.bones[0] as { type: 'spring'; params?: unknown }
+        // Params should be defaults, not from the extension
         expect(bone.params).toEqual({
-          stiffness: 0.5,
-          gravityPower: 1.2,
-          gravityDir: [0, -1, 0],
-          drag: 0.3,
-          center: undefined
+          stiffness: DEFAULT_SPRING_BONE_PARAMS.stiffness,
+          gravityPower: DEFAULT_SPRING_BONE_PARAMS.gravityPower,
+          gravityDir: [...DEFAULT_SPRING_BONE_PARAMS.gravityDir],
+          drag: DEFAULT_SPRING_BONE_PARAMS.drag,
+          center: DEFAULT_SPRING_BONE_PARAMS.center
         })
-      })
-
-      it('should use default values when extension fields are missing', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 2 }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[0] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.stiffness).toBe(2)
-        expect(bone.params!.gravityPower).toBe(DEFAULT_SPRING_BONE_PARAMS.gravityPower)
-        expect(bone.params!.gravityDir).toEqual(DEFAULT_SPRING_BONE_PARAMS.gravityDir)
-        expect(bone.params!.drag).toBe(DEFAULT_SPRING_BONE_PARAMS.drag)
-        expect(bone.params!.center).toBe(DEFAULT_SPRING_BONE_PARAMS.center)
-      })
-
-      it('should parse center as a string node name', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            { name: 'Hips' },
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1, center: 'Hips' }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[1] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.center).toBe('Hips')
-      })
-
-      it('should keep center when it points to an avatar bone', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            { name: 'Avatar_Hips' },
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1, center: 'Avatar_Hips' }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[1] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.center).toBe('Avatar_Hips')
-      })
-
-      it('should drop center to undefined when it points to a spring bone', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            {
-              name: 'springbone_a',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1, center: 'springbone_b' }
-              }
-            },
-            {
-              name: 'springbone_b',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1 }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[0] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.center).toBeUndefined()
-      })
-
-      it('should format numbers to 3 decimal places', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1.23456789, gravityPower: 0.1 }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[0] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.stiffness).toBe(1.235)
-        expect(bone.params!.gravityPower).toBe(0.1)
-      })
-
-      it('should parse gravityDir as a 3-element number array', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1, gravityDir: [1.23456, -0.5, 0] }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[0] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.gravityDir).toEqual([1.235, -0.5, 0])
-      })
-
-      it('should fall back to default gravityDir when array is malformed', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1, gravityDir: [1, 2] }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[0] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.gravityDir).toEqual(DEFAULT_SPRING_BONE_PARAMS.gravityDir)
-      })
-
-      it('should fall back to default gravityDir when elements are not numbers', () => {
-        const buffer = buildGltfBuffer({
-          extensionsUsed: [DCL_SPRING_BONE_EXTENSION],
-          nodes: [
-            {
-              name: 'springbone_hair',
-              extensions: {
-                [DCL_SPRING_BONE_EXTENSION]: { version: 1, stiffness: 1, gravityDir: ['a', 'b', 'c'] }
-              }
-            }
-          ]
-        })
-        const result = parseSpringBones(buffer)
-        const bone = result.bones[0] as { type: 'spring'; params?: Record<string, unknown> }
-
-        expect(bone.params!.gravityDir).toEqual(DEFAULT_SPRING_BONE_PARAMS.gravityDir)
       })
     })
 
     describe('and spring bone nodes have no extension', () => {
-      it('should not set params on the bone', () => {
+      it('should assign default params on the bone', () => {
         const buffer = buildGltfBuffer({
           nodes: [{ name: 'springbone_hair' }]
         })
         const result = parseSpringBones(buffer)
         const bone = result.bones[0] as { type: 'spring'; params?: unknown }
 
-        expect(bone.params).toBeUndefined()
+        expect(bone.params).toEqual({
+          stiffness: DEFAULT_SPRING_BONE_PARAMS.stiffness,
+          gravityPower: DEFAULT_SPRING_BONE_PARAMS.gravityPower,
+          gravityDir: [...DEFAULT_SPRING_BONE_PARAMS.gravityDir],
+          drag: DEFAULT_SPRING_BONE_PARAMS.drag,
+          center: DEFAULT_SPRING_BONE_PARAMS.center
+        })
       })
     })
 

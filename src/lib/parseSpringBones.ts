@@ -16,16 +16,6 @@ export type SpringBonesParseResult = {
   bones: BoneNode[]
 }
 
-type GltfExtension = {
-  version?: number
-  stiffness?: number
-  gravityPower?: number
-  gravityDir?: [number, number, number]
-  drag?: number
-  isRoot?: boolean
-  center?: string
-}
-
 type GltfNode = {
   name?: string
   extensions?: Record<string, unknown>
@@ -36,38 +26,8 @@ export function getDefaultSpringBoneParams(): SpringBoneParams {
   return { ...DEFAULT_SPRING_BONE_PARAMS, gravityDir: [...DEFAULT_SPRING_BONE_PARAMS.gravityDir] }
 }
 
-function formatNumber(value: number | string): number {
-  return Number(Number(value).toFixed(3))
-}
-
-function parseParams(ext: GltfExtension): SpringBoneParams {
-  const stiffness =
-    typeof ext.stiffness === 'number' && isFinite(ext.stiffness) ? formatNumber(ext.stiffness) : DEFAULT_SPRING_BONE_PARAMS.stiffness
-  const gravityPower =
-    typeof ext.gravityPower === 'number' && isFinite(ext.gravityPower)
-      ? formatNumber(ext.gravityPower)
-      : DEFAULT_SPRING_BONE_PARAMS.gravityPower
-  const drag = typeof ext.drag === 'number' && isFinite(ext.drag) ? formatNumber(ext.drag) : DEFAULT_SPRING_BONE_PARAMS.drag
-  const center = typeof ext.center === 'string' ? ext.center : DEFAULT_SPRING_BONE_PARAMS.center
-
-  let gravityDir: [number, number, number] = [...DEFAULT_SPRING_BONE_PARAMS.gravityDir]
-  if (Array.isArray(ext.gravityDir) && ext.gravityDir.length === 3) {
-    const [x, y, z] = ext.gravityDir
-    if (typeof x === 'number' && typeof y === 'number' && typeof z === 'number' && isFinite(x) && isFinite(y) && isFinite(z)) {
-      gravityDir = [formatNumber(x), formatNumber(y), formatNumber(z)]
-    }
-  }
-
-  return { stiffness, gravityPower, gravityDir, drag, center }
-}
-
 const isSpringBoneNode = (node: GltfNode): boolean => {
   return !!node.name && isSpringBoneName(node.name)
-}
-
-function getSpringBoneExtension(node: GltfNode): GltfExtension | null {
-  const extension = node.extensions?.[DCL_SPRING_BONE_EXTENSION]
-  return extension && typeof extension === 'object' ? (extension as GltfExtension) : null
 }
 
 export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
@@ -90,20 +50,10 @@ export function parseSpringBones(buffer: ArrayBuffer): SpringBonesParseResult {
     const children = node.children ?? []
 
     if (isSpringBoneNode(node)) {
-      const bone: BoneNode = { name, nodeId: i, type: 'spring', children }
-
-      const extension = getSpringBoneExtension(node)
-      if (extension) {
-        const params = parseParams(extension)
-
-        // Validate center: must not point to a spring bone node
-        if (typeof params.center === 'string' && params.center.toLowerCase().includes(SPRING_BONE_PREFIX)) {
-          params.center = undefined
-        }
-
-        bone.params = params
+      const bone: BoneNode = {
+        name, nodeId: i, type: 'spring', children,
+        params: getDefaultSpringBoneParams()
       }
-
       bones.push(bone)
     } else {
       bones.push({ name, nodeId: i, type: 'avatar', children })

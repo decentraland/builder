@@ -154,6 +154,17 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       const blob = await this.fetchGlbBlob(hash)
       const buffer = await blob.arrayBuffer()
       const { bones } = parseSpringBones(buffer)
+
+      // Overlay params from metadata if available
+      const metadataParams = (item.data as any).springBones?.models?.[mainFile]
+      if (metadataParams) {
+        for (const bone of bones) {
+          if (bone.type === 'spring' && metadataParams[bone.name]) {
+            bone.params = metadataParams[bone.name]
+          }
+        }
+      }
+
       return bones
     } catch (error) {
       console.warn(`Failed to parse spring bones for ${bodyShape}:`, error)
