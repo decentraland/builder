@@ -135,6 +135,10 @@ src/
       sagas.spec.ts
 ```
 
+## Wearable Preview
+
+The wearable preview in the builder uses the **Unity** renderer by default. To test with the **Babylon** renderer instead, append `&unity=false` to the editor URL.
+
 ## AI Agent Context
 
 For detailed AI Agent context, see [docs/ai-agent-context.md](docs/ai-agent-context.md).

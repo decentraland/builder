@@ -59,7 +59,8 @@ const CenterPanelContainer: React.FC<CenterPanelContainerProps> = () => {
 
   const isUnityWearablePreviewEnabled = useMemo(() => {
     const params = new URLSearchParams(location.search)
-    return params.get('unity') === 'true' && isUnityFeatureFlagEnabled
+    // Enable Unity preview by default, unless it's disabled from the URL or the feature flag.
+    return params.get('unity') !== 'false' && isUnityFeatureFlagEnabled
   }, [location.search, isUnityFeatureFlagEnabled])
 
   const collectionId = useGetSelectedCollectionIdFromCurrentUrl()
