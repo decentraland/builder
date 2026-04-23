@@ -470,6 +470,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         <WearablePreview
           id="wearable-editor"
           profile="default"
+          baseUrl="https://wearable-preview-git-feat-unity-spring-bones-decentraland1.vercel.app"
           bodyShape={bodyShape}
           emote={emote}
           zoom={zoom}
