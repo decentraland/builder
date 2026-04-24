@@ -11,7 +11,7 @@
     "@dcl/crypto": "^3.4.5",
     "@dcl/hashing": "^3.0.4",
     "@dcl/mini-rpc": "^1.0.7",
-    "@dcl/schemas": "^26.1.0",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/spring-bones-metadata/dcl-schemas-26.1.1-24916710914.commit-36d6b81.tgz",
     "@dcl/sdk": "7.5.5",
     "@dcl/single-sign-on-client": "^0.1.0",
     "@dcl/ui-env": "^2.0.0",
