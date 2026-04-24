@@ -82,7 +82,7 @@ export async function validateEmoteGLTF(gltf: GLTF, hasProps: boolean, contents?
     validateEmoteMaxFrames(animations),
     validateEmoteAnimationClipCount(animations, hasProps),
     validateEmoteDeformBoneKeyframes(Three, scene, animations),
-    validateNoNonDeformBones(Three, scene),
+    validateNoNonDeformBones(Three, scene, animations),
     validateArmatureNaming(scene),
     validateAnimationNaming(animations, hasProps)
   ]
