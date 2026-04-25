@@ -563,16 +563,14 @@ describe('when handling the save item request action', () => {
         contents = { [THUMBNAIL_PATH]: blob }
       })
 
-      it('should save the item with spring bone params in metadata instead of patching GLBs', () => {
+      it('should save the item with spring bone params in metadata', () => {
         const expectedItem = {
           ...item,
           data: {
             ...item.data,
             springBones: {
               version: 1,
-              models: {
-                [item.data.representations[0].mainFile]: springBoneParams
-              }
+              models: { [item.data.representations[0].mainFile]: springBoneParams }
             }
           }
         }

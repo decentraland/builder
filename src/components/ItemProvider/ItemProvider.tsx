@@ -156,7 +156,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       const { bones } = parseSpringBones(buffer)
 
       // Overlay params from metadata if available
-      const metadataParams = (item.data as any).springBones?.models?.[mainFile]
+      const metadataParams = item.data.springBones?.models[mainFile]
       if (metadataParams) {
         for (const bone of bones) {
           if (bone.type === 'spring' && metadataParams[bone.name]) {

@@ -396,9 +396,7 @@
         "armature_naming": "发现意外的骨架名称：{names}。角色骨架应命名为 'Armature'，道具骨架应命名为 'Armature_Prop'。",
         "animation_naming": "当存在道具时，动画片段应以 '_Avatar' 或 '_Prop' 结尾。无效名称：{names}。",
         "audio_format": "音频文件 \"{name}\" 的格式不受支持。仅允许 .mp3 和 .ogg 格式。",
-        "spring_bone_count_exceeded": "此模型有 {count} 个弹簧骨骼（最大值：{limit}）。请在 3D 编辑器中减少弹簧骨骼节点的数量，然后重新上传。",
-        "spring_bone_param_out_of_range": "弹簧骨骼 \"{boneName}\" 的 {paramName} 值为 {value}，超出了允许范围（{min}–{max}）。",
-        "spring_bone_invalid_gravity_dir": "弹簧骨骼 \"{boneName}\" 的 gravityDir 无效（需要恰好 3 个数字）。"
+        "spring_bone_count_exceeded": "此模型有 {count} 个弹簧骨骼（最大值：{limit}）。请在 3D 编辑器中减少弹簧骨骼节点的数量，然后重新上传。"
       }
     },
     "emote_notice": "表情适用于所有体型。",

@@ -139,16 +139,7 @@ import { isErrorWithCode } from 'lib/error'
 import { hasSpringBoneChanges, getSpringBoneParams, getSpringBoneParamsByShape } from 'modules/editor/selectors'
 import { SpringBoneParams } from 'modules/editor/types'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import {
-  Item,
-  BlockchainRarity,
-  CatalystItem,
-  BodyShapeType,
-  IMAGE_PATH,
-  THUMBNAIL_PATH,
-  WearableData,
-  VIDEO_PATH
-} from './types'
+import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
   ItemEmoteTooBigError,
