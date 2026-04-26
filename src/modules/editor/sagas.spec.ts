@@ -6,7 +6,14 @@ import { mockedItem } from 'specs/item'
 import { Item, ItemType } from 'modules/item/types'
 import { editorSaga } from './sagas'
 import { fetchGlbBlob } from './utils'
-import { clearSpringBones, loadSpringBonesFailure, loadSpringBonesRequest, loadSpringBonesSuccess, setBones, setBonesByShape } from './actions'
+import {
+  clearSpringBones,
+  loadSpringBonesFailure,
+  loadSpringBonesRequest,
+  loadSpringBonesSuccess,
+  setBones,
+  setBonesByShape
+} from './actions'
 import { getBodyShape } from './selectors'
 import { parseSpringBones } from 'lib/parseSpringBones'
 
@@ -125,7 +132,13 @@ describe('when handling the load spring bones request', () => {
   describe('and metadata params are present for a spring bone', () => {
     let item: Item
     const blob = makeBlob()
-    const metadataParams = { stiffness: 3, gravityPower: 1, gravityDir: [0, -1, 0] as [number, number, number], drag: 0.4, center: undefined }
+    const metadataParams = {
+      stiffness: 3,
+      gravityPower: 1,
+      gravityDir: [0, -1, 0] as [number, number, number],
+      drag: 0.4,
+      center: undefined
+    }
 
     beforeEach(() => {
       item = {
@@ -202,9 +215,7 @@ describe('when handling the load spring bones request', () => {
 
     it('should dispatch loadSpringBonesFailure with the error message', () => {
       return expectSaga(editorSaga as any)
-        .provide([
-          [select(getBodyShape), Promise.reject(new Error('selector blew up'))]
-        ])
+        .provide([[select(getBodyShape), Promise.reject(new Error('selector blew up'))]])
         .put(clearSpringBones())
         .put(loadSpringBonesFailure(item.id, 'selector blew up'))
         .dispatch(loadSpringBonesRequest(item))
@@ -212,4 +223,3 @@ describe('when handling the load spring bones request', () => {
     })
   })
 })
-
