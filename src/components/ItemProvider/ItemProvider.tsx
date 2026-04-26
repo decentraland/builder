@@ -42,18 +42,9 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       onFetchCollection(item.collectionId)
     }
 
-    if (isConnected && id && item && item.id !== prevProps.item?.id && item.type === 'emote') {
+    if (isConnected && id && item && item.id !== prevProps.item?.id) {
       void this.loadAnimationData(item)
-    }
-
-    // Reload spring bones when the item changes or the model is updated.
-    if (isConnected && id && item && item.type === 'wearable') {
-      const itemChanged = item.id !== prevProps.item?.id
-      const itemUpdated = prevProps.item != null && item.updatedAt !== prevProps.item.updatedAt
-      if (itemChanged || itemUpdated) {
-        void this.loadAnimationData(item)
-        this.props.onLoadSpringBones(item)
-      }
+      void this.props.onLoadSpringBones(item)
     }
   }
 

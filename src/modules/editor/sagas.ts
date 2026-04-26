@@ -103,6 +103,7 @@ import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
+import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -173,6 +174,7 @@ export function* editorSaga() {
   yield takeLatest(ADD_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
   yield takeLatest(DELETE_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
   yield takeLatest(LOAD_SPRING_BONES_REQUEST, handleLoadSpringBones)
+  yield takeLatest(SAVE_ITEM_SUCCESS, handleLoadSpringBones)
 }
 
 function* pollEditor(scene: SceneSDK6) {
@@ -754,7 +756,7 @@ function* parseSpringBonesForShape(item: Item, bodyShape: BodyShape) {
     const { bones }: ReturnType<typeof parseSpringBones> = yield call(parseSpringBones, buffer)
 
     // Populate spring bone params from item metadata — the GLB only carries bone names/hierarchy.
-    const metadataParams = item.data.springBones?.models[mainFile]
+    const metadataParams = item.data.springBones?.models[hash]
     if (metadataParams) {
       for (const bone of bones) {
         if (bone.type === 'spring' && metadataParams[bone.name]) {

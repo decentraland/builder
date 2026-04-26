@@ -14,6 +14,7 @@ import {
   setBones,
   setBonesByShape
 } from './actions'
+import { saveItemSuccess } from 'modules/item/actions'
 import { getBodyShape } from './selectors'
 import { parseSpringBones } from 'lib/parseSpringBones'
 
@@ -157,7 +158,7 @@ describe('when handling the load spring bones request', () => {
           ],
           springBones: {
             version: 1,
-            models: { 'anItemContent.glb': { springbone_hair: metadataParams } }
+            models: { [aHash]: { springbone_hair: metadataParams } }
           }
         }
       }
@@ -173,6 +174,65 @@ describe('when handling the load spring bones request', () => {
         ])
         .put(clearSpringBones())
         .put(setBones([{ name: 'springbone_hair', nodeId: 1, type: 'spring', children: [], params: metadataParams }], item.id))
+        .put(loadSpringBonesSuccess(item.id))
+        .dispatch(loadSpringBonesRequest(item))
+        .silentRun()
+    })
+  })
+
+  describe('and a single GLB is shared across male and female representations', () => {
+    let item: Item
+    const blob = makeBlob()
+    const metadataParams = {
+      stiffness: 2.81,
+      gravityPower: 0,
+      gravityDir: [0, -1, 0] as [number, number, number],
+      drag: 0.31,
+      isRoot: true
+    }
+
+    beforeEach(() => {
+      // Same hash under two prefixed paths — builder adds male/ and female/ prefixes
+      // on upload, but both point to the same GLB bytes.
+      item = {
+        ...mockedItem,
+        contents: { 'male/shared.glb': aHash, 'female/shared.glb': aHash },
+        data: {
+          ...mockedItem.data,
+          representations: [
+            {
+              bodyShapes: [BodyShape.MALE],
+              mainFile: 'male/shared.glb',
+              contents: ['male/shared.glb'],
+              overrideReplaces: [],
+              overrideHides: []
+            },
+            {
+              bodyShapes: [BodyShape.FEMALE],
+              mainFile: 'female/shared.glb',
+              contents: ['female/shared.glb'],
+              overrideReplaces: [],
+              overrideHides: []
+            }
+          ],
+          springBones: {
+            version: 1,
+            models: { [aHash]: { Hair_springBone: metadataParams } }
+          }
+        }
+      }
+    })
+
+    it('should resolve metadata params via the shared content hash for the female body shape', () => {
+      const parsed = { bones: [{ name: 'Hair_springBone', nodeId: 1, type: 'spring' as const, children: [] }] }
+      return expectSaga(editorSaga as any)
+        .provide([
+          [select(getBodyShape), BodyShape.FEMALE],
+          [matchers.call.fn(fetchGlbBlob), blob],
+          [matchers.call.fn(parseSpringBones), parsed]
+        ])
+        .put(clearSpringBones())
+        .put(setBones([{ name: 'Hair_springBone', nodeId: 1, type: 'spring', children: [], params: metadataParams }], item.id))
         .put(loadSpringBonesSuccess(item.id))
         .dispatch(loadSpringBonesRequest(item))
         .silentRun()
@@ -219,6 +279,47 @@ describe('when handling the load spring bones request', () => {
         .put(clearSpringBones())
         .put(loadSpringBonesFailure(item.id, 'selector blew up'))
         .dispatch(loadSpringBonesRequest(item))
+        .silentRun()
+    })
+  })
+})
+
+describe('when an item save succeeds', () => {
+  describe('and the saved item is a wearable', () => {
+    let item: Item
+    const blob = makeBlob()
+
+    beforeEach(() => {
+      item = { ...mockedItem, contents: { 'anItemContent.glb': aHash } }
+    })
+
+    it('should reload spring bones for the saved item', () => {
+      return expectSaga(editorSaga as any)
+        .provide([
+          [select(getBodyShape), BodyShape.MALE],
+          [matchers.call.fn(fetchGlbBlob), blob],
+          [matchers.call.fn(parseSpringBones), { bones: [] }]
+        ])
+        .put(clearSpringBones())
+        .put(loadSpringBonesSuccess(item.id))
+        .dispatch(saveItemSuccess(item, {}))
+        .silentRun()
+    })
+  })
+
+  describe('and the saved item is an emote', () => {
+    let item: Item
+
+    beforeEach(() => {
+      item = { ...mockedItem, type: ItemType.EMOTE, contents: { 'anItemContent.glb': aHash } } as unknown as Item
+    })
+
+    it('should clear spring bones and finish without parsing', () => {
+      return expectSaga(editorSaga as any)
+        .put(clearSpringBones())
+        .not.call(fetchGlbBlob, expect.any(String))
+        .put(loadSpringBonesSuccess(item.id))
+        .dispatch(saveItemSuccess(item, {}))
         .silentRun()
     })
   })

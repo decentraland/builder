@@ -563,14 +563,16 @@ describe('when handling the save item request action', () => {
         contents = { [THUMBNAIL_PATH]: blob }
       })
 
-      it('should save the item with spring bone params in metadata', () => {
+      it('should save the item with spring bone params keyed by content hash', () => {
+        const mainFile = item.data.representations[0].mainFile
+        const hash = item.contents[mainFile]
         const expectedItem = {
           ...item,
           data: {
             ...item.data,
             springBones: {
               version: 1,
-              models: { [item.data.representations[0].mainFile]: springBoneParams }
+              models: { [hash]: springBoneParams }
             }
           }
         }
@@ -597,6 +599,7 @@ describe('when handling the save item request action', () => {
             const savedData = successPut!.payload.action.payload.item.data
             expect(savedData.springBones).toBeDefined()
             expect(savedData.springBones.version).toBe(1)
+            expect(savedData.springBones.models).toEqual({ [hash]: springBoneParams })
           })
       })
     })
