@@ -2,7 +2,7 @@ import type { History } from 'history'
 import type { Wearable } from 'decentraland-ecs'
 import { takeLatest, select, put, call, delay, take, getContext } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
-import { IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
+import { BodyShape, IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
@@ -59,7 +59,14 @@ import {
   SET_SPRING_BONE_PARAM,
   PUSH_SPRING_BONE_PARAMS,
   ADD_SPRING_BONE_PARAMS,
-  DELETE_SPRING_BONE_PARAMS
+  DELETE_SPRING_BONE_PARAMS,
+  LOAD_SPRING_BONES_REQUEST,
+  LoadSpringBonesRequestAction,
+  clearSpringBones,
+  setBones,
+  setBonesByShape,
+  loadSpringBonesSuccess,
+  loadSpringBonesFailure
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -84,7 +91,7 @@ import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, ComponentDefinition, ComponentData, SceneSDK6 } from 'modules/scene/types'
 import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
 import { Project } from 'modules/project/types'
-import { CatalystWearable, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
+import { BoneNode, CatalystWearable, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
 import { getLoading } from 'modules/assetPack/selectors'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -115,7 +122,8 @@ import {
   getVisibleItemsFromUrl,
   getSpringBoneParams,
   getSpringBones,
-  getSelectedItemId
+  getSelectedItemId,
+  getBodyShape
 } from './selectors'
 import {
   getNewEditorScene,
@@ -128,8 +136,11 @@ import {
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
-  fromCatalystWearableToWearable
+  fromCatalystWearableToWearable,
+  fetchGlbBlob
 } from './utils'
+import { isWearable, getRepresentationMainFile, hasMultipleModels } from 'modules/item/utils'
+import { parseSpringBones } from 'lib/parseSpringBones'
 import { MessageTransport } from '@dcl/mini-rpc'
 import { CameraClient } from '@dcl/inspector'
 const editorWindow = window as EditorWindow
@@ -161,6 +172,7 @@ export function* editorSaga() {
   yield takeLatest(PUSH_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
   yield takeLatest(ADD_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
   yield takeLatest(DELETE_SPRING_BONE_PARAMS, handlePushSpringBoneParams)
+  yield takeLatest(LOAD_SPRING_BONES_REQUEST, handleLoadSpringBones)
 }
 
 function* pollEditor(scene: SceneSDK6) {
@@ -727,4 +739,71 @@ function* handleSpringBoneParamDebounced() {
 function* handlePushSpringBoneParams() {
   // Immediate push (used on preview load and emote play)
   yield call(pushSpringBoneParamsToPreview)
+}
+
+function* parseSpringBonesForShape(item: Item, bodyShape: BodyShape) {
+  const mainFile = getRepresentationMainFile(item, bodyShape)
+  const hash = mainFile ? item.contents[mainFile] : null
+  if (!mainFile || !hash) {
+    return null
+  }
+
+  try {
+    const blob: Blob = yield call(fetchGlbBlob, hash)
+    const buffer: ArrayBuffer = yield call([blob, 'arrayBuffer'])
+    const { bones }: ReturnType<typeof parseSpringBones> = yield call(parseSpringBones, buffer)
+
+    // Populate spring bone params from item metadata — the GLB only carries bone names/hierarchy.
+    const metadataParams = item.data.springBones?.models[mainFile]
+    if (metadataParams) {
+      for (const bone of bones) {
+        if (bone.type === 'spring' && metadataParams[bone.name]) {
+          bone.params = metadataParams[bone.name]
+        }
+      }
+    }
+
+    return bones
+  } catch (error) {
+    console.warn(`Failed to parse spring bones for ${bodyShape}:`, error)
+    return null
+  }
+}
+
+function* handleLoadSpringBones(action: LoadSpringBonesRequestAction) {
+  const { item } = action.payload
+
+  try {
+    // Always clear stale state before loading. takeLatest cancels any prior in-flight load.
+    yield put(clearSpringBones())
+
+    if (!isWearable(item)) {
+      yield put(loadSpringBonesSuccess(item.id))
+      return
+    }
+
+    const currentBodyShape: BodyShape = yield select(getBodyShape)
+
+    if (hasMultipleModels(item)) {
+      // Eagerly parse both body shapes so tab badges are correct and tab switches skip re-fetch
+      for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
+        const bones: BoneNode[] | null = yield call(parseSpringBonesForShape, item, shape)
+        if (bones === null) continue
+        yield put(setBonesByShape(shape, bones, item.id))
+        if (shape === currentBodyShape) {
+          yield put(setBones(bones, item.id))
+        }
+      }
+    } else {
+      // Single GLB path, parse once and use for both body shapes
+      const bones: BoneNode[] | null = yield call(parseSpringBonesForShape, item, currentBodyShape)
+      if (bones !== null) {
+        yield put(setBones(bones, item.id))
+      }
+    }
+
+    yield put(loadSpringBonesSuccess(item.id))
+  } catch (error) {
+    yield put(loadSpringBonesFailure(item.id, isErrorWithMessage(error) ? error.message : 'Unknown error'))
+  }
 }

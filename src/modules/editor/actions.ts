@@ -281,6 +281,7 @@ export type FetchBaseWearablesSuccessAction = ReturnType<typeof fetchBaseWearabl
 export type FetchBaseWearablesFailureAction = ReturnType<typeof fetchBaseWearablesFailure>
 
 // Spring Bones
+import { ItemType } from 'modules/item/types'
 import { BoneNode, SpringBoneParams } from './types'
 
 export const CLEAR_SPRING_BONES = 'Clear spring bones'
@@ -292,6 +293,9 @@ export const ADD_SPRING_BONE_PARAMS = 'Add spring bone params'
 export const DELETE_SPRING_BONE_PARAMS = 'Delete spring bone params'
 export const SET_BONES_BY_SHAPE = 'Set bones by shape'
 export const SET_SPRING_BONE_PARAMS_BY_SHAPE = 'Set spring bone params by shape'
+export const LOAD_SPRING_BONES_REQUEST = '[Request] Load spring bones'
+export const LOAD_SPRING_BONES_SUCCESS = '[Success] Load spring bones'
+export const LOAD_SPRING_BONES_FAILURE = '[Failure] Load spring bones'
 
 /** Clears all spring bone data from the editor state */
 export const clearSpringBones = () => action(CLEAR_SPRING_BONES)
@@ -323,6 +327,11 @@ export const setBonesByShape = (bodyShape: BodyShape, bones: BoneNode[], selecte
 export const setSpringBoneParamsByShape = (bodyShape: BodyShape, params: Record<string, SpringBoneParams>) =>
   action(SET_SPRING_BONE_PARAMS_BY_SHAPE, { bodyShape, params })
 
+/** Triggers loading of spring bone data (parsed bones + metadata-merged params) for a wearable item */
+export const loadSpringBonesRequest = (item: Item<ItemType.WEARABLE | ItemType.EMOTE>) => action(LOAD_SPRING_BONES_REQUEST, { item })
+export const loadSpringBonesSuccess = (itemId: string) => action(LOAD_SPRING_BONES_SUCCESS, { itemId })
+export const loadSpringBonesFailure = (itemId: string, error: string) => action(LOAD_SPRING_BONES_FAILURE, { itemId, error })
+
 export type ClearSpringBonesAction = ReturnType<typeof clearSpringBones>
 export type SetBonesAction = ReturnType<typeof setBones>
 export type SetSpringBoneParamAction = ReturnType<typeof setSpringBoneParam>
@@ -332,3 +341,6 @@ export type AddSpringBoneParamsAction = ReturnType<typeof addSpringBoneParams>
 export type DeleteSpringBoneParamsAction = ReturnType<typeof deleteSpringBoneParams>
 export type SetBonesByShapeAction = ReturnType<typeof setBonesByShape>
 export type SetSpringBoneParamsByShapeAction = ReturnType<typeof setSpringBoneParamsByShape>
+export type LoadSpringBonesRequestAction = ReturnType<typeof loadSpringBonesRequest>
+export type LoadSpringBonesSuccessAction = ReturnType<typeof loadSpringBonesSuccess>
+export type LoadSpringBonesFailureAction = ReturnType<typeof loadSpringBonesFailure>

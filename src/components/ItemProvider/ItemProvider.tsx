@@ -1,11 +1,8 @@
 import * as React from 'react'
-import { BodyShape } from '@dcl/schemas'
 import { getEmoteData } from 'lib/getModelData'
-import { parseSpringBones } from 'lib/parseSpringBones'
-import { isWearable, getRepresentationMainFile, hasMultipleModels } from 'modules/item/utils'
+import { fetchGlbBlob } from 'modules/editor/utils'
 import { Props, State } from './ItemProvider.types'
 import { Item } from 'modules/item/types'
-import { BoneNode } from 'modules/editor/types'
 
 export default class ItemProvider extends React.PureComponent<Props, State> {
   state: State = {
@@ -30,7 +27,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     // Load animation data if item is available
     if (isConnected && id && item) {
       void this.loadAnimationData(item)
-      void this.loadSpringBonesData(item)
+      this.props.onLoadSpringBones(item)
     }
   }
 
@@ -49,24 +46,15 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       void this.loadAnimationData(item)
     }
 
-    // Reload spring bone data if wearable item changes
+    // Reload spring bones when the item changes or the model is updated.
     if (isConnected && id && item && item.type === 'wearable') {
-      const modelChanged = prevProps.item != null && this.hasModelContentChanged(prevProps.item, item)
-      if (item.id !== prevProps.item?.id || modelChanged) {
+      const itemChanged = item.id !== prevProps.item?.id
+      const itemUpdated = prevProps.item != null && item.updatedAt !== prevProps.item.updatedAt
+      if (itemChanged || itemUpdated) {
         void this.loadAnimationData(item)
-        void this.loadSpringBonesData(item)
+        this.props.onLoadSpringBones(item)
       }
     }
-  }
-
-  private hasModelContentChanged(prevItem: Item, nextItem: Item): boolean {
-    if (prevItem.contents === nextItem.contents) return false
-    for (const [path, hash] of Object.entries(nextItem.contents)) {
-      if ((path.endsWith('.glb') || path.endsWith('.gltf')) && hash !== prevItem.contents[path]) {
-        return true
-      }
-    }
-    return false
   }
 
   private findGlbFile(contents: Record<string, string>): { path: string; hash: string } | null {
@@ -77,16 +65,6 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       }
     }
     return null
-  }
-
-  private async fetchGlbBlob(hash: string): Promise<Blob> {
-    const { getContentsStorageUrl } = await import('lib/api/builder')
-    const url = getContentsStorageUrl(hash)
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch GLB file: ${response.statusText}`)
-    }
-    return response.blob()
   }
 
   private async loadAnimationData(item: Item) {
@@ -118,8 +96,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
         return
       }
 
-      // Fetch the blob and get emote data
-      const blob = await this.fetchGlbBlob(glbFile.hash)
+      const blob = await fetchGlbBlob(glbFile.hash)
       const data = await getEmoteData(URL.createObjectURL(blob))
 
       this.setState(prev => ({
@@ -140,65 +117,6 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
           error: error instanceof Error ? error.message : 'Unknown error'
         }
       }))
-    }
-  }
-
-  private async getSpringBonesForBodyShape(item: Item, bodyShape: BodyShape): Promise<BoneNode[] | null> {
-    const mainFile = getRepresentationMainFile(item, bodyShape)
-    const hash = mainFile ? item.contents[mainFile] : null
-    if (!mainFile || !hash) {
-      return null
-    }
-
-    try {
-      const blob = await this.fetchGlbBlob(hash)
-      const buffer = await blob.arrayBuffer()
-      const { bones } = parseSpringBones(buffer)
-
-      // Overlay params from metadata if available
-      const metadataParams = item.data.springBones?.models[mainFile]
-      if (metadataParams) {
-        for (const bone of bones) {
-          if (bone.type === 'spring' && metadataParams[bone.name]) {
-            bone.params = metadataParams[bone.name]
-          }
-        }
-      }
-
-      return bones
-    } catch (error) {
-      console.warn(`Failed to parse spring bones for ${bodyShape}:`, error)
-      return null
-    }
-  }
-
-  private async loadSpringBonesData(item: Item) {
-    const { bodyShape, onSetCurrentBones, onSetBonesForShape, onClearSpringBones } = this.props
-    onClearSpringBones() // Clear previous spring bone data while loading new one
-
-    if (!isWearable(item)) {
-      return
-    }
-
-    if (hasMultipleModels(item)) {
-      // Eagerly parse both body shapes so tab badges are correct and tab switches skip re-fetch
-      await Promise.all(
-        [BodyShape.MALE, BodyShape.FEMALE].map(async shape => {
-          const bones = await this.getSpringBonesForBodyShape(item, shape)
-          if (bones !== null && this.props.item?.id === item.id) {
-            onSetBonesForShape(shape, bones, item.id)
-            if (shape === bodyShape) {
-              onSetCurrentBones(bones, item.id)
-            }
-          }
-        })
-      )
-    } else {
-      // Single GLB path, parse once and use for both body shapes
-      const bones = await this.getSpringBonesForBodyShape(item, bodyShape)
-      if (bones !== null && this.props.item?.id === item.id) {
-        onSetCurrentBones(bones, item.id)
-      }
     }
   }
 
