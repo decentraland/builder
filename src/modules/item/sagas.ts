@@ -517,7 +517,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           )
           for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
             const shapeParams = springBoneParamsByShape[shape]
-            if (!shapeParams) continue
+            if (!shapeParams || Object.keys(shapeParams).length === 0) continue
             const rep = item.data.representations.find(r => r.bodyShapes.includes(shape))
             const hash = rep?.mainFile ? item.contents[rep.mainFile] : undefined
             if (hash) {
@@ -526,20 +526,18 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         } else {
           const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
-          // Find the main file from the first representation
-          const mainFile = item.data.representations[0]?.mainFile
-          const hash = mainFile ? item.contents[mainFile] : undefined
-          if (hash) {
-            models[hash] = springBoneParams
+          if (Object.keys(springBoneParams).length > 0) {
+            const mainFile = item.data.representations[0]?.mainFile
+            const hash = mainFile ? item.contents[mainFile] : undefined
+            if (hash) {
+              models[hash] = springBoneParams
+            }
           }
         }
 
         item.data = {
           ...item.data,
-          springBones: {
-            version: 1,
-            models
-          }
+          springBones: Object.keys(models).length > 0 ? { version: 1, models } : undefined
         }
       }
 
