@@ -157,6 +157,9 @@
   },
   "homepage": "",
   "overrides": {
+    "decentraland-dapps": {
+      "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/spring-bones-metadata/dcl-schemas-26.1.1-24916710914.commit-36d6b81.tgz"
+    },
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
     "ripemd160": {
