@@ -743,7 +743,7 @@ function* handlePushSpringBoneParams() {
   yield call(pushSpringBoneParamsToPreview)
 }
 
-function* parseSpringBonesForShape(item: Item, bodyShape: BodyShape) {
+function* parseSpringBonesForBodyShape(item: Item, bodyShape: BodyShape) {
   const mainFile = getRepresentationMainFile(item, bodyShape)
   const hash = mainFile ? item.contents[mainFile] : null
   if (!mainFile || !hash) {
@@ -789,7 +789,7 @@ function* handleLoadSpringBones(action: LoadSpringBonesRequestAction) {
     if (hasMultipleModels(item)) {
       // Eagerly parse both body shapes so tab badges are correct and tab switches skip re-fetch
       for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
-        const bones: BoneNode[] | null = yield call(parseSpringBonesForShape, item, shape)
+        const bones: BoneNode[] | null = yield call(parseSpringBonesForBodyShape, item, shape)
         if (bones === null) continue
         yield put(setBonesByShape(shape, bones, item.id))
         if (shape === currentBodyShape) {
@@ -798,7 +798,7 @@ function* handleLoadSpringBones(action: LoadSpringBonesRequestAction) {
       }
     } else {
       // Single GLB path, parse once and use for both body shapes
-      const bones: BoneNode[] | null = yield call(parseSpringBonesForShape, item, currentBodyShape)
+      const bones: BoneNode[] | null = yield call(parseSpringBonesForBodyShape, item, currentBodyShape)
       if (bones !== null) {
         yield put(setBones(bones, item.id))
       }

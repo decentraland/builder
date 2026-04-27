@@ -27,7 +27,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     // Load animation data if item is available
     if (isConnected && id && item) {
       void this.loadAnimationData(item)
-      this.props.onLoadSpringBones(item)
+      void this.props.onLoadSpringBones(item)
     }
   }
 

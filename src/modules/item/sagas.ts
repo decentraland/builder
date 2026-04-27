@@ -138,6 +138,7 @@ import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
 import { hasSpringBoneChanges, getSpringBoneParams, getSpringBoneParamsByShape } from 'modules/editor/selectors'
 import { SpringBoneParams } from 'modules/editor/types'
+import { SPRING_BONES_VERSION } from 'lib/springBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
@@ -537,7 +538,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
         item.data = {
           ...item.data,
-          springBones: Object.keys(models).length > 0 ? { version: 1, models } : undefined
+          springBones: Object.keys(models).length > 0 ? { version: SPRING_BONES_VERSION, models } : undefined
         }
       }
 
