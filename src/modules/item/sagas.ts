@@ -136,7 +136,7 @@ import { getIsLinkedWearablesV2Enabled, getIsOffchainPublicItemOrdersEnabled } f
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
-import { hasSpringBoneChanges, getSpringBoneParams, getSpringBoneParamsByShape } from 'modules/editor/selectors'
+import { getSpringBoneParams, getSpringBoneParamsByShape } from 'modules/editor/selectors'
 import { SpringBoneParams } from 'modules/editor/types'
 import { SPRING_BONES_VERSION } from 'lib/springBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
@@ -165,7 +165,8 @@ import {
   isSkinFileSizeValid,
   isSmartWearableFileSizeValid,
   createItemOrderTrade,
-  hasMultipleModels
+  hasMultipleModels,
+  hasModelChangesForBodyShape
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -508,8 +509,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       }
 
       // Spring bone metadata
-      const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
-      if (isWearable(item) && springBoneHasChanges) {
+      if (isWearable(item)) {
         const models: Record<string, Record<string, SpringBoneParams>> = {}
 
         if (hasMultipleModels(item)) {
@@ -527,7 +527,9 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         } else {
           const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
-          if (Object.keys(springBoneParams).length > 0) {
+          // Single-model: use MALE as the canonical shape (representations share the same GLB hash here).
+          const modelChanged = oldItem ? hasModelChangesForBodyShape(oldItem, item, BodyShape.MALE) : false
+          if (Object.keys(springBoneParams).length > 0 && !modelChanged) {
             const mainFile = item.data.representations[0]?.mainFile
             const hash = mainFile ? item.contents[mainFile] : undefined
             if (hash) {
