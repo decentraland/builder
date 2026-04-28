@@ -43,8 +43,8 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     }
 
     if (isConnected && id && item && item.id !== prevProps.item?.id) {
-      void this.loadAnimationData(item)
-      void this.props.onLoadSpringBones(item)
+      void this.loadAnimationData(item) // Loads animation data only for emotes
+      void this.props.onLoadSpringBones(item) // Resets spring bones data when item changes, then loads new data only for wearables with spring bones.
     }
   }
 
