@@ -136,7 +136,7 @@ import { getIsLinkedWearablesV2Enabled, getIsOffchainPublicItemOrdersEnabled } f
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
-import { getSpringBoneParams, getSpringBoneParamsByShape } from 'modules/editor/selectors'
+import { getSpringBoneParams, getSpringBoneParamsByShape, hasSpringBoneChanges } from 'modules/editor/selectors'
 import { SpringBoneParams } from 'modules/editor/types'
 import { SPRING_BONES_VERSION } from 'lib/springBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
@@ -508,11 +508,19 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      // Spring bone metadata
-      if (isWearable(item)) {
-        const models: Record<string, Record<string, SpringBoneParams>> = {}
+      // Reset spring bones if wearable models changed
+      const modelChanged =
+        !!oldItem && [BodyShape.MALE, BodyShape.FEMALE].some(bodyShape => hasModelChangesForBodyShape(oldItem, actionItem, bodyShape))
+      const multipleModels = hasMultipleModels(item)
+      if (isWearable(item) && !multipleModels && modelChanged) {
+        item.data.springBones = undefined
+      }
 
-        if (hasMultipleModels(item)) {
+      // Recompute pring bone metadata
+      const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
+      if (isWearable(item) && springBoneHasChanges) {
+        const models: Record<string, Record<string, SpringBoneParams>> = {}
+        if (multipleModels) {
           const springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = yield select(
             getSpringBoneParamsByShape
           )
@@ -527,8 +535,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         } else {
           const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
-          // Single-model: use MALE as the canonical shape (representations share the same GLB hash here).
-          const modelChanged = oldItem ? hasModelChangesForBodyShape(oldItem, item, BodyShape.MALE) : false
+          // Single-model: use the first representation's GLB hash (representations share the same GLB here).
           if (Object.keys(springBoneParams).length > 0 && !modelChanged) {
             const mainFile = item.data.representations[0]?.mainFile
             const hash = mainFile ? item.contents[mainFile] : undefined
@@ -538,10 +545,7 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
           }
         }
 
-        item.data = {
-          ...item.data,
-          springBones: Object.keys(models).length > 0 ? { version: SPRING_BONES_VERSION, models } : undefined
-        }
+        item.data.springBones = Object.keys(models).length > 0 ? { version: SPRING_BONES_VERSION, models } : undefined
       }
 
       const savedItem: Item = yield call([legacyBuilder, 'saveItem'], item, contents)
