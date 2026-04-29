@@ -247,16 +247,16 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
 
 /**
  * Detects non-deformation bones that were exported with the model.
- * Deformation bones are those bound to a SkinnedMesh skeleton. Any Bone in the
- * scene that is not part of any skeleton is likely a control, IK, or mechanism
+ * Deformation bones are those bound to a SkinnedMesh skeleton or targeted by at least one animation track.
+ * Any Bone in the scene that is not part of any skeleton is likely a control, IK, or mechanism
  * bone that should have been excluded via "Export Deformation Bones Only".
  * Reports WARNING because non-deformation bones increase file size and reduce performance.
  */
-export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
+export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene, animations?: THREE.AnimationClip[]): ValidationIssue[] {
   const issues: ValidationIssue[] = []
-
-  // Collect all bone names bound to skinned meshes (deformation bones)
   const deformBoneNames = new Set<string>()
+
+  // Deform bones bound to a SkinnedMesh skeleton
   scene.traverse((node: THREE.Object3D) => {
     if (node instanceof Three.SkinnedMesh && node.skeleton) {
       for (const bone of node.skeleton.bones) {
@@ -264,6 +264,15 @@ export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene
       }
     }
   })
+
+  // Deform bones targeted by animation tracks
+  for (const clip of animations ?? []) {
+    for (const track of clip.tracks) {
+      // Track names follow the pattern "BoneName.property" (e.g. "Avatar_Hips.position")
+      const boneName = track.name.replace(/\.[^.]+$/, '')
+      if (boneName) deformBoneNames.add(boneName)
+    }
+  }
 
   // Collect all bones in the scene
   const allBones: string[] = []
@@ -273,7 +282,6 @@ export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene
     }
   })
 
-  // Non-deformation bones are those not bound to any skeleton
   const nonDeformBones = allBones.filter(name => !deformBoneNames.has(name))
 
   if (nonDeformBones.length > 0) {

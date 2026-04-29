@@ -510,6 +510,14 @@ describe('validateNoLeafBones', () => {
   })
 })
 
+function createAnimations(trackNames: string[]): THREE.AnimationClip[] {
+  return [
+    {
+      tracks: trackNames.map(name => ({ name }))
+    }
+  ] as unknown as THREE.AnimationClip[]
+}
+
 describe('validateNoNonDeformBones', () => {
   let Three: MockThree
 
@@ -521,61 +529,121 @@ describe('validateNoNonDeformBones', () => {
     jest.resetAllMocks()
   })
 
-  describe('when all bones are bound to a skinned mesh', () => {
-    let issues: ValidationIssue[]
+  describe('with skinned mesh (wearable)', () => {
+    describe('when all bones are bound to a skinned mesh', () => {
+      let issues: ValidationIssue[]
 
-    beforeEach(() => {
-      const bone1 = new Three.Bone()
-      bone1.name = 'Hips'
-      const bone2 = new Three.Bone()
-      bone2.name = 'Spine'
-      const skinnedMesh = new Three.SkinnedMesh()
-      ;(skinnedMesh as any).skeleton = { bones: [bone1, bone2] }
-      issues = validateNoNonDeformBones(asThree(Three), createScene([bone1, bone2, skinnedMesh]))
+      beforeEach(() => {
+        const bone1 = new Three.Bone()
+        bone1.name = 'Hips'
+        const bone2 = new Three.Bone()
+        bone2.name = 'Spine'
+        const skinnedMesh = new Three.SkinnedMesh()
+        ;(skinnedMesh as any).skeleton = { bones: [bone1, bone2] }
+        issues = validateNoNonDeformBones(asThree(Three), createScene([bone1, bone2, skinnedMesh]))
+      })
+
+      it('should return no issues', () => {
+        expect(issues).toEqual([])
+      })
     })
 
-    it('should return no issues', () => {
-      expect(issues).toEqual([])
+    describe('when there are bones not bound to any skinned mesh', () => {
+      let issues: ValidationIssue[]
+
+      beforeEach(() => {
+        const deformBone = new Three.Bone()
+        deformBone.name = 'Hips'
+        const controlBone = new Three.Bone()
+        controlBone.name = 'CTRL_IK_Foot'
+        const skinnedMesh = new Three.SkinnedMesh()
+        ;(skinnedMesh as any).skeleton = { bones: [deformBone] }
+        issues = validateNoNonDeformBones(asThree(Three), createScene([deformBone, controlBone, skinnedMesh]))
+      })
+
+      it('should return a warning with the NON_DEFORM_BONES_FOUND code', () => {
+        expect(issues).toHaveLength(1)
+        expect(issues[0].code).toBe('NON_DEFORM_BONES_FOUND')
+        expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+      })
+
+      it('should report the count and bone names', () => {
+        expect(issues[0].messageParams?.count).toBe(1)
+        expect(issues[0].messageParams?.bones).toContain('CTRL_IK_Foot')
+      })
+    })
+
+    describe('when there are no skinned meshes at all', () => {
+      let issues: ValidationIssue[]
+
+      beforeEach(() => {
+        const bone = new Three.Bone()
+        bone.name = 'OrphanBone'
+        issues = validateNoNonDeformBones(asThree(Three), createScene([bone]))
+      })
+
+      it('should report all bones as non-deformation', () => {
+        expect(issues).toHaveLength(1)
+        expect(issues[0].messageParams?.count).toBe(1)
+      })
     })
   })
 
-  describe('when there are bones not bound to any skinned mesh', () => {
-    let issues: ValidationIssue[]
+  describe('with animations (emote)', () => {
+    describe('when all bones are targeted by animation tracks', () => {
+      let issues: ValidationIssue[]
 
-    beforeEach(() => {
-      const deformBone = new Three.Bone()
-      deformBone.name = 'Hips'
-      const controlBone = new Three.Bone()
-      controlBone.name = 'CTRL_IK_Foot'
-      const skinnedMesh = new Three.SkinnedMesh()
-      ;(skinnedMesh as any).skeleton = { bones: [deformBone] }
-      issues = validateNoNonDeformBones(asThree(Three), createScene([deformBone, controlBone, skinnedMesh]))
+      beforeEach(() => {
+        const bone1 = new Three.Bone()
+        bone1.name = 'Hips'
+        const bone2 = new Three.Bone()
+        bone2.name = 'Spine'
+        const animations = createAnimations(['Hips.position', 'Hips.quaternion', 'Spine.position', 'Spine.quaternion'])
+        issues = validateNoNonDeformBones(asThree(Three), createScene([bone1, bone2]), animations)
+      })
+
+      it('should return no issues', () => {
+        expect(issues).toEqual([])
+      })
     })
 
-    it('should return a warning with the NON_DEFORM_BONES_FOUND code', () => {
-      expect(issues).toHaveLength(1)
-      expect(issues[0].code).toBe('NON_DEFORM_BONES_FOUND')
-      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+    describe('when there are bones not targeted by any animation track', () => {
+      let issues: ValidationIssue[]
+
+      beforeEach(() => {
+        const animatedBone = new Three.Bone()
+        animatedBone.name = 'Hips'
+        const controlBone = new Three.Bone()
+        controlBone.name = 'CTRL_IK_Foot'
+        const animations = createAnimations(['Hips.position', 'Hips.quaternion'])
+        issues = validateNoNonDeformBones(asThree(Three), createScene([animatedBone, controlBone]), animations)
+      })
+
+      it('should return a warning with the NON_DEFORM_BONES_FOUND code', () => {
+        expect(issues).toHaveLength(1)
+        expect(issues[0].code).toBe('NON_DEFORM_BONES_FOUND')
+        expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+      })
+
+      it('should report the count and bone names', () => {
+        expect(issues[0].messageParams?.count).toBe(1)
+        expect(issues[0].messageParams?.bones).toContain('CTRL_IK_Foot')
+      })
     })
 
-    it('should report the count and bone names', () => {
-      expect(issues[0].messageParams?.count).toBe(1)
-      expect(issues[0].messageParams?.bones).toContain('CTRL_IK_Foot')
-    })
-  })
+    describe('when there are no animations', () => {
+      let issues: ValidationIssue[]
 
-  describe('when there are no skinned meshes at all', () => {
-    let issues: ValidationIssue[]
+      beforeEach(() => {
+        const bone = new Three.Bone()
+        bone.name = 'OrphanBone'
+        issues = validateNoNonDeformBones(asThree(Three), createScene([bone]), [])
+      })
 
-    beforeEach(() => {
-      const bone = new Three.Bone()
-      bone.name = 'OrphanBone'
-      issues = validateNoNonDeformBones(asThree(Three), createScene([bone]))
-    })
-
-    it('should report all bones as non-deformation', () => {
-      expect(issues).toHaveLength(1)
-      expect(issues[0].messageParams?.count).toBe(1)
+      it('should report all bones as non-deformation', () => {
+        expect(issues).toHaveLength(1)
+        expect(issues[0].messageParams?.count).toBe(1)
+      })
     })
   })
 
