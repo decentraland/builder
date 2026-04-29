@@ -12,7 +12,8 @@ import {
   getFirstWearableOrItem,
   formatExtensions,
   hasVideo,
-  isEmote
+  isEmote,
+  getRepresentationMainFile
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -423,6 +424,62 @@ describe('when checking if an item is of emote type', () => {
 
     it('should return false', () => {
       expect(isEmote(item)).toBe(false)
+    })
+  })
+})
+
+describe('when getting the representation main file for a body shape', () => {
+  let item: Item
+
+  beforeEach(() => {
+    item = {
+      type: ItemType.WEARABLE,
+      data: {
+        representations: [
+          {
+            bodyShapes: [BodyShape.MALE],
+            mainFile: 'male.glb',
+            contents: ['male.glb'],
+            overrideReplaces: [],
+            overrideHides: []
+          },
+          {
+            bodyShapes: [BodyShape.FEMALE],
+            mainFile: 'female.glb',
+            contents: ['female.glb'],
+            overrideReplaces: [],
+            overrideHides: []
+          }
+        ]
+      }
+    } as unknown as Item
+  })
+
+  describe('and the body shape has a matching representation', () => {
+    it('should return the mainFile for the matching body shape', () => {
+      expect(getRepresentationMainFile(item, BodyShape.FEMALE)).toBe('female.glb')
+    })
+  })
+
+  describe('and the body shape does not have a matching representation', () => {
+    it('should fall back to the first representation mainFile', () => {
+      item.data.representations = [
+        {
+          bodyShapes: [BodyShape.MALE],
+          mainFile: 'male.glb',
+          contents: ['male.glb'],
+          overrideReplaces: [],
+          overrideHides: []
+        } as WearableRepresentation
+      ]
+      expect(getRepresentationMainFile(item, BodyShape.FEMALE)).toBe('male.glb')
+    })
+  })
+
+  describe('and the item has no representations', () => {
+    it('should return null', () => {
+      item.data.representations = []
+      expect(getRepresentationMainFile(item, BodyShape.MALE)).toBeNull()
     })
   })
 })

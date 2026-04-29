@@ -402,7 +402,8 @@
         "prop_armature_bones": "Prop armature has {count} bones, exceeding the limit of {limit}.",
         "armature_naming": "Unexpected armature names found: {names}. Avatar armature should be named 'Armature' and prop armature 'Armature_Prop'.",
         "animation_naming": "Animation clips should end with '_Avatar' or '_Prop' when props are present. Invalid names: {names}.",
-        "audio_format": "Audio file \"{name}\" has an unsupported format. Only .mp3 and .ogg are allowed."
+        "audio_format": "Audio file \"{name}\" has an unsupported format. Only .mp3 and .ogg are allowed.",
+        "spring_bone_count_exceeded": "This model has {count} spring bones (maximum: {limit}). Reduce the number of spring bone nodes in your 3D editor and re-upload."
       }
     },
     "emote_notice": "Emotes are available for all body shapes.",
@@ -2201,6 +2202,35 @@
         "optional": "optional",
         "randomize_outcomes": "Randomize outcomes",
         "add_outcome": "Add an outcome"
+      },
+      "spring_bones": {
+        "title": "Spring Bones",
+        "body_shape": "Body Shape",
+        "tab_male": "Male",
+        "tab_female": "Female",
+        "stiffness": "Stiffness Force",
+        "gravity_power": "Gravity Power",
+        "gravity_dir": "Gravity Direction",
+        "drag_force": "Drag Force",
+        "center": "Center (Optional)",
+        "center_none": "None",
+        "actions": {
+          "select": "Select",
+          "add": "Add",
+          "add_bone": "Add a Bone",
+          "remove_bone": "Remove Bone",
+          "copy_params": "Copy Parameters",
+          "paste_params": "Paste Parameters"
+        },
+        "warning": {
+          "title": "{name} is missing some spring bone settings",
+          "subtitle": "Continuing will result in missing features in the wearable. Are you sure you want to proceed?",
+          "missing_settings": "Missing settings:",
+          "missing_male": "Male body shape spring bones",
+          "missing_female": "Female body shape spring bones",
+          "save_anyway": "Save Anyway",
+          "go_back": "Go Back"
+        }
       }
     }
   },

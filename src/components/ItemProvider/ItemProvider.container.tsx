@@ -9,6 +9,8 @@ import { isLoggingIn } from 'modules/identity/selectors'
 import { getLoading, getItems } from 'modules/item/selectors'
 import { getCollections } from 'modules/collection/selectors'
 import { FETCH_ITEM_REQUEST, fetchItemRequest, SAVE_ITEM_REQUEST, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
+import { loadSpringBonesRequest } from 'modules/editor/actions'
+import { Item } from 'modules/item/types'
 import { ContainerProps } from './ItemProvider.types'
 import ItemProvider from './ItemProvider'
 
@@ -43,6 +45,7 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
     collectionId => dispatch(fetchCollectionRequest(collectionId)),
     [dispatch]
   )
+  const onLoadSpringBones = useCallback((item: Item) => dispatch(loadSpringBonesRequest(item)), [dispatch])
 
   return (
     <ItemProvider
@@ -53,6 +56,7 @@ const ItemProviderContainer: React.FC<ContainerProps> = ({ id: propId, children 
       isConnected={isWalletConnected}
       onFetchItem={onFetchItem}
       onFetchCollection={onFetchCollection}
+      onLoadSpringBones={onLoadSpringBones}
     >
       {children}
     </ItemProvider>

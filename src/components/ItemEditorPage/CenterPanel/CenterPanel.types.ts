@@ -46,6 +46,7 @@ export type Props = {
   onFetchCollectionItems: ActionFunction<typeof fetchCollectionItemsRequest>
   onSetWearablePreviewController: (controller: Parameters<typeof setWearablePreviewController>[0]) => void
   onSetItems: (items: Parameters<typeof setItems>[0]) => void
+  onPushSpringBoneParams: () => void
 }
 
 export type CenterPanelContainerProps = Record<string, never>

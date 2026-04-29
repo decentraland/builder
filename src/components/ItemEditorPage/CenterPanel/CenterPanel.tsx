@@ -263,11 +263,14 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handleWearablePreviewLoad = () => {
-    const { wearableController, onSetWearablePreviewController } = this.props
+    const { wearableController, onSetWearablePreviewController, onPushSpringBoneParams } = this.props
 
     if (!wearableController) {
       onSetWearablePreviewController(WearablePreview.createController('wearable-editor'))
     }
+
+    // Push current spring bone params to the freshly loaded controller via saga
+    onPushSpringBoneParams()
 
     this.setState({ isLoading: false })
 
@@ -278,7 +281,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   handlePlayEmote = () => {
-    const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems } = this.props
+    const { wearableController, isPlayingEmote, visibleItems, onSetAvatarAnimation, onSetItems, onPushSpringBoneParams } = this.props
     const newVisibleItems = visibleItems.filter(item => item.type !== ItemType.EMOTE)
 
     if (isPlayingEmote) {
@@ -286,6 +289,8 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       onSetItems(newVisibleItems)
     } else {
       wearableController?.emote.play() as void
+      // Push spring bone params immediately on emote play start via saga
+      onPushSpringBoneParams()
     }
   }
 
@@ -465,6 +470,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
         <WearablePreview
           id="wearable-editor"
           profile="default"
+          baseUrl="https://wearable-preview-git-feat-unity-spring-bones-decentraland1.vercel.app"
           bodyShape={bodyShape}
           emote={emote}
           zoom={zoom}

@@ -4,6 +4,7 @@ import equal from 'fast-deep-equal'
 import { Loader, Dropdown, Button, Checkbox, CheckboxProps, TextAreaField, TextAreaProps, Row, Box, Header } from 'decentraland-ui'
 import {
   BodyPartCategory,
+  BodyShape,
   EmoteCategory,
   Rarity,
   EmoteDataADR74,
@@ -68,6 +69,7 @@ import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
+import SpringBonesSection from './SpringBonesSection'
 import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
@@ -411,9 +413,32 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
+  handleOnSaveConfirmation = () => {
+    const { onOpenModal, hasSpringBoneChanges, hasTwoRepresentations, springBoneParamsByShape } = this.props
+    const isDirty = this.state.isDirty || hasSpringBoneChanges
+
+    // Warn if saving a 2-GLB wearable where one shape has spring bones and the other doesn't
+    if (hasTwoRepresentations && isDirty) {
+      const missingShapes = [BodyShape.MALE, BodyShape.FEMALE].filter(
+        shape => Object.keys(springBoneParamsByShape[shape] ?? {}).length === 0
+      )
+      if (missingShapes.length === 1) {
+        onOpenModal('SpringBoneWarningModal', {
+          itemName: this.state.name,
+          missingShapes,
+          onSaveAnyway: this.handleOnSaveItem
+        })
+        return
+      }
+    }
+
+    void this.handleOnSaveItem()
+  }
+
   handleOnSaveItem = async () => {
-    const { selectedItem, itemStatus, onSaveItem } = this.props
-    const { name, description, utility, rarity, contents, data, isDirty } = this.state
+    const { selectedItem, itemStatus, onSaveItem, hasSpringBoneChanges } = this.props
+    const { name, description, utility, rarity, contents, data, isDirty: isItemDirty } = this.state
+    const isDirty = isItemDirty || hasSpringBoneChanges
 
     if (isDirty && selectedItem) {
       let itemData = data
@@ -461,6 +486,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     if (selectedItem) {
       this.setItem(selectedItem)
     }
+  }
+
+  handleResetButtonClick = () => {
+    const { onResetSpringBoneParams } = this.props
+    this.handleOnResetItem()
+    onResetSpringBoneParams()
   }
 
   handleOpenThumbnailDialog = () => {
@@ -746,9 +777,22 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       isCampaignEnabled,
       isVrmOptOutEnabled,
       campaignName,
-      campaignTag
+      campaignTag,
+      selectedBodyShape,
+      bones,
+      springBoneParams,
+      onSpringBoneParamChange,
+      onAddSpringBoneParams,
+      onDeleteSpringBoneParams,
+      hasSpringBoneChanges,
+      hasSpringBonesInGlb,
+      hasTwoRepresentations,
+      springBoneParamsByShape,
+      bonesByShape,
+      onBodyShapeTabChange
     } = this.props
-    const { name, description, utility, rarity, data, isDirty, hasItem } = this.state
+    const { name, description, utility, rarity, data, isDirty: isItemDirty, hasItem } = this.state
+    const isDirty = isItemDirty || hasSpringBoneChanges
     const rarities = Rarity.getRarities()
     const playModes = getEmotePlayModes()
 
@@ -1109,14 +1153,30 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         </div>
                       </Collapsable>
                     )}
+                    {item?.type === ItemType.WEARABLE && (
+                      <SpringBonesSection
+                        key={item?.id}
+                        bones={bones}
+                        springBoneParams={springBoneParams}
+                        onParamChange={onSpringBoneParamChange}
+                        onAddSpringBoneParams={onAddSpringBoneParams}
+                        onDeleteSpringBoneParams={onDeleteSpringBoneParams}
+                        hasSpringBonesInGlb={hasSpringBonesInGlb}
+                        hasTwoRepresentations={hasTwoRepresentations}
+                        activeBodyShape={selectedBodyShape}
+                        springBoneParamsByShape={springBoneParamsByShape}
+                        bonesByShape={bonesByShape}
+                        onBodyShapeTabChange={onBodyShapeTabChange}
+                      />
+                    )}
                     <div className="edit-buttons-container">
                       <div className="edit-buttons">
-                        <Button secondary onClick={this.handleOnResetItem} disabled={!isDirty || isLoading} loading={isLoading}>
+                        <Button secondary onClick={this.handleResetButtonClick} disabled={!isDirty || isLoading} loading={isLoading}>
                           {t('global.revert')}
                         </Button>
                         <NetworkButton
                           primary
-                          onClick={this.handleOnSaveItem}
+                          onClick={this.handleOnSaveConfirmation}
                           network={Network.MATIC}
                           disabled={!isDirty || isLoading}
                           loading={isLoading}
