@@ -1,17 +1,8 @@
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import { BoneNode } from 'modules/editor/types'
 import { extractGlbChunks } from 'lib/glbUtils'
 import { SPRING_BONE_PREFIX, isSpringBoneName } from 'lib/springBones'
 
 export { SPRING_BONE_PREFIX }
-
-export const DEFAULT_SPRING_BONE_PARAMS: SpringBoneParams = {
-  stiffness: 2,
-  gravityPower: 0,
-  gravityDir: [0, -1, 0],
-  drag: 0.5,
-  center: undefined,
-  isRoot: true
-}
 
 export type SpringBonesParseResult = {
   bones: BoneNode[]
@@ -20,10 +11,6 @@ export type SpringBonesParseResult = {
 type GltfNode = {
   name?: string
   children?: number[]
-}
-
-export function getDefaultSpringBoneParams(): SpringBoneParams {
-  return { ...DEFAULT_SPRING_BONE_PARAMS, gravityDir: [...DEFAULT_SPRING_BONE_PARAMS.gravityDir] }
 }
 
 const isSpringBoneNode = (node: GltfNode): boolean => {

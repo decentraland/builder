@@ -3,7 +3,7 @@ import type { Wearable } from 'decentraland-ecs'
 import { anotherWearable, convertWearable, wearable } from 'specs/editor'
 import { mockedItem } from 'specs/item'
 import { saveItemSuccess } from 'modules/item/actions'
-import { DEFAULT_SPRING_BONE_PARAMS } from 'lib/parseSpringBones'
+import { getDefaultSpringBoneParams } from 'lib/springBones'
 import {
   fetchBaseWearablesFailure,
   fetchBaseWearablesRequest,
@@ -19,6 +19,7 @@ import {
 import { BoneNode } from './types'
 import { editorReducer, EditorState, INITIAL_STATE } from './reducer'
 
+const DEFAULT_SPRING_BONE_PARAMS = getDefaultSpringBoneParams()
 let state: EditorState
 
 beforeEach(() => {

@@ -14,7 +14,7 @@ import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS, SaveItemSuccessAction, SA
 import { hasBodyShape } from 'modules/item/utils'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 import { Color4 } from 'lib/colors'
-import { getDefaultSpringBoneParams } from 'lib/parseSpringBones'
+import { getDefaultSpringBoneParams } from 'lib/springBones'
 import { BoneNode, SpringBoneParams } from './types'
 import {
   SetGizmoAction,
@@ -473,7 +473,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         originalSpringBoneParams: { ...springBoneParams },
         springBoneParamsByShape: {
           ...state.springBoneParamsByShape,
-          [activeShape]: { ...springBoneParams },
+          [activeShape]: { ...springBoneParams }
         },
         originalSpringBoneParamsByShape: {
           ...state.originalSpringBoneParamsByShape,
