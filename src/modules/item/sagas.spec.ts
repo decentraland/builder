@@ -29,10 +29,8 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
 import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
-import { hasSpringBoneChanges, getBones, getSpringBoneParams, getBodyShape } from 'modules/editor/selectors'
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
-import { patchGltfSpringBones } from 'lib/patchGltfSpringBones'
-import { hashV1 } from '@dcl/hashing'
+import { hasSpringBoneChanges, getSpringBoneParams } from 'modules/editor/selectors'
+import { SpringBoneParams } from 'modules/editor/types'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { updateProgressSaveMultipleItems } from 'modules/ui/createMultipleItems/action'
@@ -556,11 +554,6 @@ describe('when handling the save item request action', () => {
     })
 
     describe('and the item has spring bone changes', () => {
-      const glbBlob = new Blob(['glbdata'], { type: 'model/gltf-binary' })
-      const glbBuffer = new ArrayBuffer(7)
-      const patchedBuffer = new ArrayBuffer(8)
-      const patchedHash = 'patchedGlbHash'
-      const bones: BoneNode[] = [{ name: 'Bone', type: 'spring', nodeId: 0, children: [] }]
       const springBoneParams: Record<string, SpringBoneParams> = {
         Bone: { stiffness: 0.5, drag: 0.5, gravityPower: 0, gravityDir: [0, -1, 0] }
       }
@@ -570,8 +563,19 @@ describe('when handling the save item request action', () => {
         contents = { [THUMBNAIL_PATH]: blob }
       })
 
-      it('should fetch, patch, re-hash the GLB and save the item with the updated content hash', () => {
-        const savedItem = { ...item, contents: { ...item.contents, 'anItemContent.glb': patchedHash } }
+      it('should save the item with spring bone params keyed by content hash', () => {
+        const mainFile = item.data.representations[0].mainFile
+        const hash = item.contents[mainFile]
+        const expectedItem = {
+          ...item,
+          data: {
+            ...item.data,
+            springBones: {
+              version: 1,
+              models: { [hash]: springBoneParams }
+            }
+          }
+        }
         return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
           .provide([
             [matchers.call.fn(reHashOlderContents), {}],
@@ -584,21 +588,18 @@ describe('when handling the save item request action', () => {
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
             [select(hasSpringBoneChanges), true],
-            [select(getBones), bones],
             [select(getSpringBoneParams), springBoneParams],
-            [select(getBodyShape), BodyShape.MALE],
-            [call([builderAPI, 'fetchContents'], { 'anItemContent.glb': 'theFileHash' }), { 'anItemContent.glb': glbBlob }],
-            [call([glbBlob, 'arrayBuffer']), glbBuffer],
-            [call(patchGltfSpringBones, glbBuffer, bones, springBoneParams), patchedBuffer],
-            [call(hashV1, new Uint8Array(patchedBuffer)), patchedHash],
-            [matchers.call.fn(builderAPI.saveItem), Promise.resolve(savedItem)]
+            [matchers.call.fn(builderAPI.saveItem), Promise.resolve(expectedItem)]
           ])
           .dispatch(saveItemRequest(item, contents))
           .run({ silenceTimeout: true })
           .then(({ effects }) => {
             const successPut = effects.put?.find((p: any) => p.payload.action.type === SAVE_ITEM_SUCCESS)
             expect(successPut).toBeDefined()
-            expect(successPut!.payload.action.payload.item.contents['anItemContent.glb']).toBe(patchedHash)
+            const savedData = successPut!.payload.action.payload.item.data
+            expect(savedData.springBones).toBeDefined()
+            expect(savedData.springBones.version).toBe(1)
+            expect(savedData.springBones.models).toEqual({ [hash]: springBoneParams })
           })
       })
     })

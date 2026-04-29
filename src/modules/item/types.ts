@@ -8,10 +8,16 @@ import {
   HideableWearableCategory,
   Mapping,
   ContractAddress,
-  ContractNetwork
+  ContractNetwork,
+  SpringBoneParams
 } from '@dcl/schemas'
 import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
+
+export type SpringBonesData = {
+  version: number
+  models: Record<string, Record<string, SpringBoneParams>>
+}
 
 export enum EntityHashingType {
   V0,
@@ -87,6 +93,7 @@ export type WearableData = {
   isSmart?: boolean
   blockVrmExport?: boolean
   outlineCompatible?: boolean
+  springBones?: SpringBonesData
 }
 
 export type EmoteData = EmoteDataADR74

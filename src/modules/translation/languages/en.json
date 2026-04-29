@@ -403,9 +403,7 @@
         "armature_naming": "Unexpected armature names found: {names}. Avatar armature should be named 'Armature' and prop armature 'Armature_Prop'.",
         "animation_naming": "Animation clips should end with '_Avatar' or '_Prop' when props are present. Invalid names: {names}.",
         "audio_format": "Audio file \"{name}\" has an unsupported format. Only .mp3 and .ogg are allowed.",
-        "spring_bone_count_exceeded": "This model has {count} spring bones (maximum: {limit}). Reduce the number of spring bone nodes in your 3D editor and re-upload.",
-        "spring_bone_param_out_of_range": "Spring bone \"{boneName}\" has {paramName} value {value}, outside the allowed range ({min}–{max}).",
-        "spring_bone_invalid_gravity_dir": "Spring bone \"{boneName}\" has an invalid gravityDir (expected exactly 3 numbers)."
+        "spring_bone_count_exceeded": "This model has {count} spring bones (maximum: {limit}). Reduce the number of spring bone nodes in your 3D editor and re-upload."
       }
     },
     "emote_notice": "Emotes are available for all body shapes.",

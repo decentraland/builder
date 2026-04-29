@@ -136,22 +136,11 @@ import { getIsLinkedWearablesV2Enabled, getIsOffchainPublicItemOrdersEnabled } f
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
-import { hashV1 } from '@dcl/hashing'
-import { hasSpringBoneChanges, getBones, getSpringBoneParams, getSpringBoneParamsByShape, getBonesByShape } from 'modules/editor/selectors'
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
-import { patchGltfSpringBones } from 'lib/patchGltfSpringBones'
+import { getSpringBoneParams, getSpringBoneParamsByShape, hasSpringBoneChanges } from 'modules/editor/selectors'
+import { SpringBoneParams } from 'modules/editor/types'
+import { SPRING_BONES_VERSION } from 'lib/springBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import {
-  Item,
-  BlockchainRarity,
-  CatalystItem,
-  BodyShapeType,
-  IMAGE_PATH,
-  THUMBNAIL_PATH,
-  WearableData,
-  VIDEO_PATH,
-  WearableRepresentation
-} from './types'
+import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
 import {
   ItemEmoteTooBigError,
@@ -176,7 +165,8 @@ import {
   isSkinFileSizeValid,
   isSmartWearableFileSizeValid,
   createItemOrderTrade,
-  hasMultipleModels
+  hasMultipleModels,
+  hasModelChangesForBodyShape
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -417,35 +407,6 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     }
   }
 
-  function* patchGlbRepresentations(
-    representations: WearableRepresentation[],
-    bones: BoneNode[],
-    params: Record<string, SpringBoneParams>,
-    contents: Record<string, Blob>,
-    item: Item
-  ) {
-    const glbPathsToFetch: Record<string, string> = {}
-    for (const r of representations) {
-      if (r.mainFile && !contents[r.mainFile] && item.contents[r.mainFile]) {
-        glbPathsToFetch[r.mainFile] = item.contents[r.mainFile]
-      }
-    }
-    if (Object.keys(glbPathsToFetch).length > 0) {
-      const fetched: Record<string, Blob> = yield call([legacyBuilder, 'fetchContents'], glbPathsToFetch)
-      Object.assign(contents, fetched)
-    }
-    const patchedPaths = new Set<string>()
-    for (const r of representations) {
-      if (!r.mainFile || !contents[r.mainFile] || patchedPaths.has(r.mainFile)) continue
-      patchedPaths.add(r.mainFile)
-      const buffer: ArrayBuffer = yield call([contents[r.mainFile], 'arrayBuffer'])
-      const patchedBuffer = patchGltfSpringBones(buffer, bones, params)
-      const newHash: string = yield call(hashV1, new Uint8Array(patchedBuffer))
-      contents[r.mainFile] = new Blob([patchedBuffer], { type: 'model/gltf-binary' })
-      item.contents[r.mainFile] = newHash
-    }
-  }
-
   function* handleSaveItemRequest(action: SaveItemRequestAction) {
     const { item: actionItem, contents: actionContents, options } = action.payload
 
@@ -547,30 +508,44 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      // Spring bone GLB patching
+      // Reset spring bones if wearable models changed
+      const modelChanged =
+        !!oldItem && [BodyShape.MALE, BodyShape.FEMALE].some(bodyShape => hasModelChangesForBodyShape(oldItem, actionItem, bodyShape))
+      const multipleModels = hasMultipleModels(item)
+      if (isWearable(item) && !multipleModels && modelChanged) {
+        item.data.springBones = undefined
+      }
+
+      // Recompute pring bone metadata
       const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
       if (isWearable(item) && springBoneHasChanges) {
-        if (hasMultipleModels(item)) {
-          // Two distinct GLBs: patch each body shape's GLB with its own spring bone params
+        const models: Record<string, Record<string, SpringBoneParams>> = {}
+        if (multipleModels) {
           const springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = yield select(
             getSpringBoneParamsByShape
           )
-          const bonesByShape: Partial<Record<BodyShape, BoneNode[]>> = yield select(getBonesByShape)
-
           for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
             const shapeParams = springBoneParamsByShape[shape]
-            const shapeBones = bonesByShape[shape]
-            // Skip shapes that were never parsed (no GLB for this shape)
-            if (shapeParams === undefined || !shapeBones) continue
-            const reps = item.data.representations.filter(r => r.bodyShapes.includes(shape))
-            yield call(patchGlbRepresentations, reps, shapeBones, shapeParams, contents, item)
+            if (!shapeParams || Object.keys(shapeParams).length === 0) continue
+            const rep = item.data.representations.find(r => r.bodyShapes.includes(shape))
+            const hash = rep?.mainFile ? item.contents[rep.mainFile] : undefined
+            if (hash) {
+              models[hash] = shapeParams
+            }
           }
         } else {
-          // Single shared GLB: patch all representations with the active shape's params
-          const bones: BoneNode[] = yield select(getBones)
           const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
-          yield call(patchGlbRepresentations, item.data.representations, bones, springBoneParams, contents, item)
+          // Single-model: use the first representation's GLB hash (representations share the same GLB here).
+          if (Object.keys(springBoneParams).length > 0 && !modelChanged) {
+            const mainFile = item.data.representations[0]?.mainFile
+            const hash = mainFile ? item.contents[mainFile] : undefined
+            if (hash) {
+              models[hash] = springBoneParams
+            }
+          }
         }
+
+        item.data.springBones = Object.keys(models).length > 0 ? { version: SPRING_BONES_VERSION, models } : undefined
       }
 
       const savedItem: Item = yield call([legacyBuilder, 'saveItem'], item, contents)

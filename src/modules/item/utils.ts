@@ -188,6 +188,18 @@ export function getRepresentationMainFile(item: Item, bodyShape: BodyShape): str
   return representation?.mainFile ?? item.data.representations[0]?.mainFile ?? null
 }
 
+/** Returns the content hash of the given body shape's main file, or undefined if missing. */
+export function getRepresentationMainFileHash(item: Item, bodyShape: BodyShape): string | undefined {
+  const mainFile = getRepresentationMainFile(item, bodyShape)
+  return mainFile ? item.contents[mainFile] : undefined
+}
+
+/** Returns true when the GLB content hash for the given body shape differs between two item versions.
+ * A swapped GLB keeps the same path but produces a new content hash in item.contents. */
+export function hasModelChangesForBodyShape(prevItem: Item, nextItem: Item, bodyShape: BodyShape): boolean {
+  return getRepresentationMainFileHash(prevItem, bodyShape) !== getRepresentationMainFileHash(nextItem, bodyShape)
+}
+
 export function toWearableBodyShapeType(wearableBodyShape: BodyShape) {
   // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (BodyShape.MALE) and we just want the "BaseMale" part
   return decodeURN(wearableBodyShape).suffix as WearableBodyShapeType
@@ -595,7 +607,8 @@ export function isWearableSynced(item: Item, entity: Entity) {
     item.data.tags.toString() !== catalystItem.data.tags.toString() ||
     item.data.removesDefaultHiding?.toString() !== catalystItem.data.removesDefaultHiding?.toString() ||
     item.data.blockVrmExport !== catalystItem.data.blockVrmExport ||
-    item.data.outlineCompatible !== catalystItem.data.outlineCompatible
+    item.data.outlineCompatible !== catalystItem.data.outlineCompatible ||
+    !deepEqual(item.data.springBones ?? null, catalystItem.data.springBones ?? null)
 
   if (hasMetadataChanged) {
     return false

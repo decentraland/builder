@@ -402,9 +402,7 @@
         "armature_naming": "Se encontraron nombres de armadura inesperados: {names}. La armadura del avatar debe llamarse 'Armature' y la del prop 'Armature_Prop'.",
         "animation_naming": "Los clips de animación deben terminar en '_Avatar' o '_Prop' cuando hay props. Nombres inválidos: {names}.",
         "audio_format": "El archivo de audio \"{name}\" tiene un formato no soportado. Solo se permiten .mp3 y .ogg.",
-        "spring_bone_count_exceeded": "Este modelo tiene {count} spring bones (máximo: {limit}). Reduce la cantidad de nodos de spring bones en tu editor 3D y vuelve a subir el archivo.",
-        "spring_bone_param_out_of_range": "El spring bone \"{boneName}\" tiene un valor de {paramName} de {value}, fuera del rango permitido ({min}–{max}).",
-        "spring_bone_invalid_gravity_dir": "El spring bone \"{boneName}\" tiene un gravityDir inválido (se esperan exactamente 3 números)."
+        "spring_bone_count_exceeded": "Este modelo tiene {count} spring bones (máximo: {limit}). Reduce la cantidad de nodos de spring bones en tu editor 3D y vuelve a subir el archivo."
       }
     },
     "emote_notice": "Las animaciones estan disponibles para todos los cuerpos.",
