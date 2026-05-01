@@ -56,3 +56,25 @@
 .MintableItem .mint:hover .item-action {
   opacity: 1;
 }
+
+.MintableItem .item-header .copy-all {
+  margin-right: 8px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in;
+  height: max-content;
+  display: inline-flex;
+}
+
+.MintableItem .item-header .copy-all:hover {
+  opacity: 1;
+}
+
+.MintableItem .item-header .copy-all svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ui.visible.popup.apply-to-all-popup {
+  z-index: 4000;
+}

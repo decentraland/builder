@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Column, Field, Section, InputOnChangeData } from 'decentraland-ui'
+import { Row, Column, Field, Section, InputOnChangeData, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
 
@@ -9,6 +9,7 @@ import Icon from 'components/Icon'
 import { getMaxSupply } from 'modules/item/utils'
 import { Props } from './MintableItem.types'
 import ItemStatus from 'components/ItemStatus'
+import CopyAllIcon from './CopyAllIcon'
 
 import './MintableItem.css'
 
@@ -16,6 +17,11 @@ export default class MintableItem extends React.PureComponent<Props> {
   handleAddNewMint = () => {
     const { item, mints, onChange } = this.props
     onChange(item, [...mints, { item }])
+  }
+
+  hasMintsToCopy() {
+    const { mints } = this.props
+    return mints.some(mint => !!mint.address || !!mint.amount)
   }
 
   getChangeAddressHandler(index: number) {
@@ -79,7 +85,8 @@ export default class MintableItem extends React.PureComponent<Props> {
   }
 
   render() {
-    const { item, mints } = this.props
+    const { item, mints, onApplyToAll } = this.props
+    const showApplyToAll = !!onApplyToAll && this.hasMintsToCopy()
 
     return (
       <div className="MintableItem">
@@ -97,6 +104,19 @@ export default class MintableItem extends React.PureComponent<Props> {
               <span className="stock">
                 {t('item.supply')} {this.getSupply(mints)}/{getMaxSupply(item)}
               </span>
+              {showApplyToAll && (
+                <Popup
+                  className="apply-to-all-popup"
+                  content={t('mint_items_modal.apply_to_all')}
+                  position="top center"
+                  on="hover"
+                  trigger={
+                    <span className="copy-all" onClick={() => void onApplyToAll(item.id)}>
+                      <CopyAllIcon />
+                    </span>
+                  }
+                />
+              )}
               <Icon name="plus" className="item-action" onClick={this.handleAddNewMint} />
             </div>
           </Column>
