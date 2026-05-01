@@ -2056,7 +2056,8 @@
     "next": "下一個",
     "total_items": "要鑄造的總物品",
     "confirm_title": "您即將鑄造 {count} 件物品，每件物品將按照提供的金額鑄造到給定地址。",
-    "beneficiary": "受益人"
+    "beneficiary": "受益人",
+    "apply_to_all": "將這些鑄造項套用至所有物品"
   },
   "reset_item_modal": {
     "title": "撤消",
