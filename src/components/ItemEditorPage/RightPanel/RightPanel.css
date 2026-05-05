@@ -29,6 +29,7 @@
   overflow-y: auto;
   max-height: calc(100vh - 135px);
   flex: 1;
+  padding-bottom: 48px; /* Space for floating Help button */
 }
 
 .dcl.text-area {

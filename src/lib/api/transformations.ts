@@ -19,7 +19,7 @@ export function fromRemoteItem(remoteItem: RemoteItem): Item {
     catalystContentHash: remoteItem.catalyst_content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
-    updatedAt: +new Date(remoteItem.created_at),
+    updatedAt: +new Date(remoteItem.updated_at),
     mappings: remoteItem.mappings
   }
 

@@ -11,9 +11,17 @@ import {
   validateNoLeafBones,
   validateNoDisallowedObjects,
   validateMaterialNaming,
-  validateNoNonDeformBones
+  validateNoNonDeformBones,
+  validateSpringBones
 } from './wearableValidators'
-import { MAX_MATERIALS_DEFAULT, MAX_MATERIALS_SKIN, MAX_TEXTURES_DEFAULT, AVATAR_SKIN_MAT, getEffectiveTriangleLimit } from './constants'
+import {
+  MAX_MATERIALS_DEFAULT,
+  MAX_MATERIALS_SKIN,
+  MAX_TEXTURES_DEFAULT,
+  AVATAR_SKIN_MAT,
+  MAX_SPRING_BONES,
+  getEffectiveTriangleLimit
+} from './constants'
 
 // Mock Three.js classes that support instanceof checks.
 function createMockThree() {
@@ -796,6 +804,54 @@ describe('validateMaterialNaming', () => {
 
     it('should return a warning for each forbidden material', () => {
       expect(issues).toHaveLength(2)
+    })
+  })
+})
+
+describe('validateSpringBones', () => {
+  function gltfWithNodeNames(names: string[]): GLTF {
+    return { parser: { json: { nodes: names.map(name => ({ name })) } } } as unknown as GLTF
+  }
+
+  describe('when the spring bone count is at the limit', () => {
+    it('should return no issues', () => {
+      const gltf = gltfWithNodeNames(Array.from({ length: MAX_SPRING_BONES }, (_, i) => `Hair.springbone.${i}`))
+      expect(validateSpringBones(gltf)).toEqual([])
+    })
+  })
+
+  describe('when the spring bone count exceeds the limit', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const gltf = gltfWithNodeNames(Array.from({ length: MAX_SPRING_BONES + 1 }, (_, i) => `Hair.springbone.${i}`))
+      issues = validateSpringBones(gltf)
+    })
+
+    it('should return a warning with the SPRING_BONE_COUNT_EXCEEDED code', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('SPRING_BONE_COUNT_EXCEEDED')
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+      expect(issues[0].messageParams).toEqual({ count: MAX_SPRING_BONES + 1, limit: MAX_SPRING_BONES })
+    })
+  })
+
+  describe('when no nodes are spring bones', () => {
+    it('should return no issues', () => {
+      expect(validateSpringBones(gltfWithNodeNames(['Armature', 'Head']))).toEqual([])
+    })
+  })
+
+  describe('when spring bone names use different casings', () => {
+    it('should count them case-insensitively', () => {
+      const gltf = gltfWithNodeNames(['Hair.SpringBone.000', 'SPRINGBONE_tail', 'NotABone'])
+      expect(validateSpringBones(gltf)).toEqual([])
+    })
+  })
+
+  describe('when gltf.parser is unavailable', () => {
+    it('should return no issues', () => {
+      expect(validateSpringBones({} as unknown as GLTF)).toEqual([])
     })
   })
 })
