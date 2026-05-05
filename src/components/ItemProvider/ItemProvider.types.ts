@@ -17,6 +17,7 @@ export type Props = {
   id: string | null
   onFetchItem: (id: string) => void
   onFetchCollection: (id: string) => void
+  onLoadSpringBones: (item: Item) => void
   children: (item: Item | null, collection: Collection | null, isLoading: boolean, animationData: AnimationData) => React.ReactNode
 }
 export type State = {

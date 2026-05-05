@@ -1,5 +1,6 @@
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { WearableCategory } from '@dcl/schemas'
+import { isSpringBoneName } from 'lib/springBones'
 import { ValidationIssue, ValidationSeverity } from './types'
 import {
   getEffectiveTriangleLimit,
@@ -11,7 +12,8 @@ import {
   FACIAL_CATEGORIES,
   MAX_BONE_INFLUENCES_PER_VERTEX,
   AVATAR_SKIN_MAT,
-  FORBIDDEN_MATERIAL_PATTERNS
+  FORBIDDEN_MATERIAL_PATTERNS,
+  MAX_SPRING_BONES
 } from './constants'
 
 type ThreeModules = typeof import('three')
@@ -225,7 +227,7 @@ export function validateNoLeafBones(Three: ThreeModules, scene: THREE.Scene): Va
   scene.traverse((node: THREE.Object3D) => {
     if (node instanceof Three.Bone) {
       const name = node.name.toLowerCase()
-      if (name.endsWith('_end') || name.endsWith('_neutral')) {
+      if (!isSpringBoneName(name) && (name.endsWith('_end') || name.endsWith('_neutral'))) {
         leafBones.push(node.name)
       }
     }
@@ -375,4 +377,39 @@ export function validateMaterialNaming(Three: ThreeModules, scene: THREE.Scene, 
   })
 
   return issues
+}
+
+// ── Spring bone validators ──────────────────────────────────────────────
+
+type GltfJsonNode = { name?: string }
+
+/** Typed wrapper for the undocumented Three.js GLTFLoader parser internal. */
+type GltfWithParser = GLTF & {
+  parser?: { json?: { nodes?: GltfJsonNode[] } }
+}
+
+/** Checks that the number of spring bone nodes does not exceed the limit. */
+export function validateSpringBones(gltf: GLTF): ValidationIssue[] {
+  const json = (gltf as GltfWithParser).parser?.json
+  if (!json || !Array.isArray(json.nodes)) {
+    // parser.json is an undocumented Three.js internal — warn if absent so
+    // silent validation bypass is detectable after a Three.js upgrade.
+    if ((gltf as GltfWithParser).parser === undefined) {
+      console.warn('Spring bone validation: gltf.parser is unavailable — spring bone checks will be skipped.')
+    }
+    return []
+  }
+
+  const springBoneCount = json.nodes.filter(node => node.name && isSpringBoneName(node.name)).length
+
+  if (springBoneCount <= MAX_SPRING_BONES) return []
+
+  return [
+    {
+      code: 'SPRING_BONE_COUNT_EXCEEDED',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.spring_bone_count_exceeded',
+      messageParams: { count: springBoneCount, limit: MAX_SPRING_BONES }
+    }
+  ]
 }

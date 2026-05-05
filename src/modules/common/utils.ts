@@ -38,7 +38,7 @@ export const getPeerWithNoGBCollectorURL = () => {
           'peer.kyllian.me',
           'peer.uadevops.com'
         ]
-      : ['peer.decentraland.zone', 'peer-ue-2.decentraland.zone', 'peer-ap1.decentraland.zone']
+      : ['peer.decentraland.zone', 'peer-ap1.decentraland.zone']
 
   return urls[Math.floor(Math.random() * urls.length)]
 }
