@@ -64,6 +64,10 @@
   transition: opacity 0.2s ease-in;
   height: max-content;
   display: inline-flex;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
 }
 
 .MintableItem .item-header .copy-all:hover {

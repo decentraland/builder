@@ -111,9 +111,9 @@ export default class MintableItem extends React.PureComponent<Props> {
                   position="top center"
                   on="hover"
                   trigger={
-                    <span className="copy-all" onClick={() => void onApplyToAll(item.id)}>
+                    <button className="copy-all" onClick={() => onApplyToAll(item.id)}>
                       <CopyAllIcon />
-                    </span>
+                    </button>
                   }
                 />
               )}

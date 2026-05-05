@@ -24,7 +24,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     for (const item of items) {
       itemMints[item.id] = this.buildMints(item)
     }
-    return { items: [], itemMints, applyVersion: 0, error: null, confirm: View.MINT }
+    return { items: [], itemMints, remountKey: 0, error: null, confirm: View.MINT }
   }
 
   buildMints(item: Item): Partial<Mint>[] {
@@ -70,11 +70,12 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   }
 
   handleApplyToAllItems = (sourceItemId: string) => {
-    const { items: stateItems, itemMints, applyVersion } = this.state
+    const { items: stateItems, itemMints, remountKey } = this.state
     const items = this.props.items.concat(stateItems)
     const sourceMints = itemMints[sourceItemId]
     const nextItemMints = { ...itemMints }
     const sumAmounts = (list: Partial<Mint>[]) => list.reduce((sum, m) => sum + (m.amount || 0), 0)
+    // Start from source only — all target mints will be replaced below
     let totalAcross = sumAmounts(sourceMints)
 
     for (const targetItem of items) {
@@ -107,7 +108,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       }
     }
 
-    this.setState({ itemMints: nextItemMints, applyVersion: applyVersion + 1, error: null })
+    this.setState({ itemMints: nextItemMints, remountKey: remountKey + 1, error: null })
   }
 
   handleAddItems = (item: Item) => {
@@ -135,7 +136,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
   render() {
     const { collection, totalCollectionItems, isLoading, hasUnsyncedItems, onClose } = this.props
-    const { itemMints, applyVersion, error, confirm } = this.state
+    const { itemMints, remountKey, error, confirm } = this.state
 
     const items = this.props.items.concat(this.state.items)
 
@@ -248,7 +249,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   </div>
                   {items.map((item, i) => (
                     <MintableItem
-                      key={`${item.id}-${applyVersion}`}
+                      // Forces remount after "apply to all" because AddressField (decentraland-ui) does not re-render when value prop changes externally.
+                      key={`${item.id}-${remountKey}`}
                       item={item}
                       mints={itemMints[item.id]}
                       onChange={this.handleMintsChange}
