@@ -8,7 +8,8 @@ import {
   HideableWearableCategory,
   Mapping,
   ContractAddress,
-  ContractNetwork
+  ContractNetwork,
+  SpringBonesData
 } from '@dcl/schemas'
 import { AnimationMetrics, ModelMetrics } from 'modules/models/types'
 import { Cheque } from 'modules/thirdParty/types'
@@ -87,6 +88,7 @@ export type WearableData = {
   isSmart?: boolean
   blockVrmExport?: boolean
   outlineCompatible?: boolean
+  springBones?: SpringBonesData
 }
 
 export type EmoteData = EmoteDataADR74

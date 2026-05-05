@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { getEmoteData } from 'lib/getModelData'
+import { fetchGlbBlob } from 'modules/editor/utils'
 import { Props, State } from './ItemProvider.types'
 import { Item } from 'modules/item/types'
 
@@ -26,6 +27,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
     // Load animation data if item is available
     if (isConnected && id && item) {
       void this.loadAnimationData(item)
+      void this.props.onLoadSpringBones(item)
     }
   }
 
@@ -40,9 +42,9 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       onFetchCollection(item.collectionId)
     }
 
-    // Load animation data when item changes
     if (isConnected && id && item && item.id !== prevProps.item?.id) {
-      void this.loadAnimationData(item)
+      void this.loadAnimationData(item) // Loads animation data only for emotes
+      void this.props.onLoadSpringBones(item) // Resets spring bones data when item changes, then loads new data only for wearables with spring bones.
     }
   }
 
@@ -54,16 +56,6 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
       }
     }
     return null
-  }
-
-  private async fetchGlbBlob(hash: string): Promise<Blob> {
-    const { getContentsStorageUrl } = await import('lib/api/builder')
-    const url = getContentsStorageUrl(hash)
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch GLB file: ${response.statusText}`)
-    }
-    return response.blob()
   }
 
   private async loadAnimationData(item: Item) {
@@ -95,8 +87,7 @@ export default class ItemProvider extends React.PureComponent<Props, State> {
         return
       }
 
-      // Fetch the blob and get emote data
-      const blob = await this.fetchGlbBlob(glbFile.hash)
+      const blob = await fetchGlbBlob(glbFile.hash)
       const data = await getEmoteData(URL.createObjectURL(blob))
 
       this.setState(prev => ({

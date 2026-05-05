@@ -355,3 +355,16 @@ export async function injectSceneEditorScripts() {
   const scriptsURLs = ['unity/Build/hls.min.js', 'editor.js', 'UnityLoader.js']
   return Promise.all<void>(scriptsURLs.map(script => injectScript(`${PUBLIC_URL}/${script}`)))
 }
+
+/**
+ * Fetches a GLB file as a Blob from the given hash.
+ * @param hash - The content hash of the GLB file to fetch.
+ * @returns A promise that resolves to the fetched Blob.
+ */
+export async function fetchGlbBlob(hash: string): Promise<Blob> {
+  const response = await fetch(getContentsStorageUrl(hash))
+  if (!response.ok) {
+    throw new Error(`Failed to fetch GLB file: ${response.statusText}`)
+  }
+  return response.blob()
+}

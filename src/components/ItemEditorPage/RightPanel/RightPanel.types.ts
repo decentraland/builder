@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { Rarity } from '@dcl/schemas'
+import { BodyShape, Rarity } from '@dcl/schemas'
 import {
   deleteItemRequest,
   DeleteItemRequestAction,
@@ -10,6 +10,14 @@ import {
 } from 'modules/item/actions'
 import { Item, SyncStatus, WearableData, EmoteData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import {
+  SetSpringBoneParamAction,
+  AddSpringBoneParamsAction,
+  DeleteSpringBoneParamsAction,
+  ResetSpringBoneParamsAction,
+  resetSpringBoneParams
+} from 'modules/editor/actions'
+import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
@@ -32,6 +40,19 @@ export type Props = {
   onDeleteItem: ActionFunction<typeof deleteItemRequest>
   onOpenModal: ActionFunction<typeof openModal>
   onDownload: ActionFunction<typeof downloadItemRequest>
+  selectedBodyShape: BodyShape
+  bones: BoneNode[]
+  springBoneParams: Record<string, SpringBoneParams>
+  onSpringBoneParamChange: (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => void
+  onAddSpringBoneParams: (boneName: string) => void
+  onDeleteSpringBoneParams: (boneName: string) => void
+  hasSpringBoneChanges: boolean
+  onResetSpringBoneParams: ActionFunction<typeof resetSpringBoneParams>
+  hasSpringBonesInGlb: boolean
+  hasTwoRepresentations: boolean
+  springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  bonesByShape: Partial<Record<BodyShape, BoneNode[]>>
+  onBodyShapeTabChange: (shape: BodyShape) => void
 }
 
 export type State = {
@@ -64,9 +85,37 @@ export type MapStateProps = Pick<
   | 'campaignName'
   | 'isVrmOptOutEnabled'
   | 'isWearableUtilityEnabled'
+  | 'selectedBodyShape'
+  | 'bones'
+  | 'springBoneParams'
+  | 'hasSpringBoneChanges'
+  | 'hasSpringBonesInGlb'
+  | 'hasTwoRepresentations'
+  | 'springBoneParamsByShape'
+  | 'bonesByShape'
 >
-export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onDownload'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | DownloadItemRequestAction>
+export type MapDispatchProps = Pick<
+  Props,
+  | 'onSaveItem'
+  | 'onDeleteItem'
+  | 'onOpenModal'
+  | 'onDownload'
+  | 'onSpringBoneParamChange'
+  | 'onAddSpringBoneParams'
+  | 'onDeleteSpringBoneParams'
+  | 'onResetSpringBoneParams'
+  | 'onBodyShapeTabChange'
+>
+export type MapDispatch = Dispatch<
+  | SaveItemRequestAction
+  | DeleteItemRequestAction
+  | OpenModalAction
+  | DownloadItemRequestAction
+  | SetSpringBoneParamAction
+  | AddSpringBoneParamsAction
+  | DeleteSpringBoneParamsAction
+  | ResetSpringBoneParamsAction
+>
 
 // New type for the functional component container
 export type RightPanelContainerProps = Omit<Props, keyof MapStateProps | keyof MapDispatchProps>

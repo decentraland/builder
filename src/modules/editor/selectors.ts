@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import equal from 'fast-deep-equal'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape } from '@dcl/schemas'
 
@@ -135,3 +136,19 @@ export const getVisibleItemsFromUrl = (state: RootState, search: string) => {
       }
     })
 }
+
+export const getBones = (state: RootState) => getState(state).bones
+export const getSpringBones = createSelector(getBones, bones => bones.filter(b => b.type === 'spring'))
+export const getAvatarBones = createSelector(getBones, bones => bones.filter(b => b.type === 'avatar'))
+export const getSelectedItemId = (state: RootState) => getState(state).selectedItemId
+export const getSpringBoneParams = (state: RootState) => getState(state).springBoneParams
+export const getOriginalSpringBoneParams = (state: RootState) => getState(state).originalSpringBoneParams
+export const getSpringBoneParamsByShape = (state: RootState) => getState(state).springBoneParamsByShape
+export const getOriginalSpringBoneParamsByShape = (state: RootState) => getState(state).originalSpringBoneParamsByShape
+export const getBonesByShape = (state: RootState) => getState(state).bonesByShape
+
+export const hasSpringBoneChanges = createSelector(
+  getSpringBoneParamsByShape,
+  getOriginalSpringBoneParamsByShape,
+  (current, original) => !equal(current, original)
+)

@@ -49,6 +49,9 @@ export default class Items extends React.PureComponent<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     this.handleReviewItemsTrigger(prevProps)
+    if (this.props.initialPage !== prevProps.initialPage) {
+      this.setState({ currentPages: { ...this.state.currentPages, [this.state.currentTab]: this.props.initialPage } })
+    }
   }
 
   handleReviewItemsTrigger = (prevProps?: Props) => {

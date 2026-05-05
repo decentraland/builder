@@ -1,0 +1,332 @@
+/* Section */
+
+.spring-bones-header-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-right: 10px;
+}
+
+/* Body shape tabs */
+
+.spring-bones-body-shape-tabs {
+  --base-gray: #5e5b67;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--base-gray);
+}
+
+.spring-bones-body-shape-label {
+  font-size: 11px;
+  color: var(--base-gray);
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+.spring-bones-tab {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid var(--base-gray);
+  border-bottom-width: 0;
+  background: transparent;
+  color: var(--base-gray);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s linear;
+}
+
+.spring-bones-tab.active {
+  color: #ffffff;
+}
+
+.spring-bones-tab.active::after {
+  content: '';
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  height: 2px;
+  background: #242229;
+}
+
+.spring-bones-tab:not(.active):hover {
+  color: #a09ba8;
+}
+
+.spring-bones-tab .spring-bones-counter {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* Section content */
+
+.spring-bones-section {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  --base-gray: #5e5b67;
+}
+
+.bone-icon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: url('../../../../icons/bone.svg') no-repeat;
+  background-size: contain;
+}
+
+/* Spring Bone Counter */
+
+.spring-bones-counter {
+  font-size: 12px;
+  color: var(--secondary-text);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.spring-bones-counter .bone-icon {
+  opacity: 0.3;
+}
+
+/* Spring Bone Card */
+
+.dcl.box.spring-bone-card {
+  width: 100%;
+  padding: 0;
+  border-radius: 6px;
+  border: 0.5px solid var(--base-gray);
+}
+
+.dcl.box.spring-bone-card .box-header {
+  margin-bottom: 0;
+}
+
+.dcl.box.spring-bone-card .spring-bone-card-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 10px;
+  cursor: pointer;
+  height: 35px;
+  margin: 0;
+}
+
+.spring-bone-card.expanded .spring-bone-card-header {
+  border-bottom: 0.5px solid var(--base-gray);
+}
+
+.spring-bone-name {
+  flex: 1;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spring-bone-card-header .spring-bone-chevron {
+  margin: 2px 5px;
+  scale: 0.7;
+  transition: 0.2s transform linear;
+}
+
+.expanded .spring-bone-card-header .spring-bone-chevron {
+  transform: rotate(90deg);
+}
+
+.spring-bone-card-header img.spring-bone-card-menu {
+  width: 24px;
+  height: 24px;
+  padding: 5px;
+  cursor: pointer;
+  transform: rotate(90deg);
+  transition: background-color 0.2s linear;
+  border-radius: 18px;
+  margin: auto;
+  display: block;
+}
+
+.spring-bone-card-header img.spring-bone-card-menu:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spring-bone-card-children {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.spring-bones-slider-row,
+.spring-bones-center-row,
+.spring-bones-vec3-row,
+.spring-bones-vec3-inputs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.spring-bones-vec3-inputs {
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.spring-bones-label {
+  font-size: 11px;
+  color: var(--secondary-text);
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+.spring-bones-number {
+  width: 45px;
+  background: transparent;
+  border: 0.5px solid var(--base-gray);
+  border-radius: 6px;
+  color: #ffffff;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.spring-bones-vec3-inputs label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--base-gray);
+}
+
+.spring-bones-center-value {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.spring-bones-center-value.empty {
+  color: var(--base-gray);
+}
+
+.spring-bones-center-arrow.open {
+  transform: rotate(180deg);
+}
+
+.spring-bones-center-clear {
+  transform: scale(0.7);
+}
+
+/* Add Bone Button */
+
+.spring-bone-add-button {
+  width: max-content;
+}
+
+.spring-bone-add-button .Icon {
+  margin-left: 4px;
+}
+
+/* Bone Hierarchy Picker */
+.bone-hierarchy-picker.MuiPaper-root {
+  overflow: auto;
+  min-width: calc(var(--item-editor-panel-width) - 16px);
+  max-width: calc(var(--item-editor-panel-width) * 1.5);
+  width: max-content;
+  height: 430px;
+  padding: 8px 0;
+  border-radius: 8px;
+  background: #43404a;
+  scrollbar-width: thin;
+}
+
+.bone-tree-node {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: #ffffff;
+  min-height: 30px;
+}
+
+.bone-tree-node.disabled {
+  color: #a09ba8;
+}
+
+.bone-tree-node.children {
+  cursor: pointer;
+}
+
+.bone-tree-node:not(.disabled):hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.bone-tree-node .bone-icon {
+  margin: 0 2px;
+}
+
+.bone-tree-node.disabled .bone-icon {
+  opacity: 0.4;
+}
+
+.bone-tree-chevron.Icon {
+  flex-shrink: 0;
+  margin: 2px 5px;
+  scale: 0.8;
+  transition: transform 0.2s linear;
+}
+
+.bone-tree-chevron.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.bone-tree-chevron.expanded {
+  transform: rotate(90deg);
+}
+
+.bone-tree-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 100px;
+}
+
+.bone-tree-name .children-count {
+  font-size: 11px;
+  color: #a09ba8;
+  margin-left: 4px;
+}
+
+.bone-tree-checkmark {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+button.bone-tree-select-button.MuiButton-sizeSmall.MuiButton-textPrimary {
+  flex-shrink: 0;
+  text-transform: none;
+  min-width: max-content;
+  line-height: 1.5;
+  display: none;
+  padding: 0px 5px;
+}
+
+.bone-tree-node:not(.disabled):hover .bone-tree-select-button {
+  display: block;
+}
