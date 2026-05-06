@@ -2008,7 +2008,8 @@
     "next": "Next",
     "total_items": "Total items to be minted",
     "confirm_title": "You are about to mint {count} {count, plural, one {item} other {items}}, each item will be minted to the given address with the provided amount.",
-    "beneficiary": "Beneficiary"
+    "beneficiary": "Beneficiary",
+    "apply_to_all": "Apply same configuration to all items"
   },
   "reset_item_modal": {
     "title": "Reset Changes",

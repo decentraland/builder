@@ -31,6 +31,7 @@ export enum View {
 export type State = {
   items: Item[]
   itemMints: ItemMints
+  remountKey: number
   error: string | null
   confirm: View
 }
