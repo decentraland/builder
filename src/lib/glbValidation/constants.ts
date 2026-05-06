@@ -113,7 +113,7 @@ export const PROP_ARMATURE_NAME = 'Armature_Prop'
 export const VALID_AUDIO_EXTENSIONS = ['.mp3', '.ogg']
 
 /** Maximum number of spring bones allowed per wearable representation. */
-export const MAX_SPRING_BONES = 15
+export const MAX_SPRING_BONES = 12
 
 /** Spring bone parameter ranges (from @dcl/schemas). */
 export const SPRING_BONE_STIFFNESS_MIN = 0
