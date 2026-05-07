@@ -219,6 +219,10 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           errorTranslationId = 'thumbnail_too_big'
           break
         }
+        case FileType.SMART_WEARABLE: {
+          errorTranslationId = 'smart_wearable_too_big'
+          break
+        }
         default: {
           errorTranslationId = 'file_too_big'
           break
