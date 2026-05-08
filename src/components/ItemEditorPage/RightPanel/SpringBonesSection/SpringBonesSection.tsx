@@ -22,7 +22,7 @@ import CheckIcon from 'icons/check.svg'
 import MenuIcon from 'icons/ellipsis.svg'
 import { Props } from './SpringBonesSection.types'
 import './SpringBonesSection.css'
-import { buildSubtreeSizes, sumConfiguredBones } from './utils'
+import { buildSubtreeSizes, sumConfiguredBones } from 'lib/springBones'
 
 function BoneTreeNode({
   bone,

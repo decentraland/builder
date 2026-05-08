@@ -38,6 +38,7 @@ import {
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
+import { seedSpringBonesForUpload } from 'lib/springBones'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -286,6 +287,13 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       }
 
       const contents = await computeHashes(sortedContents.all)
+
+      if (type === ItemType.WEARABLE) {
+        const springBones = await seedSpringBonesForUpload(representations, sortedContents.all, contents)
+        if (springBones) {
+          ;(data as WearableData).springBones = springBones
+        }
+      }
 
       const item: Item<ItemType.WEARABLE | ItemType.EMOTE> = {
         id,
