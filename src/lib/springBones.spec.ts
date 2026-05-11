@@ -371,10 +371,7 @@ describe('when seeding spring bones for an item update', () => {
       const newContents = { 'male/model.glb': 'hash-male-new' }
 
       const pristineItem = buildWearable({
-        representations: [
-          makeRepresentation(BodyShape.MALE, 'male/model.glb'),
-          makeRepresentation(BodyShape.FEMALE, 'female/model.glb')
-        ],
+        representations: [makeRepresentation(BodyShape.MALE, 'male/model.glb'), makeRepresentation(BodyShape.FEMALE, 'female/model.glb')],
         contents: { 'male/model.glb': 'hash-male-old', 'female/model.glb': 'hash-female' },
         springBones: {
           version: SPRING_BONES_VERSION,
