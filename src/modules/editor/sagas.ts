@@ -2,7 +2,7 @@ import type { History } from 'history'
 import type { Wearable } from 'decentraland-ecs'
 import { takeLatest, select, put, call, delay, take, getContext } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
-import { BodyShape, IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
+import { IPreviewController, PreviewEmoteEventType } from '@dcl/schemas'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
@@ -64,7 +64,6 @@ import {
   LoadSpringBonesRequestAction,
   clearSpringBones,
   setBones,
-  setBonesByShape,
   loadSpringBonesSuccess,
   loadSpringBonesFailure
 } from 'modules/editor/actions'
@@ -121,10 +120,9 @@ import {
   isMultiselectEnabled,
   getWearablePreviewController,
   getVisibleItemsFromUrl,
-  getSpringBoneParams,
-  getSpringBones,
-  getSelectedItemId,
-  getBodyShape
+  getSpringBoneParamsForCurrentShape,
+  getSpringBonesForCurrentShape,
+  getSelectedItemId
 } from './selectors'
 import {
   getNewEditorScene,
@@ -140,7 +138,7 @@ import {
   fromCatalystWearableToWearable,
   fetchGlbBlob
 } from './utils'
-import { isWearable, getRepresentationMainFile, hasMultipleModels } from 'modules/item/utils'
+import { isWearable, getRepresentationsModelHashes } from 'modules/item/utils'
 import { parseSpringBones } from 'lib/parseSpringBones'
 import { MessageTransport } from '@dcl/mini-rpc'
 import { CameraClient } from '@dcl/inspector'
@@ -719,8 +717,8 @@ function* handleFetchBaseWearables() {
 function* pushSpringBoneParamsToPreview() {
   const controller: IPreviewController | null = yield select(getWearablePreviewController)
   const selectedItemId: string | null = yield select(getSelectedItemId)
-  const springBones: ReturnType<typeof getSpringBones> = yield select(getSpringBones)
-  const springBoneParams: ReturnType<typeof getSpringBoneParams> = yield select(getSpringBoneParams)
+  const springBones: ReturnType<typeof getSpringBonesForCurrentShape> = yield select(getSpringBonesForCurrentShape)
+  const springBoneParams: ReturnType<typeof getSpringBoneParamsForCurrentShape> = yield select(getSpringBoneParamsForCurrentShape)
 
   if (!controller || !selectedItemId || springBones.length === 0) {
     return
@@ -743,13 +741,7 @@ function* handlePushSpringBoneParams() {
   yield call(pushSpringBoneParamsToPreview)
 }
 
-function* parseSpringBonesForBodyShape(item: Item, bodyShape: BodyShape) {
-  const mainFile = getRepresentationMainFile(item, bodyShape)
-  const hash = mainFile ? item.contents[mainFile] : null
-  if (!mainFile || !hash) {
-    return null
-  }
-
+function* parseSpringBonesForHash(item: Item, hash: string) {
   try {
     const blob: Blob = yield call(fetchGlbBlob, hash)
     const buffer: ArrayBuffer = yield call([blob, 'arrayBuffer'])
@@ -767,7 +759,7 @@ function* parseSpringBonesForBodyShape(item: Item, bodyShape: BodyShape) {
 
     return bones
   } catch (error) {
-    console.warn(`Failed to parse spring bones for ${bodyShape}:`, error)
+    console.warn(`Failed to parse spring bones for hash ${hash}:`, error)
     return null
   }
 }
@@ -784,24 +776,12 @@ function* handleLoadSpringBones(action: LoadSpringBonesRequestAction) {
       return
     }
 
-    const currentBodyShape: BodyShape = yield select(getBodyShape)
-
-    if (hasMultipleModels(item)) {
-      // Eagerly parse both body shapes so tab badges are correct and tab switches skip re-fetch
-      for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
-        const bones: BoneNode[] | null = yield call(parseSpringBonesForBodyShape, item, shape)
-        if (bones === null) continue
-        yield put(setBonesByShape(shape, bones, item.id))
-        if (shape === currentBodyShape) {
-          yield put(setBones(bones, item.id))
-        }
-      }
-    } else {
-      // Single GLB path, parse once and use for both body shapes
-      const bones: BoneNode[] | null = yield call(parseSpringBonesForBodyShape, item, currentBodyShape)
-      if (bones !== null) {
-        yield put(setBones(bones, item.id))
-      }
+    // Two reps sharing the same GLB collapse into a single fetch; multi-model wearables produce two.
+    const reachableHashes = getRepresentationsModelHashes(item)
+    for (const hash of reachableHashes) {
+      const bones: BoneNode[] | null = yield call(parseSpringBonesForHash, item, hash)
+      if (bones === null) continue
+      yield put(setBones(hash, bones, item.id))
     }
 
     yield put(loadSpringBonesSuccess(item.id))

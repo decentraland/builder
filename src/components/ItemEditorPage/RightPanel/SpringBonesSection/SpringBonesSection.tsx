@@ -444,11 +444,11 @@ export default function SpringBonesSection({
 
   /** Precomputed subtree-aware configured bone counts per body shape (used for tab badges) */
   const configuredBonesCountByShape: Map<BodyShape, number> = useMemo(() => {
-    if (!hasTwoRepresentations) return new Map() // Only compute if we have multiple representations, otherwise it's not going to be shown and we can save the computation
+    if (!hasTwoRepresentations || !springBoneParamsByShape || !bonesByShape) return new Map() // Only compute if we have multiple representations, otherwise it's not going to be shown and we can save the computation
     const result = new Map<BodyShape, number>()
     for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
-      const shapeParams = springBoneParamsByShape?.[shape]
-      const shapeBones = bonesByShape?.[shape]
+      const shapeParams = springBoneParamsByShape[shape]
+      const shapeBones = bonesByShape[shape]
       if (!shapeParams || !shapeBones) {
         result.set(shape, 0)
         continue
@@ -456,7 +456,7 @@ export default function SpringBonesSection({
       result.set(shape, sumConfiguredBones(buildSubtreeSizes(shapeBones), shapeParams))
     }
     return result
-  }, [springBoneParamsByShape, bonesByShape])
+  }, [hasTwoRepresentations, springBoneParamsByShape, bonesByShape])
 
   /** Sort spring bone params by hierarchy */
   const sortedSpringBoneParams: [string, SpringBoneParams][] = useMemo(() => {

@@ -29,7 +29,7 @@ import { MAX_ITEMS } from 'modules/collection/constants'
 import { FromParam } from 'modules/location/types'
 import { getMethodData } from 'modules/wallet/utils'
 import { getIsLinkedWearablesV2Enabled } from 'modules/features/selectors'
-import { hasSpringBoneChanges, getSpringBoneParams } from 'modules/editor/selectors'
+import { hasSpringBoneChanges, getSpringBoneParamsByHash } from 'modules/editor/selectors'
 import { SpringBoneParams } from 'modules/editor/types'
 import { mockedItem, mockedItemContents, mockedLocalItem, mockedRemoteItem } from 'specs/item'
 import { getCollections, getCollection } from 'modules/collection/selectors'
@@ -588,7 +588,7 @@ describe('when handling the save item request action', () => {
             [select(getAddress), mockAddress],
             [select(getIsLinkedWearablesV2Enabled), true],
             [select(hasSpringBoneChanges), true],
-            [select(getSpringBoneParams), springBoneParams],
+            [select(getSpringBoneParamsByHash), { [hash]: springBoneParams }],
             [matchers.call.fn(builderAPI.saveItem), Promise.resolve(expectedItem)]
           ])
           .dispatch(saveItemRequest(item, contents))

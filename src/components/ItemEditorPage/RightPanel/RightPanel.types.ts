@@ -50,8 +50,8 @@ export type Props = {
   onResetSpringBoneParams: ActionFunction<typeof resetSpringBoneParams>
   hasSpringBonesInGlb: boolean
   hasTwoRepresentations: boolean
-  springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
-  bonesByShape: Partial<Record<BodyShape, BoneNode[]>>
+  springBoneParamsByShape?: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+  bonesByShape?: Partial<Record<BodyShape, BoneNode[]>>
   onBodyShapeTabChange: (shape: BodyShape) => void
 }
 

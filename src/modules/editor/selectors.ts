@@ -15,8 +15,8 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { getSelectedCollectionIdFromSearchParams, isReviewingFromSearchParams } from 'modules/location/url-parsers'
 import { Asset } from 'modules/asset/types'
-import { getData } from 'modules/item/selectors'
-import { SelectedBaseWearablesByBodyShape } from './types'
+import { getData, getItem } from 'modules/item/selectors'
+import { SelectedBaseWearablesByBodyShape, BoneNode, SpringBoneParams } from './types'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 
 const getLoading = (state: RootState) => getState(state).loading
@@ -137,18 +137,44 @@ export const getVisibleItemsFromUrl = (state: RootState, search: string) => {
     })
 }
 
-export const getBones = (state: RootState) => getState(state).bones
-export const getSpringBones = createSelector(getBones, bones => bones.filter(b => b.type === 'spring'))
-export const getAvatarBones = createSelector(getBones, bones => bones.filter(b => b.type === 'avatar'))
 export const getSelectedItemId = (state: RootState) => getState(state).selectedItemId
-export const getSpringBoneParams = (state: RootState) => getState(state).springBoneParams
-export const getOriginalSpringBoneParams = (state: RootState) => getState(state).originalSpringBoneParams
-export const getSpringBoneParamsByShape = (state: RootState) => getState(state).springBoneParamsByShape
-export const getOriginalSpringBoneParamsByShape = (state: RootState) => getState(state).originalSpringBoneParamsByShape
-export const getBonesByShape = (state: RootState) => getState(state).bonesByShape
+export const getSpringBoneParamsByHash = (state: RootState) => getState(state).springBoneParamsByHash
+export const getOriginalSpringBoneParamsByHash = (state: RootState) => getState(state).originalSpringBoneParamsByHash
+export const getBonesByHash = (state: RootState) => getState(state).bonesByHash
+
+/** Resolves the GLB content hash for a given body shape on the currently selected item. */
+export const getRepresentationHashForShape = (state: RootState, bodyShape: BodyShape): string | null => {
+  const itemId = getSelectedItemId(state)
+  const item = itemId ? getItem(state, itemId) : null
+  if (!item) return null
+  const rep = item.data.representations.find(r => r.bodyShapes.includes(bodyShape))
+  return rep?.mainFile ? item.contents[rep.mainFile] ?? null : null
+}
+
+/** Resolves the GLB content hash for the active body shape on the currently selected item. */
+export const getCurrentRepresentationHash = (state: RootState): string | null => getRepresentationHashForShape(state, getBodyShape(state))
+
+const EMPTY_BONES: BoneNode[] = []
+const EMPTY_PARAMS: Record<string, SpringBoneParams> = {}
+
+export const getBonesForShape = (state: RootState, bodyShape: BodyShape): BoneNode[] => {
+  const hash = getRepresentationHashForShape(state, bodyShape)
+  return hash ? getBonesByHash(state)[hash] ?? EMPTY_BONES : EMPTY_BONES
+}
+
+export const getSpringBoneParamsForShape = (state: RootState, bodyShape: BodyShape): Record<string, SpringBoneParams> => {
+  const hash = getRepresentationHashForShape(state, bodyShape)
+  return hash ? getSpringBoneParamsByHash(state)[hash] ?? EMPTY_PARAMS : EMPTY_PARAMS
+}
+
+export const getBonesForCurrentShape = (state: RootState): BoneNode[] => getBonesForShape(state, getBodyShape(state))
+export const getSpringBoneParamsForCurrentShape = (state: RootState): Record<string, SpringBoneParams> =>
+  getSpringBoneParamsForShape(state, getBodyShape(state))
+
+export const getSpringBonesForCurrentShape = createSelector(getBonesForCurrentShape, bones => bones.filter(b => b.type === 'spring'))
 
 export const hasSpringBoneChanges = createSelector(
-  getSpringBoneParamsByShape,
-  getOriginalSpringBoneParamsByShape,
+  getSpringBoneParamsByHash,
+  getOriginalSpringBoneParamsByHash,
   (current, original) => !equal(current, original)
 )

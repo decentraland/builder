@@ -56,20 +56,20 @@ describe('when creating the action that clears spring bones', () => {
 })
 
 describe('when creating the action that sets bones', () => {
-  it('should return an action with bones and selectedItemId payload', () => {
+  it('should return an action with hash, bones and selectedItemId payload', () => {
     const bones: BoneNode[] = [{ name: 'Hips', nodeId: 0, type: 'avatar', children: [] }]
-    expect(setBones(bones, 'aHash')).toEqual({
+    expect(setBones('aHash', bones, 'anItemId')).toEqual({
       type: SET_BONES,
-      payload: { bones, selectedItemId: 'aHash' }
+      payload: { hash: 'aHash', bones, selectedItemId: 'anItemId' }
     })
   })
 })
 
 describe('when creating the action that sets a spring bone param', () => {
-  it('should return an action with boneName, field, and value payload', () => {
-    expect(setSpringBoneParam('springbone_hair', 'stiffness', 0.5)).toEqual({
+  it('should return an action with hash, boneName, field, and value payload', () => {
+    expect(setSpringBoneParam('aHash', 'springbone_hair', 'stiffness', 0.5)).toEqual({
       type: SET_SPRING_BONE_PARAM,
-      payload: { boneName: 'springbone_hair', field: 'stiffness', value: 0.5 }
+      payload: { hash: 'aHash', boneName: 'springbone_hair', field: 'stiffness', value: 0.5 }
     })
   })
 })
@@ -87,19 +87,19 @@ describe('when creating the action that pushes spring bone params', () => {
 })
 
 describe('when creating the action that adds spring bone params', () => {
-  it('should return an action with boneName payload', () => {
-    expect(addSpringBoneParams('springbone_tail')).toEqual({
+  it('should return an action with hash and boneName payload', () => {
+    expect(addSpringBoneParams('aHash', 'springbone_tail')).toEqual({
       type: ADD_SPRING_BONE_PARAMS,
-      payload: { boneName: 'springbone_tail' }
+      payload: { hash: 'aHash', boneName: 'springbone_tail' }
     })
   })
 })
 
 describe('when creating the action that deletes spring bone params', () => {
-  it('should return an action with boneName payload', () => {
-    expect(deleteSpringBoneParams('springbone_hair')).toEqual({
+  it('should return an action with hash and boneName payload', () => {
+    expect(deleteSpringBoneParams('aHash', 'springbone_hair')).toEqual({
       type: DELETE_SPRING_BONE_PARAMS,
-      payload: { boneName: 'springbone_hair' }
+      payload: { hash: 'aHash', boneName: 'springbone_hair' }
     })
   })
 })

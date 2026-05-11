@@ -8,12 +8,10 @@ import {
   getFetchingBaseWearablesError,
   getSelectedBaseWearablesByBodyShape,
   isLoadingBaseWearables,
-  getBones,
-  getSpringBones,
-  getAvatarBones,
+  getBonesByHash,
   getSelectedItemId,
-  getSpringBoneParams,
-  getOriginalSpringBoneParams,
+  getSpringBoneParamsByHash,
+  getOriginalSpringBoneParamsByHash,
   hasSpringBoneChanges
 } from './selectors'
 
@@ -157,7 +155,7 @@ describe('when getting the fetching base wearable error', () => {
   })
 })
 
-describe('when getting bones', () => {
+describe('when getting bones by hash', () => {
   const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1] }
   const springBone: BoneNode = { name: 'springbone_hair', nodeId: 1, type: 'spring', children: [] }
 
@@ -166,71 +164,33 @@ describe('when getting bones', () => {
       ...state,
       editor: {
         ...state.editor,
-        bones: [avatarBone, springBone]
+        bonesByHash: { hashA: [avatarBone, springBone] }
       }
     }
   })
 
-  it('should return all bones', () => {
-    expect(getBones(state)).toEqual([avatarBone, springBone])
+  it('should return all bones stored for the given hash', () => {
+    expect(getBonesByHash(state)['hashA']).toEqual([avatarBone, springBone])
   })
 })
 
-describe('when getting spring bones', () => {
-  const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1] }
-  const springBone: BoneNode = { name: 'springbone_hair', nodeId: 1, type: 'spring', children: [] }
-
+describe('when getting the selected item id', () => {
   beforeEach(() => {
     state = {
       ...state,
       editor: {
         ...state.editor,
-        bones: [avatarBone, springBone]
+        selectedItemId: 'anItemId'
       }
     }
   })
 
-  it('should return only bones with type spring', () => {
-    expect(getSpringBones(state)).toEqual([springBone])
+  it('should return the selected item id', () => {
+    expect(getSelectedItemId(state)).toBe('anItemId')
   })
 })
 
-describe('when getting avatar bones', () => {
-  const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1] }
-  const springBone: BoneNode = { name: 'springbone_hair', nodeId: 1, type: 'spring', children: [] }
-
-  beforeEach(() => {
-    state = {
-      ...state,
-      editor: {
-        ...state.editor,
-        bones: [avatarBone, springBone]
-      }
-    }
-  })
-
-  it('should return only bones with type avatar', () => {
-    expect(getAvatarBones(state)).toEqual([avatarBone])
-  })
-})
-
-describe('when getting the selected item GLB hash', () => {
-  beforeEach(() => {
-    state = {
-      ...state,
-      editor: {
-        ...state.editor,
-        selectedItemId: 'aGlbHash'
-      }
-    }
-  })
-
-  it('should return the selected item GLB hash', () => {
-    expect(getSelectedItemId(state)).toBe('aGlbHash')
-  })
-})
-
-describe('when getting spring bone params', () => {
+describe('when getting spring bone params by hash', () => {
   const params = {
     springbone_hair: {
       stiffness: 1,
@@ -246,17 +206,17 @@ describe('when getting spring bone params', () => {
       ...state,
       editor: {
         ...state.editor,
-        springBoneParams: params
+        springBoneParamsByHash: { hashA: params }
       }
     }
   })
 
-  it('should return the spring bone params', () => {
-    expect(getSpringBoneParams(state)).toEqual(params)
+  it('should return the spring bone params keyed by hash', () => {
+    expect(getSpringBoneParamsByHash(state)).toEqual({ hashA: params })
   })
 })
 
-describe('when getting original spring bone params', () => {
+describe('when getting original spring bone params by hash', () => {
   const params = {
     springbone_hair: {
       stiffness: 1,
@@ -272,13 +232,13 @@ describe('when getting original spring bone params', () => {
       ...state,
       editor: {
         ...state.editor,
-        originalSpringBoneParams: params
+        originalSpringBoneParamsByHash: { hashA: params }
       }
     }
   })
 
-  it('should return the original spring bone params', () => {
-    expect(getOriginalSpringBoneParams(state)).toEqual(params)
+  it('should return the original spring bone params keyed by hash', () => {
+    expect(getOriginalSpringBoneParamsByHash(state)).toEqual({ hashA: params })
   })
 })
 
@@ -292,18 +252,15 @@ describe('when checking if spring bone params have changed', () => {
       center: undefined
     }
   }
-  const originalParamsByShape = {
-    [BodyShape.MALE]: { ...boneParams }
-  }
 
-  describe('and springBoneParamsByShape equals originalSpringBoneParamsByShape', () => {
+  describe('and springBoneParamsByHash equals originalSpringBoneParamsByHash', () => {
     beforeEach(() => {
       state = {
         ...state,
         editor: {
           ...state.editor,
-          springBoneParamsByShape: { [BodyShape.MALE]: { ...boneParams } },
-          originalSpringBoneParamsByShape: { [BodyShape.MALE]: { ...boneParams } }
+          springBoneParamsByHash: { hashA: { ...boneParams } },
+          originalSpringBoneParamsByHash: { hashA: { ...boneParams } }
         }
       }
     })
@@ -313,18 +270,16 @@ describe('when checking if spring bone params have changed', () => {
     })
   })
 
-  describe('and springBoneParamsByShape differs from originalSpringBoneParamsByShape', () => {
+  describe('and springBoneParamsByHash differs from originalSpringBoneParamsByHash', () => {
     beforeEach(() => {
       state = {
         ...state,
         editor: {
           ...state.editor,
-          springBoneParamsByShape: {
-            [BodyShape.MALE]: {
-              springbone_hair: { ...boneParams.springbone_hair, stiffness: 0.5 }
-            }
+          springBoneParamsByHash: {
+            hashA: { springbone_hair: { ...boneParams.springbone_hair, stiffness: 0.5 } }
           },
-          originalSpringBoneParamsByShape: { ...originalParamsByShape }
+          originalSpringBoneParamsByHash: { hashA: { ...boneParams } }
         }
       }
     })
@@ -340,8 +295,8 @@ describe('when checking if spring bone params have changed', () => {
         ...state,
         editor: {
           ...state.editor,
-          springBoneParamsByShape: {},
-          originalSpringBoneParamsByShape: {}
+          springBoneParamsByHash: {},
+          originalSpringBoneParamsByHash: {}
         }
       }
     })
