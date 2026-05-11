@@ -1,6 +1,7 @@
 import { SpringBoneParams, SpringBonesData } from '@dcl/schemas'
-import { WearableRepresentation } from 'modules/item/types'
+import { Item, ItemType, WearableRepresentation } from 'modules/item/types'
 import { BoneNode, SpringBoneNode } from 'modules/editor/types'
+import { getRepresentationsModelHashes } from 'modules/item/utils'
 import { MAX_SPRING_BONES } from 'lib/glbValidation/constants'
 import { parseSpringBones } from 'lib/parseSpringBones'
 
@@ -125,4 +126,30 @@ export async function seedSpringBonesForUpload(
   }
 
   return Object.keys(models).length > 0 ? { version: SPRING_BONES_VERSION, models } : undefined
+}
+
+/**
+ * Builds a SpringBonesData object for an item being updated (GLB replaced or new representation added).
+ * Seeds defaults for chain roots in the new GLB(s) while preserving the pristine item's already-tuned
+ * entries for hashes that survive the update. Hashes no longer reachable through any representation drop out.
+ */
+export async function seedSpringBonesForUpdate(
+  originalItem: Item,
+  updatedItem: Item,
+  representations: WearableRepresentation[],
+  blobsByPath: Record<string, Blob>,
+  hashesByPath: Record<string, string>
+): Promise<SpringBonesData | undefined> {
+  const seeded = await seedSpringBonesForUpload(representations, blobsByPath, hashesByPath)
+  const existing = originalItem.type === ItemType.WEARABLE ? originalItem.data.springBones?.models ?? {} : {}
+  const reachable = getRepresentationsModelHashes(updatedItem)
+
+  const merged: SpringBonesData['models'] = {}
+  for (const [hash, params] of Object.entries({ ...(seeded?.models ?? {}), ...existing })) {
+    if (reachable.has(hash) && Object.keys(params).length > 0) {
+      merged[hash] = params
+    }
+  }
+
+  return Object.keys(merged).length > 0 ? { version: SPRING_BONES_VERSION, models: merged } : undefined
 }

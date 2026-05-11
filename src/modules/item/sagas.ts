@@ -1,4 +1,5 @@
 import PQueue from 'p-queue'
+import { deepEqual } from 'fast-equals'
 import { History } from 'history'
 import { Contract, ethers, providers } from 'ethers'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
@@ -516,9 +517,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      // Recompute spring bone metadata. Filter out entries whose hash isn't reachable through any current representation
+      // Recompute spring bone metadata from Redux when the editor has uncommitted changes —
+      // but only if the caller (modal flow) hasn't already set a different value on the item.
       const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
-      if (isWearable(item) && springBoneHasChanges) {
+      const hasSpringBonesModelChanges =
+        isWearable(item) && !!oldItem && isWearable(oldItem) && !deepEqual(item.data.springBones ?? null, oldItem.data.springBones ?? null)
+      if (isWearable(item) && springBoneHasChanges && !hasSpringBonesModelChanges) {
         const reachableHashes = getRepresentationsModelHashes(item)
         const allParams: SpringBonesData['models'] = yield select(getSpringBoneParamsByHash)
         const models: SpringBonesData['models'] = {}

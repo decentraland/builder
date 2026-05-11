@@ -16,6 +16,7 @@ import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { getSelectedCollectionIdFromSearchParams, isReviewingFromSearchParams } from 'modules/location/url-parsers'
 import { Asset } from 'modules/asset/types'
 import { getData, getItem } from 'modules/item/selectors'
+import { getRepresentationMainFileHash } from 'modules/item/utils'
 import { SelectedBaseWearablesByBodyShape, BoneNode, SpringBoneParams } from './types'
 import { FETCH_BASE_WEARABLES_REQUEST } from './actions'
 
@@ -142,13 +143,12 @@ export const getSpringBoneParamsByHash = (state: RootState) => getState(state).s
 export const getOriginalSpringBoneParamsByHash = (state: RootState) => getState(state).originalSpringBoneParamsByHash
 export const getBonesByHash = (state: RootState) => getState(state).bonesByHash
 
-/** Resolves the GLB content hash for a given body shape on the currently selected item. */
+/** Resolves the GLB content hash for a given body shape on the currently selected item.
+ * Falls back to the first representation when the requested shape has no representation. */
 export const getRepresentationHashForShape = (state: RootState, bodyShape: BodyShape): string | null => {
   const itemId = getSelectedItemId(state)
   const item = itemId ? getItem(state, itemId) : null
-  if (!item) return null
-  const rep = item.data.representations.find(r => r.bodyShapes.includes(bodyShape))
-  return rep?.mainFile ? item.contents[rep.mainFile] ?? null : null
+  return (item && getRepresentationMainFileHash(item, bodyShape)) ?? null
 }
 
 /** Resolves the GLB content hash for the active body shape on the currently selected item. */

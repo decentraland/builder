@@ -1,9 +1,15 @@
 import { BoneNode } from 'modules/editor/types'
-import { WearableRepresentation } from 'modules/item/types'
-import { BodyShape } from '@dcl/schemas'
+import { Item, ItemType, WearableData, WearableRepresentation } from 'modules/item/types'
+import { BodyShape, SpringBoneParams } from '@dcl/schemas'
 import { MAX_SPRING_BONES } from 'lib/glbValidation/constants'
 import { buildGlb } from 'lib/glbUtils'
-import { SPRING_BONES_VERSION, getDefaultSpringBoneParams, getDefaultSpringBoneRoots, seedSpringBonesForUpload } from './springBones'
+import {
+  SPRING_BONES_VERSION,
+  getDefaultSpringBoneParams,
+  getDefaultSpringBoneRoots,
+  seedSpringBonesForUpdate,
+  seedSpringBonesForUpload
+} from './springBones'
 
 function makeBlob(buffer: ArrayBuffer): Blob {
   return { arrayBuffer: () => Promise.resolve(buffer) } as unknown as Blob
@@ -258,6 +264,213 @@ describe('when seeding spring bones for an upload', () => {
       try {
         const result = await seedSpringBonesForUpload(representations, blobs, hashes)
         expect(result).toBeUndefined()
+        expect(warnSpy).toHaveBeenCalled()
+      } finally {
+        warnSpy.mockRestore()
+      }
+    })
+  })
+})
+
+describe('when seeding spring bones for an item update', () => {
+  /** Minimal wearable Item factory — only the fields the helper actually touches. */
+  function buildWearable({
+    representations,
+    contents,
+    springBones
+  }: {
+    representations: WearableRepresentation[]
+    contents: Record<string, string>
+    springBones?: WearableData['springBones']
+  }): Item {
+    return {
+      type: ItemType.WEARABLE,
+      contents,
+      data: { representations, springBones } as WearableData
+    } as Item
+  }
+
+  /** A non-default param shape so we can prove "existing wins" assertions without colliding with defaults. */
+  const tunedParams: SpringBoneParams = {
+    stiffness: 9.9,
+    gravityPower: 7,
+    gravityDir: [0, -1, 0],
+    drag: 0.1,
+    center: undefined,
+    isRoot: true
+  }
+
+  describe('and the GLB hash changes (model swap) with the prior hash holding tuned params', () => {
+    it('should drop the orphan hash and seed defaults for the new hash', async () => {
+      const newBuffer = buildGlb({ nodes: [{ name: 'Hips', children: [1] }, { name: 'springbone_hair' }] })
+      const representations = [makeRepresentation(BodyShape.MALE, 'male/model.glb')]
+      const blobs = { 'male/model.glb': makeBlob(newBuffer) }
+      const hashes = { 'male/model.glb': 'hash-new' }
+
+      const pristineItem = buildWearable({
+        representations,
+        contents: { 'male/model.glb': 'hash-old' },
+        springBones: { version: SPRING_BONES_VERSION, models: { 'hash-old': { springbone_hair: tunedParams } } }
+      })
+      const updatedItem = buildWearable({ representations, contents: hashes })
+
+      const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, representations, blobs, hashes)
+      expect(result).toEqual({
+        version: SPRING_BONES_VERSION,
+        models: { 'hash-new': { springbone_hair: getDefaultSpringBoneParams() } }
+      })
+    })
+  })
+
+  describe('and the new GLB has the same hash as the existing one (identical bytes)', () => {
+    it('should preserve the tuned params and not overwrite them with defaults', async () => {
+      const buffer = buildGlb({ nodes: [{ name: 'Hips', children: [1] }, { name: 'springbone_hair' }] })
+      const representations = [makeRepresentation(BodyShape.MALE, 'male/model.glb')]
+      const blobs = { 'male/model.glb': makeBlob(buffer) }
+      const hashes = { 'male/model.glb': 'hash-shared' }
+
+      const pristineItem = buildWearable({
+        representations,
+        contents: hashes,
+        springBones: { version: SPRING_BONES_VERSION, models: { 'hash-shared': { springbone_hair: tunedParams } } }
+      })
+      const updatedItem = buildWearable({ representations, contents: hashes })
+
+      const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, representations, blobs, hashes)
+      expect(result?.models['hash-shared']).toEqual({ springbone_hair: tunedParams })
+    })
+  })
+
+  describe('and the new GLB has no spring bones (replacing a previously-tuned model)', () => {
+    it('should drop the prior hash and return undefined since no entries remain', async () => {
+      const newBuffer = buildGlb({ nodes: [{ name: 'Hips' }, { name: 'Spine' }] })
+      const representations = [makeRepresentation(BodyShape.MALE, 'male/model.glb')]
+      const blobs = { 'male/model.glb': makeBlob(newBuffer) }
+      const hashes = { 'male/model.glb': 'hash-new' }
+
+      const pristineItem = buildWearable({
+        representations,
+        contents: { 'male/model.glb': 'hash-old' },
+        springBones: { version: SPRING_BONES_VERSION, models: { 'hash-old': { springbone_hair: tunedParams } } }
+      })
+      const updatedItem = buildWearable({ representations, contents: hashes })
+
+      const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, representations, blobs, hashes)
+      expect(result).toBeUndefined()
+    })
+  })
+
+  describe('and a multi-model item is replaced wholesale with a single new shape (matches modifyItem semantics)', () => {
+    it('should drop both prior tuned entries and seed defaults for the new hash only', async () => {
+      // Mirrors what CreateSingleItemModal.modifyItem actually does for a multi-model wearable:
+      // when the user uploads one shape, the modal replaces `item.data.representations` wholesale
+      // and `item.contents` only holds the new path. Both prior hashes are unreachable post-update.
+      const newMaleBuffer = buildGlb({ nodes: [{ name: 'Hips', children: [1] }, { name: 'springbone_new_male' }] })
+      const newRepresentations = [makeRepresentation(BodyShape.MALE, 'male/model.glb')]
+      const blobs = { 'male/model.glb': makeBlob(newMaleBuffer) }
+      const newContents = { 'male/model.glb': 'hash-male-new' }
+
+      const pristineItem = buildWearable({
+        representations: [
+          makeRepresentation(BodyShape.MALE, 'male/model.glb'),
+          makeRepresentation(BodyShape.FEMALE, 'female/model.glb')
+        ],
+        contents: { 'male/model.glb': 'hash-male-old', 'female/model.glb': 'hash-female' },
+        springBones: {
+          version: SPRING_BONES_VERSION,
+          models: {
+            'hash-male-old': { springbone_old_male: tunedParams },
+            'hash-female': { springbone_female: tunedParams }
+          }
+        }
+      })
+      const updatedItem = buildWearable({ representations: newRepresentations, contents: newContents })
+
+      const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, newRepresentations, blobs, newContents)
+      expect(result).toEqual({
+        version: SPRING_BONES_VERSION,
+        models: { 'hash-male-new': { springbone_new_male: getDefaultSpringBoneParams() } }
+      })
+    })
+  })
+
+  describe('and a second representation is added that points at a novel GLB', () => {
+    it('should preserve the existing rep entry and seed defaults for the new hash', async () => {
+      const femaleBuffer = buildGlb({ nodes: [{ name: 'Hips', children: [1] }, { name: 'springbone_female' }] })
+      const representations = [
+        makeRepresentation(BodyShape.MALE, 'male/model.glb'),
+        makeRepresentation(BodyShape.FEMALE, 'female/model.glb')
+      ]
+      const blobs = { 'female/model.glb': makeBlob(femaleBuffer) }
+      const hashes = { 'male/model.glb': 'hash-male', 'female/model.glb': 'hash-female' }
+
+      const pristineItem = buildWearable({
+        representations: [makeRepresentation(BodyShape.MALE, 'male/model.glb')],
+        contents: { 'male/model.glb': 'hash-male' },
+        springBones: { version: SPRING_BONES_VERSION, models: { 'hash-male': { springbone_male: tunedParams } } }
+      })
+      const updatedItem = buildWearable({ representations, contents: hashes })
+
+      const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, representations, blobs, hashes)
+      expect(result?.models['hash-male']).toEqual({ springbone_male: tunedParams })
+      expect(result?.models['hash-female']).toEqual({ springbone_female: getDefaultSpringBoneParams() })
+    })
+  })
+
+  describe('and a second representation is added pointing at the same GLB hash as the existing one', () => {
+    it('should preserve the existing tuned entry and not duplicate it', async () => {
+      const buffer = buildGlb({ nodes: [{ name: 'Hips', children: [1] }, { name: 'springbone_shared' }] })
+      const representations = [
+        makeRepresentation(BodyShape.MALE, 'shared/model.glb'),
+        makeRepresentation(BodyShape.FEMALE, 'shared/model.glb')
+      ]
+      const blobs = { 'shared/model.glb': makeBlob(buffer) }
+      const hashes = { 'shared/model.glb': 'hash-shared' }
+
+      const pristineItem = buildWearable({
+        representations: [makeRepresentation(BodyShape.MALE, 'shared/model.glb')],
+        contents: hashes,
+        springBones: { version: SPRING_BONES_VERSION, models: { 'hash-shared': { springbone_shared: tunedParams } } }
+      })
+      const updatedItem = buildWearable({ representations, contents: hashes })
+
+      const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, representations, blobs, hashes)
+      expect(Object.keys(result?.models ?? {})).toEqual(['hash-shared'])
+      expect(result?.models['hash-shared']).toEqual({ springbone_shared: tunedParams })
+    })
+  })
+
+  describe('and parsing the new GLB throws', () => {
+    it('should fall back to the surviving existing entries without blocking the update', async () => {
+      const failingBlob = { arrayBuffer: () => Promise.reject(new Error('boom')) } as unknown as Blob
+      const representations = [
+        makeRepresentation(BodyShape.MALE, 'male/model.glb'),
+        makeRepresentation(BodyShape.FEMALE, 'female/model.glb')
+      ]
+      const blobs = { 'male/model.glb': failingBlob }
+      const newContents = { 'male/model.glb': 'hash-male-new', 'female/model.glb': 'hash-female' }
+
+      const pristineItem = buildWearable({
+        representations,
+        contents: { 'male/model.glb': 'hash-male-old', 'female/model.glb': 'hash-female' },
+        springBones: {
+          version: SPRING_BONES_VERSION,
+          models: {
+            'hash-male-old': { springbone_old_male: tunedParams },
+            'hash-female': { springbone_female: tunedParams }
+          }
+        }
+      })
+      const updatedItem = buildWearable({ representations, contents: newContents })
+
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+      try {
+        const result = await seedSpringBonesForUpdate(pristineItem, updatedItem, representations, blobs, newContents)
+        // Male-old hash is no longer reachable → dropped. Female still reachable → preserved.
+        // Male-new parse failed → no seed for it. Net result: only the female entry survives.
+        expect(result?.models['hash-male-old']).toBeUndefined()
+        expect(result?.models['hash-male-new']).toBeUndefined()
+        expect(result?.models['hash-female']).toEqual({ springbone_female: tunedParams })
         expect(warnSpy).toHaveBeenCalled()
       } finally {
         warnSpy.mockRestore()
