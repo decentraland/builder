@@ -145,6 +145,7 @@ export async function seedSpringBonesForUpdate(
   const reachable = getRepresentationsModelHashes(updatedItem)
 
   const merged: SpringBonesData['models'] = {}
+  // Existing overwrites seeded: tuned params take precedence over defaults.
   for (const [hash, params] of Object.entries({ ...(seeded?.models ?? {}), ...existing })) {
     if (reachable.has(hash) && Object.keys(params).length > 0) {
       merged[hash] = params

@@ -173,6 +173,31 @@ export const getSpringBoneParamsForCurrentShape = (state: RootState): Record<str
 
 export const getSpringBonesForCurrentShape = createSelector(getBonesForCurrentShape, bones => bones.filter(b => b.type === 'spring'))
 
+/** Single memoized projection of the byHash state into per-body-shape maps.
+ * Consumed by the right panel so it can render tab badges and the active section
+ * with one useSelector hook instead of four. */
+export type SpringBonesByShapeView = {
+  bonesByShape: Partial<Record<BodyShape, BoneNode[]>>
+  springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>>
+}
+
+export const getSpringBonesByShapeView = createSelector(
+  (state: RootState) => getBonesByHash(state),
+  (state: RootState) => getSpringBoneParamsByHash(state),
+  (state: RootState) => getRepresentationHashForShape(state, BodyShape.MALE),
+  (state: RootState) => getRepresentationHashForShape(state, BodyShape.FEMALE),
+  (bonesByHash, paramsByHash, maleHash, femaleHash): SpringBonesByShapeView => ({
+    bonesByShape: {
+      [BodyShape.MALE]: (maleHash && bonesByHash[maleHash]) || EMPTY_BONES,
+      [BodyShape.FEMALE]: (femaleHash && bonesByHash[femaleHash]) || EMPTY_BONES
+    },
+    springBoneParamsByShape: {
+      [BodyShape.MALE]: (maleHash && paramsByHash[maleHash]) || EMPTY_PARAMS,
+      [BodyShape.FEMALE]: (femaleHash && paramsByHash[femaleHash]) || EMPTY_PARAMS
+    }
+  })
+)
+
 export const hasSpringBoneChanges = createSelector(
   getSpringBoneParamsByHash,
   getOriginalSpringBoneParamsByHash,

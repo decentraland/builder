@@ -16,10 +16,9 @@ import { BodyShape } from '@dcl/schemas'
 import {
   getBodyShape,
   getBonesForCurrentShape,
-  getBonesForShape,
   getCurrentRepresentationHash,
   getSpringBoneParamsForCurrentShape,
-  getSpringBoneParamsForShape,
+  getSpringBonesByShapeView,
   hasSpringBoneChanges as hasSpringBoneChangesSelector
 } from 'modules/editor/selectors'
 import {
@@ -29,7 +28,7 @@ import {
   resetSpringBoneParams,
   setBodyShape
 } from 'modules/editor/actions'
-import { BoneNode, SpringBoneParams } from 'modules/editor/types'
+import { SpringBoneParams } from 'modules/editor/types'
 import { RightPanelContainerProps } from './RightPanel.types'
 import RightPanel from './RightPanel'
 
@@ -68,20 +67,7 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   const currentHash = useSelector((state: RootState) => getCurrentRepresentationHash(state))
   const bones = useSelector((state: RootState) => getBonesForCurrentShape(state), equal)
   const springBoneParams = useSelector((state: RootState) => getSpringBoneParamsForCurrentShape(state), equal)
-  // Per-shape views derived from byHash state — kept for tab-badge logic in SpringBonesSection
-  // and the save-warning toast that checks whether each shape has any params.
-  const maleBones = useSelector((state: RootState) => getBonesForShape(state, BodyShape.MALE), equal)
-  const femaleBones = useSelector((state: RootState) => getBonesForShape(state, BodyShape.FEMALE), equal)
-  const maleParams = useSelector((state: RootState) => getSpringBoneParamsForShape(state, BodyShape.MALE), equal)
-  const femaleParams = useSelector((state: RootState) => getSpringBoneParamsForShape(state, BodyShape.FEMALE), equal)
-  const bonesByShape = useMemo<Partial<Record<BodyShape, BoneNode[]>>>(
-    () => ({ [BodyShape.MALE]: maleBones, [BodyShape.FEMALE]: femaleBones }),
-    [maleBones, femaleBones]
-  )
-  const springBoneParamsByShape = useMemo<Partial<Record<BodyShape, Record<string, SpringBoneParams>>>>(
-    () => ({ [BodyShape.MALE]: maleParams, [BodyShape.FEMALE]: femaleParams }),
-    [maleParams, femaleParams]
-  )
+  const { bonesByShape, springBoneParamsByShape } = useSelector((state: RootState) => getSpringBonesByShapeView(state), equal)
   const hasSpringBoneChanges = useSelector((state: RootState) => hasSpringBoneChangesSelector(state))
 
   const hasTwoRepresentations = useMemo(() => (selectedItem ? hasMultipleModels(selectedItem) : false), [selectedItem])
