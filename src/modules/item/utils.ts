@@ -535,9 +535,73 @@ export function isAudioFile(fileName: string) {
 
 export function isModelPath(fileName: string) {
   fileName = fileName.toLowerCase()
-  // we ignore PNG files that end with "_mask", since those are auxiliary
-  const isMask = fileName.includes('_mask')
-  return isModelFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
+  // PNG files for masks and facial expressions are auxiliary; only the base PNG is the main file
+  const isAuxiliary = isMaskFile(fileName) || isExpressionsFile(fileName) || isExpressionsMaskFile(fileName)
+  return isModelFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isAuxiliary && isImageFile(fileName))
+}
+
+export function isExpressionsMaskFile(fileName: string) {
+  return fileName.toLowerCase().endsWith('_expressions_mask.png')
+}
+
+export function isExpressionsFile(fileName: string) {
+  // An "_expressions_mask.png" filename ends in "_mask.png", not in "_expressions.png", so no
+  // additional guard is needed here.
+  return fileName.toLowerCase().endsWith('_expressions.png')
+}
+
+export function isMaskFile(fileName: string) {
+  const lower = fileName.toLowerCase()
+  return lower.endsWith('_mask.png') && !isExpressionsMaskFile(lower)
+}
+
+/**
+ * Given an auxiliary file (mask, expressions, or expressions_mask), returns the path of the
+ * counterpart that must exist for it to be valid. For:
+ *   - foo_mask.png             -> foo.png
+ *   - foo_expressions.png      -> foo.png
+ *   - foo_expressions_mask.png -> foo_expressions.png
+ * Returns null when fileName is not an auxiliary file.
+ */
+export function getRequiredCounterpartFile(fileName: string): string | null {
+  if (isExpressionsMaskFile(fileName)) {
+    return fileName.replace(/_expressions_mask\.png$/i, '_expressions.png')
+  }
+  if (isExpressionsFile(fileName)) {
+    return fileName.replace(/_expressions\.png$/i, '.png')
+  }
+  if (isMaskFile(fileName)) {
+    return fileName.replace(/_mask\.png$/i, '.png')
+  }
+  return null
+}
+
+/** True when any key in contents is an expressions PNG (the marker for facial expressions support). */
+export function hasFacialExpressions(contents: Record<string, unknown> | undefined | null): boolean {
+  if (!contents) return false
+  return Object.keys(contents).some(key => isExpressionsFile(key))
+}
+
+/**
+ * Scans the contents map for auxiliary PNG files (mask, expressions, expressions_mask) that
+ * are present without their required counterpart. Returns every violation found (empty array
+ * when all auxiliaries are properly paired). Counterpart lookup is case-insensitive so that a
+ * base file named "Eyes.PNG" still satisfies a mask named "Eyes_mask.png".
+ */
+export function findOrphanedAuxiliaryFiles(
+  contents: Record<string, unknown> | undefined | null
+): Array<{ orphan: string; expected: string }> {
+  if (!contents) return []
+  const keys = Object.keys(contents)
+  const lowercaseKeys = new Set(keys.map(key => key.toLowerCase()))
+  const orphans: Array<{ orphan: string; expected: string }> = []
+  for (const key of keys) {
+    const expected = getRequiredCounterpartFile(key)
+    if (expected && !lowercaseKeys.has(expected.toLowerCase())) {
+      orphans.push({ orphan: key, expected })
+    }
+  }
+  return orphans
 }
 
 export function isValidText(text: string) {

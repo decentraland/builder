@@ -57,6 +57,7 @@ import ConfirmDelete from 'components/ConfirmDelete'
 import Icon from 'components/Icon'
 import Info from 'components/Info'
 import ItemImage from 'components/ItemImage'
+import { FacialExpressionsBadge } from 'components/FacialExpressionsBadge'
 import ItemProvider from 'components/ItemProvider'
 import { AnimationData } from 'components/ItemProvider/ItemProvider.types'
 import ItemVideo from 'components/ItemVideo'
@@ -812,6 +813,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 <>
                   <div className="header">
                     <div className="title">{t('item_editor.right_panel.properties')}</div>
+                    {item && isWearable(item) ? (
+                      <FacialExpressionsBadge contents={item.contents} size="small" className="right-panel-badge" />
+                    ) : null}
                     {item && isOwner(item, address) && !item.isPublished && !isItemLocked ? (
                       <Dropdown trigger={<div className="actions" />} inline direction="left">
                         <Dropdown.Menu>

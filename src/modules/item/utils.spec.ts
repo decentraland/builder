@@ -13,7 +13,14 @@ import {
   formatExtensions,
   hasVideo,
   isEmote,
-  getRepresentationMainFile
+  getRepresentationMainFile,
+  isMaskFile,
+  isExpressionsFile,
+  isExpressionsMaskFile,
+  getRequiredCounterpartFile,
+  hasFacialExpressions,
+  findOrphanedAuxiliaryFiles,
+  isModelPath
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -480,6 +487,252 @@ describe('when getting the representation main file for a body shape', () => {
     it('should return null', () => {
       item.data.representations = []
       expect(getRepresentationMainFile(item, BodyShape.MALE)).toBeNull()
+    })
+  })
+})
+
+describe('when checking if a file is a mask file', () => {
+  describe('and the file ends with _mask.png', () => {
+    it('should return true', () => {
+      expect(isMaskFile('red_eyes_mask.png')).toBe(true)
+    })
+  })
+
+  describe('and the file ends with _expressions_mask.png', () => {
+    it('should return false because it is an expressions mask, not a plain mask', () => {
+      expect(isMaskFile('red_eyes_expressions_mask.png')).toBe(false)
+    })
+  })
+
+  describe('and the file is a plain image', () => {
+    it('should return false', () => {
+      expect(isMaskFile('red_eyes.png')).toBe(false)
+    })
+  })
+
+  describe('and the file is uppercased', () => {
+    it('should return true since the match is case-insensitive', () => {
+      expect(isMaskFile('RED_EYES_MASK.PNG')).toBe(true)
+    })
+  })
+})
+
+describe('when checking if a file is an expressions file', () => {
+  describe('and the file ends with _expressions.png', () => {
+    it('should return true', () => {
+      expect(isExpressionsFile('red_eyes_expressions.png')).toBe(true)
+    })
+  })
+
+  describe('and the file ends with _expressions_mask.png', () => {
+    it('should return false because it is the expressions mask, not the expressions image', () => {
+      expect(isExpressionsFile('red_eyes_expressions_mask.png')).toBe(false)
+    })
+  })
+
+  describe('and the file is a plain image', () => {
+    it('should return false', () => {
+      expect(isExpressionsFile('red_eyes.png')).toBe(false)
+    })
+  })
+})
+
+describe('when checking if a file is an expressions mask file', () => {
+  describe('and the file ends with _expressions_mask.png', () => {
+    it('should return true', () => {
+      expect(isExpressionsMaskFile('red_eyes_expressions_mask.png')).toBe(true)
+    })
+  })
+
+  describe('and the file ends with only _mask.png', () => {
+    it('should return false', () => {
+      expect(isExpressionsMaskFile('red_eyes_mask.png')).toBe(false)
+    })
+  })
+})
+
+describe('when getting the required counterpart for an auxiliary file', () => {
+  describe('and the file is a mask', () => {
+    it('should return the base PNG path', () => {
+      expect(getRequiredCounterpartFile('male/red_eyes_mask.png')).toBe('male/red_eyes.png')
+    })
+  })
+
+  describe('and the file is an expressions image', () => {
+    it('should return the base PNG path', () => {
+      expect(getRequiredCounterpartFile('female/red_eyes_expressions.png')).toBe('female/red_eyes.png')
+    })
+  })
+
+  describe('and the file is an expressions mask', () => {
+    it('should return the expressions PNG path', () => {
+      expect(getRequiredCounterpartFile('male/red_eyes_expressions_mask.png')).toBe('male/red_eyes_expressions.png')
+    })
+  })
+
+  describe('and the file is a base PNG with no auxiliary suffix', () => {
+    it('should return null', () => {
+      expect(getRequiredCounterpartFile('red_eyes.png')).toBeNull()
+    })
+  })
+})
+
+describe('when checking if contents include facial expressions', () => {
+  describe('and the contents map has an _expressions.png file', () => {
+    it('should return true', () => {
+      expect(
+        hasFacialExpressions({
+          'red_eyes.png': 'hash1',
+          'red_eyes_expressions.png': 'hash2'
+        })
+      ).toBe(true)
+    })
+  })
+
+  describe('and the contents map only has a base PNG and a mask', () => {
+    it('should return false', () => {
+      expect(
+        hasFacialExpressions({
+          'red_eyes.png': 'hash1',
+          'red_eyes_mask.png': 'hash2'
+        })
+      ).toBe(false)
+    })
+  })
+
+  describe('and the contents map only has the expressions mask without the expressions image', () => {
+    it('should return false because the marker is the _expressions.png file itself', () => {
+      expect(
+        hasFacialExpressions({
+          'red_eyes.png': 'hash1',
+          'red_eyes_expressions_mask.png': 'hash2'
+        })
+      ).toBe(false)
+    })
+  })
+
+  describe('and the contents map is empty or undefined', () => {
+    it('should return false for undefined', () => {
+      expect(hasFacialExpressions(undefined)).toBe(false)
+    })
+
+    it('should return false for an empty record', () => {
+      expect(hasFacialExpressions({})).toBe(false)
+    })
+  })
+})
+
+describe('when scanning for orphaned auxiliary files', () => {
+  describe('and a _mask file has no base PNG counterpart', () => {
+    it('should return a list with the orphan and its expected base PNG', () => {
+      expect(
+        findOrphanedAuxiliaryFiles({
+          'red_eyes_mask.png': 'hash1'
+        })
+      ).toEqual([{ orphan: 'red_eyes_mask.png', expected: 'red_eyes.png' }])
+    })
+  })
+
+  describe('and an _expressions file has no base PNG counterpart', () => {
+    it('should return a list with the orphan and its expected base PNG', () => {
+      expect(
+        findOrphanedAuxiliaryFiles({
+          'red_eyes_expressions.png': 'hash1'
+        })
+      ).toEqual([{ orphan: 'red_eyes_expressions.png', expected: 'red_eyes.png' }])
+    })
+  })
+
+  describe('and an _expressions_mask file has no _expressions sibling', () => {
+    it('should return a list with the orphan and its expected _expressions PNG', () => {
+      expect(
+        findOrphanedAuxiliaryFiles({
+          'red_eyes.png': 'hash1',
+          'red_eyes_expressions_mask.png': 'hash2'
+        })
+      ).toEqual([{ orphan: 'red_eyes_expressions_mask.png', expected: 'red_eyes_expressions.png' }])
+    })
+  })
+
+  describe('and several auxiliary files are missing different counterparts', () => {
+    it('should return one entry for each orphan in the order they appear in contents', () => {
+      expect(
+        findOrphanedAuxiliaryFiles({
+          'red_eyes_mask.png': 'h1',
+          'red_eyes_expressions.png': 'h2'
+        })
+      ).toEqual([
+        { orphan: 'red_eyes_mask.png', expected: 'red_eyes.png' },
+        { orphan: 'red_eyes_expressions.png', expected: 'red_eyes.png' }
+      ])
+    })
+  })
+
+  describe('and the counterpart exists with a different file-extension casing', () => {
+    it('should treat it as present so no orphan is reported', () => {
+      expect(
+        findOrphanedAuxiliaryFiles({
+          'red_eyes.PNG': 'h1',
+          'red_eyes_mask.png': 'h2'
+        })
+      ).toEqual([])
+    })
+  })
+
+  describe('and every auxiliary file has its counterpart', () => {
+    it('should return an empty array', () => {
+      expect(
+        findOrphanedAuxiliaryFiles({
+          'red_eyes.png': 'h1',
+          'red_eyes_mask.png': 'h2',
+          'red_eyes_expressions.png': 'h3',
+          'red_eyes_expressions_mask.png': 'h4'
+        })
+      ).toEqual([])
+    })
+  })
+
+  describe('and contents is undefined', () => {
+    it('should return an empty array', () => {
+      expect(findOrphanedAuxiliaryFiles(undefined)).toEqual([])
+    })
+  })
+
+  describe('and contents contains only the base PNG', () => {
+    it('should return an empty array', () => {
+      expect(findOrphanedAuxiliaryFiles({ 'red_eyes.png': 'h1' })).toEqual([])
+    })
+  })
+})
+
+describe('when checking whether a file is the main model path', () => {
+  describe('and the file is a base image PNG', () => {
+    it('should return true', () => {
+      expect(isModelPath('red_eyes.png')).toBe(true)
+    })
+  })
+
+  describe('and the file is a _mask.png auxiliary', () => {
+    it('should return false', () => {
+      expect(isModelPath('red_eyes_mask.png')).toBe(false)
+    })
+  })
+
+  describe('and the file is an _expressions.png auxiliary', () => {
+    it('should return false so that detection still resolves to the base PNG', () => {
+      expect(isModelPath('red_eyes_expressions.png')).toBe(false)
+    })
+  })
+
+  describe('and the file is an _expressions_mask.png auxiliary', () => {
+    it('should return false', () => {
+      expect(isModelPath('red_eyes_expressions_mask.png')).toBe(false)
+    })
+  })
+
+  describe('and the file is a GLB model', () => {
+    it('should return true', () => {
+      expect(isModelPath('model.glb')).toBe(true)
     })
   })
 })

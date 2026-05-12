@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { BodyShapeType, ItemType, Item } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import ItemDropdown from 'components/ItemDropdown'
+import { FacialExpressionsBadge } from 'components/FacialExpressionsBadge'
 import { ValidationIssuesPanel } from 'components/ValidationIssuesPanel'
 import { createItemActions } from '../CreateSingleItemModal.reducer'
 import { useCreateSingleItemModal } from '../CreateSingleItemModal.context'
@@ -27,7 +28,7 @@ export const WearableDetails: React.FC = () => {
     isLoading,
     validationIssues
   } = useCreateSingleItemModal()
-  const { bodyShape, thumbnail, isRepresentation, rarity, item } = state
+  const { bodyShape, thumbnail, isRepresentation, rarity, item, contents } = state
   const title = renderModalTitle()
   const thumbnailStyle = getBackgroundStyle(rarity)
 
@@ -111,6 +112,7 @@ export const WearableDetails: React.FC = () => {
                 <input type="file" ref={thumbnailInput} onChange={handleThumbnailChange} accept="image/png" />
               </>
             )}
+            <FacialExpressionsBadge contents={contents} className="facial-expressions-badge" size="small" />
           </div>
           {renderMetrics()}
         </div>

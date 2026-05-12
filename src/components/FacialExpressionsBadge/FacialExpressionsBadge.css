@@ -1,0 +1,24 @@
+.FacialExpressionsBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 3px;
+  color: #161518;
+}
+
+.FacialExpressionsBadge.normal {
+  width: 32px;
+  height: 32px;
+}
+
+.FacialExpressionsBadge.small {
+  width: 20px;
+  height: 20px;
+}
+
+.FacialExpressionsBadge .icon {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1;
+}

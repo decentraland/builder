@@ -15,7 +15,7 @@ import {
 } from '@dcl/schemas'
 import { ThumbnailType } from 'lib/getModelData'
 import { LinkedContract } from 'modules/thirdParty/types'
-import { isImageFile, isModelFile } from 'modules/item/utils'
+import { isImageFile, isModelFile, isModelPath } from 'modules/item/utils'
 import { Collection } from 'modules/collection/types'
 import { BodyShapeType, THUMBNAIL_PATH, VIDEO_PATH, WearableRepresentation } from 'modules/item/types'
 import { SortedContent } from './CreateSingleItemModal.types'
@@ -253,7 +253,7 @@ export const buildRepresentationsZipBothBodyshape = (bodyShape: BodyShapeType, c
   if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
     representations.push({
       bodyShapes: [BodyShape.MALE],
-      mainFile: Object.keys(contents.male).find(content => content.includes('glb'))!,
+      mainFile: Object.keys(contents.male).find(isModelPath)!,
       contents: Object.keys(contents.male),
       overrideHides: [],
       overrideReplaces: []
@@ -264,7 +264,7 @@ export const buildRepresentationsZipBothBodyshape = (bodyShape: BodyShapeType, c
   if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
     representations.push({
       bodyShapes: [BodyShape.FEMALE],
-      mainFile: Object.keys(contents.female).find(content => content.includes('glb'))!,
+      mainFile: Object.keys(contents.female).find(isModelPath)!,
       contents: Object.keys(contents.female),
       overrideHides: [],
       overrideReplaces: []

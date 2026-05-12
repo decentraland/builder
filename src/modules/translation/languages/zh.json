@@ -171,6 +171,9 @@
     "wearable": "可穿戴",
     "smart_wearable": "智能穿戴"
   },
+  "facial_expressions_badge": {
+    "tooltip": "该可穿戴物品包含面部表情"
+  },
   "emotes": {
     "wave": "打招呼",
     "idle": "闲",
@@ -367,6 +370,10 @@
         "message": "缺少外部资源：<b>{external_resources}</b><br></br>{additional_message}"
       },
       "item_not_allowed_in_third_party_collections": "此项目类型{type}在链接的可穿戴设备集合中不允许",
+      "orphaned_auxiliary_file": {
+        "title": "上传的压缩包中缺少配套文件",
+        "item": "{orphan} 需要同时存在 {expected}。"
+      },
       "emote_animations_sync_error": "<b>头像和道具动画长度不一样</b><br></br>请更正您的动画，然后再次上传以获得完美的同步.",
       "emote_with_mesh": "<b>您的文件包括头像网。</b><br></br>对于此过程，此网格不是必需的。请，只需重新出口并再次上传即可继续。",
       "glb_validation": {

@@ -77,6 +77,12 @@
   right: 12px;
 }
 
+.CreateSingleItemModal .preview .thumbnail-container .FacialExpressionsBadge.facial-expressions-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
 .CreateSingleItemModal .ItemVideoContainer .ItemVideo.video-wrapper .icon.video {
   font-size: 22px;
   cursor: pointer;

@@ -35,7 +35,8 @@ import {
   CustomErrorWithTitle,
   ItemNotAllowedInThirdPartyCollections,
   MissingExternalResourcesError,
-  GLBValidationError
+  GLBValidationError,
+  OrphanedAuxiliaryFileError
 } from 'modules/item/errors'
 import {
   BodyShapeType,
@@ -48,6 +49,7 @@ import {
   THUMBNAIL_PATH
 } from 'modules/item/types'
 import {
+  findOrphanedAuxiliaryFiles,
   getBodyShapeType,
   getBodyShapeTypeFromContents,
   getModelPath,
@@ -78,17 +80,22 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     }
   }
 
-  // Extract the models and images content from subfolders to the root level
+  // For a zip that came with male/ and/or female/ subfolders:
+  //   - empty entries (folder markers) are dropped
+  //   - model and image files are flattened to the root when uploading for a single body shape
+  //     (so the resulting `mainFile` doesn't carry a body-shape prefix)
+  //   - model and image files keep their prefix when uploading for BOTH body shapes, so that
+  //     "male/eyes.png" and "female/eyes.png" stay distinct
+  //   - everything else (e.g. scene.json, audio) keeps its prefix unchanged
   cleanContentModelKeys = (contents: Record<string, Blob>, bodyShapeType?: BodyShapeType) => {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
       if (key.indexOf('/') !== -1) {
         if (contents[key].size === 0) {
           return newContents
-        } else if (isModelFile(key) && bodyShapeType !== BodyShapeType.BOTH) {
-          const newKeykey = getModelFileNameFromSubfolder(key)
-          newContents[newKeykey] = contents[key]
-          return newContents
-        } else if (isImageFile(key)) {
+        }
+        if (isModelFile(key) || isImageFile(key)) {
+          const targetKey = bodyShapeType === BodyShapeType.BOTH ? key : getModelFileNameFromSubfolder(key)
+          newContents[targetKey] = contents[key]
           return newContents
         }
       }
@@ -127,6 +134,16 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
     if (!modelPath) {
       throw new MissingModelFileError()
+    }
+
+    // For image-based wearables (eyes, eyebrows, mouth), validate auxiliary file pairing:
+    // every _mask.png needs its base.png, every _expressions.png needs its base.png,
+    // and every _expressions_mask.png needs its _expressions.png sibling.
+    if (isImageFile(modelPath)) {
+      const orphans = findOrphanedAuxiliaryFiles(content)
+      if (orphans.length > 0) {
+        throw new OrphanedAuxiliaryFileError(orphans)
+      }
     }
 
     // Pass category and hides from wearable config if available for more precise validation
@@ -188,6 +205,12 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       return
     } else if (error instanceof MissingExternalResourcesError) {
       // Handle missing external resources error with proper formatting
+      this.setState({
+        error: new CustomErrorWithTitle(error.title, error.message),
+        isLoading: false
+      })
+      return
+    } else if (error instanceof OrphanedAuxiliaryFileError) {
       this.setState({
         error: new CustomErrorWithTitle(error.title, error.message),
         isLoading: false
@@ -347,7 +370,13 @@ export default class ImportStep extends React.PureComponent<Props, State> {
            * this method processes the contents by cleaning the empty keys
            * and extracting the models to the root level if there's just one body shape representation
            */
-          acceptedFileProps.bodyShape = getBodyShapeTypeFromContents(contents) as BodyShapeType
+          const detectedBodyShape = getBodyShapeTypeFromContents(contents)
+          // Image wearables (eyes, eyebrows, mouth) with no body-shape folders should
+          // populate both BaseMale and BaseFemale representations from the same files.
+          // Skip when adding a single-body-shape representation or replacing the file of an
+          // existing item — those flows must preserve their original body-shape semantics.
+          const shouldForceBoth = isImageFile(model) && !isRepresentation && !changeItemFile
+          acceptedFileProps.bodyShape = (detectedBodyShape ?? (shouldForceBoth ? BodyShapeType.BOTH : null)) as BodyShapeType
           if (acceptedFileProps.bodyShape !== BodyShapeType.BOTH) {
             acceptedFileProps.model = getModelFileNameFromSubfolder(model)
             acceptedFileProps.contents = this.cleanContentModelKeys(contents)
