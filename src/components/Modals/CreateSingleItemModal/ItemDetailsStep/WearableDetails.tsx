@@ -112,7 +112,7 @@ export const WearableDetails: React.FC = () => {
                 <input type="file" ref={thumbnailInput} onChange={handleThumbnailChange} accept="image/png" />
               </>
             )}
-            <FacialExpressionsBadge contents={contents} className="facial-expressions-badge" size="small" />
+            <FacialExpressionsBadge contents={contents} className="facial-expressions-badge" />
           </div>
           {renderMetrics()}
         </div>

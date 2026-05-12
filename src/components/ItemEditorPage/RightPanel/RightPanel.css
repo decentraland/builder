@@ -25,10 +25,6 @@
   color: var(--secondary-text);
 }
 
-.RightPanel > .header .FacialExpressionsBadge.right-panel-badge {
-  margin-right: 8px;
-}
-
 .RightPanel .container {
   overflow-y: auto;
   max-height: calc(100vh - 135px);
