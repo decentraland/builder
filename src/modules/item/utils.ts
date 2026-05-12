@@ -200,6 +200,14 @@ export function hasModelChangesForBodyShape(prevItem: Item, nextItem: Item, body
   return getRepresentationMainFileHash(prevItem, bodyShape) !== getRepresentationMainFileHash(nextItem, bodyShape)
 }
 
+/** Set of unique GLB content hashes reachable through the item's representations.
+ * Two representations sharing the same GLB collapse into a single entry. */
+export function getRepresentationsModelHashes(item: Item): Set<string> {
+  return new Set(
+    [BodyShape.MALE, BodyShape.FEMALE].map(shape => getRepresentationMainFileHash(item, shape)).filter((hash): hash is string => !!hash)
+  )
+}
+
 export function toWearableBodyShapeType(wearableBodyShape: BodyShape) {
   // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (BodyShape.MALE) and we just want the "BaseMale" part
   return decodeURN(wearableBodyShape).suffix as WearableBodyShapeType

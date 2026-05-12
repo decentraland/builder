@@ -418,7 +418,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const isDirty = this.state.isDirty || hasSpringBoneChanges
 
     // Warn if saving a 2-GLB wearable where one shape has spring bones and the other doesn't
-    if (hasTwoRepresentations && isDirty) {
+    if (hasTwoRepresentations && springBoneParamsByShape && isDirty) {
       const missingShapes = [BodyShape.MALE, BodyShape.FEMALE].filter(
         shape => Object.keys(springBoneParamsByShape[shape] ?? {}).length === 0
       )
