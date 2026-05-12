@@ -38,6 +38,7 @@ import {
 } from 'modules/item/types'
 import { areEmoteMetrics, Metrics } from 'modules/models/types'
 import { computeHashes } from 'modules/deployment/contentUtils'
+import { seedSpringBonesForUpdate, seedSpringBonesForUpload } from 'lib/springBones'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -287,6 +288,13 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
       const contents = await computeHashes(sortedContents.all)
 
+      if (type === ItemType.WEARABLE) {
+        const springBones = await seedSpringBonesForUpload(representations, sortedContents.all, contents)
+        if (springBones) {
+          ;(data as WearableData).springBones = springBones
+        }
+      }
+
       const item: Item<ItemType.WEARABLE | ItemType.EMOTE> = {
         id,
         name,
@@ -367,6 +375,14 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           updatedAt: +new Date()
         }
 
+        item.data.springBones = await seedSpringBonesForUpdate(
+          editedItem,
+          item,
+          item.data.representations,
+          sortedContents.all,
+          hashedContents
+        )
+
         // Do not change the thumbnail when adding a new representation
         delete sortedContents.all[THUMBNAIL_PATH]
         onSave(item, sortedContents.all)
@@ -443,6 +459,16 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
       if (isSmart(item) && VIDEO_PATH in contents) {
         item.video = contents[VIDEO_PATH]
+      }
+
+      if (type === ItemType.WEARABLE) {
+        ;(item.data as WearableData).springBones = await seedSpringBonesForUpdate(
+          pristineItem,
+          item as Item,
+          (item.data as WearableData).representations,
+          sortedContents.all,
+          contents
+        )
       }
 
       onSave(item as Item, sortedContents.all)

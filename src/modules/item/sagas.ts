@@ -1,10 +1,21 @@
 import PQueue from 'p-queue'
+import { deepEqual } from 'fast-equals'
 import { History } from 'history'
 import { Contract, ethers, providers } from 'ethers'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { LOCATION_CHANGE, LocationChangeAction } from 'modules/location/actions'
 import { channel } from 'redux-saga'
-import { BodyShape, ChainId, Network, Entity, EntityType, WearableCategory, TradeCreation, Trade, Item as DCLItem } from '@dcl/schemas'
+import {
+  ChainId,
+  Network,
+  Entity,
+  EntityType,
+  WearableCategory,
+  TradeCreation,
+  Trade,
+  Item as DCLItem,
+  SpringBonesData
+} from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
@@ -136,8 +147,7 @@ import { getIsLinkedWearablesV2Enabled, getIsOffchainPublicItemOrdersEnabled } f
 import { getCatalystContentUrl } from 'lib/api/peer'
 import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
-import { getSpringBoneParams, getSpringBoneParamsByShape, hasSpringBoneChanges } from 'modules/editor/selectors'
-import { SpringBoneParams } from 'modules/editor/types'
+import { getSpringBoneParamsByHash, hasSpringBoneChanges } from 'modules/editor/selectors'
 import { SPRING_BONES_VERSION } from 'lib/springBones'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
@@ -165,8 +175,7 @@ import {
   isSkinFileSizeValid,
   isSmartWearableFileSizeValid,
   createItemOrderTrade,
-  hasMultipleModels,
-  hasModelChangesForBodyShape
+  getRepresentationsModelHashes
 } from './utils'
 import { ItemPaginationData } from './reducer'
 import { getSuccessfulDeletedItemToast, getSuccessfulMoveItemToAnotherCollectionToast } from './toasts'
@@ -508,43 +517,20 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         }
       }
 
-      // Reset spring bones if wearable models changed
-      const modelChanged =
-        !!oldItem && [BodyShape.MALE, BodyShape.FEMALE].some(bodyShape => hasModelChangesForBodyShape(oldItem, actionItem, bodyShape))
-      const multipleModels = hasMultipleModels(item)
-      if (isWearable(item) && !multipleModels && modelChanged) {
-        item.data.springBones = undefined
-      }
-
-      // Recompute pring bone metadata
+      // Recompute spring bone metadata from Redux when the editor has uncommitted changes —
+      // but only if the caller (modal flow) hasn't already set a different value on the item.
       const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
-      if (isWearable(item) && springBoneHasChanges) {
-        const models: Record<string, Record<string, SpringBoneParams>> = {}
-        if (multipleModels) {
-          const springBoneParamsByShape: Partial<Record<BodyShape, Record<string, SpringBoneParams>>> = yield select(
-            getSpringBoneParamsByShape
-          )
-          for (const shape of [BodyShape.MALE, BodyShape.FEMALE]) {
-            const shapeParams = springBoneParamsByShape[shape]
-            if (!shapeParams || Object.keys(shapeParams).length === 0) continue
-            const rep = item.data.representations.find(r => r.bodyShapes.includes(shape))
-            const hash = rep?.mainFile ? item.contents[rep.mainFile] : undefined
-            if (hash) {
-              models[hash] = shapeParams
-            }
-          }
-        } else {
-          const springBoneParams: Record<string, SpringBoneParams> = yield select(getSpringBoneParams)
-          // Single-model: use the first representation's GLB hash (representations share the same GLB here).
-          if (Object.keys(springBoneParams).length > 0 && !modelChanged) {
-            const mainFile = item.data.representations[0]?.mainFile
-            const hash = mainFile ? item.contents[mainFile] : undefined
-            if (hash) {
-              models[hash] = springBoneParams
-            }
+      const hasSpringBonesModelChanges =
+        isWearable(item) && !!oldItem && isWearable(oldItem) && !deepEqual(item.data.springBones ?? null, oldItem.data.springBones ?? null)
+      if (isWearable(item) && springBoneHasChanges && !hasSpringBonesModelChanges) {
+        const reachableHashes = getRepresentationsModelHashes(item)
+        const allParams: SpringBonesData['models'] = yield select(getSpringBoneParamsByHash)
+        const models: SpringBonesData['models'] = {}
+        for (const [hash, params] of Object.entries(allParams)) {
+          if (reachableHashes.has(hash) && Object.keys(params).length > 0) {
+            models[hash] = params
           }
         }
-
         item.data.springBones = Object.keys(models).length > 0 ? { version: SPRING_BONES_VERSION, models } : undefined
       }
 

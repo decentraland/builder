@@ -130,20 +130,20 @@ describe('when reducing the action that clears spring bones', () => {
   beforeEach(() => {
     state = {
       ...state,
-      bones: [{ name: 'springbone_hair', nodeId: 0, type: 'spring', children: [] }],
-      selectedItemId: 'aHash',
-      springBoneParams: { springbone_hair: { ...DEFAULT_SPRING_BONE_PARAMS } },
-      originalSpringBoneParams: { springbone_hair: { ...DEFAULT_SPRING_BONE_PARAMS } }
+      bonesByHash: { hashA: [{ name: 'springbone_hair', nodeId: 0, type: 'spring', children: [] }] },
+      selectedItemId: 'anItemId',
+      springBoneParamsByHash: { hashA: { springbone_hair: { ...DEFAULT_SPRING_BONE_PARAMS } } },
+      originalSpringBoneParamsByHash: { hashA: { springbone_hair: { ...DEFAULT_SPRING_BONE_PARAMS } } }
     }
   })
 
-  it('should reset bones, selectedItemId, springBoneParams, and originalSpringBoneParams to initial values', () => {
+  it('should reset all hash-keyed spring bone slices and clear selectedItemId', () => {
     expect(editorReducer(state, clearSpringBones())).toEqual({
       ...state,
-      bones: [],
       selectedItemId: null,
-      springBoneParams: {},
-      originalSpringBoneParams: {}
+      bonesByHash: {},
+      springBoneParamsByHash: {},
+      originalSpringBoneParamsByHash: {}
     })
   })
 })
@@ -164,42 +164,62 @@ describe('when reducing the action that sets bones', () => {
   }
   const avatarBone: BoneNode = { name: 'Hips', nodeId: 0, type: 'avatar', children: [1, 2] }
 
-  it('should set bones and selectedItemId from action payload', () => {
+  it('should store bones under the given hash and set selectedItemId', () => {
     const bones = [avatarBone, springBoneWithParams]
-    const result = editorReducer(state, setBones(bones, 'glbHash123'))
+    const result = editorReducer(state, setBones('glbHash123', bones, 'anItemId'))
 
-    expect(result.bones).toEqual(bones)
-    expect(result.selectedItemId).toBe('glbHash123')
+    expect(result.bonesByHash['glbHash123']).toEqual(bones)
+    expect(result.selectedItemId).toBe('anItemId')
   })
 
-  it('should extract springBoneParams from spring-type bones that have params', () => {
+  it('should extract springBoneParams from spring-type bones that have params under the given hash', () => {
     const bones = [avatarBone, springBoneWithParams]
-    const result = editorReducer(state, setBones(bones, 'glbHash123'))
+    const result = editorReducer(state, setBones('glbHash123', bones, 'anItemId'))
 
-    expect(result.springBoneParams).toEqual({
+    expect(result.springBoneParamsByHash['glbHash123']).toEqual({
       springbone_hair: springBoneWithParams.params
     })
   })
 
-  it('should set originalSpringBoneParams as a copy of the extracted springBoneParams', () => {
+  it('should set originalSpringBoneParamsByHash[hash] as a copy of the extracted springBoneParams', () => {
     const bones = [avatarBone, springBoneWithParams]
-    const result = editorReducer(state, setBones(bones, 'glbHash123'))
+    const result = editorReducer(state, setBones('glbHash123', bones, 'anItemId'))
 
-    expect(result.originalSpringBoneParams).toEqual(result.springBoneParams)
+    expect(result.originalSpringBoneParamsByHash['glbHash123']).toEqual(result.springBoneParamsByHash['glbHash123'])
   })
 
   it('should ignore avatar-type bones when building springBoneParams', () => {
     const bones = [avatarBone]
-    const result = editorReducer(state, setBones(bones, 'glbHash123'))
+    const result = editorReducer(state, setBones('glbHash123', bones, 'anItemId'))
 
-    expect(result.springBoneParams).toEqual({})
+    expect(result.springBoneParamsByHash['glbHash123']).toEqual({})
   })
 
   it('should not add an entry for spring bones without params', () => {
     const bones = [avatarBone, springBoneWithoutParams]
-    const result = editorReducer(state, setBones(bones, 'glbHash123'))
+    const result = editorReducer(state, setBones('glbHash123', bones, 'anItemId'))
 
-    expect(result.springBoneParams).toEqual({})
+    expect(result.springBoneParamsByHash['glbHash123']).toEqual({})
+  })
+
+  it('should preserve existing edited params for the same hash on a re-set (late GLB fetch)', () => {
+    const editedParams = {
+      stiffness: 0.99,
+      gravityPower: 5,
+      gravityDir: [0, -1, 0] as [number, number, number],
+      drag: 0.1,
+      center: undefined
+    }
+    state = {
+      ...state,
+      springBoneParamsByHash: { glbHash123: { springbone_hair: editedParams } }
+    }
+    const bones = [avatarBone, springBoneWithParams]
+    const result = editorReducer(state, setBones('glbHash123', bones, 'anItemId'))
+
+    expect(result.springBoneParamsByHash['glbHash123']).toEqual({ springbone_hair: editedParams })
+    // Originals reflect the freshly-parsed metadata, not the stashed edits.
+    expect(result.originalSpringBoneParamsByHash['glbHash123']).toEqual({ springbone_hair: springBoneWithParams.params })
   })
 })
 
@@ -207,32 +227,34 @@ describe('when reducing the action that sets a spring bone param', () => {
   beforeEach(() => {
     state = {
       ...state,
-      springBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined },
-        springbone_tail: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.2, center: undefined }
+      springBoneParamsByHash: {
+        hashA: {
+          springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined },
+          springbone_tail: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.2, center: undefined }
+        }
       },
-      originalSpringBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
+      originalSpringBoneParamsByHash: {
+        hashA: { springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined } }
       }
     }
   })
 
-  it('should update a single field on the specified bone params', () => {
-    const result = editorReducer(state, setSpringBoneParam('springbone_hair', 'stiffness', 0.8))
+  it('should update a single field on the specified bone params under the given hash', () => {
+    const result = editorReducer(state, setSpringBoneParam('hashA', 'springbone_hair', 'stiffness', 0.8))
 
-    expect(result.springBoneParams.springbone_hair.stiffness).toBe(0.8)
+    expect(result.springBoneParamsByHash['hashA'].springbone_hair.stiffness).toBe(0.8)
   })
 
-  it('should not affect other bones params', () => {
-    const result = editorReducer(state, setSpringBoneParam('springbone_hair', 'stiffness', 0.8))
+  it('should not affect other bones params under the same hash', () => {
+    const result = editorReducer(state, setSpringBoneParam('hashA', 'springbone_hair', 'stiffness', 0.8))
 
-    expect(result.springBoneParams.springbone_tail).toEqual(state.springBoneParams.springbone_tail)
+    expect(result.springBoneParamsByHash['hashA'].springbone_tail).toEqual(state.springBoneParamsByHash['hashA'].springbone_tail)
   })
 
-  it('should not modify originalSpringBoneParams', () => {
-    const result = editorReducer(state, setSpringBoneParam('springbone_hair', 'stiffness', 0.8))
+  it('should not modify originalSpringBoneParamsByHash', () => {
+    const result = editorReducer(state, setSpringBoneParam('hashA', 'springbone_hair', 'stiffness', 0.8))
 
-    expect(result.originalSpringBoneParams).toEqual(state.originalSpringBoneParams)
+    expect(result.originalSpringBoneParamsByHash).toEqual(state.originalSpringBoneParamsByHash)
   })
 })
 
@@ -240,22 +262,22 @@ describe('when reducing the action that adds spring bone params', () => {
   beforeEach(() => {
     state = {
       ...state,
-      springBoneParams: {
-        springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
+      springBoneParamsByHash: {
+        hashA: { springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined } }
       }
     }
   })
 
-  it('should add DEFAULT_SPRING_BONE_PARAMS for the given bone name', () => {
-    const result = editorReducer(state, addSpringBoneParams('springbone_tail'))
+  it('should add DEFAULT_SPRING_BONE_PARAMS for the given bone name under the given hash', () => {
+    const result = editorReducer(state, addSpringBoneParams('hashA', 'springbone_tail'))
 
-    expect(result.springBoneParams.springbone_tail).toEqual(DEFAULT_SPRING_BONE_PARAMS)
+    expect(result.springBoneParamsByHash['hashA'].springbone_tail).toEqual(DEFAULT_SPRING_BONE_PARAMS)
   })
 
-  it('should not overwrite existing params for other bones', () => {
-    const result = editorReducer(state, addSpringBoneParams('springbone_tail'))
+  it('should not overwrite existing params for other bones under the same hash', () => {
+    const result = editorReducer(state, addSpringBoneParams('hashA', 'springbone_tail'))
 
-    expect(result.springBoneParams.springbone_hair).toEqual(state.springBoneParams.springbone_hair)
+    expect(result.springBoneParamsByHash['hashA'].springbone_hair).toEqual(state.springBoneParamsByHash['hashA'].springbone_hair)
   })
 })
 
@@ -263,23 +285,25 @@ describe('when reducing the action that deletes spring bone params', () => {
   beforeEach(() => {
     state = {
       ...state,
-      springBoneParams: {
-        springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined },
-        springbone_tail: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.2, center: undefined }
+      springBoneParamsByHash: {
+        hashA: {
+          springbone_hair: { stiffness: 0.5, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined },
+          springbone_tail: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.2, center: undefined }
+        }
       }
     }
   })
 
-  it('should remove params for the given bone name', () => {
-    const result = editorReducer(state, deleteSpringBoneParams('springbone_hair'))
+  it('should remove params for the given bone name under the given hash', () => {
+    const result = editorReducer(state, deleteSpringBoneParams('hashA', 'springbone_hair'))
 
-    expect(result.springBoneParams.springbone_hair).toBeUndefined()
+    expect(result.springBoneParamsByHash['hashA'].springbone_hair).toBeUndefined()
   })
 
-  it('should preserve params for other bones', () => {
-    const result = editorReducer(state, deleteSpringBoneParams('springbone_hair'))
+  it('should preserve params for other bones under the same hash', () => {
+    const result = editorReducer(state, deleteSpringBoneParams('hashA', 'springbone_hair'))
 
-    expect(result.springBoneParams.springbone_tail).toEqual(state.springBoneParams.springbone_tail)
+    expect(result.springBoneParamsByHash['hashA'].springbone_tail).toEqual(state.springBoneParamsByHash['hashA'].springbone_tail)
   })
 })
 
@@ -287,19 +311,19 @@ describe('when reducing the action that resets spring bone params', () => {
   beforeEach(() => {
     state = {
       ...state,
-      springBoneParams: {
-        springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined }
+      springBoneParamsByHash: {
+        hashA: { springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined } }
       },
-      originalSpringBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
+      originalSpringBoneParamsByHash: {
+        hashA: { springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined } }
       }
     }
   })
 
-  it('should restore springBoneParams to match originalSpringBoneParams', () => {
+  it('should restore springBoneParamsByHash to match originalSpringBoneParamsByHash', () => {
     const result = editorReducer(state, resetSpringBoneParams())
 
-    expect(result.springBoneParams).toEqual(state.originalSpringBoneParams)
+    expect(result.springBoneParamsByHash).toEqual(state.originalSpringBoneParamsByHash)
   })
 })
 
@@ -308,18 +332,18 @@ describe('when reducing a save item success action', () => {
     state = {
       ...state,
       selectedItemId: mockedItem.id,
-      springBoneParams: {
-        springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined }
+      springBoneParamsByHash: {
+        hashA: { springbone_hair: { stiffness: 0.8, gravityPower: 2, gravityDir: [1, 0, 0], drag: 0.1, center: undefined } }
       },
-      originalSpringBoneParams: {
-        springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined }
+      originalSpringBoneParamsByHash: {
+        hashA: { springbone_hair: { stiffness: 1, gravityPower: 0, gravityDir: [0, -1, 0], drag: 0.4, center: undefined } }
       }
     }
   })
 
-  it('should update originalSpringBoneParams to match current springBoneParams', () => {
+  it('should update originalSpringBoneParamsByHash to match current springBoneParamsByHash', () => {
     const result = editorReducer(state, saveItemSuccess(mockedItem, {}))
 
-    expect(result.originalSpringBoneParams).toEqual(state.springBoneParams)
+    expect(result.originalSpringBoneParamsByHash).toEqual(state.springBoneParamsByHash)
   })
 })
