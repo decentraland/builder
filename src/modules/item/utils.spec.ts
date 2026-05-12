@@ -784,6 +784,23 @@ describe('when stripping a wrapping folder from a zip content map', () => {
     })
   })
 
+  describe('and multiple wrappers nest above the body-shape folders', () => {
+    it('should recursively strip every wrapper and stop at the body-shape folders', () => {
+      const result = stripWrappingFolder({
+        'outer/inner/male/red_eyes.png': blob,
+        'outer/inner/female/red_eyes.png': blob
+      })
+      expect(Object.keys(result).sort()).toEqual(['female/red_eyes.png', 'male/red_eyes.png'])
+    })
+  })
+
+  describe('and the top-level directory matches a body-shape name with non-canonical casing', () => {
+    it('should treat the directory as a body shape and not strip it', () => {
+      const input = { 'Male/red_eyes.png': blob }
+      expect(stripWrappingFolder(input)).toEqual(input)
+    })
+  })
+
   describe('and there are multiple top-level entries', () => {
     it('should not strip when there is a file at the root alongside a folder', () => {
       const input = {

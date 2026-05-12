@@ -639,7 +639,7 @@ export function stripWrappingFolder(contents: Record<string, Blob>): Record<stri
     }
   }
 
-  if (wrapper === null || BODY_SHAPE_TOP_LEVEL_NAMES.has(wrapper.toLowerCase())) {
+  if (!wrapper || BODY_SHAPE_TOP_LEVEL_NAMES.has(wrapper.toLowerCase())) {
     return contents
   }
 
