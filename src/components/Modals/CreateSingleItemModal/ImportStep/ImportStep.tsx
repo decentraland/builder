@@ -60,7 +60,8 @@ import {
   isModelPath,
   MAX_EMOTE_DURATION,
   isSmart,
-  getWearableCategories
+  getWearableCategories,
+  stripWrappingFolder
 } from 'modules/item/utils'
 import { blobToDataURL } from 'modules/media/utils'
 import { AnimationMetrics } from 'modules/models/types'
@@ -118,11 +119,18 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     // This ensures all content (including sound files for emotes) is fully loaded before processing.
     const fileArrayBuffer = await file.arrayBuffer()
     const loadedFile = await loadFile(file.name, new Blob([new Uint8Array(fileArrayBuffer)]))
-    const { wearable, scene, content, emote } = loadedFile
+    const { wearable, scene, content: rawContent, emote } = loadedFile
 
     if (emote && file.size > MAX_EMOTE_FILE_SIZE) {
       throw new FileTooBigError(MAX_EMOTE_FILE_SIZE)
     }
+
+    // When the creator zipped a folder (so everything lives under a single non-body-shape
+    // wrapper directory) and didn't ship an explicit wearable.json / emote config to anchor
+    // the file paths, unwrap that directory so downstream logic sees the same paths a flat
+    // zip would have produced. We deliberately skip unwrapping for configured uploads because
+    // their representations reference the original paths.
+    const content = !wearable && !emote ? stripWrappingFolder(rawContent) : rawContent
 
     let modelPath: string | undefined
 

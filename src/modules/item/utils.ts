@@ -604,6 +604,61 @@ export function findOrphanedAuxiliaryFiles(
   return orphans
 }
 
+/**
+ * Body-shape directory names that are part of the wearable schema and must never be treated as
+ * a wrapping folder when normalizing a zip's structure.
+ */
+const BODY_SHAPE_TOP_LEVEL_NAMES = new Set<string>(['male', 'female'])
+
+/**
+ * Many creators compress a folder rather than its files, so the resulting zip contains a single
+ * top-level directory (e.g. "F_Mouth_00/") that holds the actual assets. When that happens we
+ * strip the wrapper so downstream logic sees the same paths as a "flat" zip would produce.
+ *
+ * Rules:
+ *  - The function only strips when every meaningful entry sits under one single top-level dir.
+ *  - It does NOT strip `male/` or `female/`, which are meaningful body-shape directories.
+ *  - Empty entries (folder markers, size 0) are ignored when deciding whether to strip and are
+ *    dropped from the result.
+ *  - Applies recursively, so deeply nested wrappers (e.g. "outer/inner/file.png") get fully
+ *    unwrapped down to the first body-shape folder or to actual files at the root.
+ */
+export function stripWrappingFolder(contents: Record<string, Blob>): Record<string, Blob> {
+  const meaningfulKeys = Object.keys(contents).filter(key => !key.endsWith('/') && contents[key].size > 0)
+  if (meaningfulKeys.length === 0) return contents
+
+  let wrapper: string | null = null
+  for (const key of meaningfulKeys) {
+    const slashIndex = key.indexOf('/')
+    if (slashIndex === -1) return contents
+    const topSegment = key.substring(0, slashIndex)
+    if (wrapper === null) {
+      wrapper = topSegment
+    } else if (wrapper !== topSegment) {
+      return contents
+    }
+  }
+
+  if (wrapper === null || BODY_SHAPE_TOP_LEVEL_NAMES.has(wrapper.toLowerCase())) {
+    return contents
+  }
+
+  const prefix = `${wrapper}/`
+  const stripped: Record<string, Blob> = {}
+  for (const [key, value] of Object.entries(contents)) {
+    if (!key.startsWith(prefix)) {
+      stripped[key] = value
+      continue
+    }
+    const newKey = key.substring(prefix.length)
+    if (newKey) {
+      stripped[newKey] = value
+    }
+  }
+
+  return stripWrappingFolder(stripped)
+}
+
 export function isValidText(text: string) {
   const invalidCharacters = [':']
   const invalidCharactersRegex = new RegExp(invalidCharacters.join('|'))

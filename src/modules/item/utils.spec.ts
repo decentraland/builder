@@ -20,7 +20,8 @@ import {
   getRequiredCounterpartFile,
   hasFacialExpressions,
   findOrphanedAuxiliaryFiles,
-  isModelPath
+  isModelPath,
+  stripWrappingFolder
 } from './utils'
 
 describe('when transforming third party items to be sent to a contract method', () => {
@@ -733,6 +734,98 @@ describe('when checking whether a file is the main model path', () => {
   describe('and the file is a GLB model', () => {
     it('should return true', () => {
       expect(isModelPath('model.glb')).toBe(true)
+    })
+  })
+})
+
+describe('when stripping a wrapping folder from a zip content map', () => {
+  let blob: Blob
+
+  beforeEach(() => {
+    blob = new Blob([new Uint8Array([0])])
+  })
+
+  describe('and every file sits under a single non-body-shape directory', () => {
+    it('should strip that directory from every key', () => {
+      const result = stripWrappingFolder({
+        'F_Mouth_00/F_Mouth_00.png': blob,
+        'F_Mouth_00/F_Mouth_00_expressions.png': blob
+      })
+      expect(Object.keys(result).sort()).toEqual(['F_Mouth_00.png', 'F_Mouth_00_expressions.png'])
+    })
+  })
+
+  describe('and the content is already at the root level', () => {
+    it('should return the same content unchanged', () => {
+      const input = { 'red_eyes.png': blob, 'red_eyes_mask.png': blob }
+      expect(stripWrappingFolder(input)).toEqual(input)
+    })
+  })
+
+  describe('and the single top-level directory is a body-shape folder', () => {
+    it('should not strip male/', () => {
+      const input = { 'male/red_eyes.png': blob }
+      expect(stripWrappingFolder(input)).toEqual(input)
+    })
+
+    it('should not strip female/', () => {
+      const input = { 'female/red_eyes.png': blob }
+      expect(stripWrappingFolder(input)).toEqual(input)
+    })
+  })
+
+  describe('and the wrapper contains body-shape folders inside it', () => {
+    it('should strip the wrapper once and keep the body-shape folders intact', () => {
+      const result = stripWrappingFolder({
+        'F_Mouth_00/male/red_eyes.png': blob,
+        'F_Mouth_00/female/red_eyes.png': blob
+      })
+      expect(Object.keys(result).sort()).toEqual(['female/red_eyes.png', 'male/red_eyes.png'])
+    })
+  })
+
+  describe('and there are multiple top-level entries', () => {
+    it('should not strip when there is a file at the root alongside a folder', () => {
+      const input = {
+        'thumbnail.png': blob,
+        'F_Mouth_00/F_Mouth_00.png': blob
+      }
+      expect(stripWrappingFolder(input)).toEqual(input)
+    })
+
+    it('should not strip when there are two distinct top-level folders', () => {
+      const input = {
+        'wrapper_a/foo.png': blob,
+        'wrapper_b/bar.png': blob
+      }
+      expect(stripWrappingFolder(input)).toEqual(input)
+    })
+  })
+
+  describe('and the wrapper is nested multiple levels deep', () => {
+    it('should recursively strip every wrapper until a body-shape folder or root file is reached', () => {
+      const result = stripWrappingFolder({
+        'outer/inner/red_eyes.png': blob,
+        'outer/inner/red_eyes_mask.png': blob
+      })
+      expect(Object.keys(result).sort()).toEqual(['red_eyes.png', 'red_eyes_mask.png'])
+    })
+  })
+
+  describe('and the zip contains explicit folder markers (size-0 entries)', () => {
+    it('should ignore them when detecting the wrapper and drop them from the output', () => {
+      const emptyBlob = new Blob([])
+      const result = stripWrappingFolder({
+        'F_Mouth_00/': emptyBlob,
+        'F_Mouth_00/F_Mouth_00.png': blob
+      })
+      expect(Object.keys(result)).toEqual(['F_Mouth_00.png'])
+    })
+  })
+
+  describe('and the content map is empty', () => {
+    it('should return an empty record', () => {
+      expect(stripWrappingFolder({})).toEqual({})
     })
   })
 })
