@@ -30,6 +30,7 @@ import { isEmote, getModelPath } from 'modules/item/utils'
 import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
+import { FacialExpressionsBadge } from 'components/FacialExpressionsBadge'
 import { ValidationIssuesPanel } from 'components/ValidationIssuesPanel'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
@@ -545,6 +546,9 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                   />
                 </div>
               )}
+              {selectedItem && !isEmote(selectedItem) ? (
+                <FacialExpressionsBadge contents={selectedItem.contents} className="option facial-expressions-status" />
+              ) : null}
               {this.renderValidationStatus()}
             </div>
           </div>

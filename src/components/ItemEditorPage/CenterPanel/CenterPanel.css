@@ -50,6 +50,16 @@
   margin-right: 16px;
 }
 
+.CenterPanel .footer .option.facial-expressions-status {
+  padding: 4px 10px 6px 10px;
+}
+
+.CenterPanel .footer .option.facial-expressions-status .icon {
+  font-size: 18px;
+  line-height: 20px;
+  margin: 0 !important;
+}
+
 .CenterPanel .footer .option.active {
   background-color: #ff2d55;
 }

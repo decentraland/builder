@@ -173,6 +173,9 @@
     "wearable": "Wearable",
     "smart_wearable": "Smart Wearable"
   },
+  "facial_expressions_badge": {
+    "tooltip": "This wearable includes facial expressions"
+  },
   "emotes": {
     "wave": "Wave",
     "idle": "Idle",
@@ -374,6 +377,10 @@
         "message": "Missing external resources: {external_resources}.{additional_message}"
       },
       "item_not_allowed_in_third_party_collections": "This item type {type} is not allowed in Linked Wearables Collections",
+      "orphaned_auxiliary_file": {
+        "title": "Missing companion file(s) in the uploaded zip",
+        "item": "{orphan} requires {expected} to also be present."
+      },
       "emote_animations_sync_error": "<b>Avatar and prop animations length are not the same</b><br></br>Please correct your animation and upload it again for a perfect sync.",
       "emote_with_mesh": "<b>Your file includes the avatar mesh.</b><br></br>This mesh isn't necessary for this process. Please re-export your Emote file and upload it again to proceed.",
       "glb_validation": {

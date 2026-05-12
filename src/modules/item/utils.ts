@@ -542,10 +542,133 @@ export function isAudioFile(fileName: string) {
 }
 
 export function isModelPath(fileName: string) {
-  fileName = fileName.toLowerCase()
-  // we ignore PNG files that end with "_mask", since those are auxiliary
-  const isMask = fileName.includes('_mask')
-  return isModelFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
+  // Lowercase once and inline the suffix checks so we don't repeatedly normalize the same
+  // string through the public is*File helpers (each of which lowercases internally).
+  const lower = fileName.toLowerCase()
+  if (lower.endsWith('.glb') || lower.endsWith('.gltf')) return true
+  if (lower.indexOf(THUMBNAIL_PATH) !== -1) return false
+  // `_mask.png` covers both plain masks and `_expressions_mask.png` by construction.
+  if (lower.endsWith('_mask.png') || lower.endsWith('_expressions.png')) return false
+  return lower.endsWith('.png')
+}
+
+export function isExpressionsMaskFile(fileName: string) {
+  return fileName.toLowerCase().endsWith('_expressions_mask.png')
+}
+
+export function isExpressionsFile(fileName: string) {
+  // An "_expressions_mask.png" filename ends in "_mask.png", not in "_expressions.png", so no
+  // additional guard is needed here.
+  return fileName.toLowerCase().endsWith('_expressions.png')
+}
+
+export function isMaskFile(fileName: string) {
+  const lower = fileName.toLowerCase()
+  return lower.endsWith('_mask.png') && !isExpressionsMaskFile(lower)
+}
+
+/**
+ * Given an auxiliary file (mask, expressions, or expressions_mask), returns the path of the
+ * counterpart that must exist for it to be valid. For:
+ *   - foo_mask.png             -> foo.png
+ *   - foo_expressions.png      -> foo.png
+ *   - foo_expressions_mask.png -> foo_expressions.png
+ * Returns null when fileName is not an auxiliary file.
+ */
+export function getRequiredCounterpartFile(fileName: string): string | null {
+  if (isExpressionsMaskFile(fileName)) {
+    return fileName.replace(/_expressions_mask\.png$/i, '_expressions.png')
+  }
+  if (isExpressionsFile(fileName)) {
+    return fileName.replace(/_expressions\.png$/i, '.png')
+  }
+  if (isMaskFile(fileName)) {
+    return fileName.replace(/_mask\.png$/i, '.png')
+  }
+  return null
+}
+
+/** True when any key in contents is an expressions PNG (the marker for facial expressions support). */
+export function hasFacialExpressions(contents: Record<string, unknown> | undefined | null): boolean {
+  if (!contents) return false
+  return Object.keys(contents).some(key => isExpressionsFile(key))
+}
+
+/**
+ * Scans the contents map for auxiliary PNG files (mask, expressions, expressions_mask) that
+ * are present without their required counterpart. Returns every violation found (empty array
+ * when all auxiliaries are properly paired). Counterpart lookup is case-insensitive so that a
+ * base file named "Eyes.PNG" still satisfies a mask named "Eyes_mask.png".
+ */
+export function findOrphanedAuxiliaryFiles(
+  contents: Record<string, unknown> | undefined | null
+): Array<{ orphan: string; expected: string }> {
+  if (!contents) return []
+  const keys = Object.keys(contents)
+  const lowercaseKeys = new Set(keys.map(key => key.toLowerCase()))
+  const orphans: Array<{ orphan: string; expected: string }> = []
+  for (const key of keys) {
+    const expected = getRequiredCounterpartFile(key)
+    if (expected && !lowercaseKeys.has(expected.toLowerCase())) {
+      orphans.push({ orphan: key, expected })
+    }
+  }
+  return orphans
+}
+
+/**
+ * Body-shape directory names that are part of the wearable schema and must never be treated as
+ * a wrapping folder when normalizing a zip's structure.
+ */
+const BODY_SHAPE_TOP_LEVEL_NAMES = new Set<string>(['male', 'female'])
+
+/**
+ * Many creators compress a folder rather than its files, so the resulting zip contains a single
+ * top-level directory (e.g. "F_Mouth_00/") that holds the actual assets. When that happens we
+ * strip the wrapper so downstream logic sees the same paths as a "flat" zip would produce.
+ *
+ * Rules:
+ *  - The function only strips when every meaningful entry sits under one single top-level dir.
+ *  - It does NOT strip `male/` or `female/`, which are meaningful body-shape directories.
+ *  - Empty entries (folder markers, size 0) are ignored when deciding whether to strip and are
+ *    dropped from the result.
+ *  - Applies recursively, so deeply nested wrappers (e.g. "outer/inner/file.png") get fully
+ *    unwrapped down to the first body-shape folder or to actual files at the root.
+ */
+export function stripWrappingFolder(contents: Record<string, Blob>): Record<string, Blob> {
+  const meaningfulKeys = Object.keys(contents).filter(key => !key.endsWith('/') && contents[key].size > 0)
+  if (meaningfulKeys.length === 0) return contents
+
+  let wrapper: string | null = null
+  for (const key of meaningfulKeys) {
+    const slashIndex = key.indexOf('/')
+    if (slashIndex === -1) return contents
+    const topSegment = key.substring(0, slashIndex)
+    if (wrapper === null) {
+      wrapper = topSegment
+    } else if (wrapper !== topSegment) {
+      return contents
+    }
+  }
+
+  if (!wrapper || BODY_SHAPE_TOP_LEVEL_NAMES.has(wrapper.toLowerCase())) {
+    return contents
+  }
+
+  const prefix = `${wrapper}/`
+  const stripped: Record<string, Blob> = {}
+  for (const [key, value] of Object.entries(contents)) {
+    if (!key.startsWith(prefix)) {
+      stripped[key] = value
+      continue
+    }
+    const newKey = key.substring(prefix.length)
+    if (newKey) {
+      stripped[newKey] = value
+    }
+  }
+
+  return stripWrappingFolder(stripped)
 }
 
 export function isValidText(text: string) {
