@@ -15,6 +15,7 @@ import {
 } from '@dcl/schemas'
 import { ThumbnailType } from 'lib/getModelData'
 import { LinkedContract } from 'modules/thirdParty/types'
+import { MissingModelFileError } from 'modules/item/errors'
 import { isImageFile, isModelFile, isModelPath } from 'modules/item/utils'
 import { Collection } from 'modules/collection/types'
 import { BodyShapeType, THUMBNAIL_PATH, VIDEO_PATH, WearableRepresentation } from 'modules/item/types'
@@ -251,9 +252,13 @@ export const buildRepresentationsZipBothBodyshape = (bodyShape: BodyShapeType, c
 
   // add male representation
   if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
+    const maleMainFile = Object.keys(contents.male).find(isModelPath)
+    if (!maleMainFile) {
+      throw new MissingModelFileError()
+    }
     representations.push({
       bodyShapes: [BodyShape.MALE],
-      mainFile: Object.keys(contents.male).find(isModelPath)!,
+      mainFile: maleMainFile,
       contents: Object.keys(contents.male),
       overrideHides: [],
       overrideReplaces: []
@@ -262,9 +267,13 @@ export const buildRepresentationsZipBothBodyshape = (bodyShape: BodyShapeType, c
 
   // add female representation
   if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
+    const femaleMainFile = Object.keys(contents.female).find(isModelPath)
+    if (!femaleMainFile) {
+      throw new MissingModelFileError()
+    }
     representations.push({
       bodyShapes: [BodyShape.FEMALE],
-      mainFile: Object.keys(contents.female).find(isModelPath)!,
+      mainFile: femaleMainFile,
       contents: Object.keys(contents.female),
       overrideHides: [],
       overrideReplaces: []

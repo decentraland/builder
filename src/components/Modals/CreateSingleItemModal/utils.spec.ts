@@ -1,4 +1,5 @@
 import { ArmatureId } from '@dcl/schemas'
+import { MissingModelFileError } from 'modules/item/errors'
 import { BodyShapeType } from 'modules/item/types'
 import { SortedContent } from './CreateSingleItemModal.types'
 import { autocompleteSocialEmoteData, buildRepresentationsZipBothBodyshape } from './utils'
@@ -189,6 +190,22 @@ describe('when building representations from a zip with male and female subfolde
       const representations = buildRepresentationsZipBothBodyshape(BodyShapeType.BOTH, sortedContents)
       expect(representations[0].mainFile).toBe('male/model.glb')
       expect(representations[1].mainFile).toBe('female/model.glb')
+    })
+  })
+
+  describe('and the male bucket only contains auxiliary PNGs without a base file', () => {
+    let sortedContents: SortedContent
+
+    beforeEach(() => {
+      sortedContents = {
+        male: { 'male/red_eyes_mask.png': blob },
+        female: { 'female/red_eyes.png': blob },
+        all: {}
+      }
+    })
+
+    it('should throw MissingModelFileError instead of building a representation with an undefined main file', () => {
+      expect(() => buildRepresentationsZipBothBodyshape(BodyShapeType.BOTH, sortedContents)).toThrow(MissingModelFileError)
     })
   })
 

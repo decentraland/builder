@@ -534,10 +534,14 @@ export function isAudioFile(fileName: string) {
 }
 
 export function isModelPath(fileName: string) {
-  fileName = fileName.toLowerCase()
-  // PNG files for masks and facial expressions are auxiliary; only the base PNG is the main file
-  const isAuxiliary = isMaskFile(fileName) || isExpressionsFile(fileName) || isExpressionsMaskFile(fileName)
-  return isModelFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isAuxiliary && isImageFile(fileName))
+  // Lowercase once and inline the suffix checks so we don't repeatedly normalize the same
+  // string through the public is*File helpers (each of which lowercases internally).
+  const lower = fileName.toLowerCase()
+  if (lower.endsWith('.glb') || lower.endsWith('.gltf')) return true
+  if (lower.indexOf(THUMBNAIL_PATH) !== -1) return false
+  // `_mask.png` covers both plain masks and `_expressions_mask.png` by construction.
+  if (lower.endsWith('_mask.png') || lower.endsWith('_expressions.png')) return false
+  return lower.endsWith('.png')
 }
 
 export function isExpressionsMaskFile(fileName: string) {
