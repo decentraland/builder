@@ -5,4 +5,5 @@ export type Props = {
   item: Item
   mints: Partial<Mint>[]
   onChange: (item: Item, mints: Partial<Mint>[]) => void
+  onApplyToAll?: (itemId: string) => void
 }

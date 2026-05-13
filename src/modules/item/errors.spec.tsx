@@ -1,6 +1,7 @@
+import { ReactElement } from 'react'
 import { ValidationSeverity } from 'lib/glbValidation/types'
 import type { ValidationIssue } from 'lib/glbValidation/types'
-import { GLBValidationError, CustomErrorWithTitle } from './errors'
+import { GLBValidationError, CustomErrorWithTitle, OrphanedAuxiliaryFileError } from './errors'
 
 describe('GLBValidationError', () => {
   afterEach(() => {
@@ -59,6 +60,74 @@ describe('GLBValidationError', () => {
 
     it('should store an empty issues array', () => {
       expect(error.issues).toEqual([])
+    })
+  })
+})
+
+describe('OrphanedAuxiliaryFileError', () => {
+  describe('when constructed with one orphaned auxiliary file', () => {
+    let error: OrphanedAuxiliaryFileError
+    let orphans: ReadonlyArray<{ orphan: string; expected: string }>
+
+    beforeEach(() => {
+      orphans = [{ orphan: 'red_eyes_mask.png', expected: 'red_eyes.png' }]
+      error = new OrphanedAuxiliaryFileError(orphans)
+    })
+
+    it('should be an instance of CustomErrorWithTitle', () => {
+      expect(error).toBeInstanceOf(CustomErrorWithTitle)
+    })
+
+    it('should expose the offending orphans through the orphans property', () => {
+      expect(error.orphans).toEqual(orphans)
+    })
+
+    it('should render a title element', () => {
+      expect(error.title).toBeDefined()
+    })
+
+    it('should render a message containing one list item per orphan', () => {
+      const message = error.message as ReactElement<{ children: ReactElement[] }>
+      expect(message.props.children).toHaveLength(1)
+    })
+  })
+
+  describe('when constructed with multiple orphaned auxiliary files', () => {
+    let error: OrphanedAuxiliaryFileError
+    let orphans: ReadonlyArray<{ orphan: string; expected: string }>
+
+    beforeEach(() => {
+      orphans = [
+        { orphan: 'red_eyes_mask.png', expected: 'red_eyes.png' },
+        { orphan: 'red_eyes_expressions_mask.png', expected: 'red_eyes_expressions.png' }
+      ]
+      error = new OrphanedAuxiliaryFileError(orphans)
+    })
+
+    it('should render a message containing one list item per orphan', () => {
+      const message = error.message as ReactElement<{ children: ReactElement[] }>
+      expect(message.props.children).toHaveLength(2)
+    })
+
+    it('should preserve the orphan ordering on the orphans property', () => {
+      expect(error.orphans.map(entry => entry.orphan)).toEqual(['red_eyes_mask.png', 'red_eyes_expressions_mask.png'])
+    })
+  })
+
+  describe('when constructed with an empty list', () => {
+    let error: OrphanedAuxiliaryFileError
+
+    beforeEach(() => {
+      error = new OrphanedAuxiliaryFileError([])
+    })
+
+    it('should still render a title element', () => {
+      expect(error.title).toBeDefined()
+    })
+
+    it('should render an empty list as the message body', () => {
+      const message = error.message as ReactElement<{ children: ReactElement[] }>
+      expect(message.props.children).toEqual([])
     })
   })
 })

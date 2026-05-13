@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import equal from 'fast-deep-equal'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getCampaignName, getContentfulNormalizedLocale, getMainTag } from 'decentraland-dapps/dist/modules/campaign'
@@ -15,10 +15,10 @@ import { getIsCampaignEnabled, getIsVrmOptOutEnabled, getIsWearableUtilityEnable
 import { BodyShape } from '@dcl/schemas'
 import {
   getBodyShape,
-  getBones,
-  getBonesByShape,
-  getSpringBoneParams,
-  getSpringBoneParamsByShape,
+  getBonesForCurrentShape,
+  getCurrentRepresentationHash,
+  getSpringBoneParamsForCurrentShape,
+  getSpringBonesByShapeView,
   hasSpringBoneChanges as hasSpringBoneChangesSelector
 } from 'modules/editor/selectors'
 import {
@@ -64,10 +64,10 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
 
   const itemStatus = useMemo(() => (selectedItemId ? statusByItemId[selectedItemId] : null), [selectedItemId, statusByItemId])
   const selectedBodyShape = useSelector((state: RootState) => getBodyShape(state))
-  const bones = useSelector((state: RootState) => getBones(state), shallowEqual)
-  const bonesByShape = useSelector((state: RootState) => getBonesByShape(state), equal)
-  const springBoneParams = useSelector((state: RootState) => getSpringBoneParams(state), equal)
-  const springBoneParamsByShape = useSelector((state: RootState) => getSpringBoneParamsByShape(state), equal)
+  const currentHash = useSelector((state: RootState) => getCurrentRepresentationHash(state))
+  const bones = useSelector((state: RootState) => getBonesForCurrentShape(state), equal)
+  const springBoneParams = useSelector((state: RootState) => getSpringBoneParamsForCurrentShape(state), equal)
+  const { bonesByShape, springBoneParamsByShape } = useSelector((state: RootState) => getSpringBonesByShapeView(state), equal)
   const hasSpringBoneChanges = useSelector((state: RootState) => hasSpringBoneChangesSelector(state))
 
   const hasTwoRepresentations = useMemo(() => (selectedItem ? hasMultipleModels(selectedItem) : false), [selectedItem])
@@ -83,18 +83,26 @@ const RightPanelContainer: React.FC<RightPanelContainerProps> = () => {
   const onDeleteItem: ActionFunction<typeof deleteItemRequest> = useCallback(item => dispatch(deleteItemRequest(item)), [dispatch])
   const onOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
   const onDownload: ActionFunction<typeof downloadItemRequest> = useCallback(itemId => dispatch(downloadItemRequest(itemId)), [dispatch])
-  const onSpringBoneParamChange: ActionFunction<typeof setSpringBoneParam> = useCallback(
-    (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) =>
-      dispatch(setSpringBoneParam(boneName, field, value)),
-    [dispatch]
+  const onSpringBoneParamChange = useCallback(
+    (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[typeof field]) => {
+      if (!currentHash) return
+      dispatch(setSpringBoneParam(currentHash, boneName, field, value))
+    },
+    [dispatch, currentHash]
   )
-  const onAddSpringBoneParams: ActionFunction<typeof addSpringBoneParams> = useCallback(
-    (boneName: string) => dispatch(addSpringBoneParams(boneName)),
-    [dispatch]
+  const onAddSpringBoneParams = useCallback(
+    (boneName: string) => {
+      if (!currentHash) return
+      dispatch(addSpringBoneParams(currentHash, boneName))
+    },
+    [dispatch, currentHash]
   )
-  const onDeleteSpringBoneParams: ActionFunction<typeof deleteSpringBoneParams> = useCallback(
-    (boneName: string) => dispatch(deleteSpringBoneParams(boneName)),
-    [dispatch]
+  const onDeleteSpringBoneParams = useCallback(
+    (boneName: string) => {
+      if (!currentHash) return
+      dispatch(deleteSpringBoneParams(currentHash, boneName))
+    },
+    [dispatch, currentHash]
   )
   const onResetSpringBoneParams: ActionFunction<typeof resetSpringBoneParams> = useCallback(
     () => dispatch(resetSpringBoneParams()),

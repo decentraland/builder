@@ -1,0 +1,10 @@
+.FacialExpressionsBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.FacialExpressionsBadge .icon {
+  margin: 0;
+  line-height: 1;
+}

@@ -77,6 +77,21 @@
   right: 12px;
 }
 
+.CreateSingleItemModal .preview .thumbnail-container .FacialExpressionsBadge.facial-expressions-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 3px;
+  color: #161518;
+}
+
+.CreateSingleItemModal .preview .thumbnail-container .FacialExpressionsBadge.facial-expressions-badge .icon {
+  font-size: 14px;
+}
+
 .CreateSingleItemModal .ItemVideoContainer .ItemVideo.video-wrapper .icon.video {
   font-size: 22px;
   cursor: pointer;

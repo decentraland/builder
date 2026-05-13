@@ -6,7 +6,7 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { canMintItem, MAX_NFTS_PER_MINT } from 'modules/item/utils'
+import { canMintItem, getMaxSupply, MAX_NFTS_PER_MINT } from 'modules/item/utils'
 import { Item } from 'modules/item/types'
 import { Mint } from 'modules/collection/types'
 import ItemDropdown from 'components/ItemDropdown'
@@ -24,7 +24,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     for (const item of items) {
       itemMints[item.id] = this.buildMints(item)
     }
-    return { items: [], itemMints, error: null, confirm: View.MINT }
+    return { items: [], itemMints, remountKey: 0, error: null, confirm: View.MINT }
   }
 
   buildMints(item: Item): Partial<Mint>[] {
@@ -69,6 +69,48 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     }
   }
 
+  handleApplyToAllItems = (sourceItemId: string) => {
+    const { items: stateItems, itemMints, remountKey } = this.state
+    const items = this.props.items.concat(stateItems)
+    const sourceMints = itemMints[sourceItemId]
+    const nextItemMints = { ...itemMints }
+    const sumAmounts = (list: Partial<Mint>[]) => list.reduce((sum, m) => sum + (m.amount || 0), 0)
+    // Start from source only — all target mints will be replaced below
+    let totalAcross = sumAmounts(sourceMints)
+
+    for (const targetItem of items) {
+      if (targetItem.id === sourceItemId) continue
+
+      const maxSupply = getMaxSupply(targetItem)
+      const newMints: Partial<Mint>[] = []
+      let targetSupply = targetItem.totalSupply || 0
+
+      for (const sourceMint of sourceMints) {
+        const remainingForItem = maxSupply - targetSupply
+        const remainingForModal = MAX_NFTS_PER_MINT - totalAcross
+        const cap = Math.max(0, Math.min(remainingForItem, remainingForModal))
+
+        const desired = sourceMint.amount || 0
+        const amount = Math.min(desired, cap)
+        if (amount <= 0 && !sourceMint.address) continue
+
+        newMints.push({
+          item: targetItem,
+          address: sourceMint.address,
+          amount: amount > 0 ? amount : undefined
+        })
+        targetSupply += amount
+        totalAcross += amount
+      }
+
+      if (newMints.length > 0) {
+        nextItemMints[targetItem.id] = newMints
+      }
+    }
+
+    this.setState({ itemMints: nextItemMints, remountKey: remountKey + 1, error: null })
+  }
+
   handleAddItems = (item: Item) => {
     this.setState(prevState => {
       return {
@@ -94,7 +136,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
   render() {
     const { collection, totalCollectionItems, isLoading, hasUnsyncedItems, onClose } = this.props
-    const { itemMints, error, confirm } = this.state
+    const { itemMints, remountKey, error, confirm } = this.state
 
     const items = this.props.items.concat(this.state.items)
 
@@ -205,8 +247,15 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                       <p className="warning-message danger-text">{t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })}</p>
                     )}
                   </div>
-                  {items.map(item => (
-                    <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />
+                  {items.map((item, i) => (
+                    <MintableItem
+                      // Forces remount after "apply to all" because AddressField (decentraland-ui) does not re-render when value prop changes externally.
+                      key={`${item.id}-${remountKey}`}
+                      item={item}
+                      mints={itemMints[item.id]}
+                      onChange={this.handleMintsChange}
+                      onApplyToAll={items.length > 1 && i === 0 ? this.handleApplyToAllItems : undefined}
+                    />
                   ))}
                 </>
               )}

@@ -182,6 +182,30 @@ export class GLBValidationError extends CustomErrorWithTitle {
   }
 }
 
+export class OrphanedAuxiliaryFileError extends CustomErrorWithTitle {
+  public orphans: ReadonlyArray<{ orphan: string; expected: string }>
+
+  constructor(orphans: ReadonlyArray<{ orphan: string; expected: string }>) {
+    const title = t('create_single_item_modal.error.orphaned_auxiliary_file.title')
+    const message = createElement(
+      'ul',
+      { style: { margin: 0, paddingLeft: '20px', textAlign: 'left' as const } },
+      orphans.map((entry, index) =>
+        createElement(
+          'li',
+          { key: index },
+          t('create_single_item_modal.error.orphaned_auxiliary_file.item', {
+            orphan: createElement('b', null, entry.orphan),
+            expected: createElement('b', null, entry.expected)
+          })
+        )
+      )
+    )
+    super(title, message)
+    this.orphans = orphans
+  }
+}
+
 export class MissingExternalResourcesError extends CustomErrorWithTitle {
   constructor(resources: string[], additionalMessage?: string) {
     const message = t('create_single_item_modal.error.missing_external_resources.message', {

@@ -1,5 +1,8 @@
 import { ArmatureId } from '@dcl/schemas'
-import { autocompleteSocialEmoteData } from './utils'
+import { MissingModelFileError } from 'modules/item/errors'
+import { BodyShapeType } from 'modules/item/types'
+import { SortedContent } from './CreateSingleItemModal.types'
+import { autocompleteSocialEmoteData, buildRepresentationsZipBothBodyshape } from './utils'
 
 describe('autocompleteSocialEmoteData', () => {
   describe('when processing animations with _Start suffix', () => {
@@ -161,6 +164,79 @@ describe('autocompleteSocialEmoteData', () => {
 
       expect(result.outcomes).toBeDefined()
       expect(result.outcomes?.[0].clips[ArmatureId.Armature]).toBeDefined() // Default to Armature
+    })
+  })
+})
+
+describe('when building representations from a zip with male and female subfolders', () => {
+  let blob: Blob
+
+  beforeEach(() => {
+    blob = new Blob([new Uint8Array([0])])
+  })
+
+  describe('and the contents are a GLB-based wearable', () => {
+    let sortedContents: SortedContent
+
+    beforeEach(() => {
+      sortedContents = {
+        male: { 'male/model.glb': blob, 'male/texture.png': blob },
+        female: { 'female/model.glb': blob, 'female/texture.png': blob },
+        all: {}
+      }
+    })
+
+    it('should pick the GLB as the main file for each representation', () => {
+      const representations = buildRepresentationsZipBothBodyshape(BodyShapeType.BOTH, sortedContents)
+      expect(representations[0].mainFile).toBe('male/model.glb')
+      expect(representations[1].mainFile).toBe('female/model.glb')
+    })
+  })
+
+  describe('and the male bucket only contains auxiliary PNGs without a base file', () => {
+    let sortedContents: SortedContent
+
+    beforeEach(() => {
+      sortedContents = {
+        male: { 'male/red_eyes_mask.png': blob },
+        female: { 'female/red_eyes.png': blob },
+        all: {}
+      }
+    })
+
+    it('should throw MissingModelFileError instead of building a representation with an undefined main file', () => {
+      expect(() => buildRepresentationsZipBothBodyshape(BodyShapeType.BOTH, sortedContents)).toThrow(MissingModelFileError)
+    })
+  })
+
+  describe('and the contents are an image-only wearable with mask and expressions auxiliaries', () => {
+    let sortedContents: SortedContent
+
+    beforeEach(() => {
+      sortedContents = {
+        male: {
+          'male/red_eyes.png': blob,
+          'male/red_eyes_mask.png': blob,
+          'male/red_eyes_expressions.png': blob
+        },
+        female: {
+          'female/red_eyes.png': blob,
+          'female/red_eyes_mask.png': blob
+        },
+        all: {}
+      }
+    })
+
+    it('should pick the base PNG (not the mask or expressions) as the main file for each representation', () => {
+      const representations = buildRepresentationsZipBothBodyshape(BodyShapeType.BOTH, sortedContents)
+      expect(representations[0].mainFile).toBe('male/red_eyes.png')
+      expect(representations[1].mainFile).toBe('female/red_eyes.png')
+    })
+
+    it('should include every file in the contents array of each representation', () => {
+      const representations = buildRepresentationsZipBothBodyshape(BodyShapeType.BOTH, sortedContents)
+      expect(representations[0].contents).toEqual(['male/red_eyes.png', 'male/red_eyes_mask.png', 'male/red_eyes_expressions.png'])
+      expect(representations[1].contents).toEqual(['female/red_eyes.png', 'female/red_eyes_mask.png'])
     })
   })
 })

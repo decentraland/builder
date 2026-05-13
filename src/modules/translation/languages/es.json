@@ -176,6 +176,9 @@
     "wearable": "Vestimenta",
     "smart_wearable": "Vestimenta Interactiva"
   },
+  "facial_expressions_badge": {
+    "tooltip": "Esta vestimenta incluye expresiones faciales"
+  },
   "emotes": {
     "wave": "Saludar",
     "idle": "Inactivo",
@@ -373,6 +376,10 @@
         "message": "Faltan recursos externos: <b>{external_resources}</b><br></br>{additional_message}"
       },
       "item_not_allowed_in_third_party_collections": "Este tipo {tipo} no está permitido en colecciones externas",
+      "orphaned_auxiliary_file": {
+        "title": "Faltan archivos complementarios en el zip subido",
+        "item": "{orphan} requiere que {expected} también esté presente."
+      },
       "emote_animations_sync_error": "<b>Las longitudes de las animaciones del avatar y de las props no son iguales</b><br></br>Corrija su animación y vuelva a subirla para una sincronización perfecta.",
       "emote_with_mesh": "<b>Su archivo incluye el mesh del Avatar.</b><br></br>Esta malla no es necesaria para este proceso. Por favor, simplemente vuelva a exportarlo y vuelva a subirlo para continuar.",
       "glb_validation": {
@@ -2040,7 +2047,8 @@
     "next": "Siguiente",
     "total_items": "Total de items para mintear",
     "confirm_title": "Estas por mintear  {count} {count, plural, one {item} other {items}}, cada item va a ser minteado a la dirección indicada con la cantidad seleccionada.",
-    "beneficiary": "Beneficiario"
+    "beneficiary": "Beneficiario",
+    "apply_to_all": "Aplicar la misma configuración a todos los items"
   },
   "reset_item_modal": {
     "title": "Deshacer cambios",
