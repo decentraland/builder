@@ -75,7 +75,7 @@
     "ts-deepmerge": "^7.0.0",
     "typechain": "^8.1.0",
     "typesafe-actions": "^4.4.2",
-    "uuid": "^3.3.2"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
