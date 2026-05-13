@@ -21,7 +21,8 @@ import {
   TradeAssetType,
   TradeCreation,
   TradeType,
-  Network
+  Network,
+  EmoteRepresentationADR74
 } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
@@ -65,6 +66,30 @@ export const MAX_VIDEO_FILE_SIZE = 262144000 // 250 MB
 export const MAX_NFTS_PER_MINT = 50
 export const MAX_EMOTE_DURATION = 10 // seconds
 export const UNSYNCED_STATES = new Set([SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW])
+
+// CIDv1 base32 hash of empty (0-byte) content — used to identify files that
+// makeContentFiles drops (Blob.size === 0).  This is a stable hash for CIDv1 + sha-256.
+const EMPTY_CONTENT_HASH = 'bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevtenxquvyku'
+
+/**
+ * Returns the set of file keys from an item's contents map that would survive
+ * makeContentFiles filtering (i.e. not directory entries and not 0-byte files).
+ */
+export function getDeployableContentFiles(contents: Record<string, string>): Set<string> {
+  return new Set(Object.keys(contents).filter(f => !f.endsWith('/') && contents[f] !== EMPTY_CONTENT_HASH))
+}
+
+/**
+ * Returns representations with their `contents` filtered down to files present
+ * in `validFiles`. Keeps representations in sync with the entity content payload
+ * built by makeContentFiles, so deploys don't reference files Catalyst will reject.
+ */
+export function stripRepresentationContents<T extends WearableRepresentation | EmoteRepresentationADR74>(
+  reps: T[],
+  validFiles: Set<string>
+): T[] {
+  return reps.map(rep => ({ ...rep, contents: rep.contents.filter(f => validFiles.has(f)) }))
+}
 
 export function getMaxSupply(item: Item): number {
   if (!item.rarity) {
@@ -746,7 +771,14 @@ export function isWearableSynced(item: Item, entity: Entity) {
   }
 
   // check if representations are synced
-  if (!areEqualRepresentations(item.data.representations, catalystItem.data.representations)) {
+  // Sanitize item representations to match what buildItemEntity deploys:
+  // strip directory entries and 0-byte files that makeContentFiles drops.
+  const deployableFiles = getDeployableContentFiles(item.contents)
+  const sanitizedItemReps = item.data.representations.map(rep => ({
+    ...rep,
+    contents: rep.contents.filter(f => deployableFiles.has(f))
+  }))
+  if (!areEqualRepresentations(sanitizedItemReps, catalystItem.data.representations)) {
     return false
   }
 
@@ -756,6 +788,8 @@ export function isWearableSynced(item: Item, entity: Entity) {
     const hash = item.contents[path]
     // Skip video file because it's not in the catalyst
     if (VIDEO_PATH === path) continue
+    // Skip directory entries and 0-byte files — they are not deployed
+    if (!deployableFiles.has(path)) continue
     if (contents?.get(path) !== hash) {
       return false
     }
@@ -804,12 +838,14 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
   }
 
   // check if representations are synced
-  if (
-    !areEqualRepresentations(
-      data.representations as WearableRepresentation[],
-      catalystItemMetadataData.representations as WearableRepresentation[]
-    )
-  ) {
+  // Sanitize item representations to match what buildItemEntity deploys:
+  // strip directory entries and 0-byte files that makeContentFiles drops.
+  const deployableFiles = getDeployableContentFiles(item.contents)
+  const sanitizedItemReps = (data.representations as WearableRepresentation[]).map(rep => ({
+    ...rep,
+    contents: rep.contents.filter(f => deployableFiles.has(f))
+  }))
+  if (!areEqualRepresentations(sanitizedItemReps, catalystItemMetadataData.representations as WearableRepresentation[])) {
     return false
   }
 
@@ -817,6 +853,8 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
   const contents = entity.content?.reduce((map, entry) => map.set(entry.file, entry.hash), new Map<string, string>())
   for (const path in item.contents) {
     const hash = item.contents[path]
+    // Skip directory entries and 0-byte files — they are not deployed
+    if (!deployableFiles.has(path)) continue
     if (contents?.get(path) !== hash) {
       return false
     }
