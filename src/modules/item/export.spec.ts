@@ -17,8 +17,7 @@ jest.mock('@dcl/hashing', () => ({
 }))
 
 jest.mock('lib/urn', () => ({
-  buildCatalystItemURN: (contractAddress: string, tokenId: string) =>
-    `urn:decentraland:matic:collections-v2:${contractAddress}:${tokenId}`
+  buildCatalystItemURN: (contractAddress: string, tokenId: string) => `urn:decentraland:matic:collections-v2:${contractAddress}:${tokenId}`
 }))
 
 describe('when checking if a hash was generated with an older algorithm', () => {
@@ -158,7 +157,7 @@ describe('when building an item entity for deployment', () => {
     let item: Item<ItemType.EMOTE>
 
     beforeEach(() => {
-      item = ({
+      item = {
         ...mockedItem,
         type: ItemType.EMOTE,
         tokenId: '2',
@@ -182,7 +181,7 @@ describe('when building an item entity for deployment', () => {
             }
           ]
         }
-      } as unknown) as Item<ItemType.EMOTE>
+      } as unknown as Item<ItemType.EMOTE>
 
       legacyBuilderClient = {
         fetchContents: jest.fn().mockResolvedValue({
