@@ -13,6 +13,7 @@ import {
   formatExtensions,
   hasVideo,
   isEmote,
+  getDeployableContentFiles,
   getRepresentationMainFile,
   isMaskFile,
   isExpressionsFile,
@@ -21,6 +22,7 @@ import {
   hasFacialExpressions,
   findOrphanedAuxiliaryFiles,
   isModelPath,
+  stripRepresentationContents,
   stripWrappingFolder
 } from './utils'
 
@@ -844,5 +846,100 @@ describe('when stripping a wrapping folder from a zip content map', () => {
     it('should return an empty record', () => {
       expect(stripWrappingFolder({})).toEqual({})
     })
+  })
+})
+
+describe('when getting the set of deployable content files', () => {
+  // CIDv1 base32 hash of empty (0-byte) content; matches the EMPTY_CONTENT_HASH constant in utils.ts.
+  const EMPTY_CONTENT_HASH = 'bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevtenxquvyku'
+
+  describe('and the contents include regular files, directory entries and empty-hash files', () => {
+    it('should exclude directory entries and empty-hash files, keeping every other entry', () => {
+      const contents = {
+        'male/model.glb': 'bafkreihhhh',
+        'male/': 'bafkreidirectory',
+        'thumbnail.png': 'bafkreitttt',
+        'female/empty.bin': EMPTY_CONTENT_HASH
+      }
+      expect(getDeployableContentFiles(contents)).toEqual(new Set(['male/model.glb', 'thumbnail.png']))
+    })
+  })
+
+  describe('and the contents map is empty', () => {
+    it('should return an empty set', () => {
+      expect(getDeployableContentFiles({})).toEqual(new Set())
+    })
+  })
+
+  describe('and every entry is deployable', () => {
+    it('should keep every entry', () => {
+      const contents = { 'a.glb': 'bafkreiaaaa', 'b.png': 'bafkreibbbb' }
+      expect(getDeployableContentFiles(contents)).toEqual(new Set(['a.glb', 'b.png']))
+    })
+  })
+})
+
+describe('when stripping representation contents', () => {
+  let representations: WearableRepresentation[]
+
+  beforeEach(() => {
+    representations = [
+      {
+        bodyShapes: [BodyShape.MALE],
+        mainFile: 'male/model.glb',
+        contents: ['male/model.glb', 'male/', 'male/empty.bin', 'thumbnail.png'],
+        overrideReplaces: [],
+        overrideHides: []
+      },
+      {
+        bodyShapes: [BodyShape.FEMALE],
+        mainFile: 'female/model.glb',
+        contents: ['female/model.glb', 'female/'],
+        overrideReplaces: [],
+        overrideHides: []
+      }
+    ]
+  })
+
+  describe('and some referenced files are not in the valid set', () => {
+    it('should drop them from every representation while preserving other fields', () => {
+      const validFiles = new Set(['male/model.glb', 'thumbnail.png', 'female/model.glb'])
+      expect(stripRepresentationContents(representations, validFiles)).toEqual([
+        {
+          bodyShapes: [BodyShape.MALE],
+          mainFile: 'male/model.glb',
+          contents: ['male/model.glb', 'thumbnail.png'],
+          overrideReplaces: [],
+          overrideHides: []
+        },
+        {
+          bodyShapes: [BodyShape.FEMALE],
+          mainFile: 'female/model.glb',
+          contents: ['female/model.glb'],
+          overrideReplaces: [],
+          overrideHides: []
+        }
+      ])
+    })
+  })
+
+  describe('and every referenced file is valid', () => {
+    it('should return representations with unchanged contents', () => {
+      const validFiles = new Set(['male/model.glb', 'male/', 'male/empty.bin', 'thumbnail.png', 'female/model.glb', 'female/'])
+      expect(stripRepresentationContents(representations, validFiles)).toEqual(representations)
+    })
+  })
+
+  describe('and the valid set is empty', () => {
+    it('should return representations with empty contents arrays', () => {
+      const stripped = stripRepresentationContents(representations, new Set())
+      expect(stripped.map(r => r.contents)).toEqual([[], []])
+    })
+  })
+
+  it('should not mutate the input representations', () => {
+    const snapshot = JSON.parse(JSON.stringify(representations))
+    stripRepresentationContents(representations, new Set(['male/model.glb']))
+    expect(representations).toEqual(snapshot)
   })
 })
