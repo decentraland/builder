@@ -75,9 +75,7 @@ const EMPTY_CONTENT_HASH = 'bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevten
  * makeContentFiles filtering (i.e. not directory entries and not 0-byte files).
  */
 export function getDeployableContentFiles(contents: Record<string, string>): Set<string> {
-  return new Set(
-    Object.keys(contents).filter(f => !f.endsWith('/') && contents[f] !== EMPTY_CONTENT_HASH)
-  )
+  return new Set(Object.keys(contents).filter(f => !f.endsWith('/') && contents[f] !== EMPTY_CONTENT_HASH))
 }
 
 export function getMaxSupply(item: Item): number {
@@ -703,12 +701,7 @@ export function isEmoteSynced(item: Item | Item<ItemType.EMOTE>, entity: Entity)
     ...rep,
     contents: rep.contents.filter(f => deployableFiles.has(f))
   }))
-  if (
-    !areEqualRepresentations(
-      sanitizedItemReps,
-      catalystItemMetadataData.representations as WearableRepresentation[]
-    )
-  ) {
+  if (!areEqualRepresentations(sanitizedItemReps, catalystItemMetadataData.representations as WearableRepresentation[])) {
     return false
   }
 
