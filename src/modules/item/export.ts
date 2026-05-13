@@ -7,7 +7,7 @@ import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { Item, IMAGE_PATH, THUMBNAIL_PATH, ItemType, EntityHashingType, isEmoteItemType, VIDEO_PATH } from './types'
-import { EMPTY_ITEM_METRICS, generateCatalystImage, generateImage, getDeployableContentFiles } from './utils'
+import { EMPTY_ITEM_METRICS, generateCatalystImage, generateImage, getDeployableContentFiles, stripRepresentationContents } from './utils'
 
 /**
  * Checks if a hash was generated using an older algorithm.
@@ -277,18 +277,13 @@ export async function buildItemEntity(
   // stored with these in their representations (from older builder-client versions)
   // would otherwise fail Catalyst content validation on every deploy.
   const validFiles = new Set(files.keys())
-  const stripRepresentations = (reps: WearableRepresentation[]) =>
-    reps.map(rep => ({
-      ...rep,
-      contents: rep.contents.filter(f => validFiles.has(f))
-    }))
   if (isEmote) {
     const emoteMetadata = metadata as Emote
     metadata = {
       ...emoteMetadata,
       emoteDataADR74: {
         ...emoteMetadata.emoteDataADR74,
-        representations: stripRepresentations(emoteMetadata.emoteDataADR74.representations as WearableRepresentation[])
+        representations: stripRepresentationContents(emoteMetadata.emoteDataADR74.representations, validFiles)
       }
     }
   } else {
@@ -297,7 +292,7 @@ export async function buildItemEntity(
       ...wearableMetadata,
       data: {
         ...wearableMetadata.data,
-        representations: stripRepresentations(wearableMetadata.data.representations)
+        representations: stripRepresentationContents(wearableMetadata.data.representations, validFiles)
       }
     }
   }
@@ -343,24 +338,29 @@ export async function buildStandardWearableContentHash(
     .map(file => ({ file, hash: hashes[file] }))
 
   const isEmote = isEmoteItemType(item)
-  const metadata = isEmote ? buildADR74EmoteEntityMetadata(collection, item) : buildWearableEntityMetadata(collection, item)
+  const baseMetadata = isEmote ? buildADR74EmoteEntityMetadata(collection, item) : buildWearableEntityMetadata(collection, item)
 
   // Strip representations the same way buildItemEntity does
-  const validFileSet = new Set(content.map(c => c.file))
-  const stripRepresentations = (reps: WearableRepresentation[]) =>
-    reps.map(rep => ({
-      ...rep,
-      contents: rep.contents.filter(f => validFileSet.has(f))
-    }))
-
+  const validFiles = new Set(content.map(c => c.file))
+  let metadata: Emote | Wearable
   if (isEmote) {
-    const emoteMetadata = metadata as Emote
-    emoteMetadata.emoteDataADR74.representations = stripRepresentations(
-      emoteMetadata.emoteDataADR74.representations as WearableRepresentation[]
-    ) as typeof emoteMetadata.emoteDataADR74.representations
+    const emoteMetadata = baseMetadata as Emote
+    metadata = {
+      ...emoteMetadata,
+      emoteDataADR74: {
+        ...emoteMetadata.emoteDataADR74,
+        representations: stripRepresentationContents(emoteMetadata.emoteDataADR74.representations, validFiles)
+      }
+    }
   } else {
-    const wearableMetadata = metadata as Wearable
-    wearableMetadata.data.representations = stripRepresentations(wearableMetadata.data.representations)
+    const wearableMetadata = baseMetadata as Wearable
+    metadata = {
+      ...wearableMetadata,
+      data: {
+        ...wearableMetadata.data,
+        representations: stripRepresentationContents(wearableMetadata.data.representations, validFiles)
+      }
+    }
   }
 
   if (hashingType === EntityHashingType.V0) {

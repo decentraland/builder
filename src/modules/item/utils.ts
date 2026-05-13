@@ -21,7 +21,8 @@ import {
   TradeAssetType,
   TradeCreation,
   TradeType,
-  Network
+  Network,
+  EmoteRepresentationADR74
 } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import future from 'fp-future'
@@ -76,6 +77,18 @@ const EMPTY_CONTENT_HASH = 'bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevten
  */
 export function getDeployableContentFiles(contents: Record<string, string>): Set<string> {
   return new Set(Object.keys(contents).filter(f => !f.endsWith('/') && contents[f] !== EMPTY_CONTENT_HASH))
+}
+
+/**
+ * Returns representations with their `contents` filtered down to files present
+ * in `validFiles`. Keeps representations in sync with the entity content payload
+ * built by makeContentFiles, so deploys don't reference files Catalyst will reject.
+ */
+export function stripRepresentationContents<T extends WearableRepresentation | EmoteRepresentationADR74>(
+  reps: T[],
+  validFiles: Set<string>
+): T[] {
+  return reps.map(rep => ({ ...rep, contents: rep.contents.filter(f => validFiles.has(f)) }))
 }
 
 export function getMaxSupply(item: Item): number {
