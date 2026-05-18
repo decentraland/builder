@@ -93,19 +93,19 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
 
   const validateContract = useCallback(
     debounce(async (contractAddress: string, network: ContractNetwork) => {
-      setIsCheckingContract(true)
-      setContractError(undefined)
-      const jsonRpcProvider = new providers.JsonRpcProvider(
-        getRpcUrls(ProviderType.NETWORK)[fromContractNetworkToChainId(network) as keyof ReturnType<typeof getRpcUrls>]
-      )
-      const erc165Contract = new Contract(
-        contractAddress,
-        ['function supportsInterface(bytes4) external view returns (bool)'],
-        jsonRpcProvider
-      )
       const Erc721InterfaceId = '0x01ffc9a7'
       const Erc1155InterfaceId = '0xd9b67a26'
       try {
+        setIsCheckingContract(true)
+        setContractError(undefined)
+        const jsonRpcProvider = new providers.JsonRpcProvider(
+          getRpcUrls(ProviderType.NETWORK)[fromContractNetworkToChainId(network) as keyof ReturnType<typeof getRpcUrls>]
+        )
+        const erc165Contract = new Contract(
+          contractAddress,
+          ['function supportsInterface(bytes4) external view returns (bool)'],
+          jsonRpcProvider
+        )
         const supportsInterfaces = await Promise.all([
           erc165Contract.supportsInterface(Erc721InterfaceId),
           erc165Contract.supportsInterface(Erc1155InterfaceId)

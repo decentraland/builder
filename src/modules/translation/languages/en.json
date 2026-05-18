@@ -1013,7 +1013,13 @@
       "mainnet": "Ethereum Mainnet",
       "matic": "Polygon",
       "sepolia": "Ethereum Sepolia",
-      "amoy": "Polygon Amoy"
+      "amoy": "Polygon Amoy",
+      "base_mainnet": "Base Mainnet",
+      "base_sepolia": "Base Sepolia",
+      "ape_mainnet": "ApeChain",
+      "ape_caldera": "ApeChain Caldera (Testnet)",
+      "monad_mainnet": "Monad Mainnet",
+      "monad_testnet": "Monad Testnet"
     },
     "revert": "Revert"
   },
