@@ -11,10 +11,25 @@ export function fromContractNetworkToChainId(network: ContractNetwork): ChainId 
     case ContractNetwork.SEPOLIA:
       return ChainId.ETHEREUM_SEPOLIA
     default:
-      throw new Error('Invalid network')
+      throw new Error(`Unsupported network: ${network}`)
+  }
+}
+
+export function isSupportedNetwork(network: ContractNetwork): boolean {
+  try {
+    fromContractNetworkToChainId(network)
+    return true
+  } catch {
+    return false
   }
 }
 
 export function isTestNetwork(network: ContractNetwork): boolean {
-  return network === ContractNetwork.AMOY || network === ContractNetwork.SEPOLIA
+  return (
+    network === ContractNetwork.AMOY ||
+    network === ContractNetwork.SEPOLIA ||
+    network === ContractNetwork.BASE_SEPOLIA ||
+    network === ContractNetwork.APE_CALDERA ||
+    network === ContractNetwork.MONAD_TESTNET
+  )
 }
