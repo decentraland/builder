@@ -1,6 +1,6 @@
 import { ChainId, ContractNetwork } from '@dcl/schemas'
 
-export function fromContractNetworkToChainId(network: ContractNetwork): ChainId | number {
+export function fromContractNetworkToChainId(network: ContractNetwork): ChainId {
   switch (network) {
     case ContractNetwork.MAINNET:
       return ChainId.ETHEREUM_MAINNET
