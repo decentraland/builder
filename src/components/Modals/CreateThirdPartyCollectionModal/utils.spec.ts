@@ -25,21 +25,23 @@ describe('when converting from a contract network to a chain id', () => {
     [ContractNetwork.MAINNET, ChainId.ETHEREUM_MAINNET],
     [ContractNetwork.MATIC, ChainId.MATIC_MAINNET],
     [ContractNetwork.AMOY, ChainId.MATIC_AMOY],
-    [ContractNetwork.SEPOLIA, ChainId.ETHEREUM_SEPOLIA],
-    [ContractNetwork.BASE_MAINNET, 8453],
-    [ContractNetwork.BASE_SEPOLIA, 84532],
-    [ContractNetwork.APE_MAINNET, 33139],
-    [ContractNetwork.APE_CALDERA, 33111],
-    [ContractNetwork.MONAD_TESTNET, 10143]
+    [ContractNetwork.SEPOLIA, ChainId.ETHEREUM_SEPOLIA]
   ])('and the network is %s', (network, chainId) => {
     it(`should return ${chainId}`, () => {
       expect(fromContractNetworkToChainId(network)).toBe(chainId)
     })
   })
 
-  describe('and the network is MONAD_MAINNET', () => {
-    it('should throw because the chain ID is not yet finalised', () => {
-      expect(() => fromContractNetworkToChainId(ContractNetwork.MONAD_MAINNET)).toThrow()
+  describe.each([
+    [ContractNetwork.BASE_MAINNET],
+    [ContractNetwork.BASE_SEPOLIA],
+    [ContractNetwork.APE_MAINNET],
+    [ContractNetwork.APE_CALDERA],
+    [ContractNetwork.MONAD_MAINNET],
+    [ContractNetwork.MONAD_TESTNET]
+  ])('and the network is %s', network => {
+    it(`should throw because the chain ID is not yet finalised`, () => {
+      expect(() => fromContractNetworkToChainId(network)).toThrow()
     })
   })
 })
