@@ -15,6 +15,15 @@ export function fromContractNetworkToChainId(network: ContractNetwork): ChainId 
   }
 }
 
+export function isSupportedNetwork(network: ContractNetwork): boolean {
+  try {
+    fromContractNetworkToChainId(network)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export function isTestNetwork(network: ContractNetwork): boolean {
   return (
     network === ContractNetwork.AMOY ||

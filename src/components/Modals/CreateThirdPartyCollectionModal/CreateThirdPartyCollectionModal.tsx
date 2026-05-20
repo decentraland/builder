@@ -27,7 +27,7 @@ import { isDevelopment } from 'lib/environment'
 import { debounce } from 'lib/debounce'
 import { Props } from './CreateThirdPartyCollectionModal.types'
 import styles from './CreateThirdPartyCollectionModal.module.css'
-import { fromContractNetworkToChainId, isTestNetwork } from './utils'
+import { fromContractNetworkToChainId, isSupportedNetwork, isTestNetwork } from './utils'
 
 export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
   const {
@@ -82,7 +82,7 @@ export const CreateThirdPartyCollectionModal: FC<Props> = (props: Props) => {
   const contractNetworkOptions = useMemo(
     () =>
       Object.values(ContractNetwork)
-        .filter(network => isDevelopment || !isTestNetwork(network))
+        .filter(network => isSupportedNetwork(network) && (isDevelopment || !isTestNetwork(network)))
         .map(network => ({
           text: t(`global.networks.${network}`),
           value: network,
