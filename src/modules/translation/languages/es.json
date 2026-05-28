@@ -2090,7 +2090,12 @@
       "title": "Parcela vacía",
       "subtitle": "Sólo correr y saltar. Cargará más rápido"
     },
-    "jump_in": "Ingresar"
+    "jump_in": "Ingresar",
+    "download": {
+      "title": "Descargá Decentraland",
+      "description": "Necesitás la app de escritorio de Decentraland para previsualizar tu colección sin publicar.",
+      "button": "Descargar"
+    }
   },
   "collection_image": {
     "no_items": "No Items"
