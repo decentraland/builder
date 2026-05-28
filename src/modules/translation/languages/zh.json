@@ -2048,7 +2048,12 @@
       "title": "空地块",
       "subtitle": "只是跑和跳。 它加载速度更快。"
     },
-    "jump_in": "跳进去"
+    "jump_in": "跳进去",
+    "download": {
+      "title": "获取 Decentraland",
+      "description": "您需要 Decentraland 桌面客户端才能预览未发布的收藏品。",
+      "button": "下载"
+    }
   },
   "publish_third_party_collection_modal": {
     "title": "发布链接项目",

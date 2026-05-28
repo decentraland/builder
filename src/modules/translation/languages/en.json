@@ -2076,7 +2076,12 @@
       "title": "Empty Parcel",
       "subtitle": "Just run and jump. It loads faster."
     },
-    "jump_in": "Jump In"
+    "jump_in": "Jump In",
+    "download": {
+      "title": "Get Decentraland",
+      "description": "You'll need the Decentraland desktop client to preview your unreleased collection.",
+      "button": "Download"
+    }
   },
   "collection_image": {
     "no_items": "No Items"
