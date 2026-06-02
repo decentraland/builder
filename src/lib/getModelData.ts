@@ -222,14 +222,32 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       bodies,
       entities: 1
     }
-    const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
-
-    // Properly dispose WebGL resources to prevent context exhaustion
-    renderer.dispose()
-    document.body.removeChild(renderer.domElement)
+    let image: string
+    if (engine === EngineType.THREE) {
+      image = renderer.domElement.toDataURL()
+      // Properly dispose WebGL resources to prevent context exhaustion
+      renderer.dispose()
+      document.body.removeChild(renderer.domElement)
+    } else {
+      // Dispose the Three.js renderer BEFORE launching the Babylon.js context.
+      // Having both WebGL contexts active simultaneously can exhaust the browser's
+      // context limit, which causes getScreenshot to produce a black/transparent image.
+      renderer.dispose()
+      document.body.removeChild(renderer.domElement)
+      renderer = null
+      image = await getScreenshot(url, options)
+    }
 
     return { info, image, type: ItemType.WEARABLE }
   } catch (error) {
+    // Dispose renderer if it was created and not yet disposed
+    if (renderer) {
+      renderer.dispose()
+      if (renderer.domElement.parentNode) {
+        document.body.removeChild(renderer.domElement)
+      }
+    }
+
     // Log the error for debugging with enhanced context
     if (error instanceof Error) {
       console.error('Failed to load model:', error.message, error)
