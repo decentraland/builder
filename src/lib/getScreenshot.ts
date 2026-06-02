@@ -50,101 +50,149 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   canvas.height = height
   canvas.style.visibility = 'hidden'
   document.body.appendChild(canvas)
+
+  // Detect WebGL context loss — browsers silently evict contexts when the limit
+  // (~8-16) is reached, causing subsequent renders to produce empty images.
+  let contextLost = false
+  const onContextLost = () => {
+    contextLost = true
+    console.warn('getScreenshot: WebGL context was lost — browser may have hit the context limit')
+  }
+  canvas.addEventListener('webglcontextlost', onContextLost)
+
   const engine = new babylonCore.Engine(canvas, true, {
     preserveDrawingBuffer: true,
     stencil: true
   })
 
-  // Load GLTF
-  const scene = new babylonCore.Scene(engine)
-  scene.autoClear = true
-  scene.clearColor = new babylonCore.Color4(0, 0, 0, 0)
+  try {
+    // Load GLTF
+    const scene = new babylonCore.Scene(engine)
+    scene.autoClear = true
+    scene.clearColor = new babylonCore.Color4(0, 0, 0, 0)
 
-  await babylonCore.SceneLoader.AppendAsync(url, '', scene, undefined, extension)
-  await scene.whenReadyAsync()
+    await babylonCore.SceneLoader.AppendAsync(url, '', scene, undefined, extension)
+    await scene.whenReadyAsync()
 
-  // check if it's emote
-  if (scene.animationGroups.length > 0) {
-    throw new Error(EMOTE_ERROR)
-  }
-
-  // Setup Camera
-  const camera = new babylonCore.TargetCamera('targetCamera', new babylonCore.Vector3(0, 0, 0), scene)
-  camera.mode = babylonCore.Camera.ORTHOGRAPHIC_CAMERA
-  camera.orthoTop = 1
-  camera.orthoBottom = -1
-  camera.orthoLeft = -1
-  camera.orthoRight = 1
-
-  switch (thumbnailType) {
-    case ThumbnailType.FRONT: {
-      camera.position = new babylonCore.Vector3(0, 0, 2)
-      break
+    // check if it's emote
+    if (scene.animationGroups.length > 0) {
+      throw new Error(EMOTE_ERROR)
     }
-    case ThumbnailType.TOP: {
-      camera.position = new babylonCore.Vector3(0, 1, 0)
-      break
+
+    // Setup Camera
+    const camera = new babylonCore.TargetCamera('targetCamera', new babylonCore.Vector3(0, 0, 0), scene)
+    camera.mode = babylonCore.Camera.ORTHOGRAPHIC_CAMERA
+    camera.orthoTop = 1
+    camera.orthoBottom = -1
+    camera.orthoLeft = -1
+    camera.orthoRight = 1
+
+    switch (thumbnailType) {
+      case ThumbnailType.FRONT: {
+        camera.position = new babylonCore.Vector3(0, 0, 2)
+        break
+      }
+      case ThumbnailType.TOP: {
+        camera.position = new babylonCore.Vector3(0, 1, 0)
+        break
+      }
+      default:
+        camera.position = new babylonCore.Vector3(-2, 2, 2)
     }
-    default:
-      camera.position = new babylonCore.Vector3(-2, 2, 2)
-  }
 
-  camera.setTarget(babylonCore.Vector3.Zero())
-  camera.attachControl(canvas, true)
+    camera.setTarget(babylonCore.Vector3.Zero())
+    camera.attachControl(canvas, true)
 
-  // Setup lights
-  const directional = new babylonCore.DirectionalLight('directional', new babylonCore.Vector3(0, 0, 1), scene)
-  directional.intensity = 1
-  const top = new babylonCore.HemisphericLight('top', new babylonCore.Vector3(0, -1, 0), scene)
-  top.intensity = 1
-  const bottom = new babylonCore.HemisphericLight('bottom', new babylonCore.Vector3(0, 1, 0), scene)
-  bottom.intensity = 1
-  const spot = new babylonCore.SpotLight(
-    'spot',
-    new babylonCore.Vector3(-2, 2, 2),
-    new babylonCore.Vector3(2, -2, -2),
-    Math.PI / 2,
-    1000,
-    scene
-  )
-  spot.intensity = 1
+    // Setup lights
+    const directional = new babylonCore.DirectionalLight('directional', new babylonCore.Vector3(0, 0, 1), scene)
+    directional.intensity = 1
+    const top = new babylonCore.HemisphericLight('top', new babylonCore.Vector3(0, -1, 0), scene)
+    top.intensity = 1
+    const bottom = new babylonCore.HemisphericLight('bottom', new babylonCore.Vector3(0, 1, 0), scene)
+    bottom.intensity = 1
+    const spot = new babylonCore.SpotLight(
+      'spot',
+      new babylonCore.Vector3(-2, 2, 2),
+      new babylonCore.Vector3(2, -2, -2),
+      Math.PI / 2,
+      1000,
+      scene
+    )
+    spot.intensity = 1
 
-  // Setup parent
-  const parent = new babylonCore.Mesh('parent', scene)
-  for (const mesh of scene.meshes) {
-    if (mesh !== parent) {
-      mesh.setParent(parent)
-    }
-  }
-
-  // Clean up
-  for (const materialName of hideMaterialList) {
-    for (const material of scene.materials) {
-      if (material.name.toLowerCase().includes(materialName)) {
-        material.alpha = 0
-        scene.removeMaterial(material)
+    // Setup parent
+    const parent = new babylonCore.Mesh('parent', scene)
+    for (const mesh of scene.meshes) {
+      if (mesh !== parent) {
+        mesh.setParent(parent)
       }
     }
-    for (const texture of scene.textures) {
-      if (texture.name.toLowerCase().includes(materialName)) {
-        texture.dispose()
-        scene.removeTexture(texture)
+
+    // Clean up
+    for (const materialName of hideMaterialList) {
+      for (const material of scene.materials) {
+        if (material.name.toLowerCase().includes(materialName)) {
+          material.alpha = 0
+          scene.removeMaterial(material)
+        }
+      }
+      for (const texture of scene.textures) {
+        if (texture.name.toLowerCase().includes(materialName)) {
+          texture.dispose()
+          scene.removeTexture(texture)
+        }
       }
     }
+
+    // resize and center
+    await refreshBoundingInfo(parent)
+    const bounds = parent.getBoundingInfo().boundingBox.extendSize
+    const size = bounds.length()
+    const scale = new babylonCore.Vector3(1 / size, 1 / size, 1 / size)
+    parent.scaling = scale
+    const center = parent.getBoundingInfo().boundingBox.center.multiply(scale)
+    parent.position.subtractInPlace(center)
+
+    // remove dom element
+    if (canvas.parentNode) {
+      document.body.removeChild(canvas)
+    }
+
+    // Check for context loss before rendering
+    if (contextLost) {
+      throw new Error('WebGL context lost before rendering — too many active WebGL contexts')
+    }
+
+    // render
+    const screenshot = await babylonCore.Tools.CreateScreenshotUsingRenderTargetAsync(
+      engine,
+      camera,
+      { width, height },
+      undefined,
+      undefined,
+      true
+    )
+
+    // Check for context loss after rendering — screenshot may be empty
+    if (contextLost) {
+      throw new Error('WebGL context lost during rendering — screenshot may be empty')
+    }
+
+    // Dispose Babylon.js resources to free the WebGL context.
+    // Without this, each call leaks a context and after a few uploads
+    // the browser's context limit is hit, causing silent failures.
+    scene.dispose()
+    engine.dispose()
+    canvas.removeEventListener('webglcontextlost', onContextLost)
+
+    return screenshot
+  } catch (error) {
+    // Ensure Babylon.js resources are freed even on error
+    engine.dispose()
+    canvas.removeEventListener('webglcontextlost', onContextLost)
+    if (canvas.parentNode) {
+      document.body.removeChild(canvas)
+    }
+    throw error
   }
-
-  // resize and center
-  await refreshBoundingInfo(parent)
-  const bounds = parent.getBoundingInfo().boundingBox.extendSize
-  const size = bounds.length()
-  const scale = new babylonCore.Vector3(1 / size, 1 / size, 1 / size)
-  parent.scaling = scale
-  const center = parent.getBoundingInfo().boundingBox.center.multiply(scale)
-  parent.position.subtractInPlace(center)
-
-  // remove dom element
-  document.body.removeChild(canvas)
-
-  // render
-  return babylonCore.Tools.CreateScreenshotUsingRenderTargetAsync(engine, camera, { width, height }, undefined, undefined, true)
 }
