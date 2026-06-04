@@ -149,6 +149,8 @@ import { downloadZip } from 'lib/zip'
 import { isErrorWithCode } from 'lib/error'
 import { getSpringBoneParamsByHash, hasSpringBoneChanges } from 'modules/editor/selectors'
 import { SPRING_BONES_VERSION } from 'lib/springBones'
+import { computeHashFromContent } from 'modules/deployment/contentUtils'
+import { compressPngBlob } from 'modules/media/utils'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { Item, BlockchainRarity, CatalystItem, BodyShapeType, IMAGE_PATH, THUMBNAIL_PATH, WearableData, VIDEO_PATH } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems, getItem, getPaginationData } from './selectors'
@@ -370,6 +372,15 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
       for (const builtFile of builtFiles) {
         promisesOfItemsToSave.push(async () => {
           try {
+            // Quantize the thumbnail to reduce its uploaded size, keeping its content hash in sync.
+            const thumbnail = builtFile.newContent[THUMBNAIL_PATH]
+            if (thumbnail) {
+              const compressedThumbnail = await compressPngBlob(thumbnail)
+              if (compressedThumbnail !== thumbnail) {
+                builtFile.newContent[THUMBNAIL_PATH] = compressedThumbnail
+                builtFile.item.contents[THUMBNAIL_PATH] = await computeHashFromContent(compressedThumbnail)
+              }
+            }
             const remoteItem: RemoteItem = await builder.upsertItem(builtFile.item, builtFile.newContent)
             fileNamesSucceeded.push(builtFile.fileName)
             remoteItems.push(remoteItem)
@@ -461,6 +472,18 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
         })
         contents[IMAGE_PATH] = catalystImage.content
         item.contents[IMAGE_PATH] = catalystImage.hash
+      }
+
+      // Quantize the thumbnail to reduce its uploaded size while preserving transparency. This runs
+      // after the catalyst image is built (so it uses the full-quality thumbnail) and before the size
+      // check below (so the compression helps stay under MAX_THUMBNAIL_FILE_SIZE). Uploads are
+      // addressed by content hash, so the item's thumbnail hash is recomputed when the blob changes.
+      if (contents[THUMBNAIL_PATH]) {
+        const compressedThumbnail: Blob = yield call(compressPngBlob, contents[THUMBNAIL_PATH])
+        if (compressedThumbnail !== contents[THUMBNAIL_PATH]) {
+          contents[THUMBNAIL_PATH] = compressedThumbnail
+          item.contents[THUMBNAIL_PATH] = yield call(computeHashFromContent, compressedThumbnail)
+        }
       }
 
       if (Object.keys(contents).length > 0 || shouldValidateCategoryChanged) {

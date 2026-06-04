@@ -31,6 +31,7 @@ import { ModelMetrics } from 'modules/models/types'
 import { Collection } from 'modules/collection/types'
 import { ItemCuration } from 'modules/curations/itemCuration/types'
 import { computeHashFromContent } from 'modules/deployment/contentUtils'
+import { compressPngBlob } from 'modules/media/utils'
 import { LinkedContract } from 'modules/thirdParty/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
@@ -392,7 +393,7 @@ export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalIte
   const context = canvas.getContext('2d')
 
   // fail
-  if (!context || !item.rarity) return thumbnail
+  if (!context || !item.rarity) return compressPngBlob(thumbnail)
 
   // render gradient
   const gradient = context.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width / 1.75)
@@ -414,7 +415,8 @@ export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalIte
 
   const blob = future<Blob>()
   canvas.toBlob(result => (result ? blob.resolve(result) : blob.reject(new Error('Error generating image blob'))))
-  return blob
+  // Quantize the generated catalyst image to reduce its uploaded size (keeps transparency).
+  return compressPngBlob(await blob)
 }
 
 export async function resizeImage(image: Blob, width = 256, height = 256) {

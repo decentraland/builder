@@ -75,6 +75,7 @@
     "ts-deepmerge": "^7.0.0",
     "typechain": "^8.1.0",
     "typesafe-actions": "^4.4.2",
+    "upng-js": "^2.1.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -100,6 +101,7 @@
     "@types/redux-logger": "^3.0.6",
     "@types/reselect": "^2.2.0",
     "@types/slug": "^5.0.2",
+    "@types/upng-js": "^2.1.5",
     "@types/uuid": "^3.4.4",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
