@@ -90,6 +90,8 @@ import {
   VIDEO_PATH,
   WearableRepresentation
 } from './types'
+import { computeHashFromContent } from 'modules/deployment/contentUtils'
+import { compressPngBlob } from 'modules/media/utils'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
 import { buildZipContents, generateCatalystImage, groupsOf, MAX_VIDEO_FILE_SIZE } from './utils'
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
@@ -397,6 +399,45 @@ describe('when handling the save item request action', () => {
           .put(saveItemSuccess(itemWithCatalystImage, contentsToSave))
           .dispatch(saveItemRequest(item, contentsToSave))
           .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the new thumbnail can be quantized into a smaller file', () => {
+      let compressedThumbnail: Blob
+      const compressedThumbnailHash = 'compressedThumbnailHash'
+
+      beforeEach(() => {
+        delete item.contents[IMAGE_PATH]
+        compressedThumbnail = new Blob(['compressedThumbnailData'])
+      })
+
+      it('should upload the compressed thumbnail and update its content hash', () => {
+        const contentsToSave = { ...contents, [THUMBNAIL_PATH]: blob }
+        return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+          .provide([
+            [matchers.call.fn(reHashOlderContents), {}],
+            [getContext('history'), { push: pushMock, location: { pathname: 'notTPdetailPage' } }],
+            [select(getOpenModals), { EditItemURNModal: true }],
+            [select(getItem, item.id), undefined],
+            [select(getAddress), mockAddress],
+            [select(getIsLinkedWearablesV2Enabled), false],
+            [select(hasSpringBoneChanges), false],
+            [matchers.call.fn(generateCatalystImage), Promise.resolve({ hash: catalystImageHash, content: blob })],
+            [matchers.call.fn(compressPngBlob), compressedThumbnail],
+            [matchers.call.fn(computeHashFromContent), compressedThumbnailHash],
+            [matchers.call.fn(calculateModelFinalSize), Promise.resolve(1)],
+            [matchers.call.fn(calculateFileSize), 1],
+            [matchers.call.fn(builderAPI.saveItem), Promise.resolve(item)]
+          ])
+          .dispatch(saveItemRequest(item, contentsToSave))
+          .run({ silenceTimeout: true })
+          .then(({ effects }) => {
+            const successPut = effects.put?.find((p: any) => p.payload.action.type === SAVE_ITEM_SUCCESS)
+            expect(successPut).toBeDefined()
+            const { item: savedItem, contents: savedContents } = successPut!.payload.action.payload
+            expect(savedContents[THUMBNAIL_PATH]).toBe(compressedThumbnail)
+            expect(savedItem.contents[THUMBNAIL_PATH]).toBe(compressedThumbnailHash)
+          })
       })
     })
 

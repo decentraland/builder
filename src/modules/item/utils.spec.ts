@@ -23,8 +23,15 @@ import {
   findOrphanedAuxiliaryFiles,
   isModelPath,
   stripRepresentationContents,
-  stripWrappingFolder
+  stripWrappingFolder,
+  generateImage
 } from './utils'
+import { compressPngBlob } from 'modules/media/utils'
+
+jest.mock('modules/media/utils', () => ({
+  ...jest.requireActual<typeof import('modules/media/utils')>('modules/media/utils'),
+  compressPngBlob: jest.fn()
+}))
 
 describe('when transforming third party items to be sent to a contract method', () => {
   let items: Item[]
@@ -941,5 +948,37 @@ describe('when stripping representation contents', () => {
     const snapshot = JSON.parse(JSON.stringify(representations))
     stripRepresentationContents(representations, new Set(['male/model.glb']))
     expect(representations).toEqual(snapshot)
+  })
+})
+
+describe('when generating the catalyst image', () => {
+  let item: Item
+  let thumbnail: Blob
+  let compressed: Blob
+
+  beforeEach(() => {
+    thumbnail = new Blob(['thumbnail'], { type: 'image/png' })
+    compressed = new Blob(['small'], { type: 'image/png' })
+    ;(compressPngBlob as jest.Mock).mockResolvedValue(compressed)
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('and the item has no rarity', () => {
+    beforeEach(() => {
+      item = { rarity: undefined } as unknown as Item
+    })
+
+    it('should compress the provided thumbnail', async () => {
+      await generateImage(item, { thumbnail })
+      expect(compressPngBlob).toHaveBeenCalledWith(thumbnail)
+    })
+
+    it('should return the compressed image', async () => {
+      const result = await generateImage(item, { thumbnail })
+      expect(result).toBe(compressed)
+    })
   })
 })
