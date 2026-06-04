@@ -21,7 +21,7 @@ jobs:
           node-version: 24.x
           cache: 'npm'
       - name: Set package.json version
-        uses: decentraland/oddish-action@master
+        uses: decentraland/oddish-action@0074f2d535c43b5c83f136525304a6277166d77f # @master
         with:
           deterministic-snapshot: true
           only-update-versions: true
@@ -35,7 +35,7 @@ jobs:
           CI: 'false'
           NODE_PATH: 'src'
       - name: Publish
-        uses: decentraland/oddish-action@master
+        uses: decentraland/oddish-action@0074f2d535c43b5c83f136525304a6277166d77f # @master
         with:
           cwd: './dist'
           deterministic-snapshot: true
