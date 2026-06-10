@@ -347,7 +347,7 @@
         "message": "El tamaño máximo de archivo es de 3MB para Emotes."
       },
       "smart_wearable_too_big": {
-        "title": "El archivo es demasiado grande para cargarlo",
+        "title": "El contenido descomprimido del Smart Wearable supera el límite de tamaño",
         "message": "La suma total del tamaño de los archivos descomprimidos del archivo .zip de Smart Wearable debe ser inferior a 3MB."
       },
       "unknown_required_permissions": {
