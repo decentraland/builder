@@ -17,7 +17,7 @@ jobs:
         run: npm run test:coverage
         if: ${{ always() }}
       - name: report coverage
-        uses: coverallsapp/github-action@main
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # @main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           fail-on-error: false
