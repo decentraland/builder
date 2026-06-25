@@ -191,13 +191,40 @@ describe('when checking if RGBA data has a transparent background', () => {
 
     beforeEach(() => {
       // A 10x10 mostly-transparent border with two opaque corner pixels stays above the ratio.
+      // Alpha bytes: top-left corner (0,0) at index 3, top-right corner (9,0) at index 39.
       data = buildRgba(10, 10, transparent, opaque)
       data[3] = 255
-      data[7] = 255
+      data[39] = 255
     })
 
     it('should report the background as transparent', () => {
       expect(isRgbaBackgroundTransparent(data, 10, 10)).toBe(true)
+    })
+  })
+
+  describe('and the image is a single pixel', () => {
+    describe('and that pixel is transparent', () => {
+      let data: Uint8Array
+
+      beforeEach(() => {
+        data = buildRgba(1, 1, transparent, transparent)
+      })
+
+      it('should report the background as transparent', () => {
+        expect(isRgbaBackgroundTransparent(data, 1, 1)).toBe(true)
+      })
+    })
+
+    describe('and that pixel is opaque', () => {
+      let data: Uint8Array
+
+      beforeEach(() => {
+        data = buildRgba(1, 1, opaque, opaque)
+      })
+
+      it('should report the background as not transparent', () => {
+        expect(isRgbaBackgroundTransparent(data, 1, 1)).toBe(false)
+      })
     })
   })
 

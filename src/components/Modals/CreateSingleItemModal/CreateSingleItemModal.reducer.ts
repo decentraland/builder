@@ -438,7 +438,9 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
       return { ...state, video: action.payload }
 
     case CREATE_ITEM_ACTIONS.SET_ACCEPTED_PROPS:
-      return { ...state, ...action.payload }
+      // Clear any stale transparency warning before spreading the new props so replacing the file
+      // does not keep a warning from a previous thumbnail. An explicit value in the payload still wins.
+      return { ...state, thumbnailNotTransparent: false, ...action.payload }
 
     case CREATE_ITEM_ACTIONS.UPDATE_THUMBNAIL_BY_CATEGORY:
       // A category-regenerated thumbnail is always transparent, so clear any stale warning.
@@ -459,7 +461,9 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
       return { ...state, thumbnailNotTransparent: action.payload }
 
     case CREATE_ITEM_ACTIONS.RESET_STATE:
-      return { ...state, ...action.payload }
+      // Clear any stale transparency warning before spreading the new state so re-opening the modal
+      // for a different item does not keep a warning from a previous one. An explicit value still wins.
+      return { ...state, thumbnailNotTransparent: false, ...action.payload }
 
     default:
       return state
