@@ -14,7 +14,7 @@ import { Metrics } from 'modules/models/types'
 import type { ValidationIssue } from 'lib/glbValidation/types'
 import { CreateItemView, State, AcceptedFileProps, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { Collection } from 'modules/collection/types'
-import { getBodyShapeType, getMissingBodyShapeType } from 'modules/item/utils'
+import { getBodyShapeType, getMissingBodyShapeType, getWearableCategories } from 'modules/item/utils'
 import { getDefaultMappings, getLinkedContract } from './utils'
 
 // Initial State Creation
@@ -428,8 +428,20 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
     case CREATE_ITEM_ACTIONS.SET_VIDEO_PREVIEW:
       return { ...state, video: action.payload }
 
-    case CREATE_ITEM_ACTIONS.SET_ACCEPTED_PROPS:
-      return { ...state, ...action.payload }
+    case CREATE_ITEM_ACTIONS.SET_ACCEPTED_PROPS: {
+      const next = { ...state, ...action.payload }
+      // Pre-select the geometry-inferred category when the upload didn't already
+      // declare one (e.g. a bare .glb with no wearable.json). The creator can still
+      // override it in the details step; this only sets the initial default.
+      // Guard against suggesting a category the dropdown won't offer for these contents
+      // (the selectable list is body-shape/contents dependent) so the field never holds
+      // a value that isn't visible to the user.
+      const suggestedCategory = action.payload.suggestedCategory
+      if (!next.category && suggestedCategory && getWearableCategories(next.contents).includes(suggestedCategory)) {
+        next.category = suggestedCategory
+      }
+      return next
+    }
 
     case CREATE_ITEM_ACTIONS.UPDATE_THUMBNAIL_BY_CATEGORY:
       return {

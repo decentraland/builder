@@ -12,6 +12,7 @@ import { EMOTE_ERROR, getScreenshot } from './getScreenshot'
 import { validateWearableGLTF, validateEmoteGLTF } from './glbValidation'
 import type { ValidationResult } from './glbValidation'
 import { PROP_ARMATURE_NAME } from './glbValidation/constants'
+import { suggestWearableCategory } from './glbValidation/suggestWearableCategory'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
@@ -347,22 +348,28 @@ export async function loadAndValidateModel(
 ): Promise<{
   isEmote: boolean
   validationResult: ValidationResult
+  suggestedCategory: WearableCategory | null
 }> {
+  const Three = await import('three')
   const { gltf, renderer } = await loadGltf(url, options)
 
   try {
     const isEmote = gltf.animations.length > 0
 
     let validationResult: ValidationResult
+    let suggestedCategory: WearableCategory | null = null
 
     if (isEmote) {
       const hasProps = gltf.scene.children.some(child => child.name === PROP_ARMATURE_NAME)
       validationResult = await validateEmoteGLTF(gltf, hasProps, contents)
     } else {
       validationResult = await validateWearableGLTF(gltf, category, hides)
+      // Infer the most likely category from the model geometry so the details step
+      // can pre-select it. Suggestion only — the creator can always override.
+      suggestedCategory = suggestWearableCategory(Three, gltf.scene)
     }
 
-    return { isEmote, validationResult }
+    return { isEmote, validationResult, suggestedCategory }
   } finally {
     renderer.dispose()
     if (renderer.domElement.parentNode) {

@@ -309,6 +309,12 @@
   text-decoration: underline;
 }
 
+.CreateSingleItemModal .suggested-category {
+  margin-top: 4px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
 .CreateSingleItemModal .outcomes-section {
   display: flex;
   flex-direction: column;

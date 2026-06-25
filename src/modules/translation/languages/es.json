@@ -307,6 +307,7 @@
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
+    "suggested_category": "Sugerida a partir de tu modelo: {category}. Podés cambiarla si no es la correcta.",
     "play_mode_label": "Modo de ejecución",
     "play_mode_placeholder": "Selecciona un modo de ejecución",
     "upload_video_label": "Mostrar a los usuarios una vista previa de cómo usar este elemento",

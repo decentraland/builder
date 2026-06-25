@@ -1,7 +1,7 @@
 import { AnimationClip, Object3D } from 'three'
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { Mappings, OutcomeGroup, Rarity, StartAnimation } from '@dcl/schemas'
+import { Mappings, OutcomeGroup, Rarity, StartAnimation, WearableCategory } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import type { ValidationIssue } from 'lib/glbValidation/types'
 import { Collection } from 'modules/collection/types'
@@ -65,6 +65,7 @@ export type StateData = {
     armatures: Object3D[]
   }
   validationIssues?: ValidationIssue[]
+  suggestedCategory?: WearableCategory | null
 }
 
 export type State = {
@@ -85,6 +86,7 @@ export type ModelData = {
   model: string
   contents: Record<string, Blob>
   validationIssues?: ValidationIssue[]
+  suggestedCategory?: WearableCategory | null
 }
 
 export type ZipModelData = ModelData & {
@@ -115,6 +117,7 @@ export type AcceptedFileProps = Pick<
   | 'tags'
   | 'blockVrmExport'
   | 'validationIssues'
+  | 'suggestedCategory'
 >
 export type OwnProps = Pick<Props, 'name' | 'onClose'> & { metadata: CreateSingleItemModalMetadata }
 export type MapStateProps = Pick<

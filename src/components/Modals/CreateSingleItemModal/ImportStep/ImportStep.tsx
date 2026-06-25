@@ -177,7 +177,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       [modelPath]: file
     }
 
-    const { model, contents: proccessedContent, type, validationIssues } = await this.processModel(modelPath, contents)
+    const { model, contents: proccessedContent, type, validationIssues, suggestedCategory } = await this.processModel(modelPath, contents)
 
     if (type === ItemType.EMOTE) {
       const { metrics }: { metrics: AnimationMetrics } = await getEmoteData(URL.createObjectURL(contents[model]))
@@ -196,7 +196,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
       throw new FileTooBigError(maxFileSize)
     }
 
-    return { model, contents: proccessedContent, type, validationIssues }
+    return { model, contents: proccessedContent, type, validationIssues, suggestedCategory }
   }
 
   handleErrorsOnFile = (error: any) => {
@@ -337,7 +337,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
 
       if (extension === '.zip') {
         const { modelData, wearable, scene, emote } = await this.handleZippedModelFiles(file)
-        const { type, model, contents, validationIssues } = modelData
+        const { type, model, contents, validationIssues, suggestedCategory } = modelData
 
         if (scene) {
           contents[SCENE_PATH] = new Blob([JSON.stringify(scene)], { type: 'application/json' })
@@ -349,6 +349,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           model,
           contents,
           validationIssues,
+          suggestedCategory,
           thumbnail: THUMBNAIL_PATH in modelData.contents ? await blobToDataURL(modelData.contents[THUMBNAIL_PATH]) : undefined
         }
         if (wearable) {
@@ -397,14 +398,15 @@ export default class ImportStep extends React.PureComponent<Props, State> {
           }
         }
       } else {
-        const { type, model, contents, validationIssues } = await this.handleModelFile(file)
+        const { type, model, contents, validationIssues, suggestedCategory } = await this.handleModelFile(file)
 
         acceptedFileProps = {
           ...acceptedFileProps,
           type,
           model,
           contents,
-          validationIssues
+          validationIssues,
+          suggestedCategory
         }
       }
 
@@ -438,6 +440,7 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const extension = getExtension(model) || undefined
     let isEmote = false
     let validationIssues: ValidationIssue[] | undefined
+    let suggestedCategory: WearableCategory | null = null
 
     if (extension !== '.png') {
       const mappings = rawMappingsToObjectURL(contents)
@@ -457,13 +460,14 @@ export default class ImportStep extends React.PureComponent<Props, State> {
         )
         isEmote = result.isEmote
         validationIssues = result.validationResult.issues
+        suggestedCategory = result.suggestedCategory
       } finally {
         // Clean up blob URLs to prevent memory leaks
         revokeMappingsObjectURL(mappings)
         URL.revokeObjectURL(url)
       }
     }
-    return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE, validationIssues }
+    return { model, contents, type: isEmote ? ItemType.EMOTE : ItemType.WEARABLE, validationIssues, suggestedCategory }
   }
 
   handleOpenMoreInformation = () => {
