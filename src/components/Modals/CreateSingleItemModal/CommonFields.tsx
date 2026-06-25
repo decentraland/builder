@@ -180,7 +180,7 @@ export const CommonFields = () => {
         options={categories.map(value => ({ value, text: t(`${type!}.category.${value}`) }))}
         onChange={handleCategoryChange}
       />
-      {type === ItemType.WEARABLE && suggestedCategory && categories.includes(suggestedCategory) ? (
+      {type === ItemType.WEARABLE && suggestedCategory && categories.includes(suggestedCategory) && category === suggestedCategory ? (
         <p className="suggested-category">
           {t('create_single_item_modal.suggested_category', {
             category: t(`${ItemType.WEARABLE}.category.${suggestedCategory}`)

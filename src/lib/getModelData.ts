@@ -350,6 +350,9 @@ export async function loadAndValidateModel(
   validationResult: ValidationResult
   suggestedCategory: WearableCategory | null
 }> {
+  // `suggestWearableCategory` needs the Three.js module to run `instanceof` checks
+  // against the same realm. The module is already cached at this point, so this import
+  // is effectively free.
   const Three = await import('three')
   const { gltf, renderer } = await loadGltf(url, options)
 
@@ -366,7 +369,13 @@ export async function loadAndValidateModel(
       validationResult = await validateWearableGLTF(gltf, category, hides)
       // Infer the most likely category from the model geometry so the details step
       // can pre-select it. Suggestion only — the creator can always override.
-      suggestedCategory = suggestWearableCategory(Three, gltf.scene)
+      // This is a pure UX convenience, so a throw on malformed geometry must never
+      // fail the critical import path: swallow any error and fall back to no suggestion.
+      try {
+        suggestedCategory = suggestWearableCategory(Three, gltf.scene)
+      } catch (error) {
+        suggestedCategory = null
+      }
     }
 
     return { isEmote, validationResult, suggestedCategory }

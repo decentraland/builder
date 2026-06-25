@@ -168,6 +168,39 @@ describe('suggestWearableCategory', () => {
     })
   })
 
+  describe('when the geometry is dominantly bound to the forearm bones', () => {
+    let result: WearableCategory | null
+
+    beforeEach(() => {
+      // Documents the intended classification: forearm bones belong to the upper body, so
+      // sleeved garments (shirts, jackets) suggest `upper_body` (see the `forearm` spine token).
+      const mesh = createSkinnedMesh(Three, ['Avatar_LeftForeArm', 'Avatar_RightForeArm'], [[0], [1], [0], [1]])
+      result = suggestWearableCategory(asThree(Three), createScene([mesh]))
+    })
+
+    it('should suggest the upper_body category', () => {
+      expect(result).toBe(WearableCategory.UPPER_BODY)
+    })
+  })
+
+  describe('when the geometry is split across two skinned meshes whose weights accumulate', () => {
+    let result: WearableCategory | null
+
+    beforeEach(() => {
+      // Two separate skinned meshes both contribute spine/arm weight. The suggestion must
+      // aggregate weights across every skinned mesh in the scene, not look at one in isolation:
+      // the second mesh also carries some feet weight, and only the summed spine weight
+      // (5 of 6 total) crosses the dominant-region threshold.
+      const spineMesh = createSkinnedMesh(Three, ['Avatar_Spine', 'Avatar_LeftArm'], [[0], [1], [0]])
+      const armMesh = createSkinnedMesh(Three, ['Avatar_RightArm', 'Avatar_LeftFoot'], [[0], [0], [1]])
+      result = suggestWearableCategory(asThree(Three), createScene([spineMesh, armMesh]))
+    })
+
+    it('should suggest the upper_body category', () => {
+      expect(result).toBe(WearableCategory.UPPER_BODY)
+    })
+  })
+
   describe('when the geometry is spread evenly across multiple regions', () => {
     let result: WearableCategory | null
 

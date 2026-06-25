@@ -17,7 +17,10 @@ type ThreeModules = typeof import('three')
  */
 const LANDMARK_BONES = {
   head: ['head', 'neck'],
-  spine: ['spine', 'chest', 'shoulder', 'arm'],
+  // `forearm` is listed explicitly (rather than relying on `'forearm'.includes('arm')`)
+  // to make the design choice intentional: the forearm is treated as part of the upper
+  // body so sleeved garments like shirts and jackets classify as `upper_body`.
+  spine: ['spine', 'chest', 'shoulder', 'arm', 'forearm'],
   legs: ['upleg', 'leg', 'knee'],
   feet: ['foot', 'toebase', 'toe'],
   hands: ['hand', 'finger', 'thumb']
