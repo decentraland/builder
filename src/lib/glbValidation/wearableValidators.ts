@@ -13,10 +13,15 @@ import {
   MAX_BONE_INFLUENCES_PER_VERTEX,
   AVATAR_SKIN_MAT,
   FORBIDDEN_MATERIAL_PATTERNS,
-  MAX_SPRING_BONES
+  MAX_SPRING_BONES,
+  AVATAR_BONE_NAME_SET,
+  AVATAR_CORE_BONE_NAMES
 } from './constants'
 
 type ThreeModules = typeof import('three')
+
+/** Threshold below which a vertex's total skin weight is treated as zero (unrigged). */
+const UNRIGGED_WEIGHT_EPSILON = 1e-6
 
 function getTriangleCount(Three: ThreeModules, scene: THREE.Scene): number {
   let triangles = 0
@@ -293,6 +298,108 @@ export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene
         count: nonDeformBones.length,
         bones: nonDeformBones.slice(0, 5).join(', ') + (nonDeformBones.length > 5 ? ` (+${nonDeformBones.length - 5} more)` : '')
       }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Validates that the wearable's skinned-mesh joints match the canonical Decentraland
+ * avatar skeleton. A wearable skinned to a non-DCL or misnamed skeleton passes import
+ * but breaks in-world and fails curation.
+ *
+ * Collects the joint names from every SkinnedMesh skeleton and checks that:
+ *  - all required core avatar bones are present, and
+ *  - no joint references an unknown bone name (i.e. not part of the DCL skeleton).
+ *
+ * Spring bones (names containing "springbone", case-insensitive) are valid extras and ignored.
+ * Reports a single WARNING describing the missing and/or unknown bones. Wearables with no
+ * skinned meshes (e.g. rigid accessories) are skipped.
+ */
+export function validateArmatureBoneNames(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  const jointNames = new Set<string>()
+
+  scene.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.SkinnedMesh && node.skeleton) {
+      for (const bone of node.skeleton.bones) {
+        jointNames.add(bone.name)
+      }
+    }
+  })
+
+  // No skinned meshes — nothing to validate (rigid accessories are allowed).
+  if (jointNames.size === 0) return issues
+
+  // Core avatar bones that must be present in the skeleton.
+  const missing = AVATAR_CORE_BONE_NAMES.filter(name => !jointNames.has(name))
+
+  // Joints that are neither canonical avatar bones nor allowed spring bones.
+  const unknown: string[] = []
+  for (const name of jointNames) {
+    if (AVATAR_BONE_NAME_SET.has(name) || isSpringBoneName(name)) continue
+    unknown.push(name)
+  }
+
+  if (missing.length > 0 || unknown.length > 0) {
+    const parts: string[] = []
+    if (missing.length > 0) {
+      parts.push(`missing: ${missing.slice(0, 5).join(', ')}${missing.length > 5 ? ` (+${missing.length - 5} more)` : ''}`)
+    }
+    if (unknown.length > 0) {
+      parts.push(`unknown: ${unknown.slice(0, 5).join(', ')}${unknown.length > 5 ? ` (+${unknown.length - 5} more)` : ''}`)
+    }
+    issues.push({
+      code: 'ARMATURE_BONE_NAMES',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.armature_bone_names',
+      messageParams: { bones: parts.join('; ') }
+    })
+  }
+
+  return issues
+}
+
+/**
+ * Detects skinned-mesh vertices with zero total skin weight (unrigged vertices).
+ * Such vertices are not bound to any bone and stay fixed while the avatar moves,
+ * which typically indicates a rigging mistake. Reports a WARNING with the affected count.
+ */
+export function validateNoUnriggedVertices(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
+  const issues: ValidationIssue[] = []
+  let unriggedVertices = 0
+
+  scene.traverse((node: THREE.Object3D) => {
+    if (node instanceof Three.SkinnedMesh) {
+      const geometry = node.geometry as THREE.BufferGeometry
+      const skinWeight = geometry.getAttribute('skinWeight')
+      if (!skinWeight) return
+
+      const itemSize = skinWeight.itemSize
+      const array = skinWeight.array as ArrayLike<number> | undefined
+      if (!array) return
+
+      // A vertex is "unrigged" when the sum of its skin weights is effectively zero.
+      // We only rely on the zero / non-zero distinction, which holds regardless of whether
+      // the glTF stored WEIGHTS_0 as floats (0..1) or normalized integers (raw 0..255 / 0..65535).
+      // A small epsilon guards against accumulated floating-point dust being treated as a real weight.
+      for (let i = 0; i < skinWeight.count; i++) {
+        let total = 0
+        for (let c = 0; c < itemSize; c++) {
+          total += array[i * itemSize + c]
+        }
+        if (total <= UNRIGGED_WEIGHT_EPSILON) unriggedVertices++
+      }
+    }
+  })
+
+  if (unriggedVertices > 0) {
+    issues.push({
+      code: 'UNRIGGED_VERTICES',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.glb_validation.unrigged_vertices',
+      messageParams: { count: unriggedVertices }
     })
   }
 

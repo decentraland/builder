@@ -12,6 +12,8 @@ import {
   validateNoDisallowedObjects,
   validateMaterialNaming,
   validateNoNonDeformBones,
+  validateArmatureBoneNames,
+  validateNoUnriggedVertices,
   validateSpringBones
 } from './wearableValidators'
 import {
@@ -34,7 +36,8 @@ export { getEffectiveTriangleLimit } from './constants'
 /**
  * Runs all wearable-specific validations against a parsed GLTF model.
  * Checks dimensions, materials, textures, bone influences,
- * leaf bones, disallowed objects, and material naming conventions.
+ * leaf bones, armature bone naming, unrigged vertices, disallowed objects,
+ * and material naming conventions.
  * Triangle counts are only checked when a category is provided.
  * @param gltf - The parsed GLTF loaded by Three.js.
  * @param category - Optional wearable category; limits are adjusted when provided.
@@ -53,6 +56,8 @@ export async function validateWearableGLTF(gltf: GLTF, category?: WearableCatego
     validateBoneInfluences(Three, scene),
     validateNoLeafBones(Three, scene),
     validateNoNonDeformBones(Three, scene),
+    validateArmatureBoneNames(Three, scene),
+    validateNoUnriggedVertices(Three, scene),
     validateNoDisallowedObjects(Three, gltf),
     validateMaterialNaming(Three, scene, category),
     validateSpringBones(gltf)

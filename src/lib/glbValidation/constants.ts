@@ -109,6 +109,76 @@ export const AVATAR_ARMATURE_NAME = 'Armature'
 /** Expected name of the prop armature root node. */
 export const PROP_ARMATURE_NAME = 'Armature_Prop'
 
+/**
+ * Canonical Decentraland avatar skeleton bone names (62 bones).
+ *
+ * A wearable must be skinned to this skeleton; if its skinned-mesh joints reference
+ * an unknown/misnamed skeleton the wearable breaks in-world and fails curation.
+ * Built programmatically from the finger naming pattern to keep the list verifiable.
+ */
+const HAND_FINGERS = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
+function handFingerBones(side: 'Left' | 'Right'): string[] {
+  return HAND_FINGERS.flatMap(finger => [1, 2, 3, 4].map(segment => `Avatar_${side}Hand${finger}${segment}`))
+}
+export const AVATAR_BONE_NAMES: string[] = [
+  // Spine and head
+  'Avatar_Hips',
+  'Avatar_Spine',
+  'Avatar_Spine1',
+  'Avatar_Spine2',
+  'Avatar_Neck',
+  'Avatar_Head',
+  // Left arm and hand
+  'Avatar_LeftShoulder',
+  'Avatar_LeftArm',
+  'Avatar_LeftForeArm',
+  'Avatar_LeftHand',
+  ...handFingerBones('Left'),
+  // Right arm and hand
+  'Avatar_RightShoulder',
+  'Avatar_RightArm',
+  'Avatar_RightForeArm',
+  'Avatar_RightHand',
+  ...handFingerBones('Right'),
+  // Left leg
+  'Avatar_LeftUpLeg',
+  'Avatar_LeftLeg',
+  'Avatar_LeftFoot',
+  'Avatar_LeftToeBase',
+  // Right leg
+  'Avatar_RightUpLeg',
+  'Avatar_RightLeg',
+  'Avatar_RightFoot',
+  'Avatar_RightToeBase'
+]
+
+/** Set form of {@link AVATAR_BONE_NAMES} for O(1) membership checks. */
+export const AVATAR_BONE_NAME_SET = new Set(AVATAR_BONE_NAMES)
+
+/**
+ * Core avatar bones that every valid wearable skeleton must contain.
+ * If any of these are missing from the skinned-mesh joints the skeleton is
+ * considered wrong (non-DCL or misnamed), independent of optional fingers/toes.
+ */
+export const AVATAR_CORE_BONE_NAMES: string[] = [
+  'Avatar_Hips',
+  'Avatar_Spine',
+  'Avatar_Neck',
+  'Avatar_Head',
+  'Avatar_LeftArm',
+  'Avatar_LeftForeArm',
+  'Avatar_LeftHand',
+  'Avatar_RightArm',
+  'Avatar_RightForeArm',
+  'Avatar_RightHand',
+  'Avatar_LeftUpLeg',
+  'Avatar_LeftLeg',
+  'Avatar_LeftFoot',
+  'Avatar_RightUpLeg',
+  'Avatar_RightLeg',
+  'Avatar_RightFoot'
+]
+
 /** Accepted audio file extensions for emote sound effects. */
 export const VALID_AUDIO_EXTENSIONS = ['.mp3', '.ogg']
 
