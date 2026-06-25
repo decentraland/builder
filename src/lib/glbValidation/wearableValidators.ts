@@ -15,13 +15,17 @@ import {
   FORBIDDEN_MATERIAL_PATTERNS,
   MAX_SPRING_BONES,
   AVATAR_BONE_NAME_SET,
-  AVATAR_CORE_BONE_NAMES
+  AVATAR_CORE_BONE_NAMES,
+  AVATAR_ARMATURE_NAME
 } from './constants'
 
 type ThreeModules = typeof import('three')
 
 /** Threshold below which a vertex's total skin weight is treated as zero (unrigged). */
 const UNRIGGED_WEIGHT_EPSILON = 1e-6
+
+/** Lowercased canonical bone names, for case-insensitive near-miss ("check casing") detection. */
+const AVATAR_BONE_NAME_SET_LOWERCASE = new Set([...AVATAR_BONE_NAME_SET].map(name => name.toLowerCase()))
 
 function getTriangleCount(Three: ThreeModules, scene: THREE.Scene): number {
   let triangles = 0
@@ -313,8 +317,11 @@ export function validateNoNonDeformBones(Three: ThreeModules, scene: THREE.Scene
  *  - all required core avatar bones are present, and
  *  - no joint references an unknown bone name (i.e. not part of the DCL skeleton).
  *
- * Spring bones (names containing "springbone", case-insensitive) are valid extras and ignored.
- * Reports a single WARNING describing the missing and/or unknown bones. Wearables with no
+ * Spring bones (names containing "springbone", case-insensitive) are valid extras and ignored,
+ * as is the armature root node ({@link AVATAR_ARMATURE_NAME}) which some exporters include in
+ * the skeleton bone list.
+ * Reports a single WARNING describing the missing and/or unknown bones. Unknown bones that
+ * differ from a canonical bone only by casing get a "(check casing)" hint. Wearables with no
  * skinned meshes (e.g. rigid accessories) are skipped.
  */
 export function validateArmatureBoneNames(Three: ThreeModules, scene: THREE.Scene): ValidationIssue[] {
@@ -335,10 +342,15 @@ export function validateArmatureBoneNames(Three: ThreeModules, scene: THREE.Scen
   // Core avatar bones that must be present in the skeleton.
   const missing = AVATAR_CORE_BONE_NAMES.filter(name => !jointNames.has(name))
 
-  // Joints that are neither canonical avatar bones nor allowed spring bones.
+  // Joints that are neither canonical avatar bones, allowed spring bones, nor the armature root.
   const unknown: string[] = []
   for (const name of jointNames) {
-    if (AVATAR_BONE_NAME_SET.has(name) || isSpringBoneName(name)) continue
+    if (AVATAR_BONE_NAME_SET.has(name) || isSpringBoneName(name) || name === AVATAR_ARMATURE_NAME) continue
+    // A bone that matches a canonical name except for casing is almost certainly a casing mistake.
+    if (AVATAR_BONE_NAME_SET_LOWERCASE.has(name.toLowerCase())) {
+      unknown.push(`${name} (check casing)`)
+      continue
+    }
     unknown.push(name)
   }
 

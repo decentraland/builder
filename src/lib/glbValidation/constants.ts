@@ -115,6 +115,12 @@ export const PROP_ARMATURE_NAME = 'Armature_Prop'
  * A wearable must be skinned to this skeleton; if its skinned-mesh joints reference
  * an unknown/misnamed skeleton the wearable breaks in-world and fails curation.
  * Built programmatically from the finger naming pattern to keep the list verifiable.
+ *
+ * The 62 bones break down as:
+ *  - 6 spine/head (Hips, Spine, Spine1, Spine2, Neck, Head)
+ *  - 8 arm chains (Shoulder, Arm, ForeArm, Hand per side × 2 sides)
+ *  - 40 fingers (5 fingers × 4 joints × 2 hands), produced by handFingerBones()
+ *  - 8 leg chains (UpLeg, Leg, Foot, ToeBase per side × 2 sides)
  */
 const HAND_FINGERS = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
 function handFingerBones(side: 'Left' | 'Right'): string[] {
@@ -159,6 +165,11 @@ export const AVATAR_BONE_NAME_SET = new Set(AVATAR_BONE_NAMES)
  * Core avatar bones that every valid wearable skeleton must contain.
  * If any of these are missing from the skinned-mesh joints the skeleton is
  * considered wrong (non-DCL or misnamed), independent of optional fingers/toes.
+ *
+ * This is intentionally the minimal required subset, not the full skeleton. It omits
+ * Spine1/Spine2 (extra spine segments) and LeftShoulder/RightShoulder so that simpler or
+ * partial skeletons authored for accessories (which may not weight those bones) still pass,
+ * while a genuinely non-DCL skeleton — missing Hips/Spine/Head/limbs — is still rejected.
  */
 export const AVATAR_CORE_BONE_NAMES: string[] = [
   'Avatar_Hips',
