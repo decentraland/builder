@@ -102,7 +102,8 @@ export const CREATE_ITEM_ACTIONS = {
   RESET_STATE: 'RESET_STATE',
   UPDATE_THUMBNAIL_BY_CATEGORY: 'UPDATE_THUMBNAIL_BY_CATEGORY',
   CLEAR_ERROR: 'CLEAR_ERROR',
-  SET_VALIDATION_ISSUES: 'SET_VALIDATION_ISSUES'
+  SET_VALIDATION_ISSUES: 'SET_VALIDATION_ISSUES',
+  SET_THUMBNAIL_NOT_TRANSPARENT: 'SET_THUMBNAIL_NOT_TRANSPARENT'
 } as const
 
 // Action Type Union
@@ -146,6 +147,7 @@ export type CreateItemAction =
   | { type: typeof CREATE_ITEM_ACTIONS.UPDATE_THUMBNAIL_BY_CATEGORY; payload: { thumbnail: string; isLoading: boolean } }
   | { type: typeof CREATE_ITEM_ACTIONS.CLEAR_ERROR }
   | { type: typeof CREATE_ITEM_ACTIONS.SET_VALIDATION_ISSUES; payload: ValidationIssue[] | undefined }
+  | { type: typeof CREATE_ITEM_ACTIONS.SET_THUMBNAIL_NOT_TRANSPARENT; payload: boolean }
 
 // Action Creators
 export const createItemActions = {
@@ -326,6 +328,11 @@ export const createItemActions = {
   setValidationIssues: (issues: ValidationIssue[] | undefined): CreateItemAction => ({
     type: CREATE_ITEM_ACTIONS.SET_VALIDATION_ISSUES,
     payload: issues
+  }),
+
+  setThumbnailNotTransparent: (notTransparent: boolean): CreateItemAction => ({
+    type: CREATE_ITEM_ACTIONS.SET_THUMBNAIL_NOT_TRANSPARENT,
+    payload: notTransparent
   })
 }
 
@@ -342,7 +349,9 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
       return { ...state, error: action.payload }
 
     case CREATE_ITEM_ACTIONS.SET_THUMBNAIL:
-      return { ...state, thumbnail: action.payload }
+      // Replacing the thumbnail clears any stale transparency warning. Generated/screenshot
+      // thumbnails are always transparent; the manual-upload path re-evaluates and re-sets the flag.
+      return { ...state, thumbnail: action.payload, thumbnailNotTransparent: false }
 
     case CREATE_ITEM_ACTIONS.SET_VIDEO:
       return { ...state, video: action.payload }
@@ -432,10 +441,12 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
       return { ...state, ...action.payload }
 
     case CREATE_ITEM_ACTIONS.UPDATE_THUMBNAIL_BY_CATEGORY:
+      // A category-regenerated thumbnail is always transparent, so clear any stale warning.
       return {
         ...state,
         thumbnail: action.payload.thumbnail,
-        isLoading: action.payload.isLoading
+        isLoading: action.payload.isLoading,
+        thumbnailNotTransparent: false
       }
 
     case CREATE_ITEM_ACTIONS.CLEAR_ERROR:
@@ -443,6 +454,9 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
 
     case CREATE_ITEM_ACTIONS.SET_VALIDATION_ISSUES:
       return { ...state, validationIssues: action.payload }
+
+    case CREATE_ITEM_ACTIONS.SET_THUMBNAIL_NOT_TRANSPARENT:
+      return { ...state, thumbnailNotTransparent: action.payload }
 
     case CREATE_ITEM_ACTIONS.RESET_STATE:
       return { ...state, ...action.payload }

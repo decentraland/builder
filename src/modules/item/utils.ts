@@ -421,6 +421,9 @@ export async function generateImage(item: Item | Item<ItemType.EMOTE> | LocalIte
 
 export async function resizeImage(image: Blob, width = 256, height = 256) {
   // create canvas
+  // NOTE: the canvas is intentionally left unfilled so the source image's alpha channel is
+  // preserved. Thumbnails must keep a transparent background so the marketplace can render the
+  // item's rarity color behind them — do not add a background fill here.
   const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
