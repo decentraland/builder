@@ -65,6 +65,7 @@ export type StateData = {
     armatures: Object3D[]
   }
   validationIssues?: ValidationIssue[]
+  thumbnailNotTransparent?: boolean
 }
 
 export type State = {

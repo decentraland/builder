@@ -164,3 +164,89 @@ export async function getImageType(image: Blob): Promise<ImageType> {
       return ImageType.UNKNOWN
   }
 }
+
+/**
+ * An alpha value (0-255) at or below this threshold is treated as transparent. Slightly above 0
+ * to tolerate near-transparent edge pixels produced by anti-aliasing / lossless re-encoding.
+ */
+export const TRANSPARENT_ALPHA_THRESHOLD = 8
+
+/**
+ * Fraction of sampled border pixels that must be transparent for the background to be considered
+ * transparent. Logos/badges occasionally bleed into a corner, so we don't require every border
+ * pixel to be transparent.
+ */
+export const TRANSPARENT_BORDER_RATIO = 0.9
+
+/**
+ * Determines whether an RGBA image has a transparent background by sampling its border ring (the
+ * outermost row/column of pixels on each edge). The marketplace renders the item's rarity color
+ * behind the thumbnail, so a non-transparent background hides that color and is the single most
+ * common thumbnail rejection reason in curation. This is a cheap, dependency-free heuristic: a
+ * thumbnail whose subject is centered will have a fully transparent border when exported correctly.
+ *
+ * @param rgba - Raw RGBA pixel data, 4 bytes per pixel (length must be `width * height * 4`).
+ * @param width - Image width in pixels.
+ * @param height - Image height in pixels.
+ * @returns `true` when the border is (mostly) transparent, `false` otherwise. Images too small to
+ *   sample are treated as transparent (no signal, never warn).
+ */
+export function isRgbaBackgroundTransparent(rgba: Uint8Array | Uint8ClampedArray | number[], width: number, height: number): boolean {
+  if (width <= 0 || height <= 0 || rgba.length < width * height * 4) {
+    return true
+  }
+
+  const alphaAt = (x: number, y: number): number => rgba[(y * width + x) * 4 + 3]
+
+  let sampled = 0
+  let transparent = 0
+  const sample = (x: number, y: number): void => {
+    sampled++
+    if (alphaAt(x, y) <= TRANSPARENT_ALPHA_THRESHOLD) {
+      transparent++
+    }
+  }
+
+  // Sample the top and bottom rows.
+  for (let x = 0; x < width; x++) {
+    sample(x, 0)
+    if (height > 1) {
+      sample(x, height - 1)
+    }
+  }
+  // Sample the left and right columns, skipping the corners already sampled above.
+  for (let y = 1; y < height - 1; y++) {
+    sample(0, y)
+    if (width > 1) {
+      sample(width - 1, y)
+    }
+  }
+
+  if (sampled === 0) {
+    return true
+  }
+
+  return transparent / sampled >= TRANSPARENT_BORDER_RATIO
+}
+
+/**
+ * Decodes a PNG blob and checks whether its background is transparent via
+ * {@link isRgbaBackgroundTransparent}. Uses UPNG (already a dependency) so it works without a
+ * canvas, including in tests. Any decode failure is treated as transparent so the check can never
+ * block or wrongly warn on an unexpected input.
+ *
+ * @param blob - The PNG blob to inspect.
+ */
+export async function isPngBackgroundTransparent(blob: Blob): Promise<boolean> {
+  try {
+    const buffer = await blob.arrayBuffer()
+    const image = UPNG.decode(buffer)
+    const [frame] = UPNG.toRGBA8(image)
+    if (!frame) {
+      return true
+    }
+    return isRgbaBackgroundTransparent(new Uint8Array(frame), image.width, image.height)
+  } catch {
+    return true
+  }
+}
