@@ -319,6 +319,7 @@
       "file_too_big": "{title}.{enter}文件大小限制为 {size}。减小文件的大小，然后重试。",
       "file_too_big_title": "文件太大，无法上传",
       "thumbnail_file_too_big": "縮圖檔案大小超過 {maxSize} 限制。",
+      "thumbnail_not_transparent": "縮圖背景看起來不是透明的。市場會在縮圖後方顯示物品的稀有度顏色，因此建議使用透明背景。",
       "wrong_extension": "该文件的扩展名无效。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
       "missing_model_file": "找不到有效的模型文件。",

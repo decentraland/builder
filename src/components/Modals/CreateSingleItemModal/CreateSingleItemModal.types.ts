@@ -66,6 +66,7 @@ export type StateData = {
   }
   validationIssues?: ValidationIssue[]
   suggestedCategory?: WearableCategory | null
+  thumbnailNotTransparent?: boolean
 }
 
 export type State = {
