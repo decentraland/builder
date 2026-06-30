@@ -12,6 +12,8 @@ import {
   validateNoDisallowedObjects,
   validateMaterialNaming,
   validateNoNonDeformBones,
+  validateArmatureBoneNames,
+  validateNoUnriggedVertices,
   validateSpringBones
 } from './wearableValidators'
 import {
@@ -20,6 +22,9 @@ import {
   MAX_TEXTURES_DEFAULT,
   AVATAR_SKIN_MAT,
   MAX_SPRING_BONES,
+  AVATAR_BONE_NAMES,
+  AVATAR_ARMATURE_NAME,
+  AVATAR_CORE_BONE_NAMES,
   getEffectiveTriangleLimit
 } from './constants'
 
@@ -852,6 +857,279 @@ describe('validateSpringBones', () => {
   describe('when gltf.parser is unavailable', () => {
     it('should return no issues', () => {
       expect(validateSpringBones({} as unknown as GLTF)).toEqual([])
+    })
+  })
+})
+
+function createSkinnedMeshWithJoints(Three: MockThree, jointNames: string[]): unknown {
+  const mesh = new Three.SkinnedMesh()
+  const bones = jointNames.map(name => {
+    const bone = new Three.Bone()
+    bone.name = name
+    return bone
+  })
+  ;(mesh as any).skeleton = { bones }
+  return mesh
+}
+
+describe('validateArmatureBoneNames', () => {
+  let Three: MockThree
+
+  beforeEach(() => {
+    Three = createMockThree()
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('when the skinned mesh is rigged to the full canonical avatar skeleton', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = createSkinnedMeshWithJoints(Three, AVATAR_BONE_NAMES)
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('and the skeleton also includes spring bones as extras', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = createSkinnedMeshWithJoints(Three, [...AVATAR_BONE_NAMES, 'Hair.springbone.001', 'Cape_SpringBone_tail'])
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should ignore the spring bones and return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('when the skeleton is missing core avatar bones', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const partial = AVATAR_BONE_NAMES.filter(name => name !== 'Avatar_Head' && name !== 'Avatar_Hips')
+      const mesh = createSkinnedMeshWithJoints(Three, partial)
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return a warning with the ARMATURE_BONE_NAMES code', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('ARMATURE_BONE_NAMES')
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+    })
+
+    it('should list the missing core bones in the message params', () => {
+      expect(issues[0].messageParams?.bones).toContain('Avatar_Hips')
+      expect(issues[0].messageParams?.bones).toContain('Avatar_Head')
+    })
+  })
+
+  describe('when the skeleton uses unknown/misnamed bone names', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = createSkinnedMeshWithJoints(Three, ['mixamorig:Hips', 'mixamorig:Spine', 'mixamorig:Head'])
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return a warning with the ARMATURE_BONE_NAMES code', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('ARMATURE_BONE_NAMES')
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+    })
+
+    it('should report the unknown bone names', () => {
+      expect(issues[0].messageParams?.bones).toContain('mixamorig:Hips')
+    })
+  })
+
+  describe('when the skeleton has every canonical bone plus one unknown extra', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = createSkinnedMeshWithJoints(Three, [...AVATAR_BONE_NAMES, 'Tail_01'])
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return a warning with the ARMATURE_BONE_NAMES code', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('ARMATURE_BONE_NAMES')
+    })
+
+    it('should report the unknown bone without any missing bones', () => {
+      const bones = issues[0].messageParams?.bones as string
+      expect(bones).toContain('unknown: Tail_01')
+      expect(bones).not.toContain('missing:')
+    })
+  })
+
+  describe('when there are no skinned meshes', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const bone = new Three.Bone()
+      bone.name = 'Avatar_Hips'
+      issues = validateArmatureBoneNames(asThree(Three), createScene([bone]))
+    })
+
+    it('should skip the check and return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('and the skeleton also includes the armature root node as a bone', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = createSkinnedMeshWithJoints(Three, [...AVATAR_BONE_NAMES, AVATAR_ARMATURE_NAME])
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should ignore the armature root and return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('when joints are split across multiple skinned meshes', () => {
+    describe('and their combined joint sets cover the full canonical skeleton', () => {
+      let issues: ValidationIssue[]
+
+      beforeEach(() => {
+        const half = Math.ceil(AVATAR_BONE_NAMES.length / 2)
+        const meshA = createSkinnedMeshWithJoints(Three, AVATAR_BONE_NAMES.slice(0, half))
+        const meshB = createSkinnedMeshWithJoints(Three, AVATAR_BONE_NAMES.slice(half))
+        issues = validateArmatureBoneNames(asThree(Three), createScene([meshA, meshB]))
+      })
+
+      it('should evaluate the meshes together and return no issues', () => {
+        expect(issues).toEqual([])
+      })
+    })
+
+    describe('and one mesh passes the core check while the other introduces an unknown bone', () => {
+      let issues: ValidationIssue[]
+
+      beforeEach(() => {
+        const passingMesh = createSkinnedMeshWithJoints(Three, AVATAR_CORE_BONE_NAMES)
+        const failingMesh = createSkinnedMeshWithJoints(Three, ['mixamorig:Hips'])
+        issues = validateArmatureBoneNames(asThree(Three), createScene([passingMesh, failingMesh]))
+      })
+
+      it('should report the unknown bone from the failing mesh without any missing core bones', () => {
+        expect(issues).toHaveLength(1)
+        expect(issues[0].code).toBe('ARMATURE_BONE_NAMES')
+        const bones = issues[0].messageParams?.bones as string
+        expect(bones).toContain('unknown: mixamorig:Hips')
+        expect(bones).not.toContain('missing:')
+      })
+    })
+  })
+
+  describe('when the skeleton is fully foreign with more than five unknown bones', () => {
+    let issues: ValidationIssue[]
+    const foreignBones = [
+      'mixamorig:Hips',
+      'mixamorig:Spine',
+      'mixamorig:Spine1',
+      'mixamorig:Neck',
+      'mixamorig:Head',
+      'mixamorig:LeftArm',
+      'mixamorig:RightArm'
+    ]
+
+    beforeEach(() => {
+      const mesh = createSkinnedMeshWithJoints(Three, foreignBones)
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should truncate the unknown list with a "(+N more)" suffix', () => {
+      const bones = issues[0].messageParams?.bones as string
+      expect(bones).toContain(`(+${foreignBones.length - 5} more)`)
+    })
+  })
+
+  describe('when an unknown bone matches a canonical bone except for casing', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const joints = AVATAR_BONE_NAMES.map(name => (name === 'Avatar_Hips' ? 'avatar_hips' : name))
+      const mesh = createSkinnedMeshWithJoints(Three, joints)
+      issues = validateArmatureBoneNames(asThree(Three), createScene([mesh]))
+    })
+
+    it('should include a "(check casing)" hint for the near-miss bone', () => {
+      const bones = issues[0].messageParams?.bones as string
+      expect(bones).toContain('avatar_hips (check casing)')
+    })
+  })
+})
+
+describe('validateNoUnriggedVertices', () => {
+  let Three: MockThree
+
+  beforeEach(() => {
+    Three = createMockThree()
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('when all vertices have non-zero skin weights', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = new Three.SkinnedMesh()
+      const geom = new Three.BufferGeometry()
+      geom.attributes.skinWeight = { itemSize: 4, count: 2, array: [1, 0, 0, 0, 0.5, 0.5, 0, 0] }
+      mesh.geometry = geom
+      issues = validateNoUnriggedVertices(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return no issues', () => {
+      expect(issues).toEqual([])
+    })
+  })
+
+  describe('when a vertex has zero total skin weight', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = new Three.SkinnedMesh()
+      const geom = new Three.BufferGeometry()
+      geom.attributes.skinWeight = { itemSize: 4, count: 2, array: [1, 0, 0, 0, 0, 0, 0, 0] }
+      mesh.geometry = geom
+      issues = validateNoUnriggedVertices(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return a warning with the UNRIGGED_VERTICES code', () => {
+      expect(issues).toHaveLength(1)
+      expect(issues[0].code).toBe('UNRIGGED_VERTICES')
+      expect(issues[0].severity).toBe(ValidationSeverity.WARNING)
+    })
+
+    it('should report the count of unrigged vertices', () => {
+      expect(issues[0].messageParams?.count).toBe(1)
+    })
+  })
+
+  describe('when the skinned mesh has no skinWeight attribute', () => {
+    let issues: ValidationIssue[]
+
+    beforeEach(() => {
+      const mesh = new Three.SkinnedMesh()
+      mesh.geometry = new Three.BufferGeometry()
+      issues = validateNoUnriggedVertices(asThree(Three), createScene([mesh]))
+    })
+
+    it('should return no issues', () => {
+      expect(issues).toEqual([])
     })
   })
 })

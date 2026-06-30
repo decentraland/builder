@@ -109,6 +109,87 @@ export const AVATAR_ARMATURE_NAME = 'Armature'
 /** Expected name of the prop armature root node. */
 export const PROP_ARMATURE_NAME = 'Armature_Prop'
 
+/**
+ * Canonical Decentraland avatar skeleton bone names (62 bones).
+ *
+ * A wearable must be skinned to this skeleton; if its skinned-mesh joints reference
+ * an unknown/misnamed skeleton the wearable breaks in-world and fails curation.
+ * Built programmatically from the finger naming pattern to keep the list verifiable.
+ *
+ * The 62 bones break down as:
+ *  - 6 spine/head (Hips, Spine, Spine1, Spine2, Neck, Head)
+ *  - 8 arm chains (Shoulder, Arm, ForeArm, Hand per side × 2 sides)
+ *  - 40 fingers (5 fingers × 4 joints × 2 hands), produced by handFingerBones()
+ *  - 8 leg chains (UpLeg, Leg, Foot, ToeBase per side × 2 sides)
+ */
+const HAND_FINGERS = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
+function handFingerBones(side: 'Left' | 'Right'): string[] {
+  return HAND_FINGERS.flatMap(finger => [1, 2, 3, 4].map(segment => `Avatar_${side}Hand${finger}${segment}`))
+}
+export const AVATAR_BONE_NAMES: string[] = [
+  // Spine and head
+  'Avatar_Hips',
+  'Avatar_Spine',
+  'Avatar_Spine1',
+  'Avatar_Spine2',
+  'Avatar_Neck',
+  'Avatar_Head',
+  // Left arm and hand
+  'Avatar_LeftShoulder',
+  'Avatar_LeftArm',
+  'Avatar_LeftForeArm',
+  'Avatar_LeftHand',
+  ...handFingerBones('Left'),
+  // Right arm and hand
+  'Avatar_RightShoulder',
+  'Avatar_RightArm',
+  'Avatar_RightForeArm',
+  'Avatar_RightHand',
+  ...handFingerBones('Right'),
+  // Left leg
+  'Avatar_LeftUpLeg',
+  'Avatar_LeftLeg',
+  'Avatar_LeftFoot',
+  'Avatar_LeftToeBase',
+  // Right leg
+  'Avatar_RightUpLeg',
+  'Avatar_RightLeg',
+  'Avatar_RightFoot',
+  'Avatar_RightToeBase'
+]
+
+/** Set form of {@link AVATAR_BONE_NAMES} for O(1) membership checks. */
+export const AVATAR_BONE_NAME_SET = new Set(AVATAR_BONE_NAMES)
+
+/**
+ * Core avatar bones that every valid wearable skeleton must contain.
+ * If any of these are missing from the skinned-mesh joints the skeleton is
+ * considered wrong (non-DCL or misnamed), independent of optional fingers/toes.
+ *
+ * This is intentionally the minimal required subset, not the full skeleton. It omits
+ * Spine1/Spine2 (extra spine segments) and LeftShoulder/RightShoulder so that simpler or
+ * partial skeletons authored for accessories (which may not weight those bones) still pass,
+ * while a genuinely non-DCL skeleton — missing Hips/Spine/Head/limbs — is still rejected.
+ */
+export const AVATAR_CORE_BONE_NAMES: string[] = [
+  'Avatar_Hips',
+  'Avatar_Spine',
+  'Avatar_Neck',
+  'Avatar_Head',
+  'Avatar_LeftArm',
+  'Avatar_LeftForeArm',
+  'Avatar_LeftHand',
+  'Avatar_RightArm',
+  'Avatar_RightForeArm',
+  'Avatar_RightHand',
+  'Avatar_LeftUpLeg',
+  'Avatar_LeftLeg',
+  'Avatar_LeftFoot',
+  'Avatar_RightUpLeg',
+  'Avatar_RightLeg',
+  'Avatar_RightFoot'
+]
+
 /** Accepted audio file extensions for emote sound effects. */
 export const VALID_AUDIO_EXTENSIONS = ['.mp3', '.ogg']
 

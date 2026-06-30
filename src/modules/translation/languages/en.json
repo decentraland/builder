@@ -396,6 +396,8 @@
         "bone_influences_exceeded": "Some vertices have more than {limit} bone influences.",
         "leaf_bones_found": "Leaf/end bones found: {bones}. Remove _end or _neutral suffixed bones before export.",
         "non_deform_bones_found": "Found {count} non-deformation bones: {bones}. Enable \"Export Deformation Bones Only\" in your export settings to reduce file size and improve performance.",
+        "armature_bone_names": "Armature bone names do not match the Decentraland avatar skeleton ({bones}). Re-rig your wearable to the standard avatar armature before export.",
+        "unrigged_vertices": "Found {count} vertices with no skin weights (not bound to any bone). These vertices will not follow the avatar's movement. Check the rigging/skin weights before export.",
         "cameras_found": "Cameras are not allowed in wearable/emote GLB files.",
         "lights_found": "Lights are not allowed in wearable/emote GLB files.",
         "animations_in_wearable": "Wearable GLB files must not contain animations. If this is an emote, animations are expected.",

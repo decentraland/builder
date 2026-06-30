@@ -389,6 +389,8 @@
         "bone_influences_exceeded": "部分顶点的骨骼影响超过了 {limit} 个。",
         "leaf_bones_found": "发现末端骨骼：{bones}。请在导出前删除带有 _end 或 _neutral 后缀的骨骼。",
         "non_deform_bones_found": "发现 {count} 个非变形骨骼：{bones}。请在导出设置中启用'仅导出变形骨骼'以减小文件大小并提高性能。",
+        "armature_bone_names": "骨架的骨骼名称与 Decentraland 角色骨架不匹配（{bones}）。请在导出前将可穿戴物重新绑定到标准角色骨架。",
+        "unrigged_vertices": "发现 {count} 个没有蒙皮权重的顶点（未绑定到任何骨骼）。这些顶点不会跟随角色移动。请在导出前检查绑定和蒙皮权重。",
         "cameras_found": "可穿戴物/表情的 GLB 文件中不允许包含摄像机。",
         "lights_found": "可穿戴物/表情的 GLB 文件中不允许包含灯光。",
         "animations_in_wearable": "可穿戴物的 GLB 文件不应包含动画。如果这是表情，动画是允许的。",
