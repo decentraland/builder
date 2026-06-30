@@ -301,6 +301,7 @@
     "name_label": "给您的新商品起个名字",
     "category_label": "这个项目是什么类别？",
     "category_placeholder": "选择一个类别",
+    "suggested_category": "根据您的模型建议：{category}。如果不正确，您可以更改。",
     "play_mode_label": "游戏模式",
     "play_mode_placeholder": "选择播放模式",
     "upload_video_label": "向用户展示如何使用此项目的预览",

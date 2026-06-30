@@ -14,7 +14,7 @@ import { Metrics } from 'modules/models/types'
 import type { ValidationIssue } from 'lib/glbValidation/types'
 import { CreateItemView, State, AcceptedFileProps, CreateSingleItemModalMetadata } from './CreateSingleItemModal.types'
 import { Collection } from 'modules/collection/types'
-import { getBodyShapeType, getMissingBodyShapeType } from 'modules/item/utils'
+import { getBodyShapeType, getMissingBodyShapeType, getWearableCategories } from 'modules/item/utils'
 import { getDefaultMappings, getLinkedContract } from './utils'
 
 // Initial State Creation
@@ -437,10 +437,22 @@ export const createItemReducer = (state: State, action: CreateItemAction | null)
     case CREATE_ITEM_ACTIONS.SET_VIDEO_PREVIEW:
       return { ...state, video: action.payload }
 
-    case CREATE_ITEM_ACTIONS.SET_ACCEPTED_PROPS:
+    case CREATE_ITEM_ACTIONS.SET_ACCEPTED_PROPS: {
       // Clear any stale transparency warning before spreading the new props so replacing the file
       // does not keep a warning from a previous thumbnail. An explicit value in the payload still wins.
-      return { ...state, thumbnailNotTransparent: false, ...action.payload }
+      const next = { ...state, thumbnailNotTransparent: false, ...action.payload }
+      // Pre-select the geometry-inferred category when the upload didn't already
+      // declare one (e.g. a bare .glb with no wearable.json). The creator can still
+      // override it in the details step; this only sets the initial default.
+      // Guard against suggesting a category the dropdown won't offer for these contents
+      // (the selectable list is body-shape/contents dependent) so the field never holds
+      // a value that isn't visible to the user.
+      const suggestedCategory = action.payload.suggestedCategory
+      if (!next.category && suggestedCategory && getWearableCategories(next.contents).includes(suggestedCategory)) {
+        next.category = suggestedCategory
+      }
+      return next
+    }
 
     case CREATE_ITEM_ACTIONS.UPDATE_THUMBNAIL_BY_CATEGORY:
       // A category-regenerated thumbnail is always transparent, so clear any stale warning.
