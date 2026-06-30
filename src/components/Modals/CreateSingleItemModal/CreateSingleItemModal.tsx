@@ -22,7 +22,7 @@ import { WearablePreview } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { getImageType, dataURLToBlob } from 'modules/media/utils'
+import { getImageType, dataURLToBlob, isPngBackgroundTransparent } from 'modules/media/utils'
 import { ImageType } from 'modules/media/types'
 import {
   THUMBNAIL_PATH,
@@ -93,6 +93,7 @@ import { Steps } from './Steps'
 import { CreateSingleItemModalProvider } from './CreateSingleItemModalProvider'
 import { checkTriangleCount } from 'lib/glbValidation'
 import type { ValidationIssue } from 'lib/glbValidation/types'
+import { ValidationSeverity } from 'lib/glbValidation/types'
 import './CreateSingleItemModal.css'
 
 type ItemValidationResult = {
@@ -182,7 +183,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   }, [metadata])
 
   // Merge import-time validation issues with category-dependent triangle check
-  const allValidationIssues = useMemo((): ValidationIssue[] | undefined => {
+  const glbValidationIssues = useMemo((): ValidationIssue[] | undefined => {
     const { metrics, category, type, validationIssues } = state
     if (type !== ItemType.WEARABLE || !metrics || !('triangles' in metrics)) {
       return validationIssues
@@ -200,6 +201,21 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     }
     return nonTriangleIssues.length > 0 ? nonTriangleIssues : undefined
   }, [state])
+
+  // Append a non-blocking warning when the thumbnail lacks a transparent background. The marketplace
+  // renders the rarity color behind the thumbnail, so an opaque background is the most common
+  // thumbnail-related curation rejection — surfacing it here prevents a multi-day round-trip.
+  const allValidationIssues = useMemo((): ValidationIssue[] | undefined => {
+    if (!state.thumbnailNotTransparent) {
+      return glbValidationIssues
+    }
+    const thumbnailIssue: ValidationIssue = {
+      code: 'THUMBNAIL_NOT_TRANSPARENT',
+      severity: ValidationSeverity.WARNING,
+      messageKey: 'create_single_item_modal.error.thumbnail_not_transparent'
+    }
+    return [...(glbValidationIssues ?? []), thumbnailIssue]
+  }, [glbValidationIssues, state.thumbnailNotTransparent])
 
   const validationResult = useMemo(
     () => validateItemDraft(state, collection, isThirdPartyV2Enabled),
@@ -504,7 +520,12 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
 
         const thumbnail = URL.createObjectURL(smallThumbnailBlob)
 
+        // Check the resized blob that will actually be stored/uploaded, so the warning reflects the
+        // final thumbnail. setThumbnail resets the flag, so dispatch the transparency result after it.
+        const isTransparent = await isPngBackgroundTransparent(bigThumbnailBlob)
+
         dispatch(createItemActions.setThumbnail(thumbnail))
+        dispatch(createItemActions.setThumbnailNotTransparent(!isTransparent))
         dispatch(
           createItemActions.setContents({
             ...contents,
