@@ -2587,5 +2587,11 @@
   },
   "credits": {
     "value": "Credits Value"
+  },
+  "web_editor_sunset_modal": {
+    "title": "The web scene editor is being retired on August 18th",
+    "description": "As of August 18th, the web scene editor will no longer be supported. We recommend downloading <a>Creator Hub</a> — a much more powerful and actively maintained tool that works seamlessly with all your existing scenes. You can always download your scenes and continue working on them in Creator Hub.",
+    "download_creator_hub": "Download Creator Hub",
+    "continue_to_editor": "Continue to editor"
   }
 }
