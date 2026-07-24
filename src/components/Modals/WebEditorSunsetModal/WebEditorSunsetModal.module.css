@@ -6,9 +6,13 @@
   text-align: center;
 }
 
+.modal :global(.dcl.modal-navigation-title) {
+  padding: 0 40px;
+}
+
 .description {
-  font-size: 14px;
-  line-height: 22px;
+  font-size: 16px;
+  line-height: 26px;
   color: var(--text);
 }
 
