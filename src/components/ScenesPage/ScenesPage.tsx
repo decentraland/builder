@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { Link, useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
+  Button,
   Container,
   Dropdown,
   DropdownProps,

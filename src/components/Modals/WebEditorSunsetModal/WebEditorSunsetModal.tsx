@@ -21,15 +21,7 @@ const WebEditorSunsetModal: React.FC<Props> = ({ onContinue, onClose }) => {
     <Modal open className={styles.modal} onClose={onClose}>
       <ModalNavigation title={t('web_editor_sunset_modal.title')} onClose={onClose} />
       <ModalContent className={styles.content}>
-        <p className={styles.description}>
-          {t('web_editor_sunset_modal.description', {
-            a: (text: string) => (
-              <a href={CREATOR_HUB_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
-                {text}
-              </a>
-            )
-          })}
-        </p>
+        <p className={styles.description}>{t('web_editor_sunset_modal.description')}</p>
       </ModalContent>
       <ModalActions className={styles.actions}>
         <Button primary onClick={handleDownload}>
