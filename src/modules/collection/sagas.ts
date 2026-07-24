@@ -173,6 +173,7 @@ import {
   getFiatGatewayCommodityAmount
 } from './utils'
 import { isErrorWithCode } from 'lib/error'
+import { getIdentity } from 'modules/identity/utils'
 import { config } from 'config'
 import { CollectionPaginationData } from './reducer'
 import { Collection, CollectionType, PaymentMethod } from './types'
@@ -352,7 +353,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email, subscribeToNewsletter, paymentMethod, creditsAmount = '0' } = action.payload
+    const { items, email, subscribeToNewsletter, paymentMethod, creditsAmount = '0', totalPriceUSD } = action.payload
 
     if (subscribeToNewsletter) {
       const collectionHasEmotes = items.some(isEmote)
@@ -487,6 +488,29 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           createCollectionArgs,
           totalPrice,
           creditsServerUrl
+        )
+      } else if (paymentMethod === PaymentMethod.SHOP_CREDITS) {
+        if (!totalPriceUSD) {
+          throw new Error('Total USD price is required when using shop credits')
+        }
+
+        const creditsServerUrl: string = yield call([config, config.get], 'CREDITS_SERVER_URL')
+        if (!creditsServerUrl) {
+          throw new Error('Missing CREDITS_SERVER_URL configuration')
+        }
+
+        const usdPriceCents = Math.ceil(Number(ethers.utils.formatEther(totalPriceUSD)) * 100)
+
+        const identity: ReturnType<typeof getIdentity> = yield call(getIdentity)
+
+        txHash = yield call(
+          [creditsService, 'useShopCreditsCollectionManager'],
+          from,
+          maticChainId,
+          createCollectionArgs,
+          usdPriceCents,
+          creditsServerUrl,
+          identity
         )
       } else if (paymentMethod === PaymentMethod.FIAT) {
         const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')

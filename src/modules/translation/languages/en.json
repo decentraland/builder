@@ -1987,6 +1987,11 @@
       "pay_card": "pay by card",
       "pay_card_info": "A 5% transaction fee will be added to your total by the payment processor, as well as an additional 0.5% to cover possible currency fluctuations.",
       "pay_mana": "pay with mana",
+      "pay_shop_credits": "pay with credits",
+      "shop_credits_balance": "Balance: {count} credits",
+      "shop_credits_cost": "{count} credits",
+      "shop_credits_insufficient": "You need {needed} credits, you have {available}.",
+      "shop_credits_top_up": "Top up",
       "submitting_for_review": "Submitting for review"
     },
     "congratulations_step": {

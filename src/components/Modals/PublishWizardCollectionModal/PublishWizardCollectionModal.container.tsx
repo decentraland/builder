@@ -28,7 +28,8 @@ import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST, FETCH_ITEMS_REQUEST } fro
 import {
   getIsOffchainPublicItemOrdersEnabled,
   getIsPublishCollectionsWertEnabled,
-  getIsCreditsForCollectionsFeeEnabled
+  getIsCreditsForCollectionsFeeEnabled,
+  getIsShopCreditsForCollectionsFeeEnabled
 } from 'modules/features/selectors'
 import { OwnProps } from './PublishWizardCollectionModal.types'
 import { AuthorizedPublishWizardThirdPartyCollectionModal, AuthorizedPublishWizardCollectionModal } from './PublishWizardCollectionModal'
@@ -56,6 +57,7 @@ export default (props: OwnProps) => {
   const isOffchainPublicItemOrdersEnabled = useSelector((state: RootState) => getIsOffchainPublicItemOrdersEnabled(state))
   const isPublishCollectionsWertEnabled = useSelector(getIsPublishCollectionsWertEnabled, shallowEqual)
   const isCreditsForCollectionsFeeEnabled = useSelector(getIsCreditsForCollectionsFeeEnabled, shallowEqual)
+  const isShopCreditsForCollectionsFeeEnabled = useSelector(getIsShopCreditsForCollectionsFeeEnabled, shallowEqual)
   const wallet = useSelector(getWallet, shallowEqual)!
   const unsyncedCollectionError = useSelector(getUnsyncedCollectionError, shallowEqual)
   const allCollectionItems = useSelector((state: RootState) => getCollectionItems(state, props.metadata.collectionId), shallowEqual)
@@ -110,6 +112,7 @@ export default (props: OwnProps) => {
     ) => {
       // Calculate totalPrice from rarities and items count for standard collections
       const totalPrice = price?.item?.mana && !thirdParty ? (BigInt(price.item.mana) * BigInt(itemsToPublish.length)).toString() : undefined
+      const totalPriceUSD = price?.item?.usd && !thirdParty ? (BigInt(price.item.usd) * BigInt(itemsToPublish.length)).toString() : undefined
 
       return thirdParty
         ? dispatch(
@@ -125,7 +128,7 @@ export default (props: OwnProps) => {
             )
           )
         : dispatch(
-            publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice)
+            publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice, totalPriceUSD)
           )
     },
     [
@@ -177,6 +180,7 @@ export default (props: OwnProps) => {
       collectionError={collectionError || thirdPartyPublishingError}
       isPublishCollectionsWertEnabled={isPublishCollectionsWertEnabled}
       isCreditsForCollectionsFeeEnabled={isCreditsForCollectionsFeeEnabled}
+      isShopCreditsForCollectionsFeeEnabled={isShopCreditsForCollectionsFeeEnabled}
       isOffchainPublicItemOrdersEnabled={isOffchainPublicItemOrdersEnabled}
       onPublish={onPublish}
       onFetchPrice={isThirdParty ? fetchThirdPartyPrice : onFetchRarities}

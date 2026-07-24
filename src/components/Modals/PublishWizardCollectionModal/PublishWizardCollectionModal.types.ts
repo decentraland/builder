@@ -48,6 +48,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   isPublishingFinished: boolean
   isPublishCollectionsWertEnabled: boolean
   isCreditsForCollectionsFeeEnabled: boolean
+  isShopCreditsForCollectionsFeeEnabled: boolean
   isOffchainPublicItemOrdersEnabled: boolean
   publishingStatus: AuthorizationStepStatus
   onPublish: (

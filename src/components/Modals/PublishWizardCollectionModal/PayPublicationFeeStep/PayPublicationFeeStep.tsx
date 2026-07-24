@@ -16,6 +16,8 @@ import { Props } from '../PublishWizardCollectionModal.types'
 import styles from './PayPublicationFeeStep.module.css'
 import { getBackgroundStyle } from 'modules/item/utils'
 
+const USD_CENTS_PER_CREDIT = 10
+
 const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }) => (
   <div className={styles.multipleItemImages}>
     <ItemImage item={referenceItem} className={styles.itemImage} />
@@ -50,6 +52,7 @@ export const PayPublicationFeeStep: React.FC<
     thirdParty,
     isPublishCollectionsWertEnabled,
     isCreditsForCollectionsFeeEnabled,
+    isShopCreditsForCollectionsFeeEnabled,
     onNextStep,
     onPrevStep
   } = props
@@ -142,6 +145,15 @@ export const PayPublicationFeeStep: React.FC<
     return remainingUSD.toString()
   }, [totalPriceUSD, totalPriceMANA, amountToPay, useCredits, hasCredits])
 
+  const shopCreditsNeeded = useMemo(() => {
+    const usdCents = Math.ceil(Number(ethers.utils.formatEther(totalPriceUSD)) * 100)
+    return Math.ceil(usdCents / USD_CENTS_PER_CREDIT)
+  }, [totalPriceUSD])
+
+  const shopCreditsAvailable = useMemo(() => credits?.usd?.credits ?? 0, [credits])
+
+  const hasEnoughShopCredits = useMemo(() => shopCreditsAvailable >= shopCreditsNeeded, [shopCreditsAvailable, shopCreditsNeeded])
+
   const hasInsufficientMANA = useMemo(() => {
     return !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(amountToPay))
   }, [wallet, amountToPay])
@@ -191,6 +203,10 @@ export const PayPublicationFeeStep: React.FC<
       : basePrice
     onNextStep(PaymentMethod.MANA, priceToPayInWei, creditsToUse)
   }, [!!thirdParty, totalPriceMANA, amountToPay, useCredits, creditsToUse, onNextStep])
+
+  const handleBuyWithShopCredits = useCallback(() => {
+    onNextStep(PaymentMethod.SHOP_CREDITS, '0')
+  }, [onNextStep])
 
   const handleBuyWithFiat = useCallback(() => {
     // When using credits, we need to pass the amountToPay (after deducting credits)
@@ -367,6 +383,42 @@ export const PayPublicationFeeStep: React.FC<
             </div>
           ) : (
             <div className={styles.actionsRight}>
+              {isShopCreditsForCollectionsFeeEnabled && !isThirdParty && !useCredits ? (
+                <div className={styles.shopCreditsAction}>
+                  {hasEnoughShopCredits ? (
+                    <Button
+                      primary
+                      className={styles.shopCreditsButton}
+                      onClick={handleBuyWithShopCredits}
+                      disabled={isLoading || isLoadingAuthorization}
+                      loading={isLoading || isLoadingAuthorization}
+                    >
+                      <span>
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')}
+                        {' '}({t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
+                      </span>
+                    </Button>
+                  ) : (
+                    <>
+                      <Button className={styles.shopCreditsButton} disabled>
+                        <span>
+                          {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')}
+                          {' '}({t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
+                        </span>
+                      </Button>
+                      <small className={styles.shopCreditsNotice}>
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_insufficient', {
+                          needed: shopCreditsNeeded,
+                          available: shopCreditsAvailable
+                        })}{' '}
+                        <a href={`${config.get('MARKETPLACE_WEB_URL', '')}/credits`} target="_blank" rel="noopener noreferrer">
+                          {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_top_up')}
+                        </a>
+                      </small>
+                    </>
+                  )}
+                </div>
+              ) : null}
               {isPublishCollectionsWertEnabled && !useCredits ? (
                 <>
                   {!isThirdParty && (

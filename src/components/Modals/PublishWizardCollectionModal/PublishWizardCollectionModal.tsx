@@ -108,7 +108,7 @@ export const PublishWizardCollectionModal: React.FC<Props & WithAuthorizedAction
         return
       }
 
-      if (paymentMethod === PaymentMethod.FIAT || priceToPayInWei === ethers.BigNumber.from('0').toString()) {
+      if (paymentMethod === PaymentMethod.FIAT || paymentMethod === PaymentMethod.SHOP_CREDITS || priceToPayInWei === ethers.BigNumber.from('0').toString()) {
         onPublish(
           emailAddress,
           subscribeToNewsletter,
