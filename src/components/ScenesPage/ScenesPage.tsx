@@ -4,7 +4,6 @@ import { Link, useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   Container,
-  Button,
   Dropdown,
   DropdownProps,
   Pagination,
@@ -41,30 +40,6 @@ const ScenesPage: React.FC<Props> = props => {
       onOpenModal('CreatorHubUpgradeModal')
     }
   }, [onOpenModal, isFetching])
-
-  const handleOpenImportModal = useCallback(() => {
-    onOpenModal('ImportModal')
-  }, [onOpenModal])
-
-  const handleOpenCreateModal = useCallback(() => {
-    onOpenModal('SceneCreationModal')
-  }, [onOpenModal])
-
-  const renderImportButton = () => {
-    return (
-      <Button inverted className="import-scene" onClick={handleOpenImportModal}>
-        {t('scenes_page.upload_scene')}
-      </Button>
-    )
-  }
-
-  const renderCreateButton = () => {
-    return (
-      <Button primary className="create-scene" onClick={handleOpenCreateModal}>
-        {t('scenes_page.create_scene')}
-      </Button>
-    )
-  }
 
   const renderSortDropdown = () => {
     return (
@@ -160,12 +135,7 @@ const ScenesPage: React.FC<Props> = props => {
               <Column>
                 <Header>{t('scenes_page.my_scenes')}</Header>
               </Column>
-              <Column align="right">
-                <div className="actions">
-                  {renderImportButton()}
-                  {renderCreateButton()}
-                </div>
-              </Column>
+              <Column align="right" />
             </Row>
             <Row className="actions">
               <Column>

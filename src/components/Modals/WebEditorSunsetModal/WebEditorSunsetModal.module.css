@@ -1,0 +1,29 @@
+.modal:global(.ui.modal) {
+  width: 560px;
+}
+
+.content {
+  text-align: center;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.actions button {
+  width: 100%;
+  max-width: 400px;
+}
+
+.actions button:global(.ui.button):not(:first-child) {
+  margin-left: 0;
+}
