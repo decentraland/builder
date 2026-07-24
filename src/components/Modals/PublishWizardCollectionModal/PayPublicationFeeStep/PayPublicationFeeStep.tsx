@@ -43,6 +43,7 @@ export const PayPublicationFeeStep: React.FC<
     isUsingMagic,
     price,
     credits,
+    shopCreditsAvailable,
     isLoadingCredits,
     wallet,
     collectionError,
@@ -149,8 +150,6 @@ export const PayPublicationFeeStep: React.FC<
     const usdCents = Math.ceil(Number(ethers.utils.formatEther(totalPriceUSD)) * 100)
     return Math.ceil(usdCents / USD_CENTS_PER_CREDIT)
   }, [totalPriceUSD])
-
-  const shopCreditsAvailable = useMemo(() => credits?.usd?.credits ?? 0, [credits])
 
   const hasEnoughShopCredits = useMemo(() => shopCreditsAvailable >= shopCreditsNeeded, [shopCreditsAvailable, shopCreditsNeeded])
 
@@ -394,16 +393,16 @@ export const PayPublicationFeeStep: React.FC<
                       loading={isLoading || isLoadingAuthorization}
                     >
                       <span>
-                        {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')}
-                        {' '}({t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')} (
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
                       </span>
                     </Button>
                   ) : (
                     <>
                       <Button className={styles.shopCreditsButton} disabled>
                         <span>
-                          {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')}
-                          {' '}({t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
+                          {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')} (
+                          {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
                         </span>
                       </Button>
                       <small className={styles.shopCreditsNotice}>

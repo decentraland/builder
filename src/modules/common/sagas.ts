@@ -58,6 +58,8 @@ import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
 import { RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
+import { CreditsAPI } from 'lib/api/credits'
+import { shopCreditsSaga } from 'modules/shopCredits/sagas'
 
 const newIdentitySaga = createIdentitySaga({
   authURL: config.get('AUTH_URL')
@@ -81,7 +83,8 @@ export function* rootSaga(
   worldsApi: WorldsAPI,
   tradeService: TradeService,
   creditsClient: CreditsClient,
-  creditsService: CreditsService
+  creditsService: CreditsService,
+  creditsAPI: CreditsAPI
 ) {
   yield all([
     analyticsSaga(),
@@ -132,6 +135,7 @@ export function* rootSaga(
     newsletterSagas(builderAPI),
     worldsSaga(worldsApi),
     gatewaySaga(),
-    creditsSaga({ creditsClient })
+    creditsSaga({ creditsClient }),
+    shopCreditsSaga(creditsAPI)
   ])
 }

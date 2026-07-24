@@ -95,6 +95,7 @@ export const getIsCreditsForCollectionsFeeEnabled = (state: RootState) => {
 }
 
 export const getIsShopCreditsForCollectionsFeeEnabled = (state: RootState) => {
+  return true // TODO: remove this line when the flag is created in the feature flags service
   if (hasLoadedInitialFlags(state)) {
     return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.SHOP_CREDITS_FOR_COLLECTIONS_FEE)
   }

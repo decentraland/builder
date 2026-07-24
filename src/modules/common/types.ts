@@ -39,6 +39,7 @@ import { CollectionCurationState } from 'modules/curations/collectionCuration/re
 import { ItemCurationState } from 'modules/curations/itemCuration/reducer'
 import { InspectorState } from 'modules/inspector/reducer'
 import { WorldsState } from 'modules/worlds/reducer'
+import { ShopCreditsState } from 'modules/shopCredits/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
 export type StorageLoadAction = ReturnType<typeof storageLoad>
@@ -81,6 +82,7 @@ export type RootState = {
   worlds: WorldsState
   gateway: GatewayState
   credits: CreditsState
+  shopCredits: ShopCreditsState
 }
 
 export type RootStore = Store<RootState>

@@ -40,6 +40,7 @@ export type Props = Omit<ModalProps, 'metadata'> & {
   itemsWithChanges: Item[]
   price?: Price
   credits: CreditsResponse | null
+  shopCreditsAvailable: number
   isLoadingCredits: boolean
   unsyncedCollectionError: string | null
   collectionError: string | null

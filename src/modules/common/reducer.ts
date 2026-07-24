@@ -38,6 +38,7 @@ import { tileReducer as tile } from 'modules/tile/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
 import { inspectorReducer as inspector } from 'modules/inspector/reducer'
 import { worldsReducer as worlds } from 'modules/worlds/reducer'
+import { shopCreditsReducer as shopCredits } from 'modules/shopCredits/reducer'
 
 export function createRootReducer() {
   return storageReducerWrapper(
@@ -78,7 +79,8 @@ export function createRootReducer() {
       inspector,
       worlds,
       gateway,
-      credits
+      credits,
+      shopCredits
     })
   )
 }

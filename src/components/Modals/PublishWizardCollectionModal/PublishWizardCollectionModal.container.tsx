@@ -38,6 +38,8 @@ import { PaymentMethod } from 'modules/collection/types'
 import { Cheque } from 'modules/thirdParty/types'
 import { publishAndPushChangesThirdPartyItemsRequest } from 'modules/thirdParty/actions'
 import { getCollectionThirdParty, getError as getThirdPartyError, getThirdPartyPublishStatus } from 'modules/thirdParty/selectors'
+import { getShopCreditsBalance } from 'modules/shopCredits/selectors'
+import { fetchShopCreditsBalanceRequest } from 'modules/shopCredits/actions'
 import { useThirdPartyPrice } from './hooks'
 
 export default (props: OwnProps) => {
@@ -154,6 +156,16 @@ export default (props: OwnProps) => {
     }
   }, [address, credits, dispatch])
 
+  // Shop (USD) credits balance is served by the credits-server and is a separate concept from the marketplace (MANA) credits above.
+  const shopCreditsBalance = useSelector((state: RootState) => (address ? getShopCreditsBalance(state, address) : undefined), shallowEqual)
+  const shopCreditsAvailable = shopCreditsBalance?.credits ?? 0
+
+  useEffect(() => {
+    if (address && isShopCreditsForCollectionsFeeEnabled && !shopCreditsBalance) {
+      dispatch(fetchShopCreditsBalanceRequest(address))
+    }
+  }, [address, isShopCreditsForCollectionsFeeEnabled, shopCreditsBalance, dispatch])
+
   const isPublishingFinished = !!collection.forumLink && thirdPartyItemsToPublish.length === 0 && thirdPartyItemsToPushChanges.length === 0
   const publishingStatus = thirdParty ? thirdPartyPublishingStatus : standardPublishingStatus
   const isPublishing = publishingStatus === AuthorizationStepStatus.WAITING || publishingStatus === AuthorizationStepStatus.PROCESSING
@@ -174,6 +186,7 @@ export default (props: OwnProps) => {
       isPublishingFinished={isPublishingFinished}
       price={price}
       credits={credits}
+      shopCreditsAvailable={shopCreditsAvailable}
       isLoadingCredits={isLoadingCredits}
       unsyncedCollectionError={unsyncedCollectionError}
       itemError={itemError}
