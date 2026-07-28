@@ -15,8 +15,12 @@ import { PaymentMethod } from 'modules/collection/types'
 import { Props } from '../PublishWizardCollectionModal.types'
 import styles from './PayPublicationFeeStep.module.css'
 import { getBackgroundStyle } from 'modules/item/utils'
+import creditsIcon from 'icons/credits.svg'
 
 const USD_CENTS_PER_CREDIT = 10
+
+const getManaUrl = config.get('ACCOUNT_URL', '')
+const getCreditsUrl = `${config.get('SHOP_URL', '')}/credits`
 
 const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }) => (
   <div className={styles.multipleItemImages}>
@@ -59,6 +63,7 @@ export const PayPublicationFeeStep: React.FC<
   } = props
 
   const [useCredits, setUseCredits] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null)
 
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const availableSlots = useMemo(() => thirdParty?.availableSlots ?? 0, [thirdParty?.availableSlots])
@@ -153,47 +158,42 @@ export const PayPublicationFeeStep: React.FC<
 
   const hasEnoughShopCredits = useMemo(() => shopCreditsAvailable >= shopCreditsNeeded, [shopCreditsAvailable, shopCreditsNeeded])
 
-  const shopCreditsInfoContent = useMemo(
-    () => (
-      <span>
-        {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info')}{' '}
-        <a href={`${config.get('SHOP_URL', '')}/credits`} target="_blank" rel="noopener noreferrer">
-          {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info_link')}
-        </a>
-      </span>
-    ),
-    []
-  )
-
   const hasInsufficientMANA = useMemo(() => {
     return !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(amountToPay))
   }, [wallet, amountToPay])
+
+  const showCreditsMethod = isShopCreditsForCollectionsFeeEnabled && !isThirdParty
+  const showCardMethod = isPublishCollectionsWertEnabled && !isThirdParty
+
+  // Marketplace credits can be applied as partial payment on top of MANA and Card only.
+  const canUseMarketplaceCredits =
+    isCreditsForCollectionsFeeEnabled &&
+    !isLoadingCredits &&
+    (selectedPaymentMethod === PaymentMethod.MANA || selectedPaymentMethod === PaymentMethod.FIAT)
+  const isApplyingCredits = canUseMarketplaceCredits && useCredits && hasCredits
+
+  const manaBalance = wallet?.networks.MATIC.mana ?? 0
+
+  // Whether the currently selected payment method has enough funds to cover the fee.
+  // Card is always considered available (funds are handled by the payment processor).
+  const enabledConfirm = useMemo(() => {
+    switch (selectedPaymentMethod) {
+      case PaymentMethod.SHOP_CREDITS:
+        return hasEnoughShopCredits
+      case PaymentMethod.FIAT:
+        return true
+      case PaymentMethod.MANA:
+        return !hasInsufficientMANA
+      default:
+        return false
+    }
+  }, [selectedPaymentMethod, hasEnoughShopCredits, hasInsufficientMANA])
 
   const renderErrorMessage = () => {
     let content: React.ReactNode | undefined = undefined
 
     if (!price) {
       content = <small className={styles.error}>{t('publish_collection_modal_with_oracle.rarities_error')}</small>
-    } else if (hasInsufficientMANA) {
-      content = (
-        <small className={classNames(styles.notEnoughManaNotice, styles.error)}>
-          {t('publish_collection_modal_with_oracle.not_enough_mana', {
-            symbol: (
-              <span>
-                <Mana network={Network.MATIC} inline /> MANA
-              </span>
-            )
-          })}
-          <br />
-          {t('publish_collection_modal_with_oracle.get_mana', {
-            link: (
-              <a href={config.get('ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                Account dapp
-              </a>
-            )
-          })}
-        </small>
-      )
     } else if (unsyncedCollectionError && !isLoading) {
       content = <small className={styles.error}>{t('publish_collection_modal_with_oracle.unsynced_collection')}</small>
     } else if (collectionError && !isLoading) {
@@ -228,6 +228,38 @@ export const PayPublicationFeeStep: React.FC<
     onNextStep(PaymentMethod.FIAT, priceToPayInWei, creditsToUse)
   }, [useCredits, creditsToUse, onNextStep, totalPriceMANA, amountToPay])
 
+  const handleConfirm = useCallback(() => {
+    switch (selectedPaymentMethod) {
+      case PaymentMethod.SHOP_CREDITS:
+        return handleBuyWithShopCredits()
+      case PaymentMethod.FIAT:
+        return handleBuyWithFiat()
+      case PaymentMethod.MANA:
+        return handleBuyWithMana()
+      default:
+        return
+    }
+  }, [selectedPaymentMethod, handleBuyWithShopCredits, handleBuyWithFiat, handleBuyWithMana])
+
+  const renderCreditsToggle = () => (
+    <div className={styles.creditsToggleWrapper} onClick={e => e.stopPropagation()}>
+      <CreditsToggle
+        totalCredits={availableCredits}
+        assetPrice={totalPriceMANA}
+        useCredits={useCredits}
+        onToggle={setUseCredits}
+        showLearnMore={!hasCredits}
+        learnMoreUrl="https://decentraland.org/blog/announcements/marketplace-credits-earn-weekly-rewards-to-power-up-your-look"
+        label={
+          hasCredits
+            ? t('publish_wizard_collection_modal.pay_publication_fee_step.use_credits')
+            : t('publish_wizard_collection_modal.pay_publication_fee_step.pay_with_credits')
+        }
+        tooltipContent={t('credits.value')}
+      />
+    </div>
+  )
+
   return (
     <Modal.Content>
       <Column>
@@ -259,6 +291,7 @@ export const PayPublicationFeeStep: React.FC<
                 )
               })}
             </span>
+
             <Table basic="very">
               <Table.Header>
                 <Table.Row>
@@ -269,7 +302,6 @@ export const PayPublicationFeeStep: React.FC<
                   <Table.HeaderCell>
                     {t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_usd', { currency: Currency.USD })}
                   </Table.HeaderCell>
-                  <Table.HeaderCell>{t('publish_wizard_collection_modal.pay_publication_fee_step.total_in_mana')}</Table.HeaderCell>
                   <Table.HeaderCell />
                 </Table.Row>
               </Table.Header>
@@ -290,58 +322,7 @@ export const PayPublicationFeeStep: React.FC<
                       </Table.Cell>
                     ) : null}
                     <Table.Cell className={styles.totalAmount}>
-                      {useCredits && hasCredits ? (
-                        <div className={styles.priceContainer}>
-                          <span className={styles.originalPrice}>
-                            {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
-                          </span>
-                          <span className={styles.adjustedPrice}>
-                            {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(amountToPayUSD))}
-                          </span>
-                        </div>
-                      ) : (
-                        <>
-                          {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
-                        </>
-                      )}
-                    </Table.Cell>
-                    <Table.Cell className={styles.totalAmount}>
-                      {useCredits && hasCredits ? (
-                        <div className={styles.priceContainer}>
-                          <span className={styles.originalPrice}>
-                            <Mana showTooltip network={Network.MATIC} size="small">
-                              {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
-                            </Mana>
-                          </span>
-                          <span className={styles.adjustedPrice}>
-                            <Mana showTooltip network={Network.MATIC} size="small">
-                              {toFixedMANAValue(ethers.utils.formatEther(amountToPay))}
-                            </Mana>
-                          </span>
-                        </div>
-                      ) : (
-                        <Mana showTooltip network={Network.MATIC} size="small">
-                          {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
-                        </Mana>
-                      )}
-                    </Table.Cell>
-                    <Table.Cell className={styles.creditsCell}>
-                      {isCreditsForCollectionsFeeEnabled && !isLoadingCredits && (
-                        <CreditsToggle
-                          totalCredits={availableCredits}
-                          assetPrice={totalPriceMANA}
-                          useCredits={useCredits}
-                          onToggle={setUseCredits}
-                          showLearnMore={!hasCredits}
-                          learnMoreUrl="https://decentraland.org/blog/announcements/marketplace-credits-earn-weekly-rewards-to-power-up-your-look"
-                          label={
-                            hasCredits
-                              ? t('publish_wizard_collection_modal.pay_publication_fee_step.use_credits')
-                              : t('publish_wizard_collection_modal.pay_publication_fee_step.pay_with_credits')
-                          }
-                          tooltipContent={t('credits.value')}
-                        />
-                      )}
+                      {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
                     </Table.Cell>
                   </Table.Row>
                 ) : null}
@@ -377,6 +358,187 @@ export const PayPublicationFeeStep: React.FC<
                 ) : null}
               </Table.Body>
             </Table>
+
+            <span className={styles.payWithLabel}>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_with')}</span>
+            <div className={styles.paymentMethods}>
+              {/* MANA */}
+              <label
+                className={classNames(styles.methodCard, {
+                  [styles.methodCardSelected]: selectedPaymentMethod === PaymentMethod.MANA
+                })}
+              >
+                <div className={styles.methodMain}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    className={styles.methodRadio}
+                    checked={selectedPaymentMethod === PaymentMethod.MANA}
+                    onChange={() => setSelectedPaymentMethod(PaymentMethod.MANA)}
+                    disabled={isLoading || isLoadingAuthorization}
+                  />
+                  <span className={styles.methodIcon}>
+                    <Mana inline network={Network.MATIC} />
+                  </span>
+                  <div className={styles.methodInfo}>
+                    <span className={styles.methodName}>{t('publish_wizard_collection_modal.pay_publication_fee_step.method_mana')}</span>
+                    <span className={styles.methodBalance}>
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.balance')}: <Mana network={Network.MATIC} inline />{' '}
+                      {toFixedMANAValue(manaBalance.toString())}
+                    </span>
+                  </div>
+                  <div className={styles.methodPrice}>
+                    {isApplyingCredits ? (
+                      <span className={styles.priceContainer}>
+                        <span className={styles.originalPrice}>
+                          <Mana network={Network.MATIC} size="small">
+                            {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
+                          </Mana>
+                        </span>
+                        <span className={styles.adjustedPrice}>
+                          <Mana network={Network.MATIC} size="small">
+                            {toFixedMANAValue(ethers.utils.formatEther(amountToPay))}
+                          </Mana>
+                        </span>
+                      </span>
+                    ) : (
+                      <Mana network={Network.MATIC} size="small">
+                        {toFixedMANAValue(ethers.utils.formatEther(totalPriceMANA))}
+                      </Mana>
+                    )}
+                  </div>
+                </div>
+                {isCreditsForCollectionsFeeEnabled && !isLoadingCredits && selectedPaymentMethod === PaymentMethod.MANA
+                  ? renderCreditsToggle()
+                  : null}
+              </label>
+
+              {/* Card */}
+              {showCardMethod ? (
+                <label
+                  className={classNames(styles.methodCard, {
+                    [styles.methodCardSelected]: selectedPaymentMethod === PaymentMethod.FIAT
+                  })}
+                >
+                  <div className={styles.methodMain}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      className={styles.methodRadio}
+                      checked={selectedPaymentMethod === PaymentMethod.FIAT}
+                      onChange={() => setSelectedPaymentMethod(PaymentMethod.FIAT)}
+                      disabled={isLoading || isLoadingAuthorization}
+                    />
+                    <span className={styles.methodIcon}>
+                      <Icon name="credit card outline" />
+                    </span>
+                    <div className={styles.methodInfo}>
+                      <span className={styles.methodName}>
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.method_card')}
+                        <span className={styles.methodInfoTooltip} onClick={e => e.stopPropagation()}>
+                          <InfoTooltip
+                            className={styles.methodTooltip}
+                            position="top center"
+                            content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
+                          />
+                        </span>
+                      </span>
+                    </div>
+                    <div className={styles.methodPrice}>
+                      {isApplyingCredits ? (
+                        <span className={styles.priceContainer}>
+                          <span className={styles.originalPrice}>
+                            {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                          </span>
+                          <span className={styles.adjustedPrice}>
+                            {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(amountToPayUSD))}
+                          </span>
+                        </span>
+                      ) : (
+                        <span>
+                          {Currency.USD} {toFixedMANAValue(ethers.utils.formatEther(totalPriceUSD))}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {isCreditsForCollectionsFeeEnabled && !isLoadingCredits && selectedPaymentMethod === PaymentMethod.FIAT
+                    ? renderCreditsToggle()
+                    : null}
+                </label>
+              ) : null}
+
+              {/* Shop Credits */}
+              {showCreditsMethod ? (
+                <label
+                  className={classNames(styles.methodCard, {
+                    [styles.methodCardSelected]: selectedPaymentMethod === PaymentMethod.SHOP_CREDITS
+                  })}
+                >
+                  <div className={styles.methodMain}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      className={styles.methodRadio}
+                      checked={selectedPaymentMethod === PaymentMethod.SHOP_CREDITS}
+                      onChange={() => setSelectedPaymentMethod(PaymentMethod.SHOP_CREDITS)}
+                      disabled={isLoading || isLoadingAuthorization}
+                    />
+                    <span className={styles.methodIcon}>
+                      <img src={creditsIcon} alt="" className={styles.creditsIcon} />
+                    </span>
+                    <div className={styles.methodInfo}>
+                      <span className={styles.methodName}>
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.method_credits')}
+                        <span className={styles.methodInfoTooltip} onClick={e => e.stopPropagation()}>
+                          <InfoTooltip
+                            className={styles.methodTooltip}
+                            position="top center"
+                            hoverable
+                            mouseLeaveDelay={500}
+                            content={
+                              <span>
+                                {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info')}{' '}
+                                <a href={getCreditsUrl} target="_blank" rel="noopener noreferrer">
+                                  {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info_link')}
+                                </a>
+                              </span>
+                            }
+                          />
+                        </span>
+                      </span>
+                      <span className={styles.methodBalance}>
+                        {t('publish_wizard_collection_modal.pay_publication_fee_step.balance')}:{' '}
+                        <img src={creditsIcon} alt="" className={styles.balanceCreditsIcon} /> {shopCreditsAvailable}
+                      </span>
+                    </div>
+                    <div className={styles.methodPrice}>
+                      <span className={styles.creditsPrice}>
+                        <img src={creditsIcon} alt="" className={styles.balanceCreditsIcon} /> {shopCreditsNeeded}
+                      </span>
+                    </div>
+                  </div>
+                </label>
+              ) : null}
+            </div>
+            {selectedPaymentMethod === PaymentMethod.MANA && hasInsufficientMANA ? (
+              <div className={styles.insufficientBalanceRow}>
+                <span className={styles.insufficientBalanceLabel}>
+                  {t('publish_wizard_collection_modal.pay_publication_fee_step.insufficient_balance')}
+                </span>
+                <a className={styles.getCurrencyButton} href={getManaUrl} target="_blank" rel="noopener noreferrer">
+                  {t('publish_wizard_collection_modal.pay_publication_fee_step.get_mana_button')}
+                </a>
+              </div>
+            ) : null}
+            {selectedPaymentMethod === PaymentMethod.SHOP_CREDITS && !hasEnoughShopCredits ? (
+              <div className={styles.insufficientBalanceRow}>
+                <span className={styles.insufficientBalanceLabel}>
+                  {t('publish_wizard_collection_modal.pay_publication_fee_step.insufficient_balance')}
+                </span>
+                <a className={styles.getCurrencyButton} href={getCreditsUrl} target="_blank" rel="noopener noreferrer">
+                  {t('publish_wizard_collection_modal.pay_publication_fee_step.get_credits_button')}
+                </a>
+              </div>
+            ) : null}
           </Column>
         </Row>
         {renderErrorMessage()}
@@ -384,78 +546,16 @@ export const PayPublicationFeeStep: React.FC<
           <Button className="back" secondary onClick={onPrevStep} disabled={isLoading || isLoadingAuthorization}>
             {t('global.back')}
           </Button>
-          {ethers.BigNumber.from(amountToPay).eq(0) ? (
-            <div className={styles.actionsRight}>
-              <Button
-                primary
-                onClick={handleBuyWithMana}
-                disabled={isLoading || isLoadingAuthorization}
-                loading={isLoading || isLoadingAuthorization}
-                className={styles.checkoutButton}
-              >
-                {t('publish_wizard_collection_modal.pay_publication_fee_step.checkout')}
-              </Button>
-            </div>
-          ) : (
-            <div className={styles.actionsRight}>
-              {isShopCreditsForCollectionsFeeEnabled && !isThirdParty && !useCredits ? (
-                <div className={styles.shopCreditsAction}>
-                  <Button
-                    primary
-                    className={styles.shopCreditsButton}
-                    onClick={handleBuyWithShopCredits}
-                    disabled={isLoading || isLoadingAuthorization || !hasEnoughShopCredits}
-                    loading={isLoading || isLoadingAuthorization}
-                  >
-                    <Icon name="dollar" />
-                    <span>
-                      {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits_with_count', {
-                        count: shopCreditsNeeded
-                      })}
-                    </span>
-                    <span
-                      className={classNames(styles.infoTooltipTrigger, styles.shopCreditsInfoTrigger)}
-                      onClick={e => e.stopPropagation()}
-                    >
-                      <InfoTooltip
-                        className={styles.shopCreditsInfoTooltip}
-                        position="top center"
-                        content={shopCreditsInfoContent}
-                        hoverable
-                        mouseLeaveDelay={500}
-                      />
-                    </span>
-                  </Button>
-                </div>
-              ) : null}
-              {isPublishCollectionsWertEnabled && !useCredits ? (
-                <>
-                  {!isThirdParty && (
-                    <Button className={styles.payByCardButton} onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
-                      <Icon name="credit card outline" />
-                      <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
-                      <span className={styles.infoTooltipTrigger} onClick={e => e.stopPropagation()}>
-                        <InfoTooltip
-                          className={styles.payWithCardInfoTooltip}
-                          position="top center"
-                          content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
-                        />
-                      </span>
-                    </Button>
-                  )}
-                </>
-              ) : null}
-              <Button
-                primary
-                onClick={handleBuyWithMana}
-                disabled={hasInsufficientMANA || isLoading || isLoadingAuthorization}
-                loading={isLoading || isLoadingAuthorization}
-              >
-                <Mana inline size="small" network={Network.MATIC} />
-                <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_mana')}</span>
-              </Button>
-            </div>
-          )}
+          <div className={styles.actionsRight}>
+            <Button
+              primary
+              onClick={handleConfirm}
+              disabled={!enabledConfirm || isLoading || isLoadingAuthorization}
+              loading={isLoading || isLoadingAuthorization}
+            >
+              {t('publish_wizard_collection_modal.pay_publication_fee_step.confirm')}
+            </Button>
+          </div>
         </Row>
       </Column>
     </Modal.Content>

@@ -39,6 +39,270 @@
   text-decoration: underline;
 }
 
+.payWithLabel {
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* Full-width payment method card */
+.methodCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.methodCard:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.methodCardSelected,
+.methodCardSelected:hover {
+  border-color: var(--primary);
+  background-color: rgba(255, 45, 85, 0.06);
+}
+
+.methodMain {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Dark-theme radio (native input isn't themed, so we draw it) */
+.methodRadio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin: 0;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  position: relative;
+}
+
+.methodRadio:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.methodRadio:checked {
+  border-color: var(--primary);
+}
+
+.methodRadio:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+  transform: translate(-50%, -50%);
+}
+
+.methodRadio:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.methodIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.methodIcon :global(.dcl.mana),
+.methodIcon :global(.dcl.mana.inline) {
+  font-size: 34px;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Remove the Mana symbol's built-in right padding and vertical offset so the
+   glyph sits centered in the icon box. */
+.methodIcon :global(.dcl.mana) :global(.symbol),
+.methodBalance :global(.dcl.mana) :global(.symbol) {
+  padding: 0;
+}
+
+.methodIcon :global(.dcl.mana) :global(.matic) {
+  transform: none;
+}
+
+.methodIcon :global(i.icon),
+.methodIcon :global(i.icon.icon) {
+  font-size: 34px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  line-height: 1;
+}
+
+.creditsIcon {
+  width: 34px;
+  height: 34px;
+}
+
+.methodInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.methodName {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.methodInfoTooltip {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The tooltip popup is portaled to <body>; lift it above the modal overlay. */
+.methodTooltip:global(.ui.visible.popup) {
+  z-index: 4000;
+}
+
+.methodBalance {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--secondary-text, rgba(255, 255, 255, 0.64));
+}
+
+/* Mute the balance-line icons so they match the secondary text color */
+.methodBalance :global(.dcl.mana) {
+  opacity: 0.3;
+}
+
+.methodBalance .balanceCreditsIcon {
+  opacity: 0.3;
+}
+
+.balanceCreditsIcon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+
+.methodPrice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Normalize every price currency to the same size regardless of the
+   component used to render it (Mana Header vs. plain text). */
+.methodPrice :global(.dcl.mana),
+.methodPrice :global(.dcl.mana .header) {
+  font-size: 18px !important;
+  line-height: 1;
+  margin: 0;
+  font-weight: 600;
+}
+
+.creditsPrice {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.creditsPrice .balanceCreditsIcon {
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+}
+
+.insufficientBalanceRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.insufficientBalanceLabel,
+.getCurrencyButton {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+.getCurrencyButton {
+  text-decoration: underline;
+}
+
+/* Marketplace-credits toggle embedded inside a selected card.
+   Slides in when the card becomes selected (the element mounts). */
+.creditsToggleWrapper {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  transform-origin: top;
+  animation: creditsToggleSlideIn 0.25s ease-out;
+}
+
+@keyframes creditsToggleSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .creditsToggleWrapper {
+    animation: none;
+  }
+}
+
 .itemCell {
   display: flex;
   align-items: center;
@@ -135,11 +399,6 @@
   color: var(--primary);
 }
 
-.notEnoughManaNotice {
-  display: block;
-  line-height: 1.5;
-}
-
 .actions {
   display: flex !important;
   justify-content: space-between !important;
@@ -161,66 +420,4 @@
 
 .actionsRight button {
   width: 216px;
-}
-
-/* Wrapper around the InfoTooltip so its trigger icon (not the portaled popup)
-   gets the spacing/layout — decentraland-ui forwards className to the popup. */
-.infoTooltipTrigger {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 8px;
-}
-
-.payWithCardInfoTooltip:global(.ui.visible.popup),
-.shopCreditsInfoTooltip:global(.ui.visible.popup) {
-  z-index: 4000;
-}
-
-.payByCardButton:global(.ui.button),
-.payByCardButton:global(.ui.button):hover,
-.payByCardButton:global(.ui.button):focus,
-.payByCardButton:global(.ui.button):active {
-  background-color: #ecebed !important;
-  color: #5e5b67 !important;
-}
-
-.checkoutButton {
-  width: 100%;
-}
-
-/* Shop Credits */
-.shopCreditsAction {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.shopCreditsButton:global(.ui.button) {
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Render the info icon in white so it is readable on the primary button */
-.shopCreditsInfoTrigger :global(.dui-info-tooltip__trigger) {
-  filter: brightness(0) invert(1);
-}
-
-.shopCreditsNotice {
-  font-size: 12px;
-  color: var(--secondary);
-  text-align: right;
-}
-
-.shopCreditsNotice a {
-  color: var(--primary);
-  text-decoration: underline;
-}
-
-/* Credits Cell Alignment */
-.creditsCell {
-  display: table-cell;
-  justify-items: end;
 }
