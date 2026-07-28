@@ -2005,7 +2005,6 @@
       "pay_card": "pagar con tarjeta",
       "pay_card_info": "Un 5% de tarifa de transacción será añadido a su total por el procesador de pagos, además de un 0.5% adicional para cubrir posibles fluctuaciones de moneda.",
       "pay_mana": "pagar con mana",
-      "pay_shop_credits_with_count": "Pagar con {count} créditos",
       "shop_credits_info": "Paga esta tarifa usando tus créditos de la Tienda de Decentraland.",
       "shop_credits_info_link": "Obtener créditos",
       "submitting_for_review": "Enviando para revisión"

@@ -1996,7 +1996,6 @@
       "pay_card": "pay by card",
       "pay_card_info": "A 5% transaction fee will be added to your total by the payment processor, as well as an additional 0.5% to cover possible currency fluctuations.",
       "pay_mana": "pay with mana",
-      "pay_shop_credits_with_count": "Pay with {count} Credits",
       "shop_credits_info": "Pay this fee using your Decentraland Shop credits.",
       "shop_credits_info_link": "Get credits",
       "submitting_for_review": "Submitting for review"

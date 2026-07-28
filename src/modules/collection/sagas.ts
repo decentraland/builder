@@ -170,7 +170,8 @@ import {
   isTPCollection,
   getCollectionFactoryContract,
   toPaginationStats,
-  getFiatGatewayCommodityAmount
+  getFiatGatewayCommodityAmount,
+  weiToUsdCents
 } from './utils'
 import { isErrorWithCode } from 'lib/error'
 import { getIdentity } from 'modules/identity/utils'
@@ -499,19 +500,26 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           throw new Error('Missing CREDITS_SERVER_URL configuration')
         }
 
-        const usdPriceCents = Math.ceil(Number(ethers.utils.formatEther(totalPriceUSD)) * 100)
+        const usdPriceCents = weiToUsdCents(totalPriceUSD)
 
         const identity: ReturnType<typeof getIdentity> = yield call(getIdentity)
 
-        txHash = yield call(
-          [creditsService, 'useShopCreditsCollectionManager'],
-          from,
-          maticChainId,
-          createCollectionArgs,
-          usdPriceCents,
-          creditsServerUrl,
-          identity
-        )
+        try {
+          txHash = yield call(
+            [creditsService, 'useShopCreditsCollectionManager'],
+            from,
+            maticChainId,
+            createCollectionArgs,
+            usdPriceCents,
+            creditsServerUrl,
+            identity
+          )
+        } catch (shopCreditsError) {
+          if (isErrorWithCode(shopCreditsError) && shopCreditsError.code === 4001) {
+            throw new Error('User rejected the shop credits transaction')
+          }
+          throw shopCreditsError
+        }
       } else if (paymentMethod === PaymentMethod.FIAT) {
         const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')
 

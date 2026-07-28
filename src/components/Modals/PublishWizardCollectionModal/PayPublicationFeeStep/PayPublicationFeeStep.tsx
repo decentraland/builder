@@ -10,17 +10,12 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { WithAuthorizedActionProps } from 'decentraland-dapps/dist/containers/withAuthorizedAction'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
 import { Currency, Item } from 'modules/item/types'
-import { isTPCollection } from 'modules/collection/utils'
+import { isTPCollection, shopCreditsNeededForPrice } from 'modules/collection/utils'
 import { PaymentMethod } from 'modules/collection/types'
 import { Props } from '../PublishWizardCollectionModal.types'
 import styles from './PayPublicationFeeStep.module.css'
 import { getBackgroundStyle } from 'modules/item/utils'
 import creditsIcon from 'icons/credits.svg'
-
-const USD_CENTS_PER_CREDIT = 10
-
-const getManaUrl = config.get('ACCOUNT_URL', '')
-const getCreditsUrl = `${config.get('SHOP_URL', '')}/credits`
 
 const MultipleItemImages: React.FC<{ referenceItem: Item }> = ({ referenceItem }) => (
   <div className={styles.multipleItemImages}>
@@ -64,6 +59,9 @@ export const PayPublicationFeeStep: React.FC<
 
   const [useCredits, setUseCredits] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null)
+
+  const manaUrl = useMemo(() => config.get('ACCOUNT_URL', ''), [])
+  const creditsUrl = useMemo(() => `${config.get('SHOP_URL', '')}/credits`, [])
 
   const isThirdParty = useMemo(() => isTPCollection(collection), [collection])
   const availableSlots = useMemo(() => thirdParty?.availableSlots ?? 0, [thirdParty?.availableSlots])
@@ -151,10 +149,7 @@ export const PayPublicationFeeStep: React.FC<
     return remainingUSD.toString()
   }, [totalPriceUSD, totalPriceMANA, amountToPay, useCredits, hasCredits])
 
-  const shopCreditsNeeded = useMemo(() => {
-    const usdCents = Math.ceil(Number(ethers.utils.formatEther(totalPriceUSD)) * 100)
-    return Math.ceil(usdCents / USD_CENTS_PER_CREDIT)
-  }, [totalPriceUSD])
+  const shopCreditsNeeded = useMemo(() => shopCreditsNeededForPrice(totalPriceUSD), [totalPriceUSD])
 
   const hasEnoughShopCredits = useMemo(() => shopCreditsAvailable >= shopCreditsNeeded, [shopCreditsAvailable, shopCreditsNeeded])
 
@@ -216,6 +211,7 @@ export const PayPublicationFeeStep: React.FC<
   }, [!!thirdParty, totalPriceMANA, amountToPay, useCredits, creditsToUse, onNextStep])
 
   const handleBuyWithShopCredits = useCallback(() => {
+    // '0' because no on-chain MANA payment is needed; the credits-server handles the charge.
     onNextStep(PaymentMethod.SHOP_CREDITS, '0')
   }, [onNextStep])
 
@@ -497,7 +493,7 @@ export const PayPublicationFeeStep: React.FC<
                             content={
                               <span>
                                 {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info')}{' '}
-                                <a href={getCreditsUrl} target="_blank" rel="noopener noreferrer">
+                                <a href={creditsUrl} target="_blank" rel="noopener noreferrer">
                                   {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info_link')}
                                 </a>
                               </span>
@@ -524,7 +520,7 @@ export const PayPublicationFeeStep: React.FC<
                 <span className={styles.insufficientBalanceLabel}>
                   {t('publish_wizard_collection_modal.pay_publication_fee_step.insufficient_balance')}
                 </span>
-                <a className={styles.getCurrencyButton} href={getManaUrl} target="_blank" rel="noopener noreferrer">
+                <a className={styles.getCurrencyButton} href={manaUrl} target="_blank" rel="noopener noreferrer">
                   {t('publish_wizard_collection_modal.pay_publication_fee_step.get_mana_button')}
                 </a>
               </div>
@@ -534,7 +530,7 @@ export const PayPublicationFeeStep: React.FC<
                 <span className={styles.insufficientBalanceLabel}>
                   {t('publish_wizard_collection_modal.pay_publication_fee_step.insufficient_balance')}
                 </span>
-                <a className={styles.getCurrencyButton} href={getCreditsUrl} target="_blank" rel="noopener noreferrer">
+                <a className={styles.getCurrencyButton} href={creditsUrl} target="_blank" rel="noopener noreferrer">
                   {t('publish_wizard_collection_modal.pay_publication_fee_step.get_credits_button')}
                 </a>
               </div>

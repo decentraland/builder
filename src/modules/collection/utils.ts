@@ -246,3 +246,13 @@ export const getFiatGatewayCommodityAmount = (unitPrice: string, items: number) 
   // It is important to round up to this amount of decimal places to avoid issues with the widget.
   return Math.ceil(totalPriceEth * factor) / factor
 }
+
+export const USD_CENTS_PER_CREDIT = 10
+
+export function weiToUsdCents(weiUsd: string): number {
+  return Math.ceil(Number(ethers.utils.formatEther(weiUsd)) * 100)
+}
+
+export function shopCreditsNeededForPrice(weiUsd: string): number {
+  return Math.ceil(weiToUsdCents(weiUsd) / USD_CENTS_PER_CREDIT)
+}
