@@ -1968,7 +1968,7 @@
         "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per collection (paid in MANA) only once."
       },
       "standard": {
-        "subtitle": "You are about to submit your {count} {count, plural, one {item} other {items}} collection \"{collection_name}\" for Curator review. To continue, choose your payment method for the publication fee.Learn about the publication fee"
+        "subtitle": "You are about to submit your {count} {count, plural, one {item} other {items}} collection \"{collection_name}\" for Curator review. To continue, choose your payment method for the publication fee. {link}."
       },
       "learn_more": "Learn about the publication fee",
       "already_payed": "Already payed but not published",
@@ -1987,11 +1987,9 @@
       "pay_card": "pay by card",
       "pay_card_info": "A 5% transaction fee will be added to your total by the payment processor, as well as an additional 0.5% to cover possible currency fluctuations.",
       "pay_mana": "pay with mana",
-      "pay_shop_credits": "pay with credits",
-      "shop_credits_balance": "Balance: {count} credits",
-      "shop_credits_cost": "{count} credits",
-      "shop_credits_insufficient": "You need {needed} credits, you have {available}.",
-      "shop_credits_top_up": "Top up",
+      "pay_shop_credits_with_count": "Pay with {count} Credits",
+      "shop_credits_info": "Pay this fee using your Decentraland Shop credits.",
+      "shop_credits_info_link": "Get credits",
       "submitting_for_review": "Submitting for review"
     },
     "congratulations_step": {

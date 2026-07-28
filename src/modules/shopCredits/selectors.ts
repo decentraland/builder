@@ -9,5 +9,4 @@ export const getError = (state: RootState) => getState(state).error
 
 export const getShopCreditsBalance = (state: RootState, address: string) => getBalances(state)[address]
 
-export const isFetchingShopCreditsBalance = (state: RootState) =>
-  isLoadingType(getLoading(state), FETCH_SHOP_CREDITS_BALANCE_REQUEST)
+export const isFetchingShopCreditsBalance = (state: RootState) => isLoadingType(getLoading(state), FETCH_SHOP_CREDITS_BALANCE_REQUEST)

@@ -30,19 +30,12 @@
 .subtitle {
   font-size: 14px;
   color: var(--clear-divider);
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   display: block;
   line-height: 1.5;
 }
 
-.learnMore {
-  font-size: 13px;
-  margin-bottom: 16px;
-  display: block;
-}
-
-.learnMore a {
-  color: var(--clear-divider);
+.subtitle a:hover {
   text-decoration: underline;
 }
 
@@ -170,17 +163,25 @@
   width: 216px;
 }
 
-.payWithCardInfoTooltip {
-  margin-right: 8px;
+/* Wrapper around the InfoTooltip so its trigger icon (not the portaled popup)
+   gets the spacing/layout — decentraland-ui forwards className to the popup. */
+.infoTooltipTrigger {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
 }
 
-.payWithCardInfoTooltip:global(.ui.visible.popup) {
+.payWithCardInfoTooltip:global(.ui.visible.popup),
+.shopCreditsInfoTooltip:global(.ui.visible.popup) {
   z-index: 4000;
 }
 
-.payByCardButton:global(.ui.button) {
+.payByCardButton:global(.ui.button),
+.payByCardButton:global(.ui.button):hover,
+.payByCardButton:global(.ui.button):focus,
+.payByCardButton:global(.ui.button):active {
   background-color: #ecebed !important;
-  color: #5e5b67;
+  color: #5e5b67 !important;
 }
 
 .checkoutButton {
@@ -197,6 +198,14 @@
 
 .shopCreditsButton:global(.ui.button) {
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Render the info icon in white so it is readable on the primary button */
+.shopCreditsInfoTrigger :global(.dui-info-tooltip__trigger) {
+  filter: brightness(0) invert(1);
 }
 
 .shopCreditsNotice {

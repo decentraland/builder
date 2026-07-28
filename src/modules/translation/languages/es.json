@@ -1977,7 +1977,7 @@
         "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por colección (pagado en MANA) una única vez."
       },
       "standard": {
-        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA)."
+        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA). {link}."
       },
       "learn_more": "Aprender sobre la tarifa de publicación",
       "already_payed": "Ya pagados, pero no publicados",
@@ -1996,6 +1996,9 @@
       "pay_card": "pagar con tarjeta",
       "pay_card_info": "Un 5% de tarifa de transacción será añadido a su total por el procesador de pagos, además de un 0.5% adicional para cubrir posibles fluctuaciones de moneda.",
       "pay_mana": "pagar con mana",
+      "pay_shop_credits_with_count": "Pagar con {count} créditos",
+      "shop_credits_info": "Paga esta tarifa usando tus créditos de la Tienda de Decentraland.",
+      "shop_credits_info_link": "Obtener créditos",
       "submitting_for_review": "Enviando para revisión"
     },
     "congratulations_step": {

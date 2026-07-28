@@ -153,6 +153,18 @@ export const PayPublicationFeeStep: React.FC<
 
   const hasEnoughShopCredits = useMemo(() => shopCreditsAvailable >= shopCreditsNeeded, [shopCreditsAvailable, shopCreditsNeeded])
 
+  const shopCreditsInfoContent = useMemo(
+    () => (
+      <span>
+        {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info')}{' '}
+        <a href={`${config.get('SHOP_URL', '')}/credits`} target="_blank" rel="noopener noreferrer">
+          {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_info_link')}
+        </a>
+      </span>
+    ),
+    []
+  )
+
   const hasInsufficientMANA = useMemo(() => {
     return !!wallet && wallet.networks.MATIC.mana < Number(ethers.utils.formatEther(amountToPay))
   }, [wallet, amountToPay])
@@ -235,13 +247,17 @@ export const PayPublicationFeeStep: React.FC<
                 collection_name: <b>{collection.name}</b>,
                 count: amountOfItemsToPublish,
                 currency: 'USD',
-                publication_fee: toFixedMANAValue(ethers.utils.formatEther(priceUSD))
+                publication_fee: toFixedMANAValue(ethers.utils.formatEther(priceUSD)),
+                link: (
+                  <a
+                    href="https://docs.decentraland.org/creator/wearables-and-emotes/publishing-collections/publishing-collections/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('publish_wizard_collection_modal.pay_publication_fee_step.learn_more')}
+                  </a>
+                )
               })}
-            </span>
-            <span className={styles.learnMore}>
-              <a href="https://docs.decentraland.org/decentraland/publishing-wearables/" target="_blank" rel="noopener noreferrer">
-                {t('publish_wizard_collection_modal.pay_publication_fee_step.learn_more')}
-              </a>
             </span>
             <Table basic="very">
               <Table.Header>
@@ -384,54 +400,48 @@ export const PayPublicationFeeStep: React.FC<
             <div className={styles.actionsRight}>
               {isShopCreditsForCollectionsFeeEnabled && !isThirdParty && !useCredits ? (
                 <div className={styles.shopCreditsAction}>
-                  {hasEnoughShopCredits ? (
-                    <Button
-                      primary
-                      className={styles.shopCreditsButton}
-                      onClick={handleBuyWithShopCredits}
-                      disabled={isLoading || isLoadingAuthorization}
-                      loading={isLoading || isLoadingAuthorization}
+                  <Button
+                    primary
+                    className={styles.shopCreditsButton}
+                    onClick={handleBuyWithShopCredits}
+                    disabled={isLoading || isLoadingAuthorization || !hasEnoughShopCredits}
+                    loading={isLoading || isLoadingAuthorization}
+                  >
+                    <Icon name="dollar" />
+                    <span>
+                      {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits_with_count', {
+                        count: shopCreditsNeeded
+                      })}
+                    </span>
+                    <span
+                      className={classNames(styles.infoTooltipTrigger, styles.shopCreditsInfoTrigger)}
+                      onClick={e => e.stopPropagation()}
                     >
-                      <span>
-                        {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')} (
-                        {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
-                      </span>
-                    </Button>
-                  ) : (
-                    <>
-                      <Button className={styles.shopCreditsButton} disabled>
-                        <span>
-                          {t('publish_wizard_collection_modal.pay_publication_fee_step.pay_shop_credits')} (
-                          {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_cost', { count: shopCreditsNeeded })})
-                        </span>
-                      </Button>
-                      <small className={styles.shopCreditsNotice}>
-                        {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_insufficient', {
-                          needed: shopCreditsNeeded,
-                          available: shopCreditsAvailable
-                        })}{' '}
-                        <a href={`${config.get('MARKETPLACE_WEB_URL', '')}/credits`} target="_blank" rel="noopener noreferrer">
-                          {t('publish_wizard_collection_modal.pay_publication_fee_step.shop_credits_top_up')}
-                        </a>
-                      </small>
-                    </>
-                  )}
+                      <InfoTooltip
+                        className={styles.shopCreditsInfoTooltip}
+                        position="top center"
+                        content={shopCreditsInfoContent}
+                        hoverable
+                        mouseLeaveDelay={500}
+                      />
+                    </span>
+                  </Button>
                 </div>
               ) : null}
               {isPublishCollectionsWertEnabled && !useCredits ? (
                 <>
                   {!isThirdParty && (
-                    <>
-                      <InfoTooltip
-                        className={styles.payWithCardInfoTooltip}
-                        position="bottom center"
-                        content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
-                      />
-                      <Button className={styles.payByCardButton} onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
-                        <Icon name="credit card outline" />
-                        <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
-                      </Button>
-                    </>
+                    <Button className={styles.payByCardButton} onClick={handleBuyWithFiat} disabled={isLoading} loading={isLoading}>
+                      <Icon name="credit card outline" />
+                      <span>{t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card')}</span>
+                      <span className={styles.infoTooltipTrigger} onClick={e => e.stopPropagation()}>
+                        <InfoTooltip
+                          className={styles.payWithCardInfoTooltip}
+                          position="top center"
+                          content={t('publish_wizard_collection_modal.pay_publication_fee_step.pay_card_info')}
+                        />
+                      </span>
+                    </Button>
                   )}
                 </>
               ) : null}
