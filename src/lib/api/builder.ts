@@ -800,7 +800,7 @@ export class BuilderAPI extends BaseAPI {
     const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
     const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, {
-      params: { page, limit, collectionId },
+      params: { page, limit, ...(collectionId !== undefined && { collectionId }) },
       retry: retryParams
     })
     return { ...remoteItems, results: remoteItems.results.map(fromRemoteItem) }
@@ -813,7 +813,9 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollectionItems(collectionId: string, options: FetchCollectionItemsParams = {}) {
     const { page, limit } = options
-    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, { params: options, retry: retryParams })
+    // Undefined values must be removed, otherwise they're serialized as the literal string "undefined" in the query string
+    const params = Object.fromEntries(Object.entries(options).filter(([_key, value]) => value !== undefined))
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, { params, retry: retryParams })
     if (page && limit && remoteResponse.results) {
       // TODO: remove this check when we have pagination on standard collections
       return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) } as PaginatedResource<Item>
