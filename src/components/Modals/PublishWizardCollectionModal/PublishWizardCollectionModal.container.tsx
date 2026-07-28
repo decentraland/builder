@@ -112,7 +112,8 @@ export default (props: OwnProps) => {
     ) => {
       // Calculate totalPrice from rarities and items count for standard collections
       const totalPrice = price?.item?.mana && !thirdParty ? (BigInt(price.item.mana) * BigInt(itemsToPublish.length)).toString() : undefined
-      const totalPriceUSD = price?.item?.usd && !thirdParty ? (BigInt(price.item.usd) * BigInt(itemsToPublish.length)).toString() : undefined
+      const totalPriceUSD =
+        price?.item?.usd && !thirdParty ? (BigInt(price.item.usd) * BigInt(itemsToPublish.length)).toString() : undefined
 
       return thirdParty
         ? dispatch(
@@ -128,7 +129,16 @@ export default (props: OwnProps) => {
             )
           )
         : dispatch(
-            publishCollectionRequest(collection, itemsToPublish, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice, totalPriceUSD)
+            publishCollectionRequest(
+              collection,
+              itemsToPublish,
+              email,
+              subscribeToNewsletter,
+              paymentMethod,
+              creditsAmount,
+              totalPrice,
+              totalPriceUSD
+            )
           )
     },
     [
