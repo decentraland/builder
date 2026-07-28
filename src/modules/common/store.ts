@@ -41,7 +41,6 @@ import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState, RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
-import { CreditsAPI } from 'lib/api/credits'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 
@@ -175,7 +174,6 @@ const newBuilderClient = new BuilderClient(builderClientUrl, getClientAuthAuthor
 const ensApi = new ENSApi(config.get('ENS_SUBGRAPH_URL'))
 
 const worldsAPI = new WorldsAPI(new Authorization(() => getAddress(store.getState())))
-const creditsAPI = new CreditsAPI(new Authorization(() => getAddress(store.getState())))
 const contentfulClient = new ContentfulClient()
 
 const tradeService = new TradeService('dcl:builder', config.get('MARKETPLACE_API'), getClientAuthAuthority)
@@ -196,8 +194,7 @@ sagasMiddleware.run(
   worldsAPI,
   tradeService,
   creditsClient,
-  creditsService,
-  creditsAPI
+  creditsService
 )
 
 loadStorageMiddleware(store)
