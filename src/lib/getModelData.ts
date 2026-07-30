@@ -4,7 +4,7 @@ import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { IPreviewController, WearableCategory } from '@dcl/schemas'
 import { Metrics, ModelMetrics } from 'modules/models/types'
 import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
-import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
+import { getThumbnailRenderOptions, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
 import { isImageFile } from 'modules/item/utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { EmoteAnimationsSyncError, EmoteWithMeshError, MissingExternalResourcesError } from 'modules/item/errors'
@@ -36,6 +36,8 @@ export type Options = {
   engine: EngineType
   thumbnailType: ThumbnailType
   mappings?: Record<string, string>
+  /** URL of a mesh-less GLB with a single-keyframe animation, used to pose the model before the screenshot (Babylon engine only) */
+  pose?: string
 }
 
 export const defaults: Options = {
@@ -434,7 +436,22 @@ export async function getItemData({
     } else {
       data.metrics = await wearablePreviewController.scene.getMetrics()
     }
-    data.image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+
+    // categories with a custom thumbnail pose are rendered with the offscreen engine (which can
+    // apply the pose deterministically) instead of screenshotting the wearable preview iframe
+    const renderOptions =
+      type === ItemType.WEARABLE && category ? getThumbnailRenderOptions(category as WearableCategory, model) : undefined
+    if (renderOptions?.pose) {
+      const modelUrl = URL.createObjectURL(contents[model])
+      try {
+        const { image } = await getModelData(modelUrl, renderOptions)
+        data.image = image
+      } finally {
+        URL.revokeObjectURL(modelUrl)
+      }
+    } else {
+      data.image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+    }
   }
 
   return data

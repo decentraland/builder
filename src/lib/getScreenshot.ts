@@ -35,11 +35,44 @@ async function refreshBoundingInfo(parent: Mesh) {
 
 const hideMaterialList = ['hair_mat', 'avatarskin_mat']
 
+/**
+ * Applies a static pose to the loaded model's skeleton. The pose file is a mesh-less GLB with a
+ * single-keyframe animation targeting the standard Avatar_* armature: instead of running the
+ * animation system, the keyframe values are written directly into the matching transform nodes.
+ */
+async function applyPose(scene: import('@babylonjs/core').Scene, poseUrl: string) {
+  const { SceneLoader } = await import('@babylonjs/core')
+  const container = await SceneLoader.LoadAssetContainerAsync(poseUrl, '', scene, undefined, '.glb')
+  try {
+    for (const animationGroup of container.animationGroups) {
+      for (const targetedAnimation of animationGroup.targetedAnimations) {
+        const key = targetedAnimation.animation.getKeys()[0]
+        if (!key) {
+          continue
+        }
+        // strip any .00N suffix so pose bones match the model's bones by name
+        const baseName = (targetedAnimation.target as { name: string }).name.replace(/\.\d+$/, '')
+        const property = targetedAnimation.animation.targetProperty
+        for (const node of scene.transformNodes) {
+          if (node.name.replace(/\.\d+$/, '') === baseName) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+            ;(node as any)[property] = typeof key.value?.clone === 'function' ? key.value.clone() : key.value
+          }
+        }
+      }
+    }
+  } finally {
+    container.dispose()
+  }
+  // force a render so bone matrices are computed from the new transforms before the screenshot
+  scene.render()
+}
+
 export async function getScreenshot(url: string, options: Partial<Options> = {}) {
   const babylonCore = await import('@babylonjs/core')
   await import('@babylonjs/loaders')
   // add defaults to options
-  const { width, height, extension, thumbnailType } = {
+  const { width, height, extension, thumbnailType, pose } = {
     ...defaults,
     ...options
   }
@@ -142,6 +175,11 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
           scene.removeTexture(texture)
         }
       }
+    }
+
+    // apply a static pose (e.g. upper body wearables) before framing the camera
+    if (pose) {
+      await applyPose(scene, pose)
     }
 
     // resize and center

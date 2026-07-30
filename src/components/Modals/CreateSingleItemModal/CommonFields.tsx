@@ -8,10 +8,9 @@ import { MappingEditor } from 'components/MappingEditor'
 import { THUMBNAIL_PATH } from 'modules/item/types'
 import { createItemActions } from './CreateSingleItemModal.reducer'
 import { useCreateSingleItemModal } from './CreateSingleItemModal.context'
-import { getDefaultMappings, getLinkedContract, getThumbnailType, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from './utils'
+import { getDefaultMappings, getLinkedContract, getThumbnailRenderOptions, getThumbnailType, THUMBNAIL_POSE_BY_CATEGORY } from './utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
-import { getModelData, EngineType } from 'lib/getModelData'
-import { getExtension } from 'lib/file'
+import { getModelData } from 'lib/getModelData'
 import { isThirdParty } from 'lib/urn'
 
 const RARITIES_LINK = 'https://docs.decentraland.org/creator/wearables-and-emotes/manage-collections'
@@ -38,8 +37,12 @@ export const CommonFields = () => {
   const handleCategoryChange = useCallback(
     (_event: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
       const category = data.value as WearableCategory
+      const previousCategory = state.category as WearableCategory | undefined
+      // regenerate the thumbnail when the camera angle or the pose for the new category differs
       const hasChangedThumbnailType =
-        (state.category && getThumbnailType(category) !== getThumbnailType(state.category as WearableCategory)) || !state.category
+        !previousCategory ||
+        getThumbnailType(category) !== getThumbnailType(previousCategory) ||
+        THUMBNAIL_POSE_BY_CATEGORY[category] !== THUMBNAIL_POSE_BY_CATEGORY[previousCategory]
 
       if (state.category !== category) {
         dispatch(createItemActions.setCategory(category))
@@ -101,13 +104,7 @@ export const CommonFields = () => {
         } else {
           const url = URL.createObjectURL(contents[model])
           try {
-            const { image } = await getModelData(url, {
-              width: THUMBNAIL_WIDTH,
-              height: THUMBNAIL_HEIGHT,
-              thumbnailType: getThumbnailType(category) as any,
-              extension: getExtension(model) || undefined,
-              engine: EngineType.BABYLON
-            })
+            const { image } = await getModelData(url, getThumbnailRenderOptions(category, model))
             thumbnail = image
           } finally {
             URL.revokeObjectURL(url)

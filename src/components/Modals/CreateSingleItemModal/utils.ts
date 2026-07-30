@@ -13,7 +13,9 @@ import {
   WearableCategory,
   WearableWithBlobs
 } from '@dcl/schemas'
-import { ThumbnailType } from 'lib/getModelData'
+import poseNicerIdle from 'poses/pose_nicer_idle.glb?url'
+import { EngineType, Options, ThumbnailType } from 'lib/getModelData'
+import { getExtension } from 'lib/file'
 import { LinkedContract } from 'modules/thirdParty/types'
 import { MissingModelFileError } from 'modules/item/errors'
 import { isImageFile, isModelFile, isModelPath } from 'modules/item/utils'
@@ -24,6 +26,15 @@ import { SortedContent } from './CreateSingleItemModal.types'
 export const THUMBNAIL_WIDTH = 1024
 export const THUMBNAIL_HEIGHT = 1024
 
+// Static pose applied when auto-generating the thumbnail for a category. Each pose is a
+// mesh-less GLB with a single-keyframe animation on the standard Avatar_* armature, applied
+// by the offscreen renderer in lib/getScreenshot.ts (same mechanism that gives skin-like
+// categories their front-facing camera).
+export const THUMBNAIL_POSE_BY_CATEGORY: Partial<Record<WearableCategory, string>> = {
+  [WearableCategory.UPPER_BODY]: poseNicerIdle,
+  [WearableCategory.SKIN]: poseNicerIdle
+}
+
 export const getThumbnailType = (category: WearableCategory) => {
   switch (category) {
     case WearableCategory.EYEBROWS:
@@ -31,11 +42,23 @@ export const getThumbnailType = (category: WearableCategory) => {
     case WearableCategory.MASK:
     case WearableCategory.MOUTH:
     case WearableCategory.SKIN:
+    case WearableCategory.UPPER_BODY: // captured in a static pose (see THUMBNAIL_POSE_BY_CATEGORY), best appreciated from the front
       return ThumbnailType.FRONT
     default:
       return ThumbnailType.DEFAULT
   }
 }
+
+// options for auto-generating a wearable thumbnail with the offscreen renderer,
+// using the camera angle and static pose that correspond to the item's category
+export const getThumbnailRenderOptions = (category: WearableCategory, model: string): Partial<Options> => ({
+  width: THUMBNAIL_WIDTH,
+  height: THUMBNAIL_HEIGHT,
+  thumbnailType: getThumbnailType(category),
+  extension: getExtension(model) || undefined,
+  engine: EngineType.BABYLON,
+  pose: THUMBNAIL_POSE_BY_CATEGORY[category]
+})
 
 export function toWearableWithBlobs({ contents, file }: { contents?: Record<string, Blob>; file?: File }): WearableWithBlobs {
   const mainGLBFile = contents && Object.keys(contents).find(content => isModelFile(content))
