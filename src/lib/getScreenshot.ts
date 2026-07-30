@@ -35,6 +35,8 @@ async function refreshBoundingInfo(parent: Mesh) {
 
 const hideMaterialList = ['hair_mat', 'avatarskin_mat']
 
+const POSE_PROPERTIES = new Set(['position', 'rotationQuaternion', 'rotation', 'scaling'])
+
 /**
  * Applies a static pose to the loaded model's skeleton. The pose file is a mesh-less GLB with a
  * single-keyframe animation targeting the standard Avatar_* armature: instead of running the
@@ -53,6 +55,9 @@ async function applyPose(scene: import('@babylonjs/core').Scene, poseUrl: string
         // strip any .00N suffix so pose bones match the model's bones by name
         const baseName = (targetedAnimation.target as { name: string }).name.replace(/\.\d+$/, '')
         const property = targetedAnimation.animation.targetProperty
+        if (!POSE_PROPERTIES.has(property)) {
+          continue
+        }
         for (const node of scene.transformNodes) {
           if (node.name.replace(/\.\d+$/, '') === baseName) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment

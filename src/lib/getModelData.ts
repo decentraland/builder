@@ -4,7 +4,7 @@ import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { IPreviewController, WearableCategory } from '@dcl/schemas'
 import { Metrics, ModelMetrics } from 'modules/models/types'
 import { ItemType, THUMBNAIL_PATH } from 'modules/item/types'
-import { getThumbnailRenderOptions, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from 'components/Modals/CreateSingleItemModal/utils'
+import { getThumbnailRenderOptions, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from './thumbnailOptions'
 import { isImageFile } from 'modules/item/utils'
 import { convertImageIntoWearableThumbnail } from 'modules/media/utils'
 import { EmoteAnimationsSyncError, EmoteWithMeshError, MissingExternalResourcesError } from 'modules/item/errors'
@@ -444,8 +444,7 @@ export async function getItemData({
     if (renderOptions?.pose) {
       const modelUrl = URL.createObjectURL(contents[model])
       try {
-        const { image } = await getModelData(modelUrl, renderOptions)
-        data.image = image
+        data.image = await getScreenshot(modelUrl, renderOptions)
       } finally {
         URL.revokeObjectURL(modelUrl)
       }
