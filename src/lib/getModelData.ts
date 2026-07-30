@@ -446,7 +446,7 @@ export async function getItemData({
       try {
         data.image = await getScreenshot(modelUrl, renderOptions)
       } catch (error) {
-        console.error('Posed thumbnail render failed, falling back to preview screenshot', error)
+        console.warn('Posed thumbnail render failed, falling back to preview screenshot', error)
         data.image = await wearablePreviewController.scene.getScreenshot(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
       } finally {
         URL.revokeObjectURL(modelUrl)
