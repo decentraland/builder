@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
         images: path.resolve(__dirname, 'src/images'),
         lib: path.resolve(__dirname, 'src/lib'),
         modules: path.resolve(__dirname, 'src/modules'),
+        poses: path.resolve(__dirname, 'src/poses'),
         routing: path.resolve(__dirname, 'src/routing'),
         specs: path.resolve(__dirname, 'src/specs')
       }
