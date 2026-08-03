@@ -46,7 +46,7 @@ export function* forumSaga(builder: BuilderAPI) {
       const forumLink: string = yield call([builder, 'createCollectionForumPost'], collection, forumPost)
       yield put(createCollectionForumPostSuccess(collection, forumLink))
     } catch (error) {
-      if (builder.isAxiosError(error) && error.response) {
+      if (builder.isRequestError(error)) {
         const forumPostAlreadyExists = error.response.status === 409
         const forumLink = error.response.data?.data?.forum_link
 

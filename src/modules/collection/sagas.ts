@@ -10,6 +10,7 @@ import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
 import { ContractData, ContractName, ErrorCode, getContract } from 'decentraland-transactions'
+import { type AuthIdentity } from 'decentraland-crypto-fetch'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -502,12 +503,11 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         const usdPriceCents = weiToUsdCents(totalPriceUSD)
 
-        const identity: ReturnType<typeof getIdentity> = yield call(getIdentity)
+        const identity: AuthIdentity = yield call(getIdentity)
 
         try {
           txHash = yield call(
             [creditsService, 'useShopCreditsCollectionManager'],
-            from,
             maticChainId,
             createCollectionArgs,
             usdPriceCents,

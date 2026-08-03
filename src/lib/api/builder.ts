@@ -1,4 +1,3 @@
-import { AxiosRequestConfig, AxiosError } from 'axios'
 import { ContractAddress, ContractNetwork, Entity, Mapping, Rarity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
@@ -561,6 +560,14 @@ export type PoolFilters = {
   eth_address?: string
 }
 
+export type UploadProgressHandler = (progress: { loaded: number; total: number }) => void
+
+/** An error carrying the builder server's response, so callers can branch on status and payload. */
+export type RequestError = Error & {
+  code?: string
+  response?: { status: number; data: any }
+}
+
 // API
 
 export class BuilderAPI extends BaseAPI {
@@ -572,53 +579,110 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async request(
-    method: AxiosRequestConfig['method'],
+    method: string,
     path: string,
     extraParams?: {
       params?: APIParam | null
-      config?: AxiosRequestConfig
+      config?: RequestInit
       retry?: RetryParams
+      onUploadProgress?: UploadProgressHandler
     }
   ) {
-    const { params, config, retry } = extraParams || {}
-    let authConfig = {}
-    let headers = {}
-    if (config) {
-      authConfig = { ...config }
-      if (config.headers) {
-        headers = { ...config.headers }
-      }
+    const { params, config, retry, onUploadProgress } = extraParams || {}
+    const headers: Record<string, string> = {
+      ...((config?.headers as Record<string, string>) ?? {}),
+      ...this.authorization.createAuthHeaders(method, path)
     }
-    const authHeaders = this.authorization.createAuthHeaders(method, path)
-    headers = {
-      ...headers,
-      ...authHeaders
-    }
-    authConfig = { ...authConfig, headers }
+    const attempts = retry?.attempts ?? 0
 
-    try {
-      const response: any = await super.request(method, path, params, authConfig, retry)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return response
-    } catch (error) {
-      if (this.isAxiosError(error) && error.response) {
-        error.message = error.response.data.error
-        error.code = error.response.status.toString()
+    for (let attempt = 0; ; attempt++) {
+      try {
+        // FormData can't go through BaseAPI: it JSON-serializes the payload, which would drop every file
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return params instanceof FormData
+          ? await this.upload(method, path, params, headers, onUploadProgress)
+          : await this.fetchJSON(method, path, params, { ...config, headers })
+      } catch (error) {
+        if (attempt >= attempts) {
+          throw error
+        }
+        await new Promise(resolve => setTimeout(resolve, retry?.delay ?? 0))
       }
+    }
+  }
+
+  private async fetchJSON(method: string, path: string, params: APIParam | null | undefined, requestInit: RequestInit): Promise<any> {
+    const init: RequestInit = { ...requestInit, method: method.toUpperCase() }
+    let url = this.getUrl(path)
+
+    if (params) {
+      if (method.toLowerCase() === 'get') {
+        // Empty values are dropped, otherwise they'd be serialized as the literal strings "undefined"/"null"
+        const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined && value !== null)).toString()
+        if (query) {
+          url += (url.includes('?') ? '&' : '?') + query
+        }
+      } else {
+        init.body = JSON.stringify(params)
+        init.headers = { 'Content-Type': 'application/json', ...requestInit.headers }
+      }
+    }
+
+    const response = await fetch(url, init)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.parseBody(response.status, await response.text())
+  }
+
+  /** Uploads go through XHR because fetch can't report upload progress. */
+  private upload(method: string, path: string, body: FormData, headers: Record<string, string>, onUploadProgress?: UploadProgressHandler) {
+    return new Promise<any>((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open(method.toUpperCase(), this.getUrl(path))
+      // Content-Type is left unset so the browser adds the multipart boundary
+      for (const [key, value] of Object.entries(headers)) {
+        xhr.setRequestHeader(key, value)
+      }
+      if (onUploadProgress) {
+        xhr.upload.onprogress = event => onUploadProgress({ loaded: event.loaded, total: event.total })
+      }
+      xhr.onload = () => {
+        try {
+          resolve(this.parseBody(xhr.status, xhr.responseText))
+        } catch (error) {
+          reject(error)
+        }
+      }
+      xhr.onerror = () => reject(new Error(`Failed to upload to ${path}`))
+      xhr.send(body)
+    })
+  }
+
+  private parseBody(status: number, text: string): any {
+    let parsed: any = text
+    if (text) {
+      try {
+        parsed = JSON.parse(text)
+      } catch {
+        parsed = text
+      }
+    }
+
+    const hasEnvelope = !!parsed && typeof parsed.ok === 'boolean'
+    if (status < 200 || status >= 300 || (hasEnvelope && !parsed.ok)) {
+      const error: RequestError = new Error((hasEnvelope && (parsed.error as string)) || `Request failed with status code ${status}`)
+      error.code = status.toString()
+      error.response = { status, data: parsed }
       throw error
     }
+
+    return hasEnvelope ? parsed.data : parsed
   }
 
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
     await this.request('put', `/projects/${projectId}/pool`, { params: additionalInfo })
   }
 
-  async uploadMedia(
-    projectId: string,
-    preview: Blob,
-    shots: Record<string, Blob>,
-    onUploadProgress?: (progress: { loaded: number; total: number }) => void
-  ) {
+  async uploadMedia(projectId: string, preview: Blob, shots: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
     const formData = new FormData()
     formData.append('preview', preview)
     formData.append('north', shots.north)
@@ -628,9 +692,7 @@ export class BuilderAPI extends BaseAPI {
 
     await this.request('post', `/projects/${projectId}/media`, {
       params: formData,
-      config: {
-        onUploadProgress
-      }
+      onUploadProgress
     })
   }
 
@@ -738,11 +800,7 @@ export class BuilderAPI extends BaseAPI {
     await this.request('put', `/assetPacks/${remotePack.id}`, { params: { assetPack: remotePack } })
   }
 
-  async saveAssetContents(
-    asset: Asset,
-    contents: Record<string, Blob>,
-    onUploadProgress?: (progress: { loaded: number; total: number }) => void
-  ) {
+  async saveAssetContents(asset: Asset, contents: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
     const formData = new FormData()
 
     for (const path in contents) {
@@ -751,9 +809,7 @@ export class BuilderAPI extends BaseAPI {
 
     await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, {
       params: formData,
-      config: {
-        onUploadProgress
-      }
+      onUploadProgress
     })
   }
 
@@ -1069,8 +1125,8 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/thirdParties/${thirdPartId}`)
   }
 
-  isAxiosError(error: any): error is AxiosError {
-    return error.isAxiosError as boolean
+  isRequestError(error: any): error is Required<RequestError> {
+    return !!error && !!(error as RequestError).response
   }
 
   subscribeToNewsletter(email: string, source: string) {

@@ -1,5 +1,3 @@
-import { AxiosError, AxiosRequestConfig } from 'axios'
-import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { Authorization } from './auth'
 import { BuilderAPI } from './builder'
 import { Item } from 'modules/item/types'
@@ -11,31 +9,21 @@ const mockAuthorization: Authorization = new Authorization(() => 'mockAddress')
 const mockBuilder = new BuilderAPI(mockUrl, mockAuthorization)
 
 describe('when making a request to the builder server', () => {
-  describe('when the request fails', () => {
-    describe('and the error is an Axios Error', () => {
-      let error: AxiosError
+  describe('when the server responds with an error', () => {
+    const responseBody = { ok: false, data: { id: 'id-with-error' }, error: 'Name already in use' }
 
-      beforeEach(() => {
-        error = {
-          name: 'Axios Error',
-          message: 'Error Message',
-          config: {} as AxiosRequestConfig,
-          code: '409',
-          response: {
-            data: { id: 'id-with-error', error: 'Name already in use' },
-            status: 409,
-            statusText: 'Conflict',
-            headers: {},
-            config: {}
-          },
-          isAxiosError: true,
-          toJSON: jest.fn()
-        }
-        jest.spyOn(BaseAPI.prototype, 'request').mockRejectedValue(error)
+    beforeEach(() => {
+      global.fetch = jest.fn().mockResolvedValue({
+        status: 409,
+        text: () => Promise.resolve(JSON.stringify(responseBody))
       })
+    })
 
-      it('should store the response data error inside the error message', async () => {
-        return expect(mockBuilder.request('GET', '/')).rejects.toEqual({ ...error, message: error.response?.data.error })
+    it('should reject with the response error as the message, keeping the status and payload', async () => {
+      await expect(mockBuilder.request('get', '/')).rejects.toMatchObject({
+        message: 'Name already in use',
+        code: '409',
+        response: { status: 409, data: responseBody }
       })
     })
   })
