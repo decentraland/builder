@@ -562,7 +562,8 @@ export type PoolFilters = {
 
 /**
  * Serializes query parameters the way axios used to, which is the shape the builder server expects:
- * empty values are omitted and arrays become repeated `key[]` entries.
+ * null and undefined are omitted entirely (an empty string is still sent as `key=`) and arrays
+ * become repeated `key[]` entries.
  */
 const toQueryString = (params: APIParam) => {
   if (params instanceof URLSearchParams) {
@@ -571,7 +572,7 @@ const toQueryString = (params: APIParam) => {
 
   const query = new URLSearchParams()
   for (const [key, value] of Object.entries(params)) {
-    if (value === undefined) {
+    if (value === undefined || value === null) {
       continue
     }
     if (Array.isArray(value)) {

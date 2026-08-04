@@ -31,11 +31,19 @@ describe('when making a request to the builder server', () => {
       })
     })
 
-    describe('and the parameters are a plain object holding empty values', () => {
-      it('should append only the values that are set', async () => {
+    describe('and the parameters are a plain object holding null or undefined', () => {
+      it('should omit them from the url', async () => {
         await mockBuilder.request('get', '/items', { params: { page: 1, limit: 20, collectionId: undefined, q: null } })
 
         expect(global.fetch).toHaveBeenCalledWith(`${mockUrl}/items?page=1&limit=20`, expect.anything())
+      })
+    })
+
+    describe('and the parameters hold values that are falsy but meaningful', () => {
+      it('should keep them, since only null and undefined are dropped', async () => {
+        await mockBuilder.request('get', '/collections', { params: { q: '', synced: false, page: 0 } })
+
+        expect(global.fetch).toHaveBeenCalledWith(`${mockUrl}/collections?q=&synced=false&page=0`, expect.anything())
       })
     })
 
