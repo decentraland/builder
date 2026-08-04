@@ -678,6 +678,9 @@ export class BuilderAPI extends BaseAPI {
         }
       }
       xhr.onerror = () => reject(new Error(`Failed to upload to ${path}`))
+      // Generous limit so large uploads on slow connections still succeed, while stalled requests don't hang forever
+      xhr.timeout = 10 * 60 * 1000
+      xhr.ontimeout = () => reject(new Error(`Upload to ${path} timed out`))
       xhr.send(body)
     })
   }
@@ -1151,7 +1154,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   isRequestError(error: any): error is Required<RequestError> {
-    return !!error && !!(error as RequestError).response
+    return error instanceof Error && typeof (error as RequestError).response?.status === 'number'
   }
 
   subscribeToNewsletter(email: string, source: string) {

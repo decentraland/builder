@@ -58,7 +58,15 @@ export const PayPublicationFeeStep: React.FC<
   } = props
 
   const [useCredits, setUseCredits] = useState(false)
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(PaymentMethod.MANA)
+
+  const handleSelectPaymentMethod = useCallback((method: PaymentMethod) => {
+    setSelectedPaymentMethod(method)
+    // Marketplace credits don't apply to shop credits payments
+    if (method === PaymentMethod.SHOP_CREDITS) {
+      setUseCredits(false)
+    }
+  }, [])
 
   const manaUrl = useMemo(() => config.get('ACCOUNT_URL', ''), [])
   const creditsUrl = useMemo(() => `${config.get('SHOP_URL', '')}/credits`, [])
@@ -369,7 +377,7 @@ export const PayPublicationFeeStep: React.FC<
                     name="paymentMethod"
                     className={styles.methodRadio}
                     checked={selectedPaymentMethod === PaymentMethod.MANA}
-                    onChange={() => setSelectedPaymentMethod(PaymentMethod.MANA)}
+                    onChange={() => handleSelectPaymentMethod(PaymentMethod.MANA)}
                     disabled={isLoading || isLoadingAuthorization}
                   />
                   <span className={styles.methodIcon}>
@@ -421,7 +429,7 @@ export const PayPublicationFeeStep: React.FC<
                       name="paymentMethod"
                       className={styles.methodRadio}
                       checked={selectedPaymentMethod === PaymentMethod.FIAT}
-                      onChange={() => setSelectedPaymentMethod(PaymentMethod.FIAT)}
+                      onChange={() => handleSelectPaymentMethod(PaymentMethod.FIAT)}
                       disabled={isLoading || isLoadingAuthorization}
                     />
                     <span className={styles.methodIcon}>
@@ -475,7 +483,7 @@ export const PayPublicationFeeStep: React.FC<
                       name="paymentMethod"
                       className={styles.methodRadio}
                       checked={selectedPaymentMethod === PaymentMethod.SHOP_CREDITS}
-                      onChange={() => setSelectedPaymentMethod(PaymentMethod.SHOP_CREDITS)}
+                      onChange={() => handleSelectPaymentMethod(PaymentMethod.SHOP_CREDITS)}
                       disabled={isLoading || isLoadingAuthorization}
                     />
                     <span className={styles.methodIcon}>
