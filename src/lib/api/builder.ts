@@ -560,6 +560,31 @@ export type PoolFilters = {
   eth_address?: string
 }
 
+/**
+ * Serializes query parameters the way axios used to, which is the shape the builder server expects:
+ * empty values are omitted and arrays become repeated `key[]` entries.
+ */
+const toQueryString = (params: APIParam) => {
+  if (params instanceof URLSearchParams) {
+    return params.toString()
+  }
+
+  const query = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined) {
+      continue
+    }
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        query.append(`${key}[]`, `${item}`)
+      }
+    } else {
+      query.append(key, `${value as string}`)
+    }
+  }
+  return query.toString()
+}
+
 export type UploadProgressHandler = (progress: { loaded: number; total: number }) => void
 
 /** An error carrying the builder server's response, so callers can branch on status and payload. */
@@ -617,8 +642,7 @@ export class BuilderAPI extends BaseAPI {
 
     if (params) {
       if (method.toLowerCase() === 'get') {
-        // Empty values are dropped, otherwise they'd be serialized as the literal strings "undefined"/"null"
-        const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== undefined && value !== null)).toString()
+        const query = toQueryString(params)
         if (query) {
           url += (url.includes('?') ? '&' : '?') + query
         }

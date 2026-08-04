@@ -9,6 +9,48 @@ const mockAuthorization: Authorization = new Authorization(() => 'mockAddress')
 const mockBuilder = new BuilderAPI(mockUrl, mockAuthorization)
 
 describe('when making a request to the builder server', () => {
+  describe('when sending query parameters on a GET request', () => {
+    beforeEach(() => {
+      global.fetch = jest.fn().mockResolvedValue({
+        status: 200,
+        text: () => Promise.resolve(JSON.stringify({ ok: true, data: [] }))
+      })
+    })
+
+    describe('and the parameters are a URLSearchParams instance', () => {
+      it('should append every value to the url', async () => {
+        const params = new URLSearchParams()
+        params.append('page', '1')
+        params.append('limit', '20')
+        params.append('tag', 'first')
+        params.append('tag', 'second')
+
+        await mockBuilder.request('get', '/collections', { params })
+
+        expect(global.fetch).toHaveBeenCalledWith(`${mockUrl}/collections?page=1&limit=20&tag=first&tag=second`, expect.anything())
+      })
+    })
+
+    describe('and the parameters are a plain object holding empty values', () => {
+      it('should append only the values that are set', async () => {
+        await mockBuilder.request('get', '/items', { params: { page: 1, limit: 20, collectionId: undefined, q: null } })
+
+        expect(global.fetch).toHaveBeenCalledWith(`${mockUrl}/items?page=1&limit=20`, expect.anything())
+      })
+    })
+
+    describe('and a parameter holds an array', () => {
+      it('should append one bracketed entry per value', async () => {
+        await mockBuilder.request('get', '/collections/id/itemCurations', { params: { itemIds: ['first', 'second'] } })
+
+        expect(global.fetch).toHaveBeenCalledWith(
+          `${mockUrl}/collections/id/itemCurations?itemIds%5B%5D=first&itemIds%5B%5D=second`,
+          expect.anything()
+        )
+      })
+    })
+  })
+
   describe('when the server responds with an error', () => {
     const responseBody = { ok: false, data: { id: 'id-with-error' }, error: 'Name already in use' }
 
