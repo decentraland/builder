@@ -16,6 +16,31 @@
   line-height: 0;
 }
 
+/*
+ * A USD-pegged price, shown in credits. The glyph is the repo's own icons/credits.svg, painted with a mask
+ * so it takes the surrounding text colour — a mask reads only the alpha channel, so the file's hardcoded
+ * white stroke is irrelevant here, and this avoids a second copy of the same mark. SVGs are
+ * imported as URLs here, and `currentColor` does not cross an <img> boundary.
+ */
+.credits {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.creditsIcon {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  mask: url('../../../icons/credits.svg') no-repeat center / contain;
+  -webkit-mask: url('../../../icons/credits.svg') no-repeat center / contain;
+}
+
 .grid {
   padding: 10px 0 !important;
   color: var(--text);
@@ -157,4 +182,14 @@
 
 .contextMenu {
   background-color: var(--smart-grey) !important;
+}
+
+/* The status cell's published state, as a link to the shop listing. Inherits the pill's colour rather than the
+   global anchor blue, so it reads as the same status it replaces — only clickable. */
+.shopLink {
+  text-decoration: none;
+}
+
+.shopLink:hover {
+  text-decoration: underline;
 }
