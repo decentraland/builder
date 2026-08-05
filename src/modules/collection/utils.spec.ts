@@ -16,7 +16,9 @@ import {
   getOffchainSaleAddress,
   isEnableForSaleOffchain,
   enableSaleOffchain,
-  getOffchainV2SaleAddress
+  getOffchainV2SaleAddress,
+  weiToUsdCents,
+  shopCreditsNeededForPrice
 } from './utils'
 import { MAX_TP_ITEMS_TO_REVIEW, MIN_TP_ITEMS_TO_REVIEW, TP_TRESHOLD_TO_REVIEW } from './constants'
 import { CollectionPaginationData } from './reducer'
@@ -367,5 +369,30 @@ describe('when toggling the permissions for the offchain marketplace contract', 
         { address, hasAccess: false, collection }
       ])
     })
+  })
+})
+
+describe('when converting a wei USD price to cents', () => {
+  describe('and the price is a whole amount of cents', () => {
+    it('should return the exact amount of cents', () => {
+      expect(weiToUsdCents('33330000000000000000')).toBe(3333) // 33.33 USD
+      expect(weiToUsdCents('100000000000000000000')).toBe(10000) // 100 USD
+      expect(weiToUsdCents('0')).toBe(0)
+    })
+  })
+
+  describe('and the price has a fractional cent', () => {
+    it('should round up to the next cent', () => {
+      expect(weiToUsdCents('33330000000000000001')).toBe(3334)
+      expect(weiToUsdCents('10000000000000000')).toBe(1) // exactly 1 cent
+      expect(weiToUsdCents('1')).toBe(1)
+    })
+  })
+})
+
+describe('when computing the shop credits needed for a wei USD price', () => {
+  it('should round up to the next whole credit', () => {
+    expect(shopCreditsNeededForPrice('100000000000000000000')).toBe(1000) // 100 USD
+    expect(shopCreditsNeededForPrice('33330000000000000000')).toBe(334) // 33.33 USD -> 3333 cents
   })
 })

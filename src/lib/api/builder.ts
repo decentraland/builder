@@ -1,4 +1,3 @@
-import { AxiosRequestConfig, AxiosError } from 'axios'
 import { ContractAddress, ContractNetwork, Entity, Mapping, Rarity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
@@ -561,6 +560,40 @@ export type PoolFilters = {
   eth_address?: string
 }
 
+/**
+ * Serializes query parameters the way axios used to, which is the shape the builder server expects:
+ * null and undefined are omitted entirely (an empty string is still sent as `key=`) and arrays
+ * become repeated `key[]` entries.
+ */
+const toQueryString = (params: APIParam) => {
+  if (params instanceof URLSearchParams) {
+    return params.toString()
+  }
+
+  const query = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null) {
+      continue
+    }
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        query.append(`${key}[]`, `${item}`)
+      }
+    } else {
+      query.append(key, `${value as string}`)
+    }
+  }
+  return query.toString()
+}
+
+export type UploadProgressHandler = (progress: { loaded: number; total: number }) => void
+
+/** An error carrying the builder server's response, so callers can branch on status and payload. */
+export type RequestError = Error & {
+  code?: string
+  response?: { status: number; data: any }
+}
+
 // API
 
 export class BuilderAPI extends BaseAPI {
@@ -572,53 +605,112 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async request(
-    method: AxiosRequestConfig['method'],
+    method: string,
     path: string,
     extraParams?: {
       params?: APIParam | null
-      config?: AxiosRequestConfig
+      config?: RequestInit
       retry?: RetryParams
+      onUploadProgress?: UploadProgressHandler
     }
   ) {
-    const { params, config, retry } = extraParams || {}
-    let authConfig = {}
-    let headers = {}
-    if (config) {
-      authConfig = { ...config }
-      if (config.headers) {
-        headers = { ...config.headers }
-      }
+    const { params, config, retry, onUploadProgress } = extraParams || {}
+    const headers: Record<string, string> = {
+      ...((config?.headers as Record<string, string>) ?? {}),
+      ...this.authorization.createAuthHeaders(method, path)
     }
-    const authHeaders = this.authorization.createAuthHeaders(method, path)
-    headers = {
-      ...headers,
-      ...authHeaders
-    }
-    authConfig = { ...authConfig, headers }
+    const attempts = retry?.attempts ?? 0
 
-    try {
-      const response: any = await super.request(method, path, params, authConfig, retry)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return response
-    } catch (error) {
-      if (this.isAxiosError(error) && error.response) {
-        error.message = error.response.data.error
-        error.code = error.response.status.toString()
+    for (let attempt = 0; ; attempt++) {
+      try {
+        // FormData can't go through BaseAPI: it JSON-serializes the payload, which would drop every file
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return params instanceof FormData
+          ? await this.upload(method, path, params, headers, onUploadProgress)
+          : await this.fetchJSON(method, path, params, { ...config, headers })
+      } catch (error) {
+        if (attempt >= attempts) {
+          throw error
+        }
+        await new Promise(resolve => setTimeout(resolve, retry?.delay ?? 0))
       }
+    }
+  }
+
+  private async fetchJSON(method: string, path: string, params: APIParam | null | undefined, requestInit: RequestInit): Promise<any> {
+    const init: RequestInit = { ...requestInit, method: method.toUpperCase() }
+    let url = this.getUrl(path)
+
+    if (params) {
+      if (method.toLowerCase() === 'get') {
+        const query = toQueryString(params)
+        if (query) {
+          url += (url.includes('?') ? '&' : '?') + query
+        }
+      } else {
+        init.body = JSON.stringify(params)
+        init.headers = { 'Content-Type': 'application/json', ...requestInit.headers }
+      }
+    }
+
+    const response = await fetch(url, init)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.parseBody(response.status, await response.text())
+  }
+
+  /** Uploads go through XHR because fetch can't report upload progress. */
+  private upload(method: string, path: string, body: FormData, headers: Record<string, string>, onUploadProgress?: UploadProgressHandler) {
+    return new Promise<any>((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open(method.toUpperCase(), this.getUrl(path))
+      // Content-Type is left unset so the browser adds the multipart boundary
+      for (const [key, value] of Object.entries(headers)) {
+        xhr.setRequestHeader(key, value)
+      }
+      if (onUploadProgress) {
+        xhr.upload.onprogress = event => onUploadProgress({ loaded: event.loaded, total: event.total })
+      }
+      xhr.onload = () => {
+        try {
+          resolve(this.parseBody(xhr.status, xhr.responseText))
+        } catch (error) {
+          reject(error)
+        }
+      }
+      xhr.onerror = () => reject(new Error(`Failed to upload to ${path}`))
+      // Generous limit so large uploads on slow connections still succeed, while stalled requests don't hang forever
+      xhr.timeout = 10 * 60 * 1000
+      xhr.ontimeout = () => reject(new Error(`Upload to ${path} timed out`))
+      xhr.send(body)
+    })
+  }
+
+  private parseBody(status: number, text: string): any {
+    let parsed: any = text
+    if (text) {
+      try {
+        parsed = JSON.parse(text)
+      } catch {
+        parsed = text
+      }
+    }
+
+    const hasEnvelope = !!parsed && typeof parsed.ok === 'boolean'
+    if (status < 200 || status >= 300 || (hasEnvelope && !parsed.ok)) {
+      const error: RequestError = new Error((hasEnvelope && (parsed.error as string)) || `Request failed with status code ${status}`)
+      error.code = status.toString()
+      error.response = { status, data: parsed }
       throw error
     }
+
+    return hasEnvelope ? parsed.data : parsed
   }
 
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
     await this.request('put', `/projects/${projectId}/pool`, { params: additionalInfo })
   }
 
-  async uploadMedia(
-    projectId: string,
-    preview: Blob,
-    shots: Record<string, Blob>,
-    onUploadProgress?: (progress: { loaded: number; total: number }) => void
-  ) {
+  async uploadMedia(projectId: string, preview: Blob, shots: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
     const formData = new FormData()
     formData.append('preview', preview)
     formData.append('north', shots.north)
@@ -628,9 +720,7 @@ export class BuilderAPI extends BaseAPI {
 
     await this.request('post', `/projects/${projectId}/media`, {
       params: formData,
-      config: {
-        onUploadProgress
-      }
+      onUploadProgress
     })
   }
 
@@ -738,11 +828,7 @@ export class BuilderAPI extends BaseAPI {
     await this.request('put', `/assetPacks/${remotePack.id}`, { params: { assetPack: remotePack } })
   }
 
-  async saveAssetContents(
-    asset: Asset,
-    contents: Record<string, Blob>,
-    onUploadProgress?: (progress: { loaded: number; total: number }) => void
-  ) {
+  async saveAssetContents(asset: Asset, contents: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
     const formData = new FormData()
 
     for (const path in contents) {
@@ -751,9 +837,7 @@ export class BuilderAPI extends BaseAPI {
 
     await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, {
       params: formData,
-      config: {
-        onUploadProgress
-      }
+      onUploadProgress
     })
   }
 
@@ -800,7 +884,7 @@ export class BuilderAPI extends BaseAPI {
     const { collectionId, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE } = params
     const endpoint = address ? `/${address}/items` : '/items'
     const remoteItems: PaginatedResource<RemoteItem> = await this.request('get', endpoint, {
-      params: { page, limit, collectionId },
+      params: { page, limit, ...(collectionId !== undefined && { collectionId }) },
       retry: retryParams
     })
     return { ...remoteItems, results: remoteItems.results.map(fromRemoteItem) }
@@ -813,7 +897,9 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollectionItems(collectionId: string, options: FetchCollectionItemsParams = {}) {
     const { page, limit } = options
-    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, { params: options, retry: retryParams })
+    // Undefined values must be removed, otherwise they're serialized as the literal string "undefined" in the query string
+    const params = Object.fromEntries(Object.entries(options).filter(([_key, value]) => value !== undefined))
+    const remoteResponse = await this.request('get', `/collections/${collectionId}/items`, { params, retry: retryParams })
     if (page && limit && remoteResponse.results) {
       // TODO: remove this check when we have pagination on standard collections
       return { ...remoteResponse, results: remoteResponse.results.map(fromRemoteItem) } as PaginatedResource<Item>
@@ -1067,8 +1153,8 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/thirdParties/${thirdPartId}`)
   }
 
-  isAxiosError(error: any): error is AxiosError {
-    return error.isAxiosError as boolean
+  isRequestError(error: any): error is Required<RequestError> {
+    return error instanceof Error && typeof (error as RequestError).response?.status === 'number'
   }
 
   subscribeToNewsletter(email: string, source: string) {
