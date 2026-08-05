@@ -91,4 +91,44 @@ describe('CollectionItem', () => {
       expect(screen.queryByTitle(t('collection_item.credits_amount', { amount: '6' }))).not.toBeInTheDocument()
     })
   })
+
+  /**
+   * A credits listing lives in the SHOP — a different site from the marketplace this app publishes to. Before
+   * this the row showed a plain "Published" and a creator had no way to reach the place their item was actually
+   * on sale: the price was here, the destination was nowhere.
+   */
+  describe('when the item is on sale for credits', () => {
+    it('should link the published status to the item in the shop', async () => {
+      mockTradeWithReceivedAssetType(TradeAssetType.USD_PEGGED_MANA)
+
+      renderCollectionItem({ tokenId: '3', isApproved: true })
+
+      const link = await screen.findByRole('link', { name: /on sale in the shop/i })
+      expect(link.getAttribute('href')).toContain('/shop/item/0xcollection/3')
+      expect(link).toHaveAttribute('target', '_blank')
+      // A creator opening the listing must not also drag the row's own navigation along.
+      expect(link.getAttribute('rel')).toContain('noopener')
+    })
+
+    it('should keep the plain published status for a MANA listing', async () => {
+      mockTradeWithReceivedAssetType(TradeAssetType.ERC20)
+
+      renderCollectionItem({ tokenId: '3', isApproved: true })
+
+      expect(await screen.findByText('0.6')).toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: /on sale in the shop/i })).not.toBeInTheDocument()
+    })
+
+    it('should not link an item with no blockchain id yet', async () => {
+      mockTradeWithReceivedAssetType(TradeAssetType.USD_PEGGED_MANA)
+
+      renderCollectionItem({ tokenId: undefined, isApproved: true })
+
+      // Waits for the credits price to settle FIRST, so the absence below is a real absence rather than the
+      // link simply not having rendered yet — the trade read is async.
+      expect(await screen.findByTitle(t('collection_item.credits_amount', { amount: '6' }))).toBeInTheDocument()
+      // No blockchain id yet, so there is no shop page to point at and the status stays as it was.
+      expect(screen.queryByRole('link', { name: /on sale in the shop/i })).not.toBeInTheDocument()
+    })
+  })
 })

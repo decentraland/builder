@@ -182,3 +182,13 @@
 .contextMenu {
   background-color: var(--smart-grey) !important;
 }
+
+/* The status cell's published state, as a link to the shop listing. Inherits the pill's colour rather than the
+   global anchor blue, so it reads as the same status it replaces — only clickable. */
+.shopLink {
+  text-decoration: none;
+}
+
+.shopLink:hover {
+  text-decoration: underline;
+}

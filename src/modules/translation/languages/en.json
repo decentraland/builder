@@ -1818,7 +1818,8 @@
     "preview": "Preview in Editor",
     "put_for_sale": "Put up for sale",
     "remove_from_sale": "Remove from sale",
-    "cancel_order_error": "Error when removing order for item"
+    "cancel_order_error": "Error when removing order for item",
+    "on_sale_in_shop": "On sale in the shop"
   },
   "collection": {
     "type": {

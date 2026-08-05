@@ -20,6 +20,7 @@ import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemImage'
 import ResetItemButton from './ResetItemButton'
+import { shopItemUrl } from 'lib/shop'
 import { Props } from './CollectionItem.types'
 import styles from './CollectionItem.module.css'
 
@@ -48,6 +49,18 @@ export default function CollectionItem({
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
   const shouldAllowPriceEdition =
     !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
+
+  /**
+   * Where this item is bought, when it is bought with credits. Empty when the listing is MANA (the marketplace
+   * already covers that) or when SHOP_WEB_URL is unset, so a missing config hides the link instead of pointing
+   * a creator at nowhere.
+   */
+  const shopListingUrl = useMemo(
+    // `tokenId` is the item's blockchain id in this app's vocabulary — the same value the published-item merge
+    // keys on (`${contractAddress}-${item.tokenId}`) and the trade builder sends as `itemId`.
+    () => (isUSDPeggedPrice && item.tokenId ? shopItemUrl(collection.contractAddress!, item.tokenId) : ''),
+    [isUSDPeggedPrice, item.tokenId, collection.contractAddress]
+  )
 
   const isWalletVariant = useMemo(() => {
     return isOffchainPublicItemOrdersEnabledVariants?.payload?.value?.trim()?.toLocaleLowerCase() === ethAddress?.toLocaleLowerCase()
@@ -143,6 +156,23 @@ export default function CollectionItem({
         <Icon name="clock outline" />
         {t('collection_item.under_review')}
       </div>
+    ) : item.isPublished && item.isApproved && shopListingUrl ? (
+      /*
+       * A credits listing lives in the SHOP, a different site from the marketplace this app publishes to —
+       * and until now nothing here could say so, which left a creator with a price they could not place. More
+       * specific than the plain "Published" it replaces: a pegged listing implies the item is published, and
+       * says where it is actually being sold.
+       */
+      <a
+        className={`${styles.published} ${styles.status} ${styles.shopLink}`}
+        href={shopListingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={event => event.stopPropagation()}
+      >
+        <Icon name="check circle outline" />
+        {t('collection_item.on_sale_in_shop')}
+      </a>
     ) : item.isPublished && item.isApproved ? (
       <div className={`${styles.published} ${styles.status}`}>
         <Icon name="check circle outline" />
@@ -163,7 +193,7 @@ export default function CollectionItem({
         {t('collection_item.edit_item')}
       </span>
     )
-  }, [handleNavigateToEditor, item, status])
+  }, [handleNavigateToEditor, item, status, shopListingUrl])
 
   const renderItemContextMenu = useCallback(() => {
     return (
