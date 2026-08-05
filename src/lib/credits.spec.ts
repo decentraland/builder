@@ -2,9 +2,7 @@ import { TradeAssetType } from '@dcl/schemas'
 import {
   USD_CENTS_PER_CREDIT,
   USD_WEI_PER_CREDIT,
-  creditsToUsd,
   formatCredits,
-  formatCreditsAsUsd,
   formatCreditsFull,
   isUSDPeggedTradeAsset,
   usdWeiToCredits
@@ -88,14 +86,6 @@ describe('lib/credits', () => {
     })
   })
 
-  describe('when converting credits to USD', () => {
-    it('should be exact', () => {
-      expect(creditsToUsd(6)).toBe(0.6)
-      expect(creditsToUsd(10)).toBe(1)
-      expect(creditsToUsd(1)).toBe(0.1)
-    })
-  })
-
   describe('when formatting credits', () => {
     it('should render small amounts verbatim', () => {
       expect(formatCredits(6)).toBe('6')
@@ -109,12 +99,6 @@ describe('lib/credits', () => {
 
     it('should group the full amount', () => {
       expect(formatCreditsFull(5500000)).toBe('5,500,000')
-    })
-
-    it('should render the dollar equivalent with two decimals', () => {
-      expect(formatCreditsAsUsd(6)).toBe('$0.60')
-      expect(formatCreditsAsUsd(10)).toBe('$1.00')
-      expect(formatCreditsAsUsd(12000)).toBe('$1,200.00')
     })
   })
 })

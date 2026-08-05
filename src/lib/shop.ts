@@ -10,17 +10,19 @@ import { config } from 'config'
  */
 const SHOP_WEB_URL = config.get('SHOP_WEB_URL', '')
 
-/** The shop's home. Empty string when unconfigured, so callers can hide the link rather than link to nowhere. */
-export function shopUrl(): string {
-  return SHOP_WEB_URL
-}
-
 /**
  * An item's page in the shop, where its credits listing lives.
  *
  * Keyed by (collection contract, item id) — the same pair the shop's own route takes — and NOT by the trade:
  * the page is about the item, and it stays valid when the listing is replaced.
+ *
+ * Both segments are encoded. In practice they are an Ethereum address and a numeric id from on-chain data, so
+ * nothing needs escaping today; the point is that a corrupted value produces a wrong link rather than a broken
+ * one — a stray `#` or `?` would otherwise truncate the path silently.
  */
 export function shopItemUrl(contractAddress: string, itemId: string): string {
-  return SHOP_WEB_URL ? `${SHOP_WEB_URL}/item/${contractAddress}/${itemId}` : ''
+  if (!SHOP_WEB_URL) {
+    return ''
+  }
+  return `${SHOP_WEB_URL}/item/${encodeURIComponent(contractAddress)}/${encodeURIComponent(itemId)}`
 }

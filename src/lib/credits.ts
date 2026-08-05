@@ -55,11 +55,6 @@ export function usdWeiToCredits(usdWei: string): number | null {
   return n < 1 ? 1 : n
 }
 
-/** Credits → US dollars. Exact: a credit is a whole number of cents, so nothing is lost. */
-export function creditsToUsd(credits: number): number {
-  return (credits * USD_CENTS_PER_CREDIT) / 100
-}
-
 const compactFormatter = Intl.NumberFormat('en', {
   notation: 'compact',
   maximumFractionDigits: 2
@@ -77,12 +72,4 @@ export function formatCredits(credits: number): string {
 /** Full grouped amount for tooltips / exact contexts: 5_500_000 → "5,500,000". */
 export function formatCreditsFull(credits: number): string {
   return credits.toLocaleString('en')
-}
-
-/** The dollar equivalent of a credit amount, for the secondary line: 6 → "$0.60". */
-export function formatCreditsAsUsd(credits: number): string {
-  return `$${creditsToUsd(credits).toLocaleString('en', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })}`
 }
