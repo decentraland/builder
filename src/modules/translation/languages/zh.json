@@ -1800,6 +1800,7 @@
     "mint_item": "铸币",
     "delte_item": "删除项目",
     "edit_price": "修改价格",
+    "credits_amount": "{amount} 積分",
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
     "cannot_edit_urn": "项目发布后您无法编辑 URN",

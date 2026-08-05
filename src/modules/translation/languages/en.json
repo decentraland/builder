@@ -1809,6 +1809,7 @@
     "mint_item": "mint",
     "delete_item": "Delete item",
     "edit_price": "Edit price",
+    "credits_amount": "{amount} credits",
     "see_details": "See details",
     "edit_urn": "Edit URN",
     "cannot_edit_urn": "You can't edit the URN once the item is published",

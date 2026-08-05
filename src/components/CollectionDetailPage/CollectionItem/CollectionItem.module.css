@@ -16,6 +16,30 @@
   line-height: 0;
 }
 
+/*
+ * A USD-pegged price, shown in credits. The glyph is copied from the shop app (its
+ * assets/icons/credits.svg) and painted with a mask so it takes the surrounding text colour — SVGs are
+ * imported as URLs here, and `currentColor` does not cross an <img> boundary.
+ */
+.credits {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.creditsIcon {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  mask: url('../../../images/icon-credits-currency.svg') no-repeat center / contain;
+  -webkit-mask: url('../../../images/icon-credits-currency.svg') no-repeat center / contain;
+}
+
 .grid {
   padding: 10px 0 !important;
   color: var(--text);

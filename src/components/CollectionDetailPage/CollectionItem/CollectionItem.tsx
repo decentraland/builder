@@ -8,11 +8,14 @@ import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
 import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
+import { formatCredits, formatCreditsFull, usdWeiToCredits } from 'lib/credits'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { isComplete, canManageItem, getMaxSupply, isSmart, isEmote, isFree } from 'modules/item/utils'
 import { isEnableForSaleOffchain, isLocked, isOnSale } from 'modules/collection/utils'
 import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
+import { PriceDenomination } from 'modules/trade/denomination'
+import { useTradePriceDenomination } from 'modules/trade/hooks'
 import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemImage'
@@ -38,6 +41,9 @@ export default function CollectionItem({
 }: Props) {
   const analytics = getAnalytics()
   const history = useHistory()
+  // `fetchCollectionItemsRequest` overwrites `item.price` with the marketplace's published price, which
+  // is USD wei — not MANA wei — when the item was listed through the shop. See modules/trade/denomination.
+  const isUSDPeggedPrice = useTradePriceDenomination(item.tradeId) === PriceDenomination.USD_PEGGED
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
   const shouldAllowPriceEdition =
@@ -107,12 +113,24 @@ export default function CollectionItem({
       return <span>{t('global.free')}</span>
     }
 
+    if (isUSDPeggedPrice) {
+      const credits = usdWeiToCredits(item.price)
+      return credits === null ? (
+        <span>-</span>
+      ) : (
+        <span className={styles.credits} title={t('collection_item.credits_amount', { amount: formatCreditsFull(credits) })}>
+          <i className={styles.creditsIcon} aria-hidden="true" />
+          {formatCredits(credits)}
+        </span>
+      )
+    }
+
     return (
       <Mana className={styles.mana} network={Network.MATIC} showTooltip>
         {ethers.utils.formatEther(item.price)}
       </Mana>
     )
-  }, [item, isOnSaleLegacy, isOffchainPublicItemOrdersEnabled, handleEditPriceAndBeneficiary])
+  }, [item, isOnSaleLegacy, isOffchainPublicItemOrdersEnabled, isUSDPeggedPrice, handleEditPriceAndBeneficiary])
 
   const renderItemStatus = useCallback(() => {
     return status === SyncStatus.UNSYNCED ? (
