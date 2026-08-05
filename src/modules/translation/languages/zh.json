@@ -1800,6 +1800,7 @@
     "mint_item": "铸币",
     "delte_item": "删除项目",
     "edit_price": "修改价格",
+    "credits_amount": "{amount} 積分",
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
     "cannot_edit_urn": "项目发布后您无法编辑 URN",
@@ -1808,7 +1809,8 @@
     "preview": "在编辑器中预览",
     "put_for_sale": "出售",
     "remove_from_sale": "删除出售",
-    "cancel_order_error": "删除项目订单时出错"
+    "cancel_order_error": "删除项目订单时出错",
+    "on_sale_in_shop": "在商店出售"
   },
   "collection": {
     "type": {

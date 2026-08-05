@@ -1809,6 +1809,7 @@
     "mint_item": "mint",
     "delete_item": "Delete item",
     "edit_price": "Edit price",
+    "credits_amount": "{amount} credits",
     "see_details": "See details",
     "edit_urn": "Edit URN",
     "cannot_edit_urn": "You can't edit the URN once the item is published",
@@ -1817,7 +1818,8 @@
     "preview": "Preview in Editor",
     "put_for_sale": "Put up for sale",
     "remove_from_sale": "Remove from sale",
-    "cancel_order_error": "Error when removing order for item"
+    "cancel_order_error": "Error when removing order for item",
+    "on_sale_in_shop": "On sale in the shop"
   },
   "collection": {
     "type": {
