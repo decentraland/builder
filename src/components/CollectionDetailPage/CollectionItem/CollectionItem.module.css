@@ -17,8 +17,9 @@
 }
 
 /*
- * A USD-pegged price, shown in credits. The glyph is copied from the shop app (its
- * assets/icons/credits.svg) and painted with a mask so it takes the surrounding text colour — SVGs are
+ * A USD-pegged price, shown in credits. The glyph is the repo's own icons/credits.svg, painted with a mask
+ * so it takes the surrounding text colour — a mask reads only the alpha channel, so the file's hardcoded
+ * white stroke is irrelevant here, and this avoids a second copy of the same mark. SVGs are
  * imported as URLs here, and `currentColor` does not cross an <img> boundary.
  */
 .credits {
@@ -36,8 +37,8 @@
   width: 1em;
   height: 1em;
   background-color: currentColor;
-  mask: url('../../../images/icon-credits-currency.svg') no-repeat center / contain;
-  -webkit-mask: url('../../../images/icon-credits-currency.svg') no-repeat center / contain;
+  mask: url('../../../icons/credits.svg') no-repeat center / contain;
+  -webkit-mask: url('../../../icons/credits.svg') no-repeat center / contain;
 }
 
 .grid {
