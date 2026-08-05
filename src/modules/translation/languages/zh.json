@@ -1961,9 +1961,18 @@
         "subtitle": "您即将发送包含 {count} {count, plural, one {item} other {items}} 的收藏集 \"{collection_name}\" 进行审核。为了支持策展委员会和 DAO 宝藏，每个收藏集仅需支付一次出版费 {currency} {publication_fee}（以 MANA 支付）。"
       },
       "standard": {
-        "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。"
+        "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。{link}。"
       },
       "learn_more": "了解出版费",
+      "pay_with": "支付方式：",
+      "method_credits": "积分",
+      "method_card": "银行卡",
+      "method_mana": "MANA",
+      "confirm": "确认",
+      "balance": "余额",
+      "get_mana_button": "获取 MANA",
+      "get_credits_button": "获取积分",
+      "insufficient_balance": "余额不足。",
       "already_payed": "已付款但未发布",
       "already_published": "已发布",
       "quantity": "数量",
@@ -1980,6 +1989,8 @@
       "pay_card": "用卡支付",
       "pay_card_info": "支付处理方将在您的总额中加收 5% 的交易费，以及额外的 0.5% 以应对可能的货币波动。",
       "pay_mana": "用法力支付",
+      "shop_credits_info": "使用您的 Decentraland 商店积分支付此费用。",
+      "shop_credits_info_link": "获取积分",
       "submitting_for_review": "提交审核"
     },
     "congratulations_step": {
