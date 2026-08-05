@@ -1,10 +1,10 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Button, Header, ModalContent, ModalNavigation } from 'decentraland-ui'
-import { DownloadModal } from 'decentraland-ui2'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { launchExplorerForCollection } from 'modules/collection/explorerDeepLink'
+import DownloadDesktopAppModal from 'components/DownloadDesktopAppModal'
 import styles from './SeeInWorldModal.module.css'
 import { Props } from './SeeInWorldModal.types'
 
@@ -93,7 +93,7 @@ export default class SeeInWorldModal extends React.PureComponent<Props, State> {
             </div>
           </ModalContent>
         </Modal>
-        <DownloadModal
+        <DownloadDesktopAppModal
           open={isDownloadOpen}
           onClose={this.handleCloseDownload}
           title={t('see_in_world_modal.download.title')}

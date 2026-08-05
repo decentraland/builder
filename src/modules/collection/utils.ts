@@ -246,3 +246,17 @@ export const getFiatGatewayCommodityAmount = (unitPrice: string, items: number) 
   // It is important to round up to this amount of decimal places to avoid issues with the widget.
   return Math.ceil(totalPriceEth * factor) / factor
 }
+
+export const USD_CENTS_PER_CREDIT = 10
+
+export function weiToUsdCents(weiUsd: string): number {
+  // Integer arithmetic to avoid IEEE 754 rounding mismatches with the credits-server. 1 cent = 10^16 wei.
+  const WEI_PER_CENT = ethers.BigNumber.from(10).pow(16)
+  const wei = ethers.BigNumber.from(weiUsd)
+  const cents = wei.div(WEI_PER_CENT)
+  return (wei.mod(WEI_PER_CENT).isZero() ? cents : cents.add(1)).toNumber()
+}
+
+export function shopCreditsNeededForPrice(weiUsd: string): number {
+  return Math.ceil(weiToUsdCents(weiUsd) / USD_CENTS_PER_CREDIT)
+}

@@ -53,5 +53,6 @@ export const TP_COLLECTION_NAME_MAX_LENGTH = 42
 
 export enum PaymentMethod {
   MANA = 'mana',
-  FIAT = 'fiat'
+  FIAT = 'fiat',
+  SHOP_CREDITS = 'shop_credits'
 }
