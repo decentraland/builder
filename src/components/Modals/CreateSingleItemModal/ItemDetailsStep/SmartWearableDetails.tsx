@@ -42,7 +42,7 @@ export const SmartWearableDetails: React.FC = () => {
               <Header sub className="field-header">
                 {t('create_single_item_modal.smart_wearable_permissions_label')}
                 <a
-                  href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
+                  href="https://docs.decentraland.org/creator/scenes-sdk7/kinds-of-projects/scene-metadata#required-permissions"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="learn-more"

@@ -59,9 +59,9 @@ export const HomePage: React.FC<Props> = props => {
       case NavigationTab.COLLECTIONS:
         return 'https://docs.decentraland.org/creator/wearables/wearables-overview/#collections'
       case NavigationTab.SCENES:
-        return 'https://docs.decentraland.org/creator/editor/about-scene-editor/'
+        return 'https://docs.decentraland.org/creator/scene-editor/get-started/about-editor'
       case NavigationTab.LAND:
-        return 'https://docs.decentraland.org/player/market/land-manager/'
+        return 'https://docs.decentraland.org/marketplace/land-manager'
       case NavigationTab.NAMES:
         return 'https://decentraland.org/blog/project-updates/manage-names-in-the-builder/'
       default:
