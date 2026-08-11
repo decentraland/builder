@@ -394,7 +394,7 @@ export default function ItemDetailPage(props: Props) {
                         inverted
                         className="learn-more-permissions"
                         size="small"
-                        href="https://docs.decentraland.org/creator/development-guide/sdk7/scene-metadata/#required-permissions"
+                        href="https://docs.decentraland.org/creator/scenes-sdk7/kinds-of-projects/scene-metadata#required-permissions"
                         rel="noopener noreferrer"
                         target="_blank"
                         content={t('global.learn_more')}

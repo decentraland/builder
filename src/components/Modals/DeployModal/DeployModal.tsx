@@ -86,7 +86,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                 </Button>
                 <a
                   className="learn-more-link"
-                  href="https://docs.decentraland.org/creator/worlds/contributor/worlds/about/"
+                  href="https://docs.decentraland.org/creator/scenes-sdk7/publishing/publishing-options#decentraland-worlds"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -104,7 +104,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
                 </Button>
                 <a
                   className="learn-more-link"
-                  href="https://docs.decentraland.org/creator/editor/about-scene-editor/"
+                  href="https://docs.decentraland.org/creator/scene-editor/get-started/about-editor"
                   target="_blank"
                   rel="noreferrer"
                 >
