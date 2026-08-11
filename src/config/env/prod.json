@@ -31,7 +31,7 @@
   "TRANSACTIONS_API_URL": "https://transactions-api.decentraland.org/v1",
   "ACCOUNT_URL": "https://decentraland.org/account",
   "DISCORD_URL": "https://dcl.gg/discord",
-  "WEARABLES_ZIP_INFRA_URL": "https://docs.decentraland.org/decentraland/linked-wearables/#creating-linked-wearables-in-bulk",
+  "WEARABLES_ZIP_INFRA_URL": "https://docs.decentraland.org/creator/wearables-and-emotes/wearables/linked-wearables#adding-wearables-to-the-linked-wearables-collection-in-bulk",
   "MIN_SALE_VALUE_IN_WEI": "1000000000000000000",
   "FORUM_URL": "https://forum.decentraland.org",
   "WORLDS_CONTENT_SERVER": "https://worlds-content-server.decentraland.org",

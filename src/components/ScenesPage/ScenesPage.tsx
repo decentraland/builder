@@ -98,7 +98,7 @@ const ScenesPage: React.FC<Props> = props => {
         <span className="no-scenes-description">
           {t('scenes_page.no_scenes.description', {
             a: (content: string) => (
-              <a rel="noreferrer" target="_blank" href="https://docs.decentraland.org/creator/development-guide/sdk-101/">
+              <a rel="noreferrer" target="_blank" href="https://docs.decentraland.org/creator/scenes-sdk7/getting-started/sdk-101">
                 {content}
               </a>
             )
