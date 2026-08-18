@@ -2623,5 +2623,11 @@
       "action": "Poner a la venta",
       "confirm_transaction_title": "Poner a la venta"
     }
+  },
+  "announcement_bar": {
+    "highlight": "Descubre la nueva Decentraland Shop,",
+    "message": "{highlight} una forma más simple de comprar con Créditos.",
+    "cta": "Probar ahora",
+    "dismiss": "Cerrar anuncio"
   }
 }
