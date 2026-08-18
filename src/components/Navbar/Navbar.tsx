@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { Navbar2 as BaseNavbar } from 'decentraland-dapps/dist/containers/Navbar'
 import { localStorageGetIdentity } from '@dcl/single-sign-on-client'
 import { config } from 'config/index'
+import AnnouncementBar from 'components/AnnouncementBar'
 import { locations } from 'routing/locations'
 import { Props } from './Navbar.types'
 
@@ -40,6 +41,7 @@ const Navbar: React.FC<Props> = ({ address, ...props }: Props) => {
         identity={identity}
         onSignIn={handleOnSignIn}
       />
+      <AnnouncementBar />
     </div>
   )
 }

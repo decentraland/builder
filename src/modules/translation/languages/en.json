@@ -2608,5 +2608,11 @@
   },
   "credits": {
     "value": "Credits Value"
+  },
+  "announcement_bar": {
+    "highlight": "Meet the new Decentraland Shop,",
+    "message": "{highlight} a simpler way to shop with Credits.",
+    "cta": "Try it now",
+    "dismiss": "Dismiss announcement"
   }
 }
