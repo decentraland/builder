@@ -1,31 +1,28 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config/index'
 import ArrowIcon from './images/arrow.svg'
 import CloseIcon from './images/close.svg'
+import { Props } from './AnnouncementBar.types'
 import styles from './AnnouncementBar.module.css'
 
 // Shared with the marketplace on purpose: both run on the same origin in
 // production, so dismissing the bar in one of them dismisses it everywhere.
 const ANNOUNCEMENT_BAR_KEY = 'shop-announcement-bar'
 
-const AnnouncementBar = () => {
-  const [isDismissed, setIsDismissed] = useState(() => localStorage.getItem(ANNOUNCEMENT_BAR_KEY) !== null)
+export const isAnnouncementBarDismissed = () => localStorage.getItem(ANNOUNCEMENT_BAR_KEY) !== null
 
+const AnnouncementBar = ({ onDismiss }: Props) => {
   const handleDismiss = useCallback(() => {
     localStorage.setItem(ANNOUNCEMENT_BAR_KEY, '1')
-    setIsDismissed(true)
     getAnalytics()?.track('Dismiss Shop Announcement Bar')
-  }, [])
+    onDismiss()
+  }, [onDismiss])
 
   const handleClick = useCallback(() => {
     getAnalytics()?.track('Click Shop Announcement Bar')
   }, [])
-
-  if (isDismissed) {
-    return null
-  }
 
   return (
     <aside className={styles.bar}>
