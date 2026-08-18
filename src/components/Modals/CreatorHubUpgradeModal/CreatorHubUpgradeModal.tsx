@@ -5,29 +5,14 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { config } from 'config'
-import { Props, CreatorHubUpgradeModalMetadata } from './CreatorHubUpgradeModal.types'
+import { Props } from './CreatorHubUpgradeModal.types'
 import sunsetCover from 'images/creator-hub-sunset-cover.png'
 import codeIcon from 'images/creator-hub-icon-code.svg'
 import previewIcon from 'images/creator-hub-icon-preview.svg'
 
 import styles from './CreatorHubUpgradeModal.module.css'
 
-type Variant = CreatorHubUpgradeModalMetadata['variant']
-
 const CREATOR_HUB_DOWNLOAD_URL = config.get('CREATOR_HUB_DOWNLOAD_URL')
-
-const VARIANT_CONFIG: Record<string, { leftImage: string; icons: [string, string]; translationPrefix: string }> = {
-  permissions: {
-    leftImage: sunsetCover,
-    icons: [codeIcon, previewIcon],
-    translationPrefix: 'creator_hub_upgrade_modal.permissions_variant'
-  },
-  default: { leftImage: sunsetCover, icons: [codeIcon, previewIcon], translationPrefix: 'creator_hub_upgrade_modal' }
-}
-
-function getVariant(variant?: Variant) {
-  return VARIANT_CONFIG[variant ?? 'default']
-}
 
 const CreatorHubUpgradeModal: React.FC<Props> = ({ name, onClose, metadata }) => {
   const dispatch = useDispatch()
@@ -46,7 +31,8 @@ const CreatorHubUpgradeModal: React.FC<Props> = ({ name, onClose, metadata }) =>
     onClose()
   }, [onClose])
 
-  const { leftImage, icons, translationPrefix } = getVariant(metadata?.variant)
+  const translationPrefix =
+    metadata?.variant === 'permissions' ? 'creator_hub_upgrade_modal.permissions_variant' : 'creator_hub_upgrade_modal'
 
   const renderTip = (icon: string, index: number) => (
     <div className={styles.tip}>
@@ -61,7 +47,7 @@ const CreatorHubUpgradeModal: React.FC<Props> = ({ name, onClose, metadata }) =>
   return (
     <Modal name={name} onClose={handleSkip} size="large" className={styles.modal}>
       <div className={styles.modalBody}>
-        <img src={leftImage} alt="" className={styles.coverImage} />
+        <img src={sunsetCover} alt="" className={styles.coverImage} />
         <div className={styles.contentColumn}>
           <div className={styles.header}>
             <span className={styles.badge}>{t(`${translationPrefix}.badge`)}</span>
@@ -84,8 +70,8 @@ const CreatorHubUpgradeModal: React.FC<Props> = ({ name, onClose, metadata }) =>
           <div className={styles.whySection}>
             <h3 className={styles.whySwitch}>{t(`${translationPrefix}.why_switch`)}</h3>
             <div className={styles.tips}>
-              {renderTip(icons[0], 1)}
-              {renderTip(icons[1], 2)}
+              {renderTip(codeIcon, 1)}
+              {renderTip(previewIcon, 2)}
             </div>
           </div>
 
