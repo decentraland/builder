@@ -7,7 +7,7 @@ import { useGetProjectIdFromCurrentUrl } from 'modules/location/hooks'
 import { getData as getProjects, getLoading } from 'modules/project/selectors'
 import { getLoading as getLoadingLands } from 'modules/land/selectors'
 import { getDeploymentsByProjectId, getLoading as getLoadingDeployment } from 'modules/deployment/selectors'
-import { LOAD_PROJECTS_REQUEST, deleteProject, duplicateProjectRequest, loadProjectSceneRequest } from 'modules/project/actions'
+import { LOAD_PROJECTS_REQUEST, deleteProject, loadProjectSceneRequest } from 'modules/project/actions'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { FETCH_DEPLOYMENTS_REQUEST, FETCH_WORLD_DEPLOYMENTS_REQUEST } from 'modules/deployment/actions'
 import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
@@ -39,10 +39,6 @@ const SceneDetailPageContainer: React.FC = () => {
 
   const onOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
   const onDelete: ActionFunction<typeof deleteProject> = useCallback(project => dispatch(deleteProject(project)), [dispatch])
-  const onDuplicate: ActionFunction<typeof duplicateProjectRequest> = useCallback(
-    project => dispatch(duplicateProjectRequest(project)),
-    [dispatch]
-  )
   const onLoadProjectScene: ActionFunction<typeof loadProjectSceneRequest> = useCallback(
     (project, type) => dispatch(loadProjectSceneRequest(project, type)),
     [dispatch]
@@ -57,7 +53,6 @@ const SceneDetailPageContainer: React.FC = () => {
       isLoadingDeployments={isLoadingDeployments}
       onOpenModal={onOpenModal}
       onDelete={onDelete}
-      onDuplicate={onDuplicate}
       onLoadProjectScene={onLoadProjectScene}
     />
   )

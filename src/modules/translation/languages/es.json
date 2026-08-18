@@ -2560,21 +2560,28 @@
     "learn_more": "aprende más"
   },
   "creator_hub_upgrade_modal": {
-    "title": "Mejora tu flujo de trabajo de creación",
-    "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+    "badge": "El editor de escenas web se retira el 1 de septiembre",
+    "title": "Sigue creando con Creator Hub",
+    "subtitle": "Más potente · Mantenido activamente · Funciona con tus escenas existentes",
+    "description": "El editor de escenas web dejará de ser compatible después del 1 de septiembre. <link>Descarga Creator Hub</link> para seguir creando y editando tus escenas con un flujo de trabajo de escritorio más potente.",
+    "why_switch": "¿Por qué cambiar a Creator Hub?",
     "feature1": {
       "title": "Mejor para creadores con código y sin código",
-      "description": "Trabaja con tu editor de código preferido mientras aprovechas al máximo las herramientas visuales incluidas en el editor de escenas."
+      "description": "Usa tu editor de código preferido junto con potentes herramientas de creación visual."
     },
     "feature2": {
-      "title": "Vista previa y comparte tus escenas",
-      "description": "Vista previa de tu proyecto exactamente como aparecerá, luego publícalo fácilmente en tu mundo o LAND con control total sobre tus archivos."
+      "title": "Previsualiza y comparte tus escenas",
+      "description": "Previsualiza tu proyecto tal como se verá y publícalo en tu mundo o LAND."
     },
     "download": "Descargar Creator Hub",
-    "skip_for_now": "Omitir por ahora",
+    "skip_for_now": "Omitir",
+    "footer_note": "Siempre puedes descargar Creator Hub más tarde.",
     "permissions_variant": {
-      "title": "Mejora tu flujo de trabajo de creación",
-      "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+      "badge": "El editor de escenas web se retira el 1 de septiembre",
+      "title": "Sigue creando con Creator Hub",
+      "subtitle": "Más potente · Mantenido activamente · Funciona con tus escenas existentes",
+      "description": "El editor de escenas web dejará de ser compatible después del 1 de septiembre. <link>Descarga Creator Hub</link> para gestionar el acceso, invitar colaboradores y seguir creando con un flujo de trabajo de escritorio más potente.",
+      "why_switch": "¿Por qué cambiar a Creator Hub?",
       "feature1": {
         "title": "Mejor gestión de acceso",
         "description": "¡Establece una contraseña de acceso, permite que un número selecto de personas entren a tu lugar o invita a toda una comunidad!"
@@ -2582,7 +2589,8 @@
       "feature2": {
         "title": "Colaboración mejorada",
         "description": "¡Asigna parcelas específicas a los miembros de tu equipo de colaboración y diseña tu propia ciudad!"
-      }
+      },
+      "footer_note": "Siempre puedes descargar Creator Hub más tarde."
     }
   },
   "item_status": {
