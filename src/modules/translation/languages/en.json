@@ -2542,21 +2542,28 @@
     "learn_more": "learn more"
   },
   "creator_hub_upgrade_modal": {
-    "title": "Upgrade your creation workflow",
-    "description": "The new Creator Hub replaces the old web editor with tons of new features and continuous improvements.",
+    "badge": "Web scene editor sunset on September 1st",
+    "title": "Keep creating with Creator Hub",
+    "subtitle": "More powerful · Actively maintained · Works with your existing scenes",
+    "description": "The web scene editor will no longer be supported after September 1st. <link>Download Creator Hub</link> to keep building and editing your scenes with a more powerful desktop workflow.",
+    "why_switch": "Why switch to Creator Hub?",
     "feature1": {
-      "title": "Better for code and no-code creators",
-      "description": "Work with your code editor of choice while taking full advantage of the visual tools included in the scene editor."
+      "title": "Better for code & no-code creators",
+      "description": "Use your code editor of choice alongside powerful visual creation tools."
     },
     "feature2": {
-      "title": "Preview and share your scenes",
-      "description": "Preview your project exactly as it will appear, then easily publish it to your world or LAND with full control over your files."
+      "title": "Preview & share your scenes",
+      "description": "Preview your project as it will appear, then publish it to your world or LAND."
     },
     "download": "Download Creator Hub",
-    "skip_for_now": "Skip for now",
+    "skip_for_now": "Skip",
+    "footer_note": "You can always download Creator Hub later.",
     "permissions_variant": {
-      "title": "Upgrade your creation workflow",
-      "description": "The new Creator Hub replaces the old web editor with tons of new features and continuous improvements.",
+      "badge": "Web scene editor sunset on September 1st",
+      "title": "Keep creating with Creator Hub",
+      "subtitle": "More powerful · Actively maintained · Works with your existing scenes",
+      "description": "The web scene editor will no longer be supported after September 1st. <link>Download Creator Hub</link> to manage access, invite collaborators, and keep building with a more powerful desktop workflow.",
+      "why_switch": "Why switch to Creator Hub?",
       "feature1": {
         "title": "Better manage access",
         "description": "Set an access password, allow a select number of people into your place, or invite an entire community!"
@@ -2564,7 +2571,8 @@
       "feature2": {
         "title": "Improved collaboration",
         "description": "Assign specific parcels to members of your collaboration team and design your own city!"
-      }
+      },
+      "footer_note": "You can always download Creator Hub later."
     }
   },
   "item_status": {
@@ -2600,11 +2608,5 @@
   },
   "credits": {
     "value": "Credits Value"
-  },
-  "web_editor_sunset_modal": {
-    "title": "The web scene editor is being retired on August 18th",
-    "description": "As of August 18th, the web scene editor will no longer be supported. We recommend downloading Creator Hub — a much more powerful and actively maintained tool that works seamlessly with all your existing scenes. You can always download your scenes and continue working on them in Creator Hub.",
-    "download_creator_hub": "Download Creator Hub",
-    "continue_to_editor": "Continue to editor"
   }
 }
