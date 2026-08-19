@@ -1866,7 +1866,13 @@
     "price_message": "Tenga en cuenta que la cantidad mínima admitida para transacciones sin costo es {minPrice}.{br}{br}Si el item cuesta menos que eso, el comprador deberá cubrir el costo de la transacción en {token}.",
     "beneficiary_label": "Dirección de la billetera del beneficiario",
     "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección.",
-    "free_message": "El creador original será el beneficiario de las regalías"
+    "free_message": "El creador original será el beneficiario de las regalías",
+    "mana_option": "MANA",
+    "credits_option": "Créditos",
+    "credits_peg": "1 Crédito = ${rate} USD",
+    "credits_usd_hint": "≈ ${usd} USD",
+    "mana_usd_hint": "≈ ${usd} USD — estimado; varía con el precio de MANA",
+    "credits_message": "Este item se venderá en la Tienda de Decentraland por Créditos. Recibirás el monto equivalente en MANA cuando se venda."
   },
   "confirm_delete": {
     "content": "Eliminar \"{name}\"?",

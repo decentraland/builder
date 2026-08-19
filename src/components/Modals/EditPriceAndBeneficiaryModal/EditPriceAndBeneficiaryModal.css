@@ -46,6 +46,44 @@
   opacity: 0.45;
 }
 
+/* The field label is 24px tall and the input's text line is 28px (4px top padding + 28px
+   line-height), so both adornments anchor at top 28px and center within that 28px line. */
+.EditPriceAndBeneficiaryModal .ui.form .price-field > .credits-icon {
+  position: absolute;
+  top: 28px;
+  width: 13px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .price-field > .ui.dropdown.currency-dropdown {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding-left: 12px;
+  border-left: 1px solid var(--divider);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .price-field > .ui.dropdown.currency-dropdown > .dropdown.icon {
+  margin-left: 8px;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .price-field.with-currency-selector .dcl.field .ui.input input {
+  padding-right: 110px;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .price-field .currency-hint {
+  color: var(--secondary-text);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 .EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.field .ui.input > input {
   padding-left: 18px;
 }

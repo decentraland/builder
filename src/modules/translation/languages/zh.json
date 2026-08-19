@@ -1848,7 +1848,13 @@
     "price_message": "请记住，无成本交易支持的最低金额是 {minPrice}。{br}{br}如果您的商品价格低于此价格，买家将需要支付 {token} 中的交易费用。",
     "beneficiary_label": "收款人钱包地址",
     "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。",
-    "free_message": "原始创作者将成为所产生版税的受益人"
+    "free_message": "原始创作者将成为所产生版税的受益人",
+    "mana_option": "MANA",
+    "credits_option": "積分",
+    "credits_peg": "1 積分 = ${rate} 美元",
+    "credits_usd_hint": "≈ ${usd} 美元",
+    "mana_usd_hint": "≈ ${usd} 美元 — 估算值；随 MANA 价格波动",
+    "credits_message": "此物品将在 Decentraland 商店以積分出售。售出后您将收到等值的 MANA。"
   },
   "confirm_delete": {
     "content": "删除\"{name}\"?",

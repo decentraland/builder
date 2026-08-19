@@ -14,6 +14,8 @@ import { Item } from 'modules/item/types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading'
 import { getAuthorizedCollections } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
+import { getIsCreditsPrimaryListingsEnabled } from 'modules/features/selectors'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { getWallet } from 'modules/wallet/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
@@ -30,13 +32,20 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     connectedChainId: wallet?.chainId,
     isLoading: isLoadingType(getLoading(state), CREATE_ITEM_ORDER_TRADE_REQUEST),
     isLoadingCancel: isLoadingType(getLoading(state), CANCEL_ITEM_ORDER_TRADE_REQUEST),
+    isCreditsListingEnabled: getIsCreditsPrimaryListingsEnabled(state),
     error: getError(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onCreateItemOrder: (item: Item, priceInWei: string, beneficiary: string, collection: Collection, expiresAt: Date) =>
-    dispatch(createItemOrderTradeRequest(item, priceInWei, beneficiary, collection, expiresAt)),
+  onCreateItemOrder: (
+    item: Item,
+    priceInWei: string,
+    beneficiary: string,
+    collection: Collection,
+    expiresAt: Date,
+    denomination?: PriceDenomination
+  ) => dispatch(createItemOrderTradeRequest(item, priceInWei, beneficiary, collection, expiresAt, denomination)),
   onRemoveFromSale: (tradeId: string) => dispatch(cancelItemOrderTradeRequest(tradeId))
 })
 
