@@ -61,7 +61,7 @@ export const locations = {
   curation: () => '/curation',
   templates: () => '/templates',
   templateDetail: (templateId = ':templateId') => `/templates/${templateId}`,
-  test: () => '/test'
+  livePreview: () => '/live-preview'
 }
 
 export function redirectToAuthDapp(customRedirect?: string) {

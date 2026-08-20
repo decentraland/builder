@@ -1,0 +1,108 @@
+.LivePreviewPage {
+  --item-editor-panel-width: 360px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.LivePreviewPage .live-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.LivePreviewPage .live-panel {
+  width: var(--item-editor-panel-width);
+  flex: none;
+  background-color: var(--void);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.LivePreviewPage .live-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.LivePreviewPage .panel-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.LivePreviewPage .panel-section:last-child {
+  border-bottom: none;
+}
+
+.LivePreviewPage h1 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.LivePreviewPage .description {
+  color: var(--secondary-text);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.LivePreviewPage .section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--secondary-text);
+  margin-bottom: 12px;
+}
+
+.LivePreviewPage .section-title.overrides {
+  margin-top: 20px;
+}
+
+.LivePreviewPage .actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.LivePreviewPage .panel-section .actions:last-child {
+  margin-bottom: 0;
+}
+
+.LivePreviewPage .status {
+  font-size: 13px;
+  color: var(--secondary-text);
+}
+
+.LivePreviewPage .status--connected {
+  color: var(--primary);
+}
+
+.LivePreviewPage .status--error {
+  color: var(--error);
+}
+
+.LivePreviewPage .live-panel .Select,
+.LivePreviewPage .live-panel .MultiSelect {
+  margin-bottom: 12px;
+}
+
+.LivePreviewPage .live-preview {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+.LivePreviewPage .live-preview iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.LivePreviewPage .live-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+}

@@ -39,7 +39,7 @@ const ItemEditorPage = React.lazy(() => import('components/ItemEditorPage'))
 const CurationPage = React.lazy(() => import('components/CurationPage'))
 const TemplatesPage = React.lazy(() => import('components/TemplatesPage'))
 const TemplateDetailPage = React.lazy(() => import('components/TemplateDetailPage'))
-const TestPage = React.lazy(() => import('components/TestPage'))
+const LivePreviewPage = React.lazy(() => import('components/LivePreviewPage'))
 
 export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
   usePageTracking()
@@ -94,7 +94,7 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
           <Route exact key={4} path={locations.itemEditor()} component={ItemEditorPage} />,
           <Route exact key={5} path={locations.curation()} component={CurationPage} />
           <Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />
-          <Route exact path={locations.test()} component={TestPage} />
+          <Route exact path={locations.livePreview()} component={LivePreviewPage} />
           <Redirect to={locations.root()} />
         </Switch>
       </Responsive>

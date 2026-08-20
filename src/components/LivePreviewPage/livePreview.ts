@@ -1,4 +1,13 @@
-import { BodyShape, EmoteCategory, EmoteWithBlobs, Locale, PreviewEmote, WearableCategory, WearableWithBlobs } from '@dcl/schemas'
+import {
+  BodyPartCategory,
+  BodyShape,
+  EmoteCategory,
+  EmoteWithBlobs,
+  Locale,
+  PreviewEmote,
+  WearableCategory,
+  WearableWithBlobs
+} from '@dcl/schemas'
 
 /**
  * Live preview connector between a local Blender bridge and the WearablePreview iframe.
@@ -36,8 +45,15 @@ export type BridgeState = {
   bodyShapes?: BodyShape[]
 }
 
-const MODEL_KEY = 'model.glb'
+export const MODEL_KEY = 'model.glb'
 const BOTH_BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
+
+/** Panel-driven tweaks applied on top of whatever the bridge reports. */
+export type DefinitionOverrides = {
+  category?: WearableCategory
+  hides?: (WearableCategory | BodyPartCategory)[]
+  loop?: boolean
+}
 
 function isEmoteCategory(category?: string): boolean {
   if (!category) return false
@@ -66,16 +82,23 @@ export async function fetchModelBlob(bridgeUrl: string): Promise<Blob> {
  * Build a minimal definition-with-blobs from a raw GLB blob so it can be fed directly to
  * <WearablePreview blob={...} />. No URLs, no uploads: the GLB rides along as a Blob.
  */
-export function buildDefinition(state: BridgeState, glb: Blob): { blob: WearableWithBlobs | EmoteWithBlobs; isEmote: boolean } {
+export function buildDefinition(
+  state: BridgeState,
+  glb: Blob,
+  overrides: DefinitionOverrides = {}
+): { blob: WearableWithBlobs | EmoteWithBlobs; isEmote: boolean } {
   const bodyShapes = state.bodyShapes && state.bodyShapes.length > 0 ? state.bodyShapes : BOTH_BODY_SHAPES
   const name = state.name || 'Live preview'
-  const category = state.category
-  const isEmote = state.type === 'emote' || isEmoteCategory(category)
+  const isEmote = state.type === 'emote' || isEmoteCategory(state.category)
+  const category = isEmote ? state.category : overrides.category ?? state.category
 
   const base = {
     id: 'live-preview',
     name,
-    description: 'Live preview streamed from Blender',
+    // The version rides along because the parent (decentraland-ui2) deep-equals successive
+    // updates and two different Blobs compare as equal empty objects: without a changing
+    // field, a re-export that only changes the model bytes would never reach the iframe.
+    description: `Live preview streamed from Blender (v${String(state.version)})`,
     thumbnail: '',
     image: '',
     i18n: [{ code: Locale.EN, text: name }]
@@ -96,7 +119,7 @@ export function buildDefinition(state: BridgeState, glb: Blob): { blob: Wearable
           }
         ],
         tags: [],
-        loop: false
+        loop: overrides.loop ?? false
       }
     }
     return { blob: emote, isEmote: true }
@@ -106,7 +129,7 @@ export function buildDefinition(state: BridgeState, glb: Blob): { blob: Wearable
     ...base,
     data: {
       category: (category as WearableCategory) || WearableCategory.HAT,
-      hides: [],
+      hides: overrides.hides ?? [],
       replaces: [],
       tags: [],
       representations: [
@@ -114,7 +137,8 @@ export function buildDefinition(state: BridgeState, glb: Blob): { blob: Wearable
           bodyShapes,
           mainFile: MODEL_KEY,
           contents: representationContents,
-          overrideHides: [],
+          // The editor keeps overrideHides in sync with hides (see RightPanel.setHides).
+          overrideHides: overrides.hides ?? [],
           overrideReplaces: []
         }
       ]
