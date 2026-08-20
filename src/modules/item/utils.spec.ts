@@ -1007,6 +1007,16 @@ describe('when checking if an item is sold out', () => {
     })
   })
 
+  describe('and the total supply exceeds the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE, totalSupply: 5 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
+    })
+  })
+
   describe('and the item has no total supply', () => {
     beforeEach(() => {
       item = { rarity: Rarity.UNIQUE } as Item
@@ -1014,6 +1024,16 @@ describe('when checking if an item is sold out', () => {
 
     it('should return false', () => {
       expect(isItemSoldOut(item)).toBe(false)
+    })
+  })
+
+  describe('and the item has no rarity', () => {
+    beforeEach(() => {
+      item = { totalSupply: 0 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
     })
   })
 })
