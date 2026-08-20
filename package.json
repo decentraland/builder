@@ -40,7 +40,7 @@
     "decentraland-dapps": "^29.3.1-20260805170817.commit-f4ffa6a",
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland-experiments": "^1.0.2",
-    "decentraland-transactions": "^3.1.0",
+    "decentraland-transactions": "^3.1.1",
     "decentraland-ui": "^7.2.0",
     "decentraland-ui2": "^3.18.0",
     "ethers": "^5.6.8",
