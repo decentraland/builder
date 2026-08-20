@@ -221,8 +221,8 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
       const usd = this.isValidPrice() ? ((Number(price) * USD_CENTS_PER_CREDIT) / 100).toFixed(2) : null
       return (
         <div className="currency-hint">
+          {usd ? `${t('edit_price_and_beneficiary_modal.credits_usd_hint', { usd })} · ` : null}
           {t('edit_price_and_beneficiary_modal.credits_peg', { rate: (USD_CENTS_PER_CREDIT / 100).toFixed(2) })}
-          {usd ? ` · ${t('edit_price_and_beneficiary_modal.credits_usd_hint', { usd })}` : null}
         </div>
       )
     }

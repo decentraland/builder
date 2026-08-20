@@ -1861,7 +1861,7 @@
     "mana_option": "MANA",
     "credits_option": "Credits",
     "credits_peg": "1 Credit = ${rate} USD",
-    "credits_usd_hint": "≈ ${usd} USD",
+    "credits_usd_hint": "= ${usd} USD",
     "mana_usd_hint": "≈ ${usd} USD — estimated; varies with the MANA price",
     "credits_message": "This item will be sold in the Decentraland Shop for Credits. You will receive the equivalent amount in MANA when it sells."
   },

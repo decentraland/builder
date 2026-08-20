@@ -51,8 +51,8 @@
 .EditPriceAndBeneficiaryModal .ui.form .price-field > .credits-icon {
   position: absolute;
   top: 28px;
-  width: 13px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
 }
 
@@ -64,7 +64,6 @@
   align-items: center;
   height: 28px;
   padding-left: 12px;
-  border-left: 1px solid var(--divider);
   font-size: 15px;
   font-weight: 500;
   color: var(--text);
@@ -85,7 +84,7 @@
 }
 
 .EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.field .ui.input > input {
-  padding-left: 18px;
+  padding-left: 24px;
 }
 
 .EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.field .ui.input input::placeholder {

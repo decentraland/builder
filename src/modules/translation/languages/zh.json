@@ -1852,7 +1852,7 @@
     "mana_option": "MANA",
     "credits_option": "積分",
     "credits_peg": "1 積分 = ${rate} 美元",
-    "credits_usd_hint": "≈ ${usd} 美元",
+    "credits_usd_hint": "= ${usd} 美元",
     "mana_usd_hint": "≈ ${usd} 美元 — 估算值；随 MANA 价格波动",
     "credits_message": "此物品将在 Decentraland 商店以積分出售。售出后您将收到等值的 MANA。"
   },
