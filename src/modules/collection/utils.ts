@@ -22,14 +22,14 @@ export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: bool
 }
 
 export function enableSaleOffchain(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
-  const address = getOffchainV2SaleAddress(wallet.networks.MATIC.chainId)
+  const { address } = getLatestOffchainSale(wallet.networks.MATIC.chainId)
   return [{ address, hasAccess: isOnSale, collection }]
 }
 
 export function isEnableForSaleOffchain(collection: Collection, wallet: Wallet) {
-  const address = getOffchainSaleAddress(wallet.networks.MATIC.chainId)
-  const addressV2 = getOffchainV2SaleAddress(wallet.networks.MATIC.chainId)
-  return includes(collection.minters, address) || includes(collection.minters, addressV2)
+  // Any version, not just the newest: a collection listed through an older marketplace is still on sale,
+  // and narrowing this to the current version would make every existing listing look unlisted.
+  return getOffchainSaleAddresses(wallet.networks.MATIC.chainId).some(address => includes(collection.minters, address))
 }
 
 export function isOnSale(collection: Collection, wallet: Wallet) {
@@ -57,6 +57,52 @@ export function getOffchainSaleAddress(chainId: ChainId) {
 
 export function getOffchainV2SaleAddress(chainId: ChainId) {
   return getContract(ContractName.OffChainMarketplaceV2, chainId).address.toLowerCase()
+}
+
+export function getOffchainV3SaleAddress(chainId: ChainId) {
+  return getContract(ContractName.OffChainMarketplaceV3, chainId).address.toLowerCase()
+}
+
+/**
+ * Off-chain marketplace versions, newest first.
+ *
+ * Mirrors the resolution in decentraland-dapps' getTradeSignature and MUST stay in step with it: Builder
+ * grants minter rights to the marketplace that will mint the item, so it has to be the same version the
+ * trade is signed against, or the mint reverts.
+ */
+const OFFCHAIN_SALE_CONTRACT_NAMES = [
+  ContractName.OffChainMarketplaceV3,
+  ContractName.OffChainMarketplaceV2,
+  ContractName.OffChainMarketplace
+]
+
+/**
+ * The newest off-chain marketplace deployed on the chain.
+ *
+ * `getContract` THROWS for a version that is not deployed on a chain rather than returning a falsy value,
+ * which is why each candidate is tried in turn. V3 is testnet-only for now, so mainnet resolves to V2.
+ */
+export function getLatestOffchainSale(chainId: ChainId): { contractName: ContractName; address: string } {
+  for (const contractName of OFFCHAIN_SALE_CONTRACT_NAMES) {
+    try {
+      return { contractName, address: getContract(contractName, chainId).address.toLowerCase() }
+    } catch (error) {
+      continue
+    }
+  }
+  throw new Error(`No off-chain marketplace contract exists on chain ${chainId}`)
+}
+
+/** Every off-chain marketplace version deployed on the chain, for "is this collection listed" checks. */
+export function getOffchainSaleAddresses(chainId: ChainId): string[] {
+  return OFFCHAIN_SALE_CONTRACT_NAMES.reduce<string[]>((addresses, contractName) => {
+    try {
+      addresses.push(getContract(contractName, chainId).address.toLowerCase())
+    } catch (error) {
+      // Version not deployed on this chain.
+    }
+    return addresses
+  }, [])
 }
 
 export function getCollectionEditorURL(collection: Collection, items: Item[]): string {
