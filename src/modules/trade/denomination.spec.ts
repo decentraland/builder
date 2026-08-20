@@ -1,6 +1,12 @@
 import { TradeAssetType } from '@dcl/schemas'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
-import { PriceDenomination, clearTradePriceDenominationCache, denominationOfTrade, fetchTradePriceDenomination } from './denomination'
+import {
+  PriceDenomination,
+  clearTradePriceDenominationCache,
+  denominationOfTrade,
+  fetchTradePriceDenomination,
+  primeTradePriceDenominationCache
+} from './denomination'
 
 jest.mock('decentraland-dapps/dist/modules/trades/TradeService')
 
@@ -80,6 +86,14 @@ describe('modules/trade/denomination', () => {
 
       expect(results).toEqual([PriceDenomination.USD_PEGGED, PriceDenomination.USD_PEGGED, PriceDenomination.USD_PEGGED])
       expect(fetchTrade).toHaveBeenCalledTimes(1)
+    })
+
+    describe('and the cache was primed for a just-created trade', () => {
+      it('should resolve the primed denomination without fetching the trade', async () => {
+        primeTradePriceDenominationCache('trade-new', PriceDenomination.USD_PEGGED)
+        await expect(fetchTradePriceDenomination('trade-new')).resolves.toBe(PriceDenomination.USD_PEGGED)
+        expect(fetchTrade).not.toHaveBeenCalled()
+      })
     })
 
     describe('and the trade cannot be read', () => {

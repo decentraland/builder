@@ -8,6 +8,7 @@ import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization
 import { t } from 'decentraland-dapps/dist/modules/translation'
 import { Item } from 'modules/item/types'
 import { getOffchainV2SaleAddress } from 'modules/collection/utils'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { getError, getPutForSaleOffChainStatus } from 'modules/item/selectors'
 import { Props } from './PutForSaleOffchainModal.types'
 import EditPriceAndBeneficiaryModal from '../EditPriceAndBeneficiaryModal/EditPriceAndBeneficiaryModal'
@@ -22,12 +23,19 @@ function PutForSaleOffchainModal({
   metadata,
   isLoading,
   isLoadingCancel,
+  isCreditsListingEnabled,
   onClose,
   onCreateItemOrder,
   onRemoveFromSale,
   onAuthorizedAction
 }: Props) {
-  const handlePutForSale = (_itemId: string, price: string, beneficiary: string, expiresAt = new Date()) => {
+  const handlePutForSale = (
+    _itemId: string,
+    price: string,
+    beneficiary: string,
+    expiresAt = new Date(),
+    denomination: PriceDenomination = PriceDenomination.MANA
+  ) => {
     if (!collection || !item || !collection.contractAddress) {
       console.error('Collection or item not found')
       return
@@ -49,7 +57,7 @@ function PutForSaleOffchainModal({
         name: ContractName.ERC721CollectionV2,
         network: Network.MATIC
       } as Contract,
-      onAuthorized: () => onCreateItemOrder(item as Item, price, beneficiary, collection, expiresAt)
+      onAuthorized: () => onCreateItemOrder(item as Item, price, beneficiary, collection, expiresAt, denomination)
     })
   }
 
@@ -95,6 +103,7 @@ function PutForSaleOffchainModal({
       onSave={() => undefined}
       withExpirationDate
       isOffchain
+      isCreditsListingEnabled={isCreditsListingEnabled}
     />
   )
 }

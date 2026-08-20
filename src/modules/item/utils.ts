@@ -19,6 +19,7 @@ import {
   Mapping,
   Mappings,
   TradeAssetType,
+  TradeAssetWithBeneficiary,
   TradeCreation,
   TradeType,
   Network,
@@ -58,7 +59,9 @@ import {
   isSocialEmote
 } from './types'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib'
-import { getOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
+import { getOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trades'
+import { getTradeSignature } from 'lib/trades'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { BigNumber } from 'eth-connect'
 import { ethers } from 'ethers'
@@ -1027,12 +1030,33 @@ export const isSmartWearableFileSizeValid = (fileSize: number): boolean => {
   return fileSize < MAX_SMART_WEARABLE_FILE_SIZE
 }
 
+/**
+ * The received leg of a public item order. `amount` is MANA wei for a MANA listing and USD wei
+ * (1e18 = $1) for a USD-pegged one; the MANA contract address is kept on both, matching the shop
+ * (the marketplace resolves USD → MANA on-chain at settlement).
+ */
+export function buildItemOrderReceivedAsset(
+  denomination: PriceDenomination,
+  amount: string,
+  manaContractAddress: string,
+  beneficiary: string
+): TradeAssetWithBeneficiary {
+  return {
+    assetType: denomination === PriceDenomination.USD_PEGGED ? TradeAssetType.USD_PEGGED_MANA : TradeAssetType.ERC20,
+    contractAddress: manaContractAddress,
+    amount,
+    extra: '',
+    beneficiary
+  } as TradeAssetWithBeneficiary
+}
+
 export async function createItemOrderTrade(
   item: Item,
   priceInWei: string,
   beneficiary: string,
   collection: Collection,
-  expiresAt: Date
+  expiresAt: Date,
+  denomination: PriceDenomination = PriceDenomination.MANA
 ): Promise<TradeCreation> {
   const signer = await getSigner()
   const address = await signer.getAddress()
@@ -1069,15 +1093,7 @@ export async function createItemOrderTrade(
         extra: ''
       }
     ],
-    received: [
-      {
-        assetType: TradeAssetType.ERC20,
-        contractAddress: manaContract.address,
-        amount: priceInWei,
-        extra: '',
-        beneficiary
-      }
-    ]
+    received: [buildItemOrderReceivedAsset(denomination, priceInWei, manaContract.address, beneficiary)]
   }
 
   return { ...tradeToSign, signature: await getTradeSignature(tradeToSign) }
