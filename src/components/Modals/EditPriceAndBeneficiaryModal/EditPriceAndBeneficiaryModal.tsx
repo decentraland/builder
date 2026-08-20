@@ -94,13 +94,12 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   handleIsFreeToggle = (_event: React.MouseEvent<HTMLInputElement>) => {
     const isFree = !this.state.isFree
-    // Free forces MANA: a free listing is a MANA (amount 0) order, which credits can't represent.
-    const switchToMana = isFree && this.isCreditsDenomination()
+
     this.setState({
       isFree,
       isOwnerBeneficiary: isFree ? false : this.state.isOwnerBeneficiary,
-      denomination: switchToMana ? PriceDenomination.MANA : this.state.denomination,
-      price: switchToMana ? undefined : this.state.price
+      denomination: isFree ? PriceDenomination.MANA : PriceDenomination.USD_PEGGED, // Free forces MANA: a free listing is a MANA (amount 0) order.
+      price: isFree ? undefined : this.state.price
     })
   }
 
