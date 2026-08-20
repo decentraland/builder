@@ -78,7 +78,7 @@ describe('when the credits listing feature is on in the off-chain flow', () => {
     const priceInput = screen.getByPlaceholderText('10')
     userEvent.type(priceInput, '2.5')
     expect(priceInput).toHaveValue('25')
-    expect(screen.getByText('≈ $2.50 USD', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText('= $2.50 USD', { exact: false })).toBeInTheDocument()
   })
 
   it('should submit the price as USD wei with the USD-pegged denomination', () => {
