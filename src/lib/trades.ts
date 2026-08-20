@@ -6,7 +6,7 @@ import { getSigner } from 'decentraland-dapps/dist/lib'
 import { fromMillisecondsToSeconds } from 'decentraland-dapps/dist/lib/time'
 
 /**
- * Vendored from decentraland-dapps' `lib/trades` because its `getValueForTradeAsset` has no case for
+ * Vendored from decentraland-dapps@29.3.1-20260805170817.commit-f4ffa6a `lib/trades` because its `getValueForTradeAsset` has no case for
  * `TradeAssetType.USD_PEGGED_MANA` and returns '' — which signs successfully but produces an invalid
  * EIP-712 payload the marketplace rejects. For ERC20 trades the output here is byte-identical to the
  * dapps implementation (pinned by trades.spec.ts). Delete this file once dapps supports USD-pegged
@@ -53,12 +53,15 @@ export const OFFCHAIN_MARKETPLACE_TYPES = {
 export function valueForAsset(asset: { assetType: TradeAssetType; tokenId?: string; itemId?: string; amount?: string }): string {
   switch (asset.assetType) {
     case TradeAssetType.ERC721:
-      return asset.tokenId as string
+      if (!asset.tokenId) throw new Error('Missing tokenId for ERC721 asset')
+      return asset.tokenId
     case TradeAssetType.COLLECTION_ITEM:
-      return asset.itemId as string
+      if (!asset.itemId) throw new Error('Missing itemId for COLLECTION_ITEM asset')
+      return asset.itemId
     case TradeAssetType.ERC20:
     case TradeAssetType.USD_PEGGED_MANA:
-      return asset.amount as string
+      if (!asset.amount) throw new Error('Missing amount for ERC20/USD_PEGGED_MANA asset')
+      return asset.amount
     default:
       // An unknown asset must never reach the signer: '' signs fine but the signature is garbage.
       throw new Error(`Unsupported assetType ${String(asset.assetType)}`)

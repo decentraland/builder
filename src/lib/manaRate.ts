@@ -43,6 +43,9 @@ export async function fetchManaToUsdRate(): Promise<ethers.BigNumber> {
     throw new Error('MANA rate stale')
   }
 
+  if (Number(decimals) > 18) {
+    throw new Error(`Unexpected oracle decimals: ${String(decimals)}`)
+  }
   return answer.mul(ethers.BigNumber.from(10).pow(18 - Number(decimals)))
 }
 
