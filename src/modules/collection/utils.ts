@@ -22,8 +22,23 @@ export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: bool
 }
 
 export function enableSaleOffchain(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
-  const { address } = getLatestOffchainSale(wallet.networks.MATIC.chainId)
-  return [{ address, hasAccess: isOnSale, collection }]
+  const chainId = wallet.networks.MATIC.chainId
+
+  // Enabling grants the newest version only: that is the one trades are signed against, and the minter
+  // has to be the same contract as the signature domain or the mint reverts.
+  if (isOnSale) {
+    return [{ address: getLatestOffchainSale(chainId).address, hasAccess: true, collection }]
+  }
+
+  // Disabling has to revoke every version the collection actually holds. Revoking only the newest leaves
+  // an older marketplace as a minter, so listings on that version stay sellable after the user turns
+  // off-chain sale off, and isEnableForSaleOffchain — which accepts any version — still reports it as on
+  // sale. Falls back to the newest when the collection holds none, matching the previous single-entry
+  // shape rather than sending the contract empty arrays.
+  const authorized = getOffchainSaleAddresses(chainId).filter(address => includes(collection.minters, address))
+  const toRevoke = authorized.length ? authorized : [getLatestOffchainSale(chainId).address]
+
+  return toRevoke.map(address => ({ address, hasAccess: false, collection }))
 }
 
 export function isEnableForSaleOffchain(collection: Collection, wallet: Wallet) {
