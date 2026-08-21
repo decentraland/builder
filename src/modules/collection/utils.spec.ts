@@ -1,4 +1,5 @@
 import { ChainId, BodyShape } from '@dcl/schemas'
+import { ContractName } from 'decentraland-transactions'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
@@ -17,6 +18,8 @@ import {
   isEnableForSaleOffchain,
   enableSaleOffchain,
   getOffchainV2SaleAddress,
+  getOffchainV3SaleAddress,
+  getLatestOffchainSale,
   weiToUsdCents,
   shopCreditsNeededForPrice
 } from './utils'
@@ -353,7 +356,7 @@ describe('when getting if a collection is enable for offchain purchases', () => 
 describe('when toggling the permissions for the offchain marketplace contract', () => {
   describe('and the user wants to enable the contract', () => {
     it('should return the correct set of permissions', () => {
-      const address = getOffchainV2SaleAddress(ChainId.MATIC_AMOY)
+      const address = getOffchainV3SaleAddress(ChainId.MATIC_AMOY)
       const collection = { id: 'id' } as Collection
       expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, true)).toEqual([
         { address, hasAccess: true, collection }
@@ -362,12 +365,42 @@ describe('when toggling the permissions for the offchain marketplace contract', 
   })
 
   describe('and the user wants to disable the contract', () => {
-    it('should return the correct set of permissions', () => {
-      const address = getOffchainV2SaleAddress(ChainId.MATIC_AMOY)
-      const collection = { id: 'id', minters: [address] } as Collection
-      expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, false)).toEqual([
-        { address, hasAccess: false, collection }
-      ])
+    describe('and the collection only has the latest version as a minter', () => {
+      it('should return the correct set of permissions', () => {
+        const address = getOffchainV3SaleAddress(ChainId.MATIC_AMOY)
+        const collection = { id: 'id', minters: [address] } as Collection
+        expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, false)).toEqual([
+          { address, hasAccess: false, collection }
+        ])
+      })
+    })
+
+    describe('and the collection also has an older version as a minter', () => {
+      let collection: Collection
+      let wallet: Wallet
+
+      beforeEach(() => {
+        collection = {
+          id: 'id',
+          minters: [getOffchainV2SaleAddress(ChainId.MATIC_AMOY), getOffchainV3SaleAddress(ChainId.MATIC_AMOY)]
+        } as Collection
+        wallet = { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+      })
+
+      // Revoking only the newest would leave the older marketplace a minter, so listings on that version
+      // stay sellable after the toggle and the collection still reads as on sale.
+      it('should revoke every version the collection holds', () => {
+        expect(enableSaleOffchain(collection, wallet, false)).toEqual(
+          expect.arrayContaining([
+            { address: getOffchainV2SaleAddress(ChainId.MATIC_AMOY), hasAccess: false, collection },
+            { address: getOffchainV3SaleAddress(ChainId.MATIC_AMOY), hasAccess: false, collection }
+          ])
+        )
+      })
+
+      it('should not revoke a version the collection does not hold', () => {
+        expect(enableSaleOffchain(collection, wallet, false)).toHaveLength(2)
+      })
     })
   })
 })
@@ -394,5 +427,67 @@ describe('when computing the shop credits needed for a wei USD price', () => {
   it('should round up to the next whole credit', () => {
     expect(shopCreditsNeededForPrice('100000000000000000000')).toBe(1000) // 100 USD
     expect(shopCreditsNeededForPrice('33330000000000000000')).toBe(334) // 33.33 USD -> 3333 cents
+  })
+})
+
+describe('when resolving the newest off-chain marketplace for sales', () => {
+  describe('and the chain has a V3 deployment', () => {
+    let chainId: ChainId
+
+    beforeEach(() => {
+      chainId = ChainId.MATIC_AMOY
+    })
+
+    it('should resolve to the V3 address', () => {
+      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV3SaleAddress(chainId))
+    })
+
+    it('should report V3 as the contract name, which the authorization modal labels', () => {
+      expect(getLatestOffchainSale(chainId).contractName).toBe(ContractName.OffChainMarketplaceV3)
+    })
+  })
+
+  describe('and the chain has no V3 deployment', () => {
+    let chainId: ChainId
+
+    beforeEach(() => {
+      chainId = ChainId.MATIC_MAINNET
+    })
+
+    // Minter rights have to go to the version that will actually mint, and V3 is testnet-only for now.
+    it('should fall back to the V2 address', () => {
+      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV2SaleAddress(chainId))
+    })
+  })
+})
+
+describe('when checking whether a collection listed through an older marketplace is on sale', () => {
+  describe('and the V2 marketplace is the minter while V3 is the current version', () => {
+    let collection: Collection
+    let wallet: Wallet
+
+    beforeEach(() => {
+      collection = { minters: [getOffchainV2SaleAddress(ChainId.MATIC_AMOY)], id: '1' } as Collection
+      wallet = { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+    })
+
+    // Narrowing this to the newest version would make every existing listing look unlisted.
+    it('should still report the collection as enabled for offchain sales', () => {
+      expect(isEnableForSaleOffchain(collection, wallet)).toBe(true)
+    })
+  })
+
+  describe('and the V3 marketplace is the minter', () => {
+    let collection: Collection
+    let wallet: Wallet
+
+    beforeEach(() => {
+      collection = { minters: [getOffchainV3SaleAddress(ChainId.MATIC_AMOY)], id: '1' } as Collection
+      wallet = { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+    })
+
+    it('should report the collection as enabled for offchain sales', () => {
+      expect(isEnableForSaleOffchain(collection, wallet)).toBe(true)
+    })
   })
 })
