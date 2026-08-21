@@ -365,12 +365,42 @@ describe('when toggling the permissions for the offchain marketplace contract', 
   })
 
   describe('and the user wants to disable the contract', () => {
-    it('should return the correct set of permissions', () => {
-      const address = getOffchainV3SaleAddress(ChainId.MATIC_AMOY)
-      const collection = { id: 'id', minters: [address] } as Collection
-      expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, false)).toEqual([
-        { address, hasAccess: false, collection }
-      ])
+    describe('and the collection only has the latest version as a minter', () => {
+      it('should return the correct set of permissions', () => {
+        const address = getOffchainV3SaleAddress(ChainId.MATIC_AMOY)
+        const collection = { id: 'id', minters: [address] } as Collection
+        expect(enableSaleOffchain(collection, { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet, false)).toEqual([
+          { address, hasAccess: false, collection }
+        ])
+      })
+    })
+
+    describe('and the collection also has an older version as a minter', () => {
+      let collection: Collection
+      let wallet: Wallet
+
+      beforeEach(() => {
+        collection = {
+          id: 'id',
+          minters: [getOffchainV2SaleAddress(ChainId.MATIC_AMOY), getOffchainV3SaleAddress(ChainId.MATIC_AMOY)]
+        } as Collection
+        wallet = { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+      })
+
+      // Revoking only the newest would leave the older marketplace a minter, so listings on that version
+      // stay sellable after the toggle and the collection still reads as on sale.
+      it('should revoke every version the collection holds', () => {
+        expect(enableSaleOffchain(collection, wallet, false)).toEqual(
+          expect.arrayContaining([
+            { address: getOffchainV2SaleAddress(ChainId.MATIC_AMOY), hasAccess: false, collection },
+            { address: getOffchainV3SaleAddress(ChainId.MATIC_AMOY), hasAccess: false, collection }
+          ])
+        )
+      })
+
+      it('should not revoke a version the collection does not hold', () => {
+        expect(enableSaleOffchain(collection, wallet, false)).toHaveLength(2)
+      })
     })
   })
 })
