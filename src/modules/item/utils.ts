@@ -470,6 +470,10 @@ export function canMintItem(collection: Collection, item: Item, address?: string
   )
 }
 
+export function isItemSoldOut(item: Item): boolean {
+  return (item.totalSupply || 0) >= getMaxSupply(item)
+}
+
 export function canManageItem(collection: Collection, item: Item, address?: string): boolean {
   return isOwner(item, address) || canManageCollectionItems(collection, address)
 }
@@ -1044,6 +1048,11 @@ export async function createItemOrderTrade(
 
   if (!item.isPublished) {
     return Promise.reject(new Error('Item is not published'))
+  }
+
+  // A public item order mints on purchase, and the marketplace rejects trades with 0 uses.
+  if (isItemSoldOut(item)) {
+    return Promise.reject(new Error(t('collection_item.sold_out_error')))
   }
 
   const tradeToSign: Omit<TradeCreation, 'signature'> = {
