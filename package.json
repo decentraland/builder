@@ -71,7 +71,7 @@
     "redux-undo": "^1.0.1",
     "reselect": "4.0.0",
     "slug": "^5.3.0",
-    "three": "^0.107.0",
+    "three": "^0.137.0",
     "ts-deepmerge": "^7.0.0",
     "typechain": "^8.1.0",
     "typesafe-actions": "^4.4.2",
