@@ -1,4 +1,4 @@
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, Rarity, WearableCategory } from '@dcl/schemas'
 import { Item, ItemMetadataType, ItemType, VIDEO_PATH, WearableRepresentation } from './types'
 import {
   buildItemMetadata,
@@ -24,7 +24,8 @@ import {
   isModelPath,
   stripRepresentationContents,
   stripWrappingFolder,
-  generateImage
+  generateImage,
+  isItemSoldOut
 } from './utils'
 import { compressPngBlob } from 'modules/media/utils'
 
@@ -979,6 +980,60 @@ describe('when generating the catalyst image', () => {
     it('should return the compressed image', async () => {
       const result = await generateImage(item, { thumbnail })
       expect(result).toBe(compressed)
+    })
+  })
+})
+
+describe('when checking if an item is sold out', () => {
+  let item: Item
+
+  describe('and the total supply is lower than the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.EXOTIC, totalSupply: 10 } as Item
+    })
+
+    it('should return false', () => {
+      expect(isItemSoldOut(item)).toBe(false)
+    })
+  })
+
+  describe('and the total supply reached the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE, totalSupply: 1 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
+    })
+  })
+
+  describe('and the total supply exceeds the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE, totalSupply: 5 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
+    })
+  })
+
+  describe('and the item has no total supply', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE } as Item
+    })
+
+    it('should return false', () => {
+      expect(isItemSoldOut(item)).toBe(false)
+    })
+  })
+
+  describe('and the item has no rarity', () => {
+    beforeEach(() => {
+      item = { totalSupply: 0 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
     })
   })
 })
