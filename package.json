@@ -37,7 +37,7 @@
     "decentraland": "3.3.0",
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-connect": "^12.0.0",
-    "decentraland-crypto-fetch": "^2.0.1",
+    "decentraland-crypto-fetch": "^3.0.0",
     "decentraland-dapps": "^29.7.0",
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland-experiments": "^1.0.2",
@@ -160,6 +160,9 @@
   },
   "homepage": "",
   "overrides": {
+    "@dcl/hooks": {
+      "decentraland-crypto-fetch": "$decentraland-crypto-fetch"
+    },
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
     "ripemd160": {
@@ -185,4 +188,3 @@
     }
   }
 }
-
