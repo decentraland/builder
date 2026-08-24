@@ -8,6 +8,7 @@ import {
   SetPriceAndBeneficiaryRequestAction
 } from 'modules/item/actions'
 import { Variant } from 'decentraland-dapps/dist/modules/features/types'
+import { PriceDenomination } from 'modules/trade/denomination'
 
 export type Props = ModalProps & {
   item: Item<ItemType.WEARABLE | ItemType.EMOTE>
@@ -18,11 +19,12 @@ export type Props = ModalProps & {
   mountNode?: HTMLDivElement | undefined
   withExpirationDate?: boolean
   isOffchain?: boolean
+  isCreditsListingEnabled?: boolean
   isOffchainPublicItemOrdersEnabledVariants: Variant | null
   onSave: typeof saveItemRequest | ((item: Item) => void)
   onSetPriceAndBeneficiary:
     | typeof setPriceAndBeneficiaryRequest
-    | ((itemId: string, priceInWei: string, beneficiary: string, expiresAt?: Date) => void)
+    | ((itemId: string, priceInWei: string, beneficiary: string, expiresAt?: Date, denomination?: PriceDenomination) => void)
   onSkip?: () => void
 }
 
@@ -32,6 +34,9 @@ export type State = {
   isFree: boolean
   isOwnerBeneficiary: boolean
   expirationDate?: string
+  denomination: PriceDenomination
+  /** USD wei per whole MANA from the Chainlink oracle; undefined until fetched or on failure. */
+  manaToUsdRate?: string
 }
 
 export type EditPriceAndBeneficiaryModalMetadata = {

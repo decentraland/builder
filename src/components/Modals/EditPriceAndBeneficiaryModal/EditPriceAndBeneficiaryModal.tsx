@@ -9,6 +9,8 @@ import {
   Form,
   Field,
   Button,
+  Dropdown,
+  DropdownProps,
   InputOnChangeData,
   FieldProps,
   Mana,
@@ -19,10 +21,14 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { toFixedMANAValue } from 'decentraland-dapps/dist/lib/mana'
+import creditsIcon from 'icons/credits.svg'
 import ItemImage from 'components/ItemImage'
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
+import { USD_CENTS_PER_CREDIT, USD_WEI_PER_CREDIT } from 'lib/credits'
+import { fetchManaToUsdRate, manaToUsd } from 'lib/manaRate'
 import { Item, ItemType } from 'modules/item/types'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
 import { getOneYearFromNowDate } from './utils'
@@ -32,8 +38,11 @@ const MIN_SALE_VALUE = ethers.utils.formatEther(config.get('MIN_SALE_VALUE_IN_WE
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {
     isFree: false,
-    isOwnerBeneficiary: false
+    isOwnerBeneficiary: false,
+    denomination: PriceDenomination.MANA
   }
+
+  private isStillMounted = false
 
   constructor(props: Props) {
     super(props)
@@ -41,19 +50,65 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { item } = this.props
     if (item) {
       const isFree = item.beneficiary === ethers.constants.AddressZero
+      // A free listing is always a MANA (amount 0) order; credits can't represent 0.
+      const denomination = !isFree && this.showCurrencySelector() ? PriceDenomination.USD_PEGGED : PriceDenomination.MANA
       this.state = {
         isFree,
-        price: this.getItemPrice(),
-        beneficiary: isFree ? '' : item.beneficiary || item.owner,
+        // A prefilled price is MANA wei; it has no meaning as a credits amount.
+        price: denomination === PriceDenomination.USD_PEGGED ? undefined : this.getItemPrice(),
+        beneficiary: item.beneficiary === ethers.constants.AddressZero ? '' : item.beneficiary || item.owner,
         isOwnerBeneficiary: item.beneficiary === item.owner,
-        expirationDate: getOneYearFromNowDate()
+        expirationDate: getOneYearFromNowDate(),
+        denomination
       }
+    } else if (this.showCurrencySelector()) {
+      this.state = { ...this.state, denomination: PriceDenomination.USD_PEGGED }
     }
+  }
+
+  componentDidMount() {
+    this.isStillMounted = true
+    if (this.showCurrencySelector()) {
+      fetchManaToUsdRate()
+        .then(rate => {
+          if (this.isStillMounted) {
+            this.setState({ manaToUsdRate: rate.toString() })
+          }
+        })
+        .catch(() => undefined) // no rate, no MANA→USD hint
+    }
+  }
+
+  componentWillUnmount() {
+    this.isStillMounted = false
+  }
+
+  showCurrencySelector() {
+    const { isOffchain, isCreditsListingEnabled } = this.props
+    return Boolean(isOffchain && isCreditsListingEnabled)
+  }
+
+  isCreditsDenomination() {
+    return this.state.denomination === PriceDenomination.USD_PEGGED
   }
 
   handleIsFreeToggle = (_event: React.MouseEvent<HTMLInputElement>) => {
     const isFree = !this.state.isFree
-    this.setState({ isFree, isOwnerBeneficiary: isFree ? false : this.state.isOwnerBeneficiary })
+
+    this.setState({
+      isFree,
+      isOwnerBeneficiary: isFree ? false : this.state.isOwnerBeneficiary,
+      denomination: isFree ? PriceDenomination.MANA : PriceDenomination.USD_PEGGED, // Free forces MANA: a free listing is a MANA (amount 0) order.
+      price: isFree ? undefined : this.state.price
+    })
+  }
+
+  handleDenominationChange = (_event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
+    const denomination = data.value as PriceDenomination
+    if (denomination !== this.state.denomination) {
+      // A typed amount means a different number in the other unit — never carry it over.
+      this.setState({ denomination, price: undefined, isFree: false })
+    }
   }
 
   handleIsOwnerBeneficiary = (_event: React.MouseEvent<HTMLInputElement>) => {
@@ -65,7 +120,8 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
-    this.setState({ price: toFixedMANAValue(props.value) })
+    // Credits are whole numbers; MANA keeps its fixed-decimals masking.
+    this.setState({ price: this.isCreditsDenomination() ? props.value.replace(/\D/g, '') : toFixedMANAValue(props.value) })
   }
 
   handleBeneficiaryChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
@@ -80,13 +136,16 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   handleSubmit = () => {
     const { item, itemSortedContents, onSave, onSetPriceAndBeneficiary } = this.props
-    const { price, isFree, expirationDate } = this.state
-    const priceInWei = ethers.utils.parseEther(isFree ? '0' : price!).toString()
+    const { price, isFree, expirationDate, denomination } = this.state
+    // Credits: whole credits → USD wei (1 credit = 1e17). MANA: MANA → wei.
+    const priceInWei = this.isCreditsDenomination()
+      ? (BigInt(price!) * USD_WEI_PER_CREDIT).toString()
+      : ethers.utils.parseEther(isFree ? '0' : price!).toString()
     const beneficiary = this.getBeneficiary()
     const expiresAt = expirationDate ? new Date(expirationDate) : undefined
 
     if (item.isPublished) {
-      onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary, expiresAt)
+      onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary, expiresAt, denomination)
     } else {
       const newItem: Item<ItemType.WEARABLE | ItemType.EMOTE> = {
         ...item,
@@ -127,11 +186,19 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   isValidPrice() {
     const { price, isFree } = this.state
+    if (this.isCreditsDenomination()) {
+      const credits = Number(price)
+      return Number.isInteger(credits) && credits >= 1
+    }
     const numberPrice = Number(price)
     return Number(numberPrice) > 0 || isFree
   }
 
   isPriceTooLow() {
+    if (this.isCreditsDenomination()) {
+      // MIN_SALE_VALUE guards MANA meta-tx costs; credits checkout doesn't have that floor.
+      return false
+    }
     const { price = '' } = this.state
     return price !== '' && Number(price) < Number(MIN_SALE_VALUE)
   }
@@ -146,10 +213,32 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     return isValid(this.getBeneficiary())
   }
 
+  renderCurrencyHint() {
+    const { price = '', isFree, manaToUsdRate } = this.state
+
+    if (this.isCreditsDenomination()) {
+      const usd = this.isValidPrice() ? ((Number(price) * USD_CENTS_PER_CREDIT) / 100).toFixed(2) : null
+      return (
+        <div className="currency-hint">
+          {usd ? `${t('edit_price_and_beneficiary_modal.credits_usd_hint', { usd })} · ` : null}
+          {t('edit_price_and_beneficiary_modal.credits_peg', { rate: (USD_CENTS_PER_CREDIT / 100).toFixed(2) })}
+        </div>
+      )
+    }
+
+    if (!manaToUsdRate || !price || isFree) {
+      return null
+    }
+    const usd = manaToUsd(price, ethers.BigNumber.from(manaToUsdRate))
+    return usd ? <div className="currency-hint">{t('edit_price_and_beneficiary_modal.mana_usd_hint', { usd })}</div> : null
+  }
+
   render() {
     const { name, error, isLoading, mountNode, item, withExpirationDate, isOffchain, onClose, onSkip } = this.props
-    const { isFree, isOwnerBeneficiary, price = '', expirationDate } = this.state
+    const { isFree, isOwnerBeneficiary, price = '', expirationDate, denomination } = this.state
     const beneficiary = this.getBeneficiary()
+    const showCurrencySelector = this.showCurrencySelector()
+    const isCredits = this.isCreditsDenomination()
 
     const expirationError = !this.isValidExpirationDate() ? t('edit_price_and_beneficiary_modal.expiration_date_error') : null
     const errorMessage = error || expirationError
@@ -163,16 +252,32 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
           </div>
           <Form onSubmit={this.handleSubmit}>
             <ModalContent>
-              <div className="price-field">
+              <div className={`price-field${showCurrencySelector ? ' with-currency-selector' : ''}`}>
                 <Field
                   label={t('edit_price_and_beneficiary_modal.price_label', { minPrice: MIN_SALE_VALUE })}
-                  placeholder={100}
+                  placeholder={isCredits ? 10 : 100}
                   value={isFree ? 0 : price}
                   onChange={this.handlePriceChange}
                   disabled={isFree}
                   error={!!price && !this.isValidPrice()}
                 />
-                <Mana showTooltip network={Network.MATIC} inline />
+                {isCredits ? (
+                  <img className="credits-icon" src={creditsIcon} alt={t('edit_price_and_beneficiary_modal.credits_option')} />
+                ) : (
+                  <Mana showTooltip network={Network.MATIC} inline />
+                )}
+                {showCurrencySelector ? (
+                  <Dropdown
+                    className="currency-dropdown"
+                    value={denomination}
+                    options={[
+                      { value: PriceDenomination.USD_PEGGED, text: t('edit_price_and_beneficiary_modal.credits_option') },
+                      { value: PriceDenomination.MANA, text: t('edit_price_and_beneficiary_modal.mana_option') }
+                    ]}
+                    onChange={this.handleDenominationChange}
+                  />
+                ) : null}
+                {showCurrencySelector ? this.renderCurrencyHint() : null}
                 <div className="checkbox make-it-free">
                   <Checkbox className="item-checkbox" checked={isFree} onClick={this.handleIsFreeToggle} />
                   &nbsp;
@@ -212,7 +317,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                   value={expirationDate}
                 />
               ) : null}
-              {this.isPriceTooLow() || isFree ? (
+              {this.isPriceTooLow() || isFree || isCredits ? (
                 <Card fluid className="min-price-notice">
                   <Card.Content>
                     <div>
@@ -231,6 +336,8 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
                         />
                       ) : isFree ? (
                         t('edit_price_and_beneficiary_modal.free_message')
+                      ) : isCredits ? (
+                        t('edit_price_and_beneficiary_modal.credits_message')
                       ) : null}
                     </div>
                   </Card.Content>

@@ -1,6 +1,8 @@
-import { BodyShape, Rarity, WearableCategory } from '@dcl/schemas'
+import { BodyShape, Rarity, TradeAssetType, WearableCategory } from '@dcl/schemas'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { Item, ItemMetadataType, ItemType, VIDEO_PATH, WearableRepresentation } from './types'
 import {
+  buildItemOrderReceivedAsset,
   buildItemMetadata,
   buildZipContents,
   toThirdPartyContractItems,
@@ -980,6 +982,35 @@ describe('when generating the catalyst image', () => {
     it('should return the compressed image', async () => {
       const result = await generateImage(item, { thumbnail })
       expect(result).toBe(compressed)
+    })
+  })
+})
+
+describe('when building the received asset of an item order trade', () => {
+  const manaAddress = '0x7ad72b9f944ea9793cf4055d88f81138cc2c63a0'
+  const beneficiary = '0x24e5f44999c151f08609f8e27b2238c773c4d020'
+
+  describe('and the listing is denominated in MANA', () => {
+    it('should build an ERC20 asset with the MANA wei amount', () => {
+      expect(buildItemOrderReceivedAsset(PriceDenomination.MANA, '100000000000000000000', manaAddress, beneficiary)).toEqual({
+        assetType: TradeAssetType.ERC20,
+        contractAddress: manaAddress,
+        amount: '100000000000000000000',
+        extra: '',
+        beneficiary
+      })
+    })
+  })
+
+  describe('and the listing is USD-pegged', () => {
+    it('should build a USD_PEGGED_MANA asset with the USD wei amount, keeping the MANA contract address', () => {
+      expect(buildItemOrderReceivedAsset(PriceDenomination.USD_PEGGED, '600000000000000000', manaAddress, beneficiary)).toEqual({
+        assetType: TradeAssetType.USD_PEGGED_MANA,
+        contractAddress: manaAddress,
+        amount: '600000000000000000',
+        extra: '',
+        beneficiary
+      })
     })
   })
 })

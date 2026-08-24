@@ -101,6 +101,13 @@ export const getIsShopCreditsForCollectionsFeeEnabled = (state: RootState) => {
   return false
 }
 
+export const getIsCreditsPrimaryListingsEnabled = (state: RootState) => {
+  if (hasLoadedInitialFlags(state)) {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CREDITS_PRIMARY_LISTINGS)
+  }
+  return false
+}
+
 export const getIsSocialEmotesEnabled = (state: RootState) => {
   if (hasLoadedInitialFlags(state)) {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.SOCIAL_EMOTES)
