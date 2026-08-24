@@ -4,13 +4,13 @@ import { EmoteDataADR74, Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
+import { Dropdown, Icon, Button, Mana, Popup, Table } from 'decentraland-ui'
 import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
 import { formatCredits, formatCreditsFull, usdWeiToCredits } from 'lib/credits'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
-import { isComplete, canManageItem, getMaxSupply, isSmart, isEmote, isFree } from 'modules/item/utils'
+import { isComplete, canManageItem, getMaxSupply, isItemSoldOut, isSmart, isEmote, isFree } from 'modules/item/utils'
 import { isEnableForSaleOffchain, isLocked, isOnSale } from 'modules/collection/utils'
 import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
@@ -47,6 +47,7 @@ export default function CollectionItem({
   const isUSDPeggedPrice = useTradePriceDenomination(item.tradeId) === PriceDenomination.USD_PEGGED
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
+  const isSoldOut = isItemSoldOut(item)
   const shouldAllowPriceEdition =
     !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
 
@@ -290,9 +291,18 @@ export default function CollectionItem({
       <Table.Cell>{renderItemStatus()}</Table.Cell>
       {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId && item.isPublished && (
         <Table.Cell>
-          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace} onClick={handlePutForSale}>
-            {t('collection_item.put_for_sale')}
-          </Button>
+          <Popup
+            content={t('collection_item.sold_out')}
+            position="top center"
+            disabled={!isSoldOut}
+            trigger={
+              <span>
+                <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace || isSoldOut} onClick={handlePutForSale}>
+                  {t('collection_item.put_for_sale')}
+                </Button>
+              </span>
+            }
+          />
         </Table.Cell>
       )}
       {isOffchainPublicItemOrdersEnabled && item.tradeId && (

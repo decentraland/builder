@@ -18,6 +18,7 @@
   "SHARE_SCENE_URL": "https://share.decentraland.org/b",
   "INTERCOM_APP_ID": "z0h94kay",
   "SEGMENT_API_KEY": "H21EgRI4eYwICDZf5uW6ek2BiykIR6wA",
+  "SEGMENT_ANALYTICS_URL": "https://evs.e.decentraland.org/z8jpJNrQbg/PbFpPU15ic.min.js",
   "ROLLBAR_ACCESS_TOKEN": "46e4b7e45c844b9ab81315c8b0919e99",
   "MANA_TOKEN_CONTRACT_ADDRESS": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
   "LAND_REGISTRY_CONTRACT_ADDRESS": "0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d",
