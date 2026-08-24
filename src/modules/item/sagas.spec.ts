@@ -13,13 +13,13 @@ import {
   MAX_WEARABLE_FILE_SIZE,
   RemoteItem
 } from '@dcl/builder-client'
-import { ChainId, Network, BodyShape, WearableCategory } from '@dcl/schemas'
+import { ChainId, Network, BodyShape, Trade, TradeAssetType, TradeCreation, WearableCategory } from '@dcl/schemas'
 import { ToastProps, ToastType } from 'decentraland-ui'
 import { Toast } from 'decentraland-dapps/dist/modules/toast/types'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { FETCH_TRANSACTION_FAILURE, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { closeAllModals, closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -76,7 +76,10 @@ import {
   fetchOrphanItemRequest,
   fetchOrphanItemSuccess,
   fetchOrphanItemFailure,
-  SAVE_ITEM_REQUEST
+  SAVE_ITEM_REQUEST,
+  createItemOrderTradeRequest,
+  createItemOrderTradeSuccess,
+  createItemOrderTradeFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest, SAVE_AND_EDIT_FILES_BATCH_SIZE } from './sagas'
 import {
@@ -93,11 +96,12 @@ import {
 import { computeHashFromContent } from 'modules/deployment/contentUtils'
 import { compressPngBlob } from 'modules/media/utils'
 import { calculateModelFinalSize, calculateFileSize, reHashOlderContents } from './export'
-import { buildZipContents, generateCatalystImage, groupsOf, MAX_VIDEO_FILE_SIZE } from './utils'
+import { buildZipContents, createItemOrderTrade, generateCatalystImage, groupsOf, MAX_VIDEO_FILE_SIZE } from './utils'
 import { getCollectionItems, getData as getItemsById, getEntityByItemId, getItem, getItems, getPaginationData } from './selectors'
 import { ItemPaginationData } from './reducer'
 import * as toasts from './toasts'
 import { fromRemoteItem } from 'lib/api/transformations'
+import { PriceDenomination, primeTradePriceDenominationCache } from 'modules/trade/denomination'
 import { TradeService } from 'decentraland-dapps/dist/modules/trades/TradeService'
 
 jest.mock('modules/features/selectors')
@@ -2069,6 +2073,52 @@ describe('when handling the setItemCollection action', () => {
         .not.put(closeModal('MoveItemToAnotherCollectionModal'))
         .dispatch(setItemCollection(item, collection.id))
         .dispatch(saveItemFailure(item, {}, 'An error'))
+        .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when handling the create item order trade request action', () => {
+  let item: Item
+  let collection: Collection
+  let tradeToCreate: TradeCreation
+  let trade: Trade
+  let expiresAt: Date
+  const priceInWei = '600000000000000000'
+  const beneficiary = mockAddress
+
+  beforeEach(() => {
+    item = { ...mockedItem, isPublished: true, tokenId: '0', collectionId: 'aCollectionId' }
+    collection = { id: 'aCollectionId', contractAddress: '0x08063a1b0da85fdae091cfb0c46f42a03dcc80cf' } as Collection
+    expiresAt = new Date(updatedAt + 24 * 60 * 60 * 1000)
+    tradeToCreate = { signer: mockAddress } as TradeCreation
+    trade = {
+      id: 'aTradeId',
+      received: [{ assetType: TradeAssetType.USD_PEGGED_MANA, contractAddress: '0x0', amount: priceInWei, extra: '' }]
+    } as Trade
+  })
+
+  describe('and the trade can be created and published', () => {
+    it('should sign the trade with the requested denomination, prime the denomination cache and close all modals', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+        .provide([
+          [call(createItemOrderTrade, item, priceInWei, beneficiary, collection, expiresAt, PriceDenomination.USD_PEGGED), tradeToCreate],
+          [matchers.call([tradeService, 'addTrade'], tradeToCreate), trade]
+        ])
+        .call(primeTradePriceDenominationCache, trade.id, PriceDenomination.USD_PEGGED)
+        .put(createItemOrderTradeSuccess(trade, item, priceInWei, beneficiary, expiresAt.getTime()))
+        .put(closeAllModals())
+        .dispatch(createItemOrderTradeRequest(item, priceInWei, beneficiary, collection, expiresAt, PriceDenomination.USD_PEGGED))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('and the trade cannot be created', () => {
+    it('should put a create item order trade failure action with the error message', () => {
+      return expectSaga(itemSaga, builderAPI, builderClient, tradeService)
+        .provide([[matchers.call.fn(createItemOrderTrade), Promise.reject(new Error('anError'))]])
+        .put(createItemOrderTradeFailure('anError'))
+        .dispatch(createItemOrderTradeRequest(item, priceInWei, beneficiary, collection, expiresAt))
         .run({ silenceTimeout: true })
     })
   })

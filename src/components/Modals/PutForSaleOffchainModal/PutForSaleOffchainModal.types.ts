@@ -19,6 +19,7 @@ export type Props = ModalProps &
     connectedChainId?: ChainId
     error: string | null
     collection?: Collection
+    isCreditsListingEnabled: boolean
     onCreateItemOrder: typeof createItemOrderTradeRequest
     onRemoveFromSale: typeof cancelItemOrderTradeRequest
   }
@@ -28,6 +29,9 @@ export type EditPriceAndBeneficiaryModalMetadata = {
 }
 
 export type OwnProps = Pick<Props, 'metadata' | 'item'>
-export type MapStateProps = Pick<Props, 'item' | 'isLoading' | 'error' | 'collection' | 'isLoadingCancel' | 'connectedChainId'>
+export type MapStateProps = Pick<
+  Props,
+  'item' | 'isLoading' | 'error' | 'collection' | 'isLoadingCancel' | 'connectedChainId' | 'isCreditsListingEnabled'
+>
 export type MapDispatchProps = Pick<Props, 'onCreateItemOrder' | 'onRemoveFromSale'>
 export type MapDispatch = Dispatch<CreateItemOrderTradeRequestAction | CancelItemOrderTradeRequestAction>
