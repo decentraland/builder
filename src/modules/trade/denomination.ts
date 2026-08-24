@@ -61,6 +61,14 @@ export async function fetchTradePriceDenomination(tradeId: string): Promise<Pric
   return pending
 }
 
+/**
+ * Seed the cache for a trade this client just created, so its row renders in the right unit without
+ * a fetch. Safe for the same reason the cache is: a signed trade's denomination can never change.
+ */
+export function primeTradePriceDenominationCache(tradeId: string, denomination: PriceDenomination): void {
+  cache.set(tradeId, Promise.resolve(denomination))
+}
+
 /** Test seam — the cache is module state, so specs have to be able to empty it. */
 export function clearTradePriceDenominationCache(): void {
   cache.clear()

@@ -4,6 +4,7 @@ import { History } from 'history'
 import { Contract, ethers, providers } from 'ethers'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, race, cancelled, getContext } from 'redux-saga/effects'
 import { LOCATION_CHANGE, LocationChangeAction } from 'modules/location/actions'
+import { denominationOfTrade, primeTradePriceDenominationCache } from 'modules/trade/denomination'
 import { channel } from 'redux-saga'
 import {
   ChainId,
@@ -217,10 +218,21 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
   yield fork(fetchItemEntities)
 
   function* handleCreateItemOrderTradeRequest(action: CreateItemOrderTradeRequestAction) {
-    const { item, beneficiary, priceInWei, collection, expiresAt } = action.payload
+    const { item, beneficiary, priceInWei, collection, expiresAt, denomination } = action.payload
     try {
-      const tradeToCreate: TradeCreation = yield call(createItemOrderTrade, item, priceInWei, beneficiary, collection, expiresAt)
+      const tradeToCreate: TradeCreation = yield call(
+        createItemOrderTrade,
+        item,
+        priceInWei,
+        beneficiary,
+        collection,
+        expiresAt,
+        denomination
+      )
       const trade: Trade = yield call([tradeService, 'addTrade'], tradeToCreate)
+      // Seed the denomination cache so the item row renders the new price in the right unit
+      // (credits vs MANA) without a trade fetch.
+      yield call(primeTradePriceDenominationCache, trade.id, denominationOfTrade(trade))
       yield put(createItemOrderTradeSuccess(trade, item, priceInWei, beneficiary, expiresAt.getTime()))
       yield put(closeAllModals())
     } catch (error) {
