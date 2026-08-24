@@ -5,7 +5,7 @@
   "dependencies": {
     "@babylonjs/core": "^4.2.0",
     "@babylonjs/loaders": "^4.2.0",
-    "@contentful/rich-text-react-renderer": "^16.2.2",
+    "@contentful/rich-text-react-renderer": "16.2.2",
     "@dcl/builder-client": "^6.1.1",
     "@dcl/builder-templates": "^0.2.0",
     "@dcl/content-hash-tree": "^1.1.3",
