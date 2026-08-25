@@ -34,10 +34,7 @@ const Navbar: React.FC<Props> = ({ address, ...props }: Props) => {
   }, [])
 
   return (
-    // The fixed navbar is taller than the space its own container reserves, so
-    // this gap is what keeps page content from sliding underneath it. The
-    // announcement bar already provides that separation while it is showing.
-    <div style={{ marginBottom: isAnnouncementBarVisible ? 0 : 36 }}>
+    <div>
       <BaseNavbar
         {...props}
         withChainSelector
