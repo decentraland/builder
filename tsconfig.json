@@ -30,6 +30,7 @@
       "images/*": ["images/*"],
       "lib/*": ["lib/*"],
       "modules/*": ["modules/*"],
+      "poses/*": ["poses/*"],
       "routing/*": ["routing/*"],
       "specs/*": ["specs/*"]
     },

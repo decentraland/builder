@@ -9,7 +9,7 @@ import ensImg from './images/ens.svg'
 import styles from './WorldsForENSOwnersAnnouncementModal.module.css'
 
 const MODAL_ACTION_EVENT = 'Worlds For ENS Owners Announcement Modal Action'
-const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/worlds/about/'
+const DOCUMENTATION_URL = 'https://docs.decentraland.org/creator/scenes-sdk7/publishing/publishing-options#decentraland-worlds'
 
 const WorldsForENSOwnersAnnouncementModal: React.FC<Props> = ({ name, onClose }) => {
   const handleOnClose = useCallback(() => {

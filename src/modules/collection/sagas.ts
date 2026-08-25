@@ -10,6 +10,7 @@ import { ChainId } from '@dcl/schemas'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient, ThirdParty } from '@dcl/builder-client'
 import { ContractData, ContractName, ErrorCode, getContract } from 'decentraland-transactions'
+import { type AuthIdentity } from 'decentraland-crypto-fetch'
 import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -170,9 +171,11 @@ import {
   isTPCollection,
   getCollectionFactoryContract,
   toPaginationStats,
-  getFiatGatewayCommodityAmount
+  getFiatGatewayCommodityAmount,
+  weiToUsdCents
 } from './utils'
 import { isErrorWithCode } from 'lib/error'
+import { getIdentity } from 'modules/identity/utils'
 import { config } from 'config'
 import { CollectionPaginationData } from './reducer'
 import { Collection, CollectionType, PaymentMethod } from './types'
@@ -352,7 +355,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
   }
 
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-    const { items, email, subscribeToNewsletter, paymentMethod, creditsAmount = '0' } = action.payload
+    const { items, email, subscribeToNewsletter, paymentMethod, creditsAmount = '0', totalPriceUSD } = action.payload
 
     if (subscribeToNewsletter) {
       const collectionHasEmotes = items.some(isEmote)
@@ -488,6 +491,35 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
           totalPrice,
           creditsServerUrl
         )
+      } else if (paymentMethod === PaymentMethod.SHOP_CREDITS) {
+        if (!totalPriceUSD) {
+          throw new Error('Total USD price is required when using shop credits')
+        }
+
+        const creditsServerUrl: string = yield call([config, config.get], 'CREDITS_SERVER_URL')
+        if (!creditsServerUrl) {
+          throw new Error('Missing CREDITS_SERVER_URL configuration')
+        }
+
+        const usdPriceCents = weiToUsdCents(totalPriceUSD)
+
+        const identity: AuthIdentity = yield call(getIdentity)
+
+        try {
+          txHash = yield call(
+            [creditsService, 'useShopCreditsCollectionManager'],
+            maticChainId,
+            createCollectionArgs,
+            usdPriceCents,
+            creditsServerUrl,
+            identity
+          )
+        } catch (shopCreditsError) {
+          if (isErrorWithCode(shopCreditsError) && shopCreditsError.code === 4001) {
+            throw new Error('User rejected the shop credits transaction')
+          }
+          throw shopCreditsError
+        }
       } else if (paymentMethod === PaymentMethod.FIAT) {
         const wertPublishFeesEnv: string = yield call([config, config.get], 'WERT_PUBLISH_FEES_ENV')
 

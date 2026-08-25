@@ -1800,6 +1800,7 @@
     "mint_item": "铸币",
     "delte_item": "删除项目",
     "edit_price": "修改价格",
+    "credits_amount": "{amount} 積分",
     "see_details": "查看详细信息",
     "edit_urn": "编辑 URN",
     "cannot_edit_urn": "项目发布后您无法编辑 URN",
@@ -1808,7 +1809,10 @@
     "preview": "在编辑器中预览",
     "put_for_sale": "出售",
     "remove_from_sale": "删除出售",
-    "cancel_order_error": "删除项目订单时出错"
+    "cancel_order_error": "删除项目订单时出错",
+    "on_sale_in_shop": "在商店出售",
+    "sold_out": "该物品已售罄，所有供应量均已铸造",
+    "sold_out_error": "该物品已售罄"
   },
   "collection": {
     "type": {
@@ -1846,7 +1850,13 @@
     "price_message": "请记住，无成本交易支持的最低金额是 {minPrice}。{br}{br}如果您的商品价格低于此价格，买家将需要支付 {token} 中的交易费用。",
     "beneficiary_label": "收款人钱包地址",
     "beneficiary_popup": "这是第一次出售物品时将收到 MANA 和有人转售时收取版税的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。",
-    "free_message": "原始创作者将成为所产生版税的受益人"
+    "free_message": "原始创作者将成为所产生版税的受益人",
+    "mana_option": "MANA",
+    "credits_option": "積分",
+    "credits_peg": "1 積分 = ${rate} 美元",
+    "credits_usd_hint": "= ${usd} 美元",
+    "mana_usd_hint": "≈ ${usd} 美元 — 估算值；随 MANA 价格波动",
+    "credits_message": "此物品将在 Decentraland 商店以積分出售。售出后您将收到等值的 MANA。"
   },
   "confirm_delete": {
     "content": "删除\"{name}\"?",
@@ -1961,9 +1971,18 @@
         "subtitle": "您即将发送包含 {count} {count, plural, one {item} other {items}} 的收藏集 \"{collection_name}\" 进行审核。为了支持策展委员会和 DAO 宝藏，每个收藏集仅需支付一次出版费 {currency} {publication_fee}（以 MANA 支付）。"
       },
       "standard": {
-        "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。"
+        "subtitle": "您即将发送审查的集合 \"{collection_name}\" 包括 {count} 个项目。为了支持策展人委员会和DAO宝藏，每个项目的出版费用为 {currency} {publication_fee}（用MANA支付）。{link}。"
       },
       "learn_more": "了解出版费",
+      "pay_with": "支付方式：",
+      "method_credits": "积分",
+      "method_card": "银行卡",
+      "method_mana": "MANA",
+      "confirm": "确认",
+      "balance": "余额",
+      "get_mana_button": "获取 MANA",
+      "get_credits_button": "获取积分",
+      "insufficient_balance": "余额不足。",
       "already_payed": "已付款但未发布",
       "already_published": "已发布",
       "quantity": "数量",
@@ -1980,6 +1999,8 @@
       "pay_card": "用卡支付",
       "pay_card_info": "支付处理方将在您的总额中加收 5% 的交易费，以及额外的 0.5% 以应对可能的货币波动。",
       "pay_mana": "用法力支付",
+      "shop_credits_info": "使用您的 Decentraland 商店积分支付此费用。",
+      "shop_credits_info_link": "获取积分",
       "submitting_for_review": "提交审核"
     },
     "congratulations_step": {
@@ -2531,21 +2552,28 @@
     "learn_more": "了解更多"
   },
   "creator_hub_upgrade_modal": {
-    "title": "升级您的创作工作流程",
-    "description": "新的Creator Hub取代了旧的网页编辑器，带来了大量新功能和持续改进。",
+    "badge": "网页场景编辑器将于9月1日停用",
+    "title": "使用 Creator Hub 继续创作",
+    "subtitle": "更强大 · 持续维护 · 兼容您现有的场景",
+    "description": "网页场景编辑器将于9月1日之后停止支持。<link>下载 Creator Hub</link>，通过更强大的桌面工作流程继续构建和编辑您的场景。",
+    "why_switch": "为什么要切换到 Creator Hub？",
     "feature1": {
       "title": "更适合代码和无代码创作者",
-      "description": "使用您选择的代码编辑器，同时充分利用场景编辑器中包含的可视化工具。"
+      "description": "使用您选择的代码编辑器，同时搭配强大的可视化创作工具。"
     },
     "feature2": {
       "title": "预览和分享您的场景",
-      "description": "预览您的项目，就像它将要出现的样子，然后轻松将其发布到您的世界或LAND，完全控制您的文件。"
+      "description": "预览您的项目实际呈现的样子，然后将其发布到您的世界或 LAND。"
     },
     "download": "下载Creator Hub",
-    "skip_for_now": "暂时跳过",
+    "skip_for_now": "跳过",
+    "footer_note": "您随时可以下载 Creator Hub。",
     "permissions_variant": {
-      "title": "升级您的创作工作流程",
-      "description": "新的Creator Hub取代了旧的网页编辑器，带来了大量新功能和持续改进。",
+      "badge": "网页场景编辑器将于9月1日停用",
+      "title": "使用 Creator Hub 继续创作",
+      "subtitle": "更强大 · 持续维护 · 兼容您现有的场景",
+      "description": "网页场景编辑器将于9月1日之后停止支持。<link>下载 Creator Hub</link>，管理访问权限、邀请协作者，并通过更强大的桌面工作流程继续构建。",
+      "why_switch": "为什么要切换到 Creator Hub？",
       "feature1": {
         "title": "更好地管理访问权限",
         "description": "设置访问密码，允许特定数量的人进入您的地方，或邀请整个社区！"
@@ -2553,7 +2581,8 @@
       "feature2": {
         "title": "改进的协作功能",
         "description": "将特定地块分配给协作团队成员，设计您自己的城市！"
-      }
+      },
+      "footer_note": "您随时可以下载 Creator Hub。"
     }
   },
   "item_status": {
@@ -2586,5 +2615,11 @@
       "action": "出售",
       "confirm_transaction_title": "出售"
     }
+  },
+  "announcement_bar": {
+    "highlight": "认识 Decentraland Shop",
+    "message": "{highlight} - 全新布局、全新穿搭，还可以认识创作者。",
+    "cta": "去看看",
+    "dismiss": "关闭公告"
   }
 }

@@ -13,7 +13,6 @@ import {
   WearableCategory,
   WearableWithBlobs
 } from '@dcl/schemas'
-import { ThumbnailType } from 'lib/getModelData'
 import { LinkedContract } from 'modules/thirdParty/types'
 import { MissingModelFileError } from 'modules/item/errors'
 import { isImageFile, isModelFile, isModelPath } from 'modules/item/utils'
@@ -21,21 +20,13 @@ import { Collection } from 'modules/collection/types'
 import { BodyShapeType, THUMBNAIL_PATH, VIDEO_PATH, WearableRepresentation } from 'modules/item/types'
 import { SortedContent } from './CreateSingleItemModal.types'
 
-export const THUMBNAIL_WIDTH = 1024
-export const THUMBNAIL_HEIGHT = 1024
-
-export const getThumbnailType = (category: WearableCategory) => {
-  switch (category) {
-    case WearableCategory.EYEBROWS:
-    case WearableCategory.EYES:
-    case WearableCategory.MASK:
-    case WearableCategory.MOUTH:
-    case WearableCategory.SKIN:
-      return ThumbnailType.FRONT
-    default:
-      return ThumbnailType.DEFAULT
-  }
-}
+export {
+  THUMBNAIL_WIDTH,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_POSE_BY_CATEGORY,
+  getThumbnailType,
+  getThumbnailRenderOptions
+} from 'lib/thumbnailOptions'
 
 export function toWearableWithBlobs({ contents, file }: { contents?: Record<string, Blob>; file?: File }): WearableWithBlobs {
   const mainGLBFile = contents && Object.keys(contents).find(content => isModelFile(content))

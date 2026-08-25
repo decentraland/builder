@@ -1,6 +1,8 @@
-import { BodyShape, WearableCategory } from '@dcl/schemas'
+import { BodyShape, Rarity, TradeAssetType, WearableCategory } from '@dcl/schemas'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { Item, ItemMetadataType, ItemType, VIDEO_PATH, WearableRepresentation } from './types'
 import {
+  buildItemOrderReceivedAsset,
   buildItemMetadata,
   buildZipContents,
   toThirdPartyContractItems,
@@ -24,7 +26,8 @@ import {
   isModelPath,
   stripRepresentationContents,
   stripWrappingFolder,
-  generateImage
+  generateImage,
+  isItemSoldOut
 } from './utils'
 import { compressPngBlob } from 'modules/media/utils'
 
@@ -979,6 +982,89 @@ describe('when generating the catalyst image', () => {
     it('should return the compressed image', async () => {
       const result = await generateImage(item, { thumbnail })
       expect(result).toBe(compressed)
+    })
+  })
+})
+
+describe('when building the received asset of an item order trade', () => {
+  const manaAddress = '0x7ad72b9f944ea9793cf4055d88f81138cc2c63a0'
+  const beneficiary = '0x24e5f44999c151f08609f8e27b2238c773c4d020'
+
+  describe('and the listing is denominated in MANA', () => {
+    it('should build an ERC20 asset with the MANA wei amount', () => {
+      expect(buildItemOrderReceivedAsset(PriceDenomination.MANA, '100000000000000000000', manaAddress, beneficiary)).toEqual({
+        assetType: TradeAssetType.ERC20,
+        contractAddress: manaAddress,
+        amount: '100000000000000000000',
+        extra: '',
+        beneficiary
+      })
+    })
+  })
+
+  describe('and the listing is USD-pegged', () => {
+    it('should build a USD_PEGGED_MANA asset with the USD wei amount, keeping the MANA contract address', () => {
+      expect(buildItemOrderReceivedAsset(PriceDenomination.USD_PEGGED, '600000000000000000', manaAddress, beneficiary)).toEqual({
+        assetType: TradeAssetType.USD_PEGGED_MANA,
+        contractAddress: manaAddress,
+        amount: '600000000000000000',
+        extra: '',
+        beneficiary
+      })
+    })
+  })
+})
+
+describe('when checking if an item is sold out', () => {
+  let item: Item
+
+  describe('and the total supply is lower than the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.EXOTIC, totalSupply: 10 } as Item
+    })
+
+    it('should return false', () => {
+      expect(isItemSoldOut(item)).toBe(false)
+    })
+  })
+
+  describe('and the total supply reached the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE, totalSupply: 1 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
+    })
+  })
+
+  describe('and the total supply exceeds the max supply for the rarity', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE, totalSupply: 5 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
+    })
+  })
+
+  describe('and the item has no total supply', () => {
+    beforeEach(() => {
+      item = { rarity: Rarity.UNIQUE } as Item
+    })
+
+    it('should return false', () => {
+      expect(isItemSoldOut(item)).toBe(false)
+    })
+  })
+
+  describe('and the item has no rarity', () => {
+    beforeEach(() => {
+      item = { totalSupply: 0 } as Item
+    })
+
+    it('should return true', () => {
+      expect(isItemSoldOut(item)).toBe(true)
     })
   })
 })

@@ -207,7 +207,7 @@
   },
   "create_collection_selector_modal": {
     "title": "Nueva Colección",
-    "subtitle": "Selecciona el tipo de collección que quieras crear",
+    "subtitle": "Selecciona el tipo de colección que quieras crear",
     "collection": {
       "title": "Colecciones",
       "subtitle": "Colecciones clásicas de Wearables que pueden ser vendidas en el Marketplace"
@@ -1511,7 +1511,7 @@
     "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
     "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
     "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la collección {collectionName}",
+    "rescue_items": "Has aprobado el contenido de {count} {count, plural, one {item} other {items}} para la colección {collectionName}",
     "disable_third_party": "Has deshabilitado el proveedor: {name}"
   },
   "transfer_page": {
@@ -1818,6 +1818,7 @@
     "mint_item": "crear",
     "delete_item": "Eliminar item",
     "edit_price": "Editar precio",
+    "credits_amount": "{amount} créditos",
     "see_details": "Ver detalles",
     "edit_urn": "Editar URN",
     "cannot_edit_urn": "No puedes cambiar el URN una vez que el item fue publicado",
@@ -1826,7 +1827,10 @@
     "preview": "Preview en el Editor",
     "put_for_sale": "Poner en venta",
     "remove_from_sale": "Eliminar de la venta",
-    "cancel_order_error": "Error al eliminar el orden para el artículo"
+    "cancel_order_error": "Error al eliminar el orden para el artículo",
+    "on_sale_in_shop": "En venta en el shop",
+    "sold_out": "Este artículo está agotado, ya se acuñó todo su suministro",
+    "sold_out_error": "El artículo está agotado"
   },
   "collection": {
     "type": {
@@ -1864,7 +1868,13 @@
     "price_message": "Tenga en cuenta que la cantidad mínima admitida para transacciones sin costo es {minPrice}.{br}{br}Si el item cuesta menos que eso, el comprador deberá cubrir el costo de la transacción en {token}.",
     "beneficiary_label": "Dirección de la billetera del beneficiario",
     "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item por primera vez y Regalías cuando sea revendido. Puede establecer una dirección de beneficiario diferente para cada item de una colección.",
-    "free_message": "El creador original será el beneficiario de las regalías"
+    "free_message": "El creador original será el beneficiario de las regalías",
+    "mana_option": "MANA",
+    "credits_option": "Créditos",
+    "credits_peg": "1 Crédito = ${rate} USD",
+    "credits_usd_hint": "= ${usd} USD",
+    "mana_usd_hint": "≈ ${usd} USD — estimado; varía con el precio de MANA",
+    "credits_message": "Este item se venderá en la Tienda de Decentraland por Créditos. Recibirás el monto equivalente en MANA cuando se venda."
   },
   "confirm_delete": {
     "content": "Eliminar \"{name}\"?",
@@ -1881,7 +1891,7 @@
     "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar.",
     "third_paragraph": "No podrás cambiar el nombre de la colección. Asegúrese de que esté escrito correctamente y que no viole los derechos de propiedad intelectual.",
     "fourth_paragraph": "Los items de la colección aparecerán en Marketplace, pero no se pueden vender hasta que sean aprobados por la DAO.",
-    "items_breakdown_title": "Estas por publicar {count} {count, plural, one {item} other {items}}. El fee de MANA por publicar la collección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
+    "items_breakdown_title": "Estas por publicar {count} {count, plural, one {item} other {items}}. El fee de MANA por publicar la colección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
     "tos_title": "Por la presente declaro y garantizo que:",
     "tos_first_condition": "1: Los Wearables por publicarse cumplen plenamente con los {terms_of_use} y las {content_policy}, que reconozco y acepto.",
     "tos_second_condition": "2: Tengo suficientes derechos de propiedad intelectual sobre los Wearables que serán publicados.",
@@ -1890,7 +1900,7 @@
     "terms_of_use": "Términos de uso",
     "content_policy": "Política de contenido",
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
-    "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
+    "not_enough_mana": "No tienes suficiente {symbol} para publicar la colección.",
     "get_mana": "Puedes obtener más usando la {link} dapp.",
     "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo."
   },
@@ -1917,7 +1927,7 @@
     "terms_of_use": "Términos de uso",
     "content_policy": "Política de contenido",
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
-    "not_enough_mana": "No tienes suficiente {symbol} para publicar la collección.",
+    "not_enough_mana": "No tienes suficiente {symbol} para publicar la colección.",
     "get_mana": "Puedes obtener más usando el {link} o puedes pagar con tarjeta.",
     "unsynced_collection": "La colección que está intentando publicar tiene diferencias con la que hay en el servidor. Por favor, refresque el navegador e intente de nuevo."
   },
@@ -1977,9 +1987,18 @@
         "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por colección (pagado en MANA) una única vez."
       },
       "standard": {
-        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA)."
+        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA). {link}."
       },
       "learn_more": "Aprender sobre la tarifa de publicación",
+      "pay_with": "Pagar con:",
+      "method_credits": "Créditos",
+      "method_card": "Tarjeta",
+      "method_mana": "MANA",
+      "confirm": "Confirmar",
+      "balance": "Saldo",
+      "get_mana_button": "Obtener MANA",
+      "get_credits_button": "Obtener Créditos",
+      "insufficient_balance": "Saldo insuficiente.",
       "already_payed": "Ya pagados, pero no publicados",
       "already_published": "Ya publicados",
       "quantity": "Cantidad",
@@ -1996,6 +2015,8 @@
       "pay_card": "pagar con tarjeta",
       "pay_card_info": "Un 5% de tarifa de transacción será añadido a su total por el procesador de pagos, además de un 0.5% adicional para cubrir posibles fluctuaciones de moneda.",
       "pay_mana": "pagar con mana",
+      "shop_credits_info": "Paga esta tarifa usando tus créditos de la Tienda de Decentraland.",
+      "shop_credits_info_link": "Obtener créditos",
       "submitting_for_review": "Enviando para revisión"
     },
     "congratulations_step": {
@@ -2137,13 +2158,13 @@
         },
         "disable_collection": {
           "title": "Deshabilitar Colección",
-          "subtitle": "Esta colleccion no estara mas disponible. Puedes habilitarla nuevamente en el futuro.",
+          "subtitle": "Esta colección no estará más disponible. Puedes habilitarla nuevamente en el futuro.",
           "tx_pending": "Esperando a que se confirme la transacción de deshabilitado",
           "action": "Deshabilitar"
         },
         "disable_third_party": {
           "title": "Deshabilitar proveedor",
-          "subtitle": "Éste proveedor no estará más disponible. Ésto incluye todas las collecciones bajo éste proveedor. No te preocupes, podrás habilitarlo nuevamente luego.",
+          "subtitle": "Éste proveedor no estará más disponible. Ésto incluye todas las colecciónes bajo éste proveedor. No te preocupes, podrás habilitarlo nuevamente luego.",
           "tx_pending": "Esperando a la confirmación de la transacción para deshabilitar el proveedor",
           "action": "Deshabilitar"
         }
@@ -2547,21 +2568,28 @@
     "learn_more": "aprende más"
   },
   "creator_hub_upgrade_modal": {
-    "title": "Mejora tu flujo de trabajo de creación",
-    "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+    "badge": "El editor de escenas web se retira el 1 de septiembre",
+    "title": "Sigue creando con Creator Hub",
+    "subtitle": "Más potente · Mantenido activamente · Funciona con tus escenas existentes",
+    "description": "El editor de escenas web dejará de ser compatible después del 1 de septiembre. <link>Descarga Creator Hub</link> para seguir creando y editando tus escenas con un flujo de trabajo de escritorio más potente.",
+    "why_switch": "¿Por qué cambiar a Creator Hub?",
     "feature1": {
       "title": "Mejor para creadores con código y sin código",
-      "description": "Trabaja con tu editor de código preferido mientras aprovechas al máximo las herramientas visuales incluidas en el editor de escenas."
+      "description": "Usa tu editor de código preferido junto con potentes herramientas de creación visual."
     },
     "feature2": {
-      "title": "Vista previa y comparte tus escenas",
-      "description": "Vista previa de tu proyecto exactamente como aparecerá, luego publícalo fácilmente en tu mundo o LAND con control total sobre tus archivos."
+      "title": "Previsualiza y comparte tus escenas",
+      "description": "Previsualiza tu proyecto tal como se verá y publícalo en tu mundo o LAND."
     },
     "download": "Descargar Creator Hub",
-    "skip_for_now": "Omitir por ahora",
+    "skip_for_now": "Omitir",
+    "footer_note": "Siempre puedes descargar Creator Hub más tarde.",
     "permissions_variant": {
-      "title": "Mejora tu flujo de trabajo de creación",
-      "description": "El nuevo Creator Hub reemplaza el antiguo editor web con toneladas de nuevas funciones y mejoras continuas.",
+      "badge": "El editor de escenas web se retira el 1 de septiembre",
+      "title": "Sigue creando con Creator Hub",
+      "subtitle": "Más potente · Mantenido activamente · Funciona con tus escenas existentes",
+      "description": "El editor de escenas web dejará de ser compatible después del 1 de septiembre. <link>Descarga Creator Hub</link> para gestionar el acceso, invitar colaboradores y seguir creando con un flujo de trabajo de escritorio más potente.",
+      "why_switch": "¿Por qué cambiar a Creator Hub?",
       "feature1": {
         "title": "Mejor gestión de acceso",
         "description": "¡Establece una contraseña de acceso, permite que un número selecto de personas entren a tu lugar o invita a toda una comunidad!"
@@ -2569,7 +2597,8 @@
       "feature2": {
         "title": "Colaboración mejorada",
         "description": "¡Asigna parcelas específicas a los miembros de tu equipo de colaboración y diseña tu propia ciudad!"
-      }
+      },
+      "footer_note": "Siempre puedes descargar Creator Hub más tarde."
     }
   },
   "item_status": {
@@ -2602,5 +2631,11 @@
       "action": "Poner a la venta",
       "confirm_transaction_title": "Poner a la venta"
     }
+  },
+  "announcement_bar": {
+    "highlight": "Conoce la Decentraland Shop",
+    "message": "{highlight} - Nuevo diseño, nuevos looks y conoce a los creadores.",
+    "cta": "Pruébalo",
+    "dismiss": "Cerrar anuncio"
   }
 }

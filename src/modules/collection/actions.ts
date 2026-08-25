@@ -77,8 +77,9 @@ export const publishCollectionRequest = (
   subscribeToNewsletter: boolean,
   paymentMethod: PaymentMethod,
   creditsAmount = '0',
-  totalPrice?: string
-) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice })
+  totalPrice?: string,
+  totalPriceUSD?: string
+) => action(PUBLISH_COLLECTION_REQUEST, { collection, items, email, subscribeToNewsletter, paymentMethod, creditsAmount, totalPrice, totalPriceUSD })
 export const publishCollectionSuccess = (
   collection: Collection,
   items: Item[],

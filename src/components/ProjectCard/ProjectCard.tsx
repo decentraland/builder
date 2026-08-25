@@ -49,11 +49,6 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     this.setState({ isDeleting: false })
   }
 
-  handleDuplicateProject = () => {
-    const { project, onDuplicateProject } = this.props
-    onDuplicateProject(project)
-  }
-
   handleExportScene = () => {
     this.props.onOpenModal('ExportModal', { project: this.props.project })
   }
@@ -77,7 +72,6 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     }
 
     const dropdownOptions = [
-      { text: t('scenes_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
       { text: t('scenes_page.project_actions.export_project'), handler: this.handleExportScene },
       { text: t('scenes_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
     ]

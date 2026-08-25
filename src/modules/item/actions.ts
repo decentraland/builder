@@ -4,6 +4,7 @@ import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transac
 import { PaginationStats } from 'lib/api/pagination'
 import { FetchCollectionItemsParams } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
+import { PriceDenomination } from 'modules/trade/denomination'
 import { BuiltFile, Item, BlockchainRarity } from './types'
 
 // Fetch items
@@ -284,8 +285,14 @@ export const CREATE_ITEM_ORDER_TRADE_REQUEST = '[Request] Create Item Order Trad
 export const CREATE_ITEM_ORDER_TRADE_SUCCESS = '[Success] Create Item Order Trade'
 export const CREATE_ITEM_ORDER_TRADE_FAILURE = '[Failure] Create Item Order Trade'
 
-export const createItemOrderTradeRequest = (item: Item, priceInWei: string, beneficiary: string, collection: Collection, expiresAt: Date) =>
-  action(CREATE_ITEM_ORDER_TRADE_REQUEST, { item, priceInWei, beneficiary, collection, expiresAt })
+export const createItemOrderTradeRequest = (
+  item: Item,
+  priceInWei: string,
+  beneficiary: string,
+  collection: Collection,
+  expiresAt: Date,
+  denomination: PriceDenomination = PriceDenomination.MANA
+) => action(CREATE_ITEM_ORDER_TRADE_REQUEST, { item, priceInWei, beneficiary, collection, expiresAt, denomination })
 export const createItemOrderTradeSuccess = (trade: Trade, item: Item, priceInWei: string, beneficiary: string, expiresAt: number) =>
   action(CREATE_ITEM_ORDER_TRADE_SUCCESS, { trade, priceInWei, beneficiary, expiresAt, item })
 export const createItemOrderTradeFailure = (error: string) => action(CREATE_ITEM_ORDER_TRADE_FAILURE, { error })

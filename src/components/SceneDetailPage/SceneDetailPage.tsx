@@ -12,14 +12,12 @@ import NotFound from 'components/NotFound'
 import DeploymentStatus from 'components/DeploymentStatus'
 import SDKTag from 'components/SDKTag/SDKTag'
 import DeploymentDetail from './DeploymentDetail'
-import MigrateSceneToSDK7 from './MigrateSceneToSDK7'
 import './SceneDetailPage.css'
 import { useHistory } from 'react-router'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onDuplicate, onLoadProjectScene } = props
+  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onLoadProjectScene } = props
   const [isDeleting, setIsDeleting] = useState(false)
-  const [showMigrationModal, setShowMigrationModal] = useState(false)
   const history = useHistory()
 
   useEffect(() => {
@@ -48,10 +46,6 @@ const SceneDetailPage: React.FC<Props> = props => {
     setIsDeleting(true)
   }, [setIsDeleting])
 
-  const handleDuplicateClick = useCallback(() => {
-    onDuplicate(project as Project)
-  }, [project, onDuplicate])
-
   const handleConfirmDeleteProject = useCallback(() => {
     onDelete(project as Project)
     setIsDeleting(false)
@@ -62,12 +56,8 @@ const SceneDetailPage: React.FC<Props> = props => {
   }, [setIsDeleting])
 
   const handleEditScene = useCallback(() => {
-    if (scene?.sdk6) {
-      setShowMigrationModal(true)
-    } else {
-      history.push(locations.inspector(project?.id))
-    }
-  }, [project, scene, history])
+    history.push(scene?.sdk6 ? locations.sceneEditor(project?.id) : locations.inspector(project?.id))
+  }, [history, project, scene])
 
   const getSceneStatus = () => {
     const { project, isLoading, isLoadingDeployments } = props
@@ -121,7 +111,6 @@ const SceneDetailPage: React.FC<Props> = props => {
                   direction="left"
                 >
                   <Dropdown.Menu>
-                    <Dropdown.Item text={t('scene_detail_page.actions.duplicate')} onClick={handleDuplicateClick} />
                     <Dropdown.Item text={t('scene_detail_page.actions.delete')} onClick={handleDeleteClick} />
                   </Dropdown.Menu>
                 </Dropdown>
@@ -187,9 +176,6 @@ const SceneDetailPage: React.FC<Props> = props => {
             />
           </>
         ) : null}
-        {showMigrationModal && (
-          <MigrateSceneToSDK7 project={project} scene={scene} onNavigate={handleNavigate} onClose={() => setShowMigrationModal(false)} />
-        )}
       </Page>
       <Footer />
     </>

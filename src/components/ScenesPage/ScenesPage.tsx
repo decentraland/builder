@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import { Link, useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
-  Container,
   Button,
+  Container,
   Dropdown,
   DropdownProps,
   Pagination,
@@ -42,30 +42,6 @@ const ScenesPage: React.FC<Props> = props => {
     }
   }, [onOpenModal, isFetching])
 
-  const handleOpenImportModal = useCallback(() => {
-    onOpenModal('ImportModal')
-  }, [onOpenModal])
-
-  const handleOpenCreateModal = useCallback(() => {
-    onOpenModal('SceneCreationModal')
-  }, [onOpenModal])
-
-  const renderImportButton = () => {
-    return (
-      <Button inverted className="import-scene" onClick={handleOpenImportModal}>
-        {t('scenes_page.upload_scene')}
-      </Button>
-    )
-  }
-
-  const renderCreateButton = () => {
-    return (
-      <Button primary className="create-scene" onClick={handleOpenCreateModal}>
-        {t('scenes_page.create_scene')}
-      </Button>
-    )
-  }
-
   const renderSortDropdown = () => {
     return (
       <Dropdown
@@ -98,7 +74,7 @@ const ScenesPage: React.FC<Props> = props => {
         <span className="no-scenes-description">
           {t('scenes_page.no_scenes.description', {
             a: (content: string) => (
-              <a rel="noreferrer" target="_blank" href="https://docs.decentraland.org/creator/development-guide/sdk-101/">
+              <a rel="noreferrer" target="_blank" href="https://docs.decentraland.org/creator/scenes-sdk7/getting-started/sdk-101">
                 {content}
               </a>
             )
@@ -160,12 +136,7 @@ const ScenesPage: React.FC<Props> = props => {
               <Column>
                 <Header>{t('scenes_page.my_scenes')}</Header>
               </Column>
-              <Column align="right">
-                <div className="actions">
-                  {renderImportButton()}
-                  {renderCreateButton()}
-                </div>
-              </Column>
+              <Column align="right" />
             </Row>
             <Row className="actions">
               <Column>

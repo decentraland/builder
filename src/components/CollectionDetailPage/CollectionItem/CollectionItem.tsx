@@ -4,19 +4,23 @@ import { EmoteDataADR74, Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { RarityBadge } from 'decentraland-dapps/dist/containers/RarityBadge'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { Dropdown, Icon, Button, Mana, Table } from 'decentraland-ui'
+import { Dropdown, Icon, Button, Mana, Popup, Table } from 'decentraland-ui'
 import { Link, useHistory } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/event'
+import { formatCredits, formatCreditsFull, usdWeiToCredits } from 'lib/credits'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
-import { isComplete, canManageItem, getMaxSupply, isSmart, isEmote, isFree } from 'modules/item/utils'
+import { isComplete, canManageItem, getMaxSupply, isItemSoldOut, isSmart, isEmote, isFree } from 'modules/item/utils'
 import { isEnableForSaleOffchain, isLocked, isOnSale } from 'modules/collection/utils'
 import { isEmoteData, SyncStatus, VIDEO_PATH, WearableData } from 'modules/item/types'
 import { FromParam } from 'modules/location/types'
+import { PriceDenomination } from 'modules/trade/denomination'
+import { useTradePriceDenomination } from 'modules/trade/hooks'
 import ItemStatus from 'components/ItemStatus'
 import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemImage'
 import ResetItemButton from './ResetItemButton'
+import { shopItemUrl } from 'lib/shop'
 import { Props } from './CollectionItem.types'
 import styles from './CollectionItem.module.css'
 
@@ -38,10 +42,26 @@ export default function CollectionItem({
 }: Props) {
   const analytics = getAnalytics()
   const history = useHistory()
+  // `fetchCollectionItemsRequest` overwrites `item.price` with the marketplace's published price, which
+  // is USD wei — not MANA wei — when the item was listed through the shop. See modules/trade/denomination.
+  const isUSDPeggedPrice = useTradePriceDenomination(item.tradeId) === PriceDenomination.USD_PEGGED
   const isOnSaleLegacy = wallet && isOnSale(collection, wallet)
   const isEnableForSaleOffchainMarketplace = wallet && isOffchainPublicItemOrdersEnabled && isEnableForSaleOffchain(collection, wallet)
+  const isSoldOut = isItemSoldOut(item)
   const shouldAllowPriceEdition =
     !isOffchainPublicItemOrdersEnabled || (isEnableForSaleOffchainMarketplace && item.tradeId) || isOnSaleLegacy
+
+  /**
+   * Where this item is bought, when it is bought with credits. Empty when the listing is MANA (the marketplace
+   * already covers that) or when SHOP_WEB_URL is unset, so a missing config hides the link instead of pointing
+   * a creator at nowhere.
+   */
+  const shopListingUrl = useMemo(
+    // `tokenId` is the item's blockchain id in this app's vocabulary — the same value the published-item merge
+    // keys on (`${contractAddress}-${item.tokenId}`) and the trade builder sends as `itemId`.
+    () => (isUSDPeggedPrice && item.tokenId ? shopItemUrl(collection.contractAddress!, item.tokenId) : ''),
+    [isUSDPeggedPrice, item.tokenId, collection.contractAddress]
+  )
 
   const isWalletVariant = useMemo(() => {
     return isOffchainPublicItemOrdersEnabledVariants?.payload?.value?.trim()?.toLocaleLowerCase() === ethAddress?.toLocaleLowerCase()
@@ -107,12 +127,24 @@ export default function CollectionItem({
       return <span>{t('global.free')}</span>
     }
 
+    if (isUSDPeggedPrice) {
+      const credits = usdWeiToCredits(item.price)
+      return credits === null ? (
+        <span>-</span>
+      ) : (
+        <span className={styles.credits} title={t('collection_item.credits_amount', { amount: formatCreditsFull(credits) })}>
+          <i className={styles.creditsIcon} aria-hidden="true" />
+          {formatCredits(credits)}
+        </span>
+      )
+    }
+
     return (
       <Mana className={styles.mana} network={Network.MATIC} showTooltip>
         {ethers.utils.formatEther(item.price)}
       </Mana>
     )
-  }, [item, isOnSaleLegacy, isOffchainPublicItemOrdersEnabled, handleEditPriceAndBeneficiary])
+  }, [item, isOnSaleLegacy, isOffchainPublicItemOrdersEnabled, isUSDPeggedPrice, handleEditPriceAndBeneficiary])
 
   const renderItemStatus = useCallback(() => {
     return status === SyncStatus.UNSYNCED ? (
@@ -125,6 +157,23 @@ export default function CollectionItem({
         <Icon name="clock outline" />
         {t('collection_item.under_review')}
       </div>
+    ) : item.isPublished && item.isApproved && shopListingUrl ? (
+      /*
+       * A credits listing lives in the SHOP, a different site from the marketplace this app publishes to —
+       * and until now nothing here could say so, which left a creator with a price they could not place. More
+       * specific than the plain "Published" it replaces: a pegged listing implies the item is published, and
+       * says where it is actually being sold.
+       */
+      <a
+        className={`${styles.published} ${styles.status} ${styles.shopLink}`}
+        href={shopListingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={event => event.stopPropagation()}
+      >
+        <Icon name="check circle outline" />
+        {t('collection_item.on_sale_in_shop')}
+      </a>
     ) : item.isPublished && item.isApproved ? (
       <div className={`${styles.published} ${styles.status}`}>
         <Icon name="check circle outline" />
@@ -145,7 +194,7 @@ export default function CollectionItem({
         {t('collection_item.edit_item')}
       </span>
     )
-  }, [handleNavigateToEditor, item, status])
+  }, [handleNavigateToEditor, item, status, shopListingUrl])
 
   const renderItemContextMenu = useCallback(() => {
     return (
@@ -242,9 +291,18 @@ export default function CollectionItem({
       <Table.Cell>{renderItemStatus()}</Table.Cell>
       {isOffchainPublicItemOrdersEnabled && !isOnSaleLegacy && !item.tradeId && item.isPublished && (
         <Table.Cell>
-          <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace} onClick={handlePutForSale}>
-            {t('collection_item.put_for_sale')}
-          </Button>
+          <Popup
+            content={t('collection_item.sold_out')}
+            position="top center"
+            disabled={!isSoldOut}
+            trigger={
+              <span>
+                <Button primary size="tiny" disabled={!isEnableForSaleOffchainMarketplace || isSoldOut} onClick={handlePutForSale}>
+                  {t('collection_item.put_for_sale')}
+                </Button>
+              </span>
+            }
+          />
         </Table.Cell>
       )}
       {isOffchainPublicItemOrdersEnabled && item.tradeId && (
