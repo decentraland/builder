@@ -111,6 +111,7 @@ export default function LivePreviewPage() {
       if (state.version !== lastVersionRef.current) {
         const model = await fetchModelBlob(bridgeUrl)
         lastVersionRef.current = state.version
+        console.log(`[LivePreview] bridge pushed v${state.version} (${state.type ?? 'wearable'}, ${model.size} bytes)`)
         setBridgeState(state)
         setGlb(model)
       }
@@ -176,7 +177,9 @@ export default function LivePreviewPage() {
   }, [])
 
   const handleRandomizeAvatar = useCallback(() => {
-    setBodyShape(pickRandom(BODY_SHAPES))
+    const shape = pickRandom(BODY_SHAPES)
+    console.log(`[LivePreview] randomizing avatar (${shape}) — the iframe will reload and ask for the model again`)
+    setBodyShape(shape)
     setSkinColor(pickRandom(getSkinColors()))
     setEyeColor(pickRandom(getEyeColors()))
     setHairColor(pickRandom(getHairColors()))
@@ -185,14 +188,30 @@ export default function LivePreviewPage() {
     }
   }, [baseWearables])
 
+  // Avatar props (urns, bodyShape, colors, emote) are part of the iframe URL, so changing any of
+  // them reloads the iframe — and the blob, which only travels via postMessage, is gone on the
+  // fresh page. Every boot posts `ready`, so bump a revision that rides inside the definition:
+  // that makes the options deep-unequal and forces decentraland-ui2 to re-send the blob.
+  const [revision, setRevision] = useState(0)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type !== 'ready') return
+      console.log('[LivePreview] preview iframe booted — re-delivering the model blob')
+      setRevision(current => current + 1)
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
   const definition = useMemo(() => {
     if (!bridgeState || !glb) return null
     return buildDefinition(bridgeState, glb, {
       category: categoryOverride ?? undefined,
       hides: [...hidesBodyPart, ...hidesWearable],
-      loop: emoteLoop
+      loop: emoteLoop,
+      revision
     })
-  }, [bridgeState, glb, categoryOverride, hidesBodyPart, hidesWearable, emoteLoop])
+  }, [bridgeState, glb, categoryOverride, hidesBodyPart, hidesWearable, emoteLoop, revision])
 
   const isEmote = definition?.isEmote ?? false
 

@@ -53,6 +53,13 @@ export type DefinitionOverrides = {
   category?: WearableCategory
   hides?: (WearableCategory | BodyPartCategory)[]
   loop?: boolean
+  /**
+   * Bumped every time the preview iframe boots (posts `ready`). Avatar props like urns or
+   * bodyShape are part of the iframe URL, so changing them reloads the iframe — and the blob,
+   * which only travels via postMessage, is lost on the other side. Baking the revision into the
+   * definition makes the next options object deep-unequal, forcing decentraland-ui2 to re-send it.
+   */
+  revision?: number
 }
 
 function isEmoteCategory(category?: string): boolean {
@@ -98,7 +105,7 @@ export function buildDefinition(
     // The version rides along because the parent (decentraland-ui2) deep-equals successive
     // updates and two different Blobs compare as equal empty objects: without a changing
     // field, a re-export that only changes the model bytes would never reach the iframe.
-    description: `Live preview streamed from Blender (v${String(state.version)})`,
+    description: `Live preview streamed from Blender (v${String(state.version)}.${overrides.revision ?? 0})`,
     thumbnail: '',
     image: '',
     i18n: [{ code: Locale.EN, text: name }]
