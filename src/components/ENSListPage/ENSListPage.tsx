@@ -15,13 +15,13 @@ import CopyToClipboard from 'components/CopyToClipboard/CopyToClipboard'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ENSEmptyState from 'components/ENSEmptyState'
+import ENSTile from 'components/ENSTile'
 import ethereumImg from '../../icons/ethereum.svg'
 import { Props, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
 
 const PAGE_SIZE = 12
 const MARKETPLACE_WEB_URL = config.get('MARKETPLACE_WEB_URL', '')
-const MARKETPLACE_API = config.get('MARKETPLACE_API', '')
 const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
 const ENS_GATEWAY = config.get('ENS_GATEWAY')
 
@@ -199,11 +199,7 @@ export default function ENSListPage(props: Props) {
       return ensList.map(ens => ({
         name: (
           <div className="ens-list-name">
-            <img
-              className="ens-list-name-icon"
-              alt={ens.subdomain}
-              src={`${MARKETPLACE_API}/ens/generate?ens=${ens.name}&width=330&height=330&onlyLogo=true`}
-            />
+            <ENSTile className="ens-list-name-icon" name={ens.name} onlyLogo />
             <span className="ens-list-subdomain">
               <span>{ens.name}</span>.dcl.eth
             </span>
