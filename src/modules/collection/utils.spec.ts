@@ -2,7 +2,7 @@ import type { TypedDataDomain } from '@ethersproject/abstract-signer'
 import { ChainId, BodyShape, TradeCreation } from '@dcl/schemas'
 import { ContractName } from 'decentraland-transactions'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
-import { getLatestOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
+import { getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item } from 'modules/item/types'
@@ -539,31 +539,5 @@ describe('when signing a trade the way Builder signs an item order', () => {
 
   it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
     expect(domain.verifyingContract?.toLowerCase()).toBe(getLatestOffchainSale(chainId).address)
-  })
-})
-
-describe('when comparing the marketplace Builder authorizes against the one decentraland-dapps signs with', () => {
-  describe('and the chain has a V3 deployment', () => {
-    let chainId: ChainId
-
-    beforeEach(() => {
-      chainId = ChainId.MATIC_AMOY
-    })
-
-    it('should resolve the same contract address in both packages', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getLatestOffChainMarketplaceContract(chainId).address.toLowerCase())
-    })
-  })
-
-  describe('and the chain has no V3 deployment', () => {
-    let chainId: ChainId
-
-    beforeEach(() => {
-      chainId = ChainId.MATIC_MAINNET
-    })
-
-    it('should fall back to the same contract address in both packages', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getLatestOffChainMarketplaceContract(chainId).address.toLowerCase())
-    })
   })
 })

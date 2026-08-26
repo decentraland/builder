@@ -1,7 +1,8 @@
 import { ethers } from 'ethers'
 import { ChainId } from '@dcl/schemas'
 import { Env } from '@dcl/ui-env'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractName, getContract, getContractName } from 'decentraland-transactions'
+import { getLatestOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trades'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
 import { locations } from 'routing/locations'
@@ -79,11 +80,11 @@ export function getOffchainV3SaleAddress(chainId: ChainId) {
 }
 
 /**
- * Off-chain marketplace versions, newest first.
+ * Every off-chain marketplace version, newest first. Used ONLY to enumerate what a collection might still
+ * hold minter rights on, which is Builder's own concern: a collection listed before V2 keeps V1 rights,
+ * and disabling off-chain sale has to revoke whichever ones it actually holds.
  *
- * Mirrors the resolution in decentraland-dapps' getTradeSignature and MUST stay in step with it: Builder
- * grants minter rights to the marketplace that will mint the item, so it has to be the same version the
- * trade is signed against, or the mint reverts.
+ * Deliberately NOT the source of the "latest" version — see getLatestOffchainSale.
  */
 const OFFCHAIN_SALE_CONTRACT_NAMES = [
   ContractName.OffChainMarketplaceV3,
@@ -94,18 +95,15 @@ const OFFCHAIN_SALE_CONTRACT_NAMES = [
 /**
  * The newest off-chain marketplace deployed on the chain.
  *
- * `getContract` THROWS for a version that is not deployed on a chain rather than returning a falsy value,
- * which is why each candidate is tried in turn. V3 is testnet-only for now, so mainnet resolves to V2.
+ * Delegates to decentraland-dapps rather than repeating its candidate order, because this address is the
+ * one Builder grants minter rights to and it has to be the same contract dapps signs the trade against or
+ * the mint reverts. Two lists that merely agree today drift the next time a version is added; one source
+ * cannot. Builder still needs its own list above, but for a different question — every version a
+ * collection might hold, not the current one.
  */
 export function getLatestOffchainSale(chainId: ChainId): { contractName: ContractName; address: string } {
-  for (const contractName of OFFCHAIN_SALE_CONTRACT_NAMES) {
-    try {
-      return { contractName, address: getContract(contractName, chainId).address.toLowerCase() }
-    } catch (error) {
-      continue
-    }
-  }
-  throw new Error(`No off-chain marketplace contract exists on chain ${chainId}`)
+  const { address } = getLatestOffChainMarketplaceContract(chainId)
+  return { contractName: getContractName(address), address: address.toLowerCase() }
 }
 
 /** Every off-chain marketplace version deployed on the chain, for "is this collection listed" checks. */
