@@ -12,6 +12,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Icon from 'components/Icon'
 import ENSEmptyState from 'components/ENSEmptyState'
+import ENSTile from 'components/ENSTile'
 import ethereumImg from '../../icons/ethereum.svg'
 import { Props } from './ENSDetailPage.types'
 import styles from './ENSDetailPage.module.css'
@@ -22,11 +23,6 @@ const REGISTRAR_CONTRACT_ADDRESS = config.get('REGISTRAR_CONTRACT_ADDRESS', '')
 export default function ENSDetailPage(props: Props) {
   const { ens, isLoading, alias, avatar, name, wallet, error, onOpenModal, onFetchENS } = props
   const history = useHistory()
-  const imgUrl = useMemo<string>(
-    () => (ens ? `${config.get('MARKETPLACE_API')}/ens/generate?ens=${ens.name}&width=330&height=330` : ''),
-    [ens]
-  )
-
   const shouldReclaim = ens?.ensOwnerAddress !== ens?.nftOwnerAddress
 
   useEffect(() => {
@@ -220,7 +216,7 @@ export default function ENSDetailPage(props: Props) {
             </Button>
           </Link>
           <div className={styles.main}>
-            <img alt={ens.subdomain} src={imgUrl} className={styles.ensImage} />
+            <ENSTile className={styles.ensImage} name={ens.name} />
             <div className={styles.fields}>
               <div className={styles.fieldContainer}>
                 <div>

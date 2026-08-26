@@ -1821,7 +1821,8 @@
     "cancel_order_error": "Error when removing order for item",
     "on_sale_in_shop": "On sale in the shop",
     "sold_out": "This item is sold out, all its supply has already been minted",
-    "sold_out_error": "The item is sold out"
+    "sold_out_error": "The item is sold out",
+    "copy_urn": "Copy URN"
   },
   "collection": {
     "type": {

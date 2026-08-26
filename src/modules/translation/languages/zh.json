@@ -1812,7 +1812,8 @@
     "cancel_order_error": "删除项目订单时出错",
     "on_sale_in_shop": "在商店出售",
     "sold_out": "该物品已售罄，所有供应量均已铸造",
-    "sold_out_error": "该物品已售罄"
+    "sold_out_error": "该物品已售罄",
+    "copy_urn": "复制URN"
   },
   "collection": {
     "type": {
