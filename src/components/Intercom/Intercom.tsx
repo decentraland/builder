@@ -13,9 +13,11 @@ export const Intercom: React.FC = () => {
   const analyticsReadyCallback = useCallback(() => {
     const dclAnonymousUserID = getAnonymousId()
     if (dclAnonymousUserID) {
-      setIntercomUserData({ ...intercomUserData, anon_id: dclAnonymousUserID })
+      // Bail out with the same reference when the id didn't change: returning a new object here
+      // re-triggers the effect below and loops render -> ready() -> setState forever.
+      setIntercomUserData(current => (current?.anon_id === dclAnonymousUserID ? current : { ...current, anon_id: dclAnonymousUserID }))
     }
-  }, [intercomUserData])
+  }, [])
 
   useEffect(() => {
     analytics?.ready(analyticsReadyCallback)

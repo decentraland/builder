@@ -589,7 +589,8 @@ export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystCli
     const { worlds } = action.payload
     const worldContentClient = createContentClient({
       url: getWorldsContentServerUrl(),
-      // @ts-expect-error - fetch types mismatch between browser and node-fetch
+      // The browser/node-fetch type mismatch this used to suppress is gone as of the
+      // dependency bump this change carries; tsc errors on the directive if it returns.
       fetcher: { fetch: (url, init) => fetch(url, init) }
     })
     try {
