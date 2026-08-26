@@ -46,6 +46,8 @@ export type BridgeState = {
 }
 
 export const MODEL_KEY = 'model.glb'
+/** Definition id fed to the preview; also the key the iframe's physics controller expects. */
+export const LIVE_PREVIEW_ITEM_ID = 'live-preview'
 const BOTH_BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
 /** Panel-driven tweaks applied on top of whatever the bridge reports. */
@@ -100,7 +102,7 @@ export function buildDefinition(
   const category = isEmote ? state.category : overrides.category ?? state.category
 
   const base = {
-    id: 'live-preview',
+    id: LIVE_PREVIEW_ITEM_ID,
     name,
     // The version rides along because the parent (decentraland-ui2) deep-equals successive
     // updates and two different Blobs compare as equal empty objects: without a changing

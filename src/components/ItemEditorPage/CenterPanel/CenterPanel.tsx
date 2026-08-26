@@ -1,19 +1,7 @@
 import * as React from 'react'
 import type { Wearable } from 'decentraland-ecs'
 import { BodyShape, PreviewEmote, PreviewUnityMode, WearableCategory } from '@dcl/schemas'
-import {
-  Dropdown,
-  DropdownProps,
-  Popup,
-  Icon,
-  Loader,
-  Center,
-  EmoteControls,
-  DropdownItemProps,
-  Button,
-  Modal,
-  ModalNavigation
-} from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup, Icon, Loader, Center, EmoteControls, DropdownItemProps, Button } from 'decentraland-ui'
 import { AnimationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
 import { SocialEmoteAnimation } from '@dcl/schemas/dist/dapps/preview/social-emote-animation'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -22,7 +10,6 @@ import { Color4 } from 'lib/colors'
 import { isDevelopment } from 'lib/environment'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { loadAndValidateModel, EngineType } from 'lib/getModelData'
-import { ValidationSeverity } from 'lib/glbValidation/types'
 // Validation uses content storage URLs instead of blob URLs
 import { isTPCollection } from 'modules/collection/utils'
 import { EmoteData, ItemType, Item } from 'modules/item/types'
@@ -31,7 +18,7 @@ import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
 import { FacialExpressionsBadge } from 'components/FacialExpressionsBadge'
-import { ValidationIssuesPanel } from 'components/ValidationIssuesPanel'
+import { ValidationStatusBadge } from 'components/ValidationStatusBadge'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
@@ -44,8 +31,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     isLoading: false,
     socialEmote: undefined,
     validationIssues: undefined,
-    isValidating: false,
-    isValidationModalOpen: false
+    isValidating: false
   }
 
   analytics = getAnalytics()
@@ -173,17 +159,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       return getModelPath(item.data.representations as any)
     }
     return undefined
-  }
-
-  handleOpenValidationModal = () => {
-    const { validationIssues } = this.state
-    if (validationIssues && validationIssues.length > 0) {
-      this.setState({ isValidationModalOpen: true })
-    }
-  }
-
-  handleCloseValidationModal = () => {
-    this.setState({ isValidationModalOpen: false })
   }
 
   handleToggleShowingAvatarAttributes = () => {
@@ -365,80 +340,10 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   renderValidationStatus = () => {
     const { selectedItem } = this.props
     const { validationIssues, isValidating, isLoading: isPreviewLoading } = this.state
-
     // Show loading state only while validation hasn't produced results yet
-    const isWaiting = !validationIssues && (isPreviewLoading || isValidating)
+    const isWaiting = !selectedItem || (!validationIssues && (isPreviewLoading || isValidating))
 
-    const hasErrors = validationIssues?.some(i => i.severity === ValidationSeverity.ERROR) ?? false
-    const hasWarnings = validationIssues?.some(i => i.severity === ValidationSeverity.WARNING) ?? false
-    const hasIssues = hasErrors || hasWarnings
-    const isPass = validationIssues !== undefined && !hasIssues
-    const isClickable = hasIssues
-
-    let statusClass = ''
-    if (hasErrors) statusClass = 'validation-fail'
-    else if (hasWarnings) statusClass = 'validation-warn'
-    else if (isPass) statusClass = 'validation-pass'
-
-    let tooltipContent: string
-    if (!selectedItem || isWaiting) {
-      tooltipContent = t('item_editor.center_panel.validation_running')
-    } else if (isPass) {
-      tooltipContent = t('item_editor.center_panel.validation_pass')
-    } else if (hasErrors) {
-      tooltipContent = t('item_editor.center_panel.validation_fail')
-    } else if (hasWarnings) {
-      tooltipContent = t('item_editor.center_panel.validation_warnings')
-    } else {
-      tooltipContent = t('item_editor.center_panel.validation_tooltip')
-    }
-
-    let iconElement: React.ReactNode
-    if (!selectedItem || isWaiting) {
-      iconElement = <Loader active inline size="tiny" inverted />
-    } else if (isPass) {
-      iconElement = <Icon name="check circle" className="validation-icon pass" />
-    } else if (hasErrors) {
-      iconElement = <Icon name="times circle" className="validation-icon fail" />
-    } else if (hasWarnings) {
-      iconElement = <Icon name="exclamation circle" className="validation-icon warn" />
-    } else {
-      iconElement = <Loader active inline size="tiny" inverted />
-    }
-
-    return (
-      <Popup
-        content={tooltipContent}
-        position="top center"
-        trigger={
-          <div
-            className={`option validation-status ${statusClass}`}
-            onClick={isClickable ? this.handleOpenValidationModal : undefined}
-            style={{ cursor: isClickable ? 'pointer' : 'default' }}
-          >
-            {iconElement}
-          </div>
-        }
-        hideOnScroll
-        on="hover"
-        inverted
-      />
-    )
-  }
-
-  renderValidationModal = () => {
-    const { validationIssues, isValidationModalOpen } = this.state
-
-    if (!isValidationModalOpen || !validationIssues) return null
-
-    return (
-      <Modal open size="small" onClose={this.handleCloseValidationModal}>
-        <ModalNavigation title={t('item_editor.center_panel.validation_modal_title')} onClose={this.handleCloseValidationModal} />
-        <Modal.Content>
-          <ValidationIssuesPanel issues={validationIssues} collapsible={false} />
-        </Modal.Content>
-      </Modal>
-    )
+    return <ValidationStatusBadge issues={validationIssues} isWaiting={isWaiting} />
   }
 
   render() {
@@ -642,7 +547,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             </div>
           </div>
         </div>
-        {this.renderValidationModal()}
       </div>
     )
   }

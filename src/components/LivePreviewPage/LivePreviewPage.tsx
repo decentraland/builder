@@ -28,15 +28,23 @@ import {
 } from 'modules/editor/selectors'
 import { getRandomBaseWearables, pickRandom, toHex } from 'modules/editor/utils'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
+import { BoneNode, SpringBoneParams } from 'modules/editor/types'
 import { getHideableBodyPartCategories, getHideableWearableCategories, getWearableCategories } from 'modules/item/utils'
+import { parseSpringBones } from 'lib/parseSpringBones'
+import { getDefaultSpringBoneParams, getDefaultSpringBoneRoots } from 'lib/springBones'
+import { loadAndValidateModel, EngineType } from 'lib/getModelData'
+import type { ValidationIssue } from 'lib/glbValidation/types'
 import Info from 'components/Info'
+import { ValidationStatusBadge } from 'components/ValidationStatusBadge'
 import Select from 'components/ItemEditorPage/RightPanel/Select'
 import MultiSelect from 'components/ItemEditorPage/RightPanel/MultiSelect'
+import SpringBonesSection from 'components/ItemEditorPage/RightPanel/SpringBonesSection'
 import AvatarColorDropdown from 'components/ItemEditorPage/CenterPanel/AvatarColorDropdown'
 import AvatarWearableDropdown from 'components/ItemEditorPage/CenterPanel/AvatarWearableDropdown'
 import {
   BridgeState,
   DEFAULT_BRIDGE_URL,
+  LIVE_PREVIEW_ITEM_ID,
   LivePreviewStatus,
   MODEL_KEY,
   buildDefinition,
@@ -142,7 +150,6 @@ export default function LivePreviewPage() {
       if (state.version !== lastVersionRef.current) {
         const model = await fetchModelBlob(bridgeUrl)
         lastVersionRef.current = state.version
-        console.log(`[LivePreview] bridge pushed v${state.version} (${state.type ?? 'wearable'}, ${model.size} bytes)`)
         setBridgeState(state)
         setGlb(model)
         setLastUpdateAt(Date.now())
@@ -217,7 +224,6 @@ export default function LivePreviewPage() {
 
   const handleRandomizeAvatar = useCallback(() => {
     const shape = pickRandom(BODY_SHAPES)
-    console.log(`[LivePreview] randomizing avatar (${shape}) — the iframe will reload and ask for the model again`)
     dispatch(setBodyShape(shape))
     dispatch(setSkinColor(pickRandom(getSkinColors())))
     dispatch(setEyeColor(pickRandom(getEyeColors())))
@@ -237,22 +243,127 @@ export default function LivePreviewPage() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type !== 'ready') return
-      console.log('[LivePreview] preview iframe booted — re-delivering the model blob')
       setRevision(current => current + 1)
     }
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
+  // Spring bones are parsed from each streamed GLB, and their params live in local state:
+  // unlike the item editor there is no item hash to key the redux state by, nothing to save.
+  const [bones, setBones] = useState<BoneNode[]>([])
+  const [springBoneParams, setSpringBoneParams] = useState<Record<string, SpringBoneParams>>({})
+  const hasSpringBonesInGlb = useMemo(() => bones.some(bone => bone.type === 'spring'), [bones])
+  const springBoneParamsRef = useRef(springBoneParams)
+  springBoneParamsRef.current = springBoneParams
+  // Bones the user explicitly removed, so a re-export from Blender doesn't re-seed them.
+  const deletedSpringBonesRef = useRef<Set<string>>(new Set())
+
+  useEffect(() => {
+    if (!glb) return
+    let cancelled = false
+    glb
+      .arrayBuffer()
+      .then(buffer => {
+        if (cancelled) return
+        const { bones } = parseSpringBones(buffer)
+        setBones(bones)
+        // Keep the params tuned on previous pushes, drop bones that disappeared from the export,
+        // and seed defaults for new chain roots like the item editor does on upload.
+        setSpringBoneParams(previous => {
+          const springBoneNames = new Set(bones.filter(bone => bone.type === 'spring').map(bone => bone.name))
+          const next: Record<string, SpringBoneParams> = {}
+          for (const [name, params] of Object.entries(previous)) {
+            if (springBoneNames.has(name)) next[name] = params
+          }
+          for (const [name, params] of Object.entries(getDefaultSpringBoneRoots(bones))) {
+            if (!(name in next) && !deletedSpringBonesRef.current.has(name)) next[name] = params
+          }
+          return next
+        })
+      })
+      .catch(e => console.warn('[LivePreview] failed to parse spring bones:', e))
+    return () => {
+      cancelled = true
+    }
+  }, [glb])
+
+  const pushSpringBoneParams = useCallback(
+    (controller = wearableController) => {
+      if (!controller || !hasSpringBonesInGlb) return
+      controller.physics
+        .setSpringBonesParams(LIVE_PREVIEW_ITEM_ID, springBoneParamsRef.current)
+        .catch(e => console.warn('[LivePreview] failed to push spring bone params:', e))
+    },
+    [wearableController, hasSpringBonesInGlb]
+  )
+
+  // Debounced push on param edits: slider drags fire onChange continuously.
+  useEffect(() => {
+    if (!wearableController || !hasSpringBonesInGlb) return
+    const timer = setTimeout(() => pushSpringBoneParams(), 500)
+    return () => clearTimeout(timer)
+  }, [springBoneParams, wearableController, hasSpringBonesInGlb, pushSpringBoneParams])
+
+  const handleSpringBoneParamChange = useCallback(
+    (boneName: string, field: keyof SpringBoneParams, value: SpringBoneParams[keyof SpringBoneParams]) => {
+      setSpringBoneParams(previous =>
+        previous[boneName] ? { ...previous, [boneName]: { ...previous[boneName], [field]: value } } : previous
+      )
+    },
+    []
+  )
+
+  const handleAddSpringBoneParams = useCallback((boneName: string) => {
+    deletedSpringBonesRef.current.delete(boneName)
+    setSpringBoneParams(previous => ({ ...previous, [boneName]: getDefaultSpringBoneParams() }))
+  }, [])
+
+  const handleDeleteSpringBoneParams = useCallback((boneName: string) => {
+    deletedSpringBonesRef.current.add(boneName)
+    setSpringBoneParams(previous => {
+      const { [boneName]: _removed, ...rest } = previous
+      return rest
+    })
+  }, [])
+
+  const category = categoryOverride ?? (bridgeState?.category as WearableCategory | undefined) ?? WearableCategory.HAT
+  const hides = useMemo(() => [...hidesBodyPart, ...hidesWearable], [hidesBodyPart, hidesWearable])
+
   const definition = useMemo(() => {
     if (!bridgeState || !glb) return null
     return buildDefinition(bridgeState, glb, {
       category: categoryOverride ?? undefined,
-      hides: [...hidesBodyPart, ...hidesWearable],
+      hides,
       loop: emoteLoop,
       revision
     })
-  }, [bridgeState, glb, categoryOverride, hidesBodyPart, hidesWearable, emoteLoop, revision])
+  }, [bridgeState, glb, categoryOverride, hides, emoteLoop, revision])
+
+  // Mirror the editor's center panel: validate the streamed GLB, re-running on category/hides edits.
+  const [validationIssues, setValidationIssues] = useState<ValidationIssue[] | undefined>(undefined)
+  const [isValidating, setIsValidating] = useState(false)
+  const validationRunRef = useRef(0)
+  useEffect(() => {
+    if (!glb) return
+    const runId = ++validationRunRef.current
+    setIsValidating(true)
+    setValidationIssues(undefined)
+    const url = URL.createObjectURL(glb)
+    loadAndValidateModel(url, { width: 1024, height: 1024, engine: EngineType.BABYLON }, category, undefined, hides)
+      .then(({ validationResult }) => {
+        if (validationRunRef.current === runId) setValidationIssues(validationResult.issues)
+      })
+      .catch(error => {
+        console.error('[LivePreview] validation failed:', error)
+        // On error, show an empty list so the icon doesn't stay as a spinner
+        if (validationRunRef.current === runId) setValidationIssues([])
+      })
+      .finally(() => {
+        URL.revokeObjectURL(url)
+        if (validationRunRef.current === runId) setIsValidating(false)
+      })
+  }, [glb, category, hides])
 
   const isEmote = definition?.isEmote ?? false
   const hasDefinition = !!definition
@@ -264,22 +375,27 @@ export default function LivePreviewPage() {
   }, [hasDefinition])
 
   const handlePreviewLoad = useCallback(() => {
-    console.log('[LivePreview] preview loaded')
     // The controller lives in redux so the editor saga tracks the emote play/pause/end events
     // and keeps isPlayingEmote in sync, exactly like the item editor.
-    if (!wearableController) {
-      dispatch(setWearablePreviewController(WearablePreview.createController(PREVIEW_ID)))
+    let controller = wearableController
+    if (!controller) {
+      controller = WearablePreview.createController(PREVIEW_ID)
+      dispatch(setWearablePreviewController(controller))
     }
+    // A (re)loaded scene starts without spring bone chains, so re-push the current params.
+    pushSpringBoneParams(controller)
     setIsPreviewLoading(false)
-  }, [dispatch, wearableController])
+  }, [dispatch, wearableController, pushSpringBoneParams])
 
   const handlePlayEmote = useCallback(() => {
     if (isPlaying) {
       dispatch(setEmote(PreviewEmote.IDLE))
     } else {
       void wearableController?.emote.play()
+      // Push spring bone params immediately on emote play start, like the item editor.
+      pushSpringBoneParams()
     }
-  }, [dispatch, isPlaying, wearableController])
+  }, [dispatch, isPlaying, wearableController, pushSpringBoneParams])
 
   const handleAnimationChange = useCallback(
     (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownItemProps) => {
@@ -298,7 +414,6 @@ export default function LivePreviewPage() {
   // The category helpers only inspect the file names, so advertise the model key even before
   // the first GLB arrives — otherwise they fall back to the image-only category set.
   const contents = useMemo(() => ({ [MODEL_KEY]: glb ?? new Blob() }), [glb])
-  const category = categoryOverride ?? (bridgeState?.category as WearableCategory | undefined) ?? WearableCategory.HAT
 
   const categoryOptions = getWearableCategories(contents).map(value => ({ value, text: t(`wearable.category.${value}`) }))
   const hideableWearableOptions = getHideableWearableCategories(contents, category)
@@ -409,6 +524,19 @@ export default function LivePreviewPage() {
               />
             </div>
           )}
+
+          {!isEmote && hasSpringBonesInGlb && (
+            <div className="panel-section">
+              <SpringBonesSection
+                bones={bones}
+                springBoneParams={springBoneParams}
+                onParamChange={handleSpringBoneParamChange}
+                onAddSpringBoneParams={handleAddSpringBoneParams}
+                onDeleteSpringBoneParams={handleDeleteSpringBoneParams}
+                hasSpringBonesInGlb={hasSpringBonesInGlb}
+              />
+            </div>
+          )}
         </div>
 
         <div className={`live-preview CenterPanel ${isPreviewLoading ? 'is-loading' : ''}`}>
@@ -429,7 +557,7 @@ export default function LivePreviewPage() {
               wheelZoom={1.5}
               wheelStart={100}
               dev={isDevelopment}
-              unity
+              unity={false}
               unityMode={PreviewUnityMode.BUILDER}
               onError={e => console.error('[LivePreview] preview error:', e.message)}
               onUpdate={() => setIsPreviewLoading(true)}
@@ -491,6 +619,7 @@ export default function LivePreviewPage() {
                   </Button.Group>
                 </div>
               )}
+              {glb && <ValidationStatusBadge issues={validationIssues} isWaiting={isValidating || validationIssues === undefined} />}
             </div>
             <div className={`avatar-attributes ${isShowingAvatarAttributes ? 'active' : ''}`}>
               <div className="dropdown-container">

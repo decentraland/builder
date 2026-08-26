@@ -55,6 +55,10 @@
   margin-bottom: 12px;
 }
 
+.LivePreviewPage .spring-bones-header-label {
+  font-weight: 600;
+}
+
 .LivePreviewPage .section-title.overrides {
   margin-top: 20px;
 }
@@ -148,6 +152,10 @@
   margin-bottom: 12px;
 }
 
+.LivePreviewPage .panel-section .Collapsable {
+  margin-bottom: 0;
+}
+
 /* The preview area reuses the item editor's CenterPanel styles (footer, avatar sheet, gradient background). */
 .LivePreviewPage .live-preview {
   min-width: 0;
@@ -173,4 +181,8 @@
   align-items: center;
   justify-content: center;
   color: var(--secondary-text);
+}
+
+.LivePreviewPage .footer .option.validation-status {
+  margin-left: 12px;
 }
