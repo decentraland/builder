@@ -1830,7 +1830,8 @@
     "cancel_order_error": "Error al eliminar el orden para el artículo",
     "on_sale_in_shop": "En venta en el shop",
     "sold_out": "Este artículo está agotado, ya se acuñó todo su suministro",
-    "sold_out_error": "El artículo está agotado"
+    "sold_out_error": "El artículo está agotado",
+    "copy_urn": "Copiar URN"
   },
   "collection": {
     "type": {
