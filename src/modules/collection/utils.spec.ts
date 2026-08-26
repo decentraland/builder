@@ -1,6 +1,7 @@
 import { ChainId, BodyShape } from '@dcl/schemas'
 import { ContractName } from 'decentraland-transactions'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
+import { getLatestOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trades'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item } from 'modules/item/types'
@@ -488,6 +489,37 @@ describe('when checking whether a collection listed through an older marketplace
 
     it('should report the collection as enabled for offchain sales', () => {
       expect(isEnableForSaleOffchain(collection, wallet)).toBe(true)
+    })
+  })
+})
+
+// The cross-package invariant the whole V3 rollout rests on. Builder decides which marketplace gets
+// minter rights; decentraland-dapps decides which one a listing is signed against, and builds the EIP-712
+// domain from getLatestOffChainMarketplaceContract. If those two ever resolve differently, the authorized
+// minter is not the contract that settles the trade and a primary listing reverts at mint — which is not
+// something either repo's own tests can catch on its own.
+describe('when comparing the marketplace Builder authorizes against the one decentraland-dapps signs with', () => {
+  describe('and the chain has a V3 deployment', () => {
+    let chainId: ChainId
+
+    beforeEach(() => {
+      chainId = ChainId.MATIC_AMOY
+    })
+
+    it('should resolve the same contract address in both packages', () => {
+      expect(getLatestOffchainSale(chainId).address).toBe(getLatestOffChainMarketplaceContract(chainId).address.toLowerCase())
+    })
+  })
+
+  describe('and the chain has no V3 deployment', () => {
+    let chainId: ChainId
+
+    beforeEach(() => {
+      chainId = ChainId.MATIC_MAINNET
+    })
+
+    it('should fall back to the same contract address in both packages', () => {
+      expect(getLatestOffchainSale(chainId).address).toBe(getLatestOffChainMarketplaceContract(chainId).address.toLowerCase())
     })
   })
 })
