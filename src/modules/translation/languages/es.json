@@ -2298,6 +2298,37 @@
       }
     }
   },
+  "live_preview_page": {
+    "title": "Vista Previa en Vivo de Blender",
+    "title_info": "Conéctate al bridge local de Blender y previsualiza un wearable o una animación en tiempo real. Cada push desde Blender reemplaza el modelo al instante, sin recargar.",
+    "status": {
+      "connected": "Conectado",
+      "connecting": "Conectando…",
+      "disconnected": "Desconectado",
+      "error": "Error"
+    },
+    "model_loaded": "Modelo cargado",
+    "waiting_for_export": "Esperando una exportación desde Blender",
+    "bridge_url": "URL de Blender",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "refresh": "Actualizar",
+    "updated": "Actualizado {time_ago}",
+    "time_ago": {
+      "now": "ahora",
+      "minutes": "hace {minutes} {minutes, plural, one {minuto} other {minutos}}",
+      "hours": "hace {hours} {hours, plural, one {hora} other {horas}}"
+    },
+    "emote": "Animación",
+    "emote_info": "La animación transmitida desde Blender se reproduce automáticamente en el avatar.",
+    "loop": "Repetir",
+    "no_model": "Todavía no hay modelo.",
+    "errors": {
+      "unreachable": "No se pudo conectar con el bridge de Blender",
+      "bridge_response": "El bridge respondió con {status}",
+      "model_fetch": "No se pudo descargar model.glb ({status})"
+    }
+  },
   "deploy_entities_modal": {
     "success_title": "Éxito",
     "error_title": "Error",

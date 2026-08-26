@@ -2282,6 +2282,37 @@
       }
     }
   },
+  "live_preview_page": {
+    "title": "Blender 实时预览",
+    "title_info": "连接本地 Blender 桥接服务，实时预览可穿戴或表情。每次从 Blender 推送都会直接热替换模型，无需重新加载。",
+    "status": {
+      "connected": "已连接",
+      "connecting": "连接中…",
+      "disconnected": "已断开",
+      "error": "错误"
+    },
+    "model_loaded": "模型已加载",
+    "waiting_for_export": "等待 Blender 导出",
+    "bridge_url": "Blender URL",
+    "connect": "连接",
+    "disconnect": "断开连接",
+    "refresh": "刷新",
+    "updated": "{time_ago}更新",
+    "time_ago": {
+      "now": "刚刚",
+      "minutes": "{minutes} 分钟前",
+      "hours": "{hours} 小时前"
+    },
+    "emote": "表情",
+    "emote_info": "从 Blender 传输的表情会自动在头像上播放。",
+    "loop": "循环",
+    "no_model": "还没有模型。",
+    "errors": {
+      "unreachable": "无法连接到 Blender 桥接服务",
+      "bridge_response": "桥接服务返回了 {status}",
+      "model_fetch": "获取 model.glb 失败（{status}）"
+    }
+  },
   "deploy_entities_modal": {
     "success_title": "成功",
     "error_title": "错误",

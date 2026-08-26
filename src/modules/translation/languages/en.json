@@ -2280,6 +2280,37 @@
       }
     }
   },
+  "live_preview_page": {
+    "title": "Blender Live Preview",
+    "title_info": "Connect to the local Blender bridge and preview a wearable or emote in real time. Every change in Blender refreshes the model without reloading.",
+    "status": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "error": "Error"
+    },
+    "model_loaded": "Model loaded",
+    "waiting_for_export": "Waiting for an export from Blender",
+    "bridge_url": "Blender URL",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "refresh": "Refresh",
+    "updated": "Updated {time_ago}",
+    "time_ago": {
+      "now": "now",
+      "minutes": "{minutes} {minutes, plural, one {minute} other {minutes}} ago",
+      "hours": "{hours} {hours, plural, one {hour} other {hours}} ago"
+    },
+    "emote": "Emote",
+    "emote_info": "The emote streamed from Blender plays automatically on the avatar.",
+    "loop": "Loop",
+    "no_model": "No model yet.",
+    "errors": {
+      "unreachable": "Could not reach the Blender bridge",
+      "bridge_response": "Bridge responded with {status}",
+      "model_fetch": "Failed to fetch model.glb ({status})"
+    }
+  },
   "deploy_entities_modal": {
     "success_title": "Success",
     "error_title": "Error",

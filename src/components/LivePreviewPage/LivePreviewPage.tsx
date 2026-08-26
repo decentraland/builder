@@ -68,11 +68,10 @@ function getInitialBridgeUrl(): string {
 
 function formatTimeAgo(timestamp: number): string {
   const elapsed = Date.now() - timestamp
-  if (elapsed < 10_000) return 'now'
+  if (elapsed < 10_000) return t('live_preview_page.time_ago.now')
   const minutes = Math.max(1, Math.floor(elapsed / 60_000))
-  if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`
-  const hours = Math.floor(minutes / 60)
-  return `${hours} hour${hours === 1 ? '' : 's'} ago`
+  if (minutes < 60) return t('live_preview_page.time_ago.minutes', { minutes })
+  return t('live_preview_page.time_ago.hours', { hours: Math.floor(minutes / 60) })
 }
 
 function renderSelectTrigger(label: string, value: string) {
@@ -156,7 +155,7 @@ export default function LivePreviewPage() {
       }
     } catch (e) {
       setStatus(LivePreviewStatus.ERROR)
-      setError(e instanceof Error ? e.message : 'Could not reach the Blender bridge')
+      setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
     } finally {
       // Pause the loop while the tab is hidden: the visibility handler restarts it on return.
       if (isConnectedRef.current && !document.hidden) {
@@ -442,21 +441,18 @@ export default function LivePreviewPage() {
         <div className="live-panel">
           <div className="panel-section">
             <h1>
-              Blender Live Preview
-              <Info content="Connect to the local Blender bridge and preview a wearable or emote in real time. Every push from Blender hot-swaps the model without reloading." />
+              {t('live_preview_page.title')}
+              <Info content={t('live_preview_page.title_info')} />
               <span
                 className={`status-pill status--${status}`}
-                title={error ?? (definition ? 'Model loaded' : 'Waiting for an export from Blender')}
+                title={error ?? (definition ? t('live_preview_page.model_loaded') : t('live_preview_page.waiting_for_export'))}
               >
-                {status === LivePreviewStatus.CONNECTED && 'Connected'}
-                {status === LivePreviewStatus.CONNECTING && 'Connecting…'}
-                {status === LivePreviewStatus.DISCONNECTED && 'Disconnected'}
-                {status === LivePreviewStatus.ERROR && 'Error'}
+                {t(`live_preview_page.status.${status}`)}
               </span>
             </h1>
             <div className="connect-row">
               <Field
-                label="Blender URL"
+                label={t('live_preview_page.bridge_url')}
                 value={bridgeUrl}
                 disabled={isConnected}
                 onChange={(_e, data) => setBridgeUrl(data.value)}
@@ -464,11 +460,11 @@ export default function LivePreviewPage() {
               />
               {isConnected ? (
                 <Button compact onClick={disconnect}>
-                  Disconnect
+                  {t('live_preview_page.disconnect')}
                 </Button>
               ) : (
                 <Button compact primary onClick={connect}>
-                  Connect
+                  {t('live_preview_page.connect')}
                 </Button>
               )}
             </div>
@@ -476,11 +472,11 @@ export default function LivePreviewPage() {
               <div className="actions">
                 <Button icon onClick={handleRefresh}>
                   <Icon name="refresh" />
-                  <span>Refresh</span>
+                  <span>{t('live_preview_page.refresh')}</span>
                 </Button>
                 {lastUpdateAt !== null && (
                   <span className="last-update" title={new Date(lastUpdateAt).toLocaleTimeString()}>
-                    Updated {formatTimeAgo(lastUpdateAt)}
+                    {t('live_preview_page.updated', { time_ago: formatTimeAgo(lastUpdateAt) })}
                   </span>
                 )}
               </div>
@@ -490,10 +486,10 @@ export default function LivePreviewPage() {
           {isEmote ? (
             <div className="panel-section">
               <div className="section-title">
-                Emote
-                <Info content="The emote streamed from Blender plays automatically on the avatar." />
+                {t('live_preview_page.emote')}
+                <Info content={t('live_preview_page.emote_info')} />
               </div>
-              <Radio toggle label="Loop" checked={emoteLoop} onChange={(_e, data) => setEmoteLoop(!!data.checked)} />
+              <Radio toggle label={t('live_preview_page.loop')} checked={emoteLoop} onChange={(_e, data) => setEmoteLoop(!!data.checked)} />
             </div>
           ) : (
             <div className="panel-section">
@@ -565,7 +561,7 @@ export default function LivePreviewPage() {
             />
           ) : (
             <div className="live-placeholder">
-              {status === LivePreviewStatus.CONNECTING ? <Loader active size="large" /> : <span>No model yet.</span>}
+              {status === LivePreviewStatus.CONNECTING ? <Loader active size="large" /> : <span>{t('live_preview_page.no_model')}</span>}
             </div>
           )}
           {definition && isPreviewLoading && (

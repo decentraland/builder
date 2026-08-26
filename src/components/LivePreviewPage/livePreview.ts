@@ -8,6 +8,7 @@ import {
   WearableCategory,
   WearableWithBlobs
 } from '@dcl/schemas'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 /**
  * Live preview connector between a local Blender bridge and the WearablePreview iframe.
@@ -73,7 +74,7 @@ function isEmoteCategory(category?: string): boolean {
 export async function fetchBridgeState(bridgeUrl: string): Promise<BridgeState> {
   const response = await fetch(`${bridgeUrl.replace(/\/$/, '')}/state`, { cache: 'no-store' })
   if (!response.ok) {
-    throw new Error(`Bridge responded with ${response.status}`)
+    throw new Error(t('live_preview_page.errors.bridge_response', { status: response.status }))
   }
   return (await response.json()) as BridgeState
 }
@@ -82,7 +83,7 @@ export async function fetchBridgeState(bridgeUrl: string): Promise<BridgeState> 
 export async function fetchModelBlob(bridgeUrl: string): Promise<Blob> {
   const response = await fetch(`${bridgeUrl.replace(/\/$/, '')}/${MODEL_KEY}`, { cache: 'no-store' })
   if (!response.ok) {
-    throw new Error(`Failed to fetch model.glb (${response.status})`)
+    throw new Error(t('live_preview_page.errors.model_fetch', { status: response.status }))
   }
   return response.blob()
 }
