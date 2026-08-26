@@ -99,6 +99,12 @@ export default function CollectionItem({
     onOpenModal('MoveItemToAnotherCollectionModal', { item, fromCollection: collection })
   }, [item, onOpenModal, collection])
 
+  const handleCopyURN = useCallback(() => {
+    if (item.urn) {
+      navigator.clipboard.writeText(item.urn)
+    }
+  }, [item.urn])
+
   const handlePutForSale = useCallback(() => {
     onOpenModal('PutForSaleOffchainModal', { itemId: item.id })
   }, [])
@@ -212,6 +218,7 @@ export default function CollectionItem({
         >
           <Dropdown.Menu className={styles.contextMenu}>
             <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
+            {item.urn && <Dropdown.Item text={t('collection_item.copy_urn')} onClick={handleCopyURN} />}
             <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={handleSeeInWorld} />
             <Dropdown.Item text={t('collection_item.preview')} onClick={handleNavigateToEditor} />
             {!collection.isPublished && (
@@ -239,6 +246,7 @@ export default function CollectionItem({
     collection,
     item,
     ethAddress,
+    handleCopyURN,
     handleSeeInWorld,
     handleNavigateToEditor,
     handleMoveToAnotherCollection,
