@@ -19,13 +19,15 @@ export class Authorization {
     const identity = localStorageGetIdentity(address)
 
     if (identity) {
-      let fullPath = (method + ':' + path).toLowerCase()
+      // Matches the payload format of @dcl/crypto-middleware 6.x: the method and the
+      // path are lowercased, but the metadata is signed verbatim so that its casing is
+      // covered by the signature.
+      let payload = (method + ':' + path).toLowerCase()
       const timestamp = Date.now()
       if (metadata) {
-        fullPath = `${fullPath}:${timestamp}:${JSON.stringify(metadata)}`
+        payload = `${payload}:${timestamp}:${JSON.stringify(metadata)}`
       }
-      const endpoint = fullPath.toLowerCase()
-      const authChain = Authenticator.signPayload(identity, endpoint)
+      const authChain = Authenticator.signPayload(identity, payload)
 
       for (let i = 0; i < authChain.length; i++) {
         headers[`${AUTH_CHAIN_HEADER_PREFIX}${i}`] = JSON.stringify(authChain[i])
