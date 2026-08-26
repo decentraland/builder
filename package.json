@@ -43,7 +43,7 @@
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^3.0.2",
     "decentraland-ui": "^7.2.0",
-    "decentraland-ui2": "^3.22.0",
+    "decentraland-ui2": "^3.22.1",
     "ethers": "^5.6.8",
     "fast-equals": "^5.3.0",
     "file-saver": "^2.0.1",
@@ -160,9 +160,6 @@
   },
   "homepage": "",
   "overrides": {
-    "@dcl/hooks": {
-      "decentraland-crypto-fetch": "$decentraland-crypto-fetch"
-    },
     "decentraland-ecs": "6.12.4-7784644013.commit-f770b3e",
     "decentraland": "3.3.0",
     "ripemd160": {
