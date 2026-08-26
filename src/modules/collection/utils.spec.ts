@@ -1,7 +1,8 @@
-import { ChainId, BodyShape } from '@dcl/schemas'
+import type { TypedDataDomain } from '@ethersproject/abstract-signer'
+import { ChainId, BodyShape, TradeCreation } from '@dcl/schemas'
 import { ContractName } from 'decentraland-transactions'
 import * as dappsEth from 'decentraland-dapps/dist/lib/eth'
-import { getLatestOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trades'
+import { getLatestOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { buildCatalystItemURN, buildThirdPartyURN } from 'lib/urn'
 import { Item } from 'modules/item/types'
@@ -33,7 +34,8 @@ jest.mock('decentraland-dapps/dist/lib/eth', () => {
   const original = jest.requireActual<typeof dappsEth>('decentraland-dapps/dist/lib/eth')
   return {
     ...original,
-    getChainIdByNetwork: jest.fn()
+    getChainIdByNetwork: jest.fn(),
+    getSigner: jest.fn()
   }
 })
 
@@ -494,10 +496,52 @@ describe('when checking whether a collection listed through an older marketplace
 })
 
 // The cross-package invariant the whole V3 rollout rests on. Builder decides which marketplace gets
-// minter rights; decentraland-dapps decides which one a listing is signed against, and builds the EIP-712
-// domain from getLatestOffChainMarketplaceContract. If those two ever resolve differently, the authorized
-// minter is not the contract that settles the trade and a primary listing reverts at mint — which is not
-// something either repo's own tests can catch on its own.
+// minter rights; decentraland-dapps decides which one a listing is signed against. If those two ever
+// resolve differently, the authorized minter is not the contract that settles the trade and a primary
+// listing reverts at mint — which is not something either repo's own tests can catch on its own.
+//
+// Asserted against the EIP-712 domain the signer is ACTUALLY handed, not against a resolver that merely
+// ought to agree with it: Builder used to sign through a vendored copy of this helper that hardcoded V2,
+// so comparing resolvers alone would have reported this invariant as held while it was broken.
+describe('when signing a trade the way Builder signs an item order', () => {
+  let chainId: ChainId
+  let domain: TypedDataDomain
+
+  beforeEach(async () => {
+    chainId = ChainId.MATIC_AMOY
+    ;(dappsEth.getSigner as jest.Mock).mockResolvedValue({
+      _signTypedData: (signedDomain: TypedDataDomain) => {
+        domain = signedDomain
+        return Promise.resolve('0xsignature')
+      }
+    })
+
+    await getTradeSignature({
+      chainId,
+      checks: {
+        expiration: 0,
+        effective: 0,
+        uses: 1,
+        salt: '0x',
+        allowedRoot: '0x',
+        contractSignatureIndex: 0,
+        signerSignatureIndex: 0,
+        externalChecks: []
+      },
+      sent: [],
+      received: []
+    } as unknown as Omit<TradeCreation, 'signature'>)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
+    expect(domain.verifyingContract?.toLowerCase()).toBe(getLatestOffchainSale(chainId).address)
+  })
+})
+
 describe('when comparing the marketplace Builder authorizes against the one decentraland-dapps signs with', () => {
   describe('and the chain has a V3 deployment', () => {
     let chainId: ChainId
