@@ -2192,6 +2192,8 @@
     "center_panel": {
       "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation",
       "play_emote": "Play Emote",
+      "customize_avatar": "Customize Avatar",
+      "randomize_avatar": "Randomize Avatar",
       "stop": "Stop",
       "from_collection": "From Collection",
       "from_items": "From Items",

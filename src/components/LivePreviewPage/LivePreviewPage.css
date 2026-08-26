@@ -1,5 +1,5 @@
 .LivePreviewPage {
-  --item-editor-panel-width: 360px;
+  --live-panel-width: 450px;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -12,9 +12,10 @@
 }
 
 .LivePreviewPage .live-panel {
-  width: var(--item-editor-panel-width);
+  width: var(--live-panel-width);
   flex: none;
   background-color: var(--void);
+  border-right: 1px solid var(--divider);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -27,7 +28,7 @@
 }
 
 .LivePreviewPage .panel-section {
-  padding: 20px 24px;
+  padding: 28px;
   border-bottom: 1px solid var(--divider);
 }
 
@@ -36,17 +37,17 @@
 }
 
 .LivePreviewPage h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.LivePreviewPage .description {
-  color: var(--secondary-text);
-  font-size: 13px;
   margin-bottom: 16px;
 }
 
 .LivePreviewPage .section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -58,27 +59,87 @@
   margin-top: 20px;
 }
 
+.LivePreviewPage .live-panel .dcl.field,
+.LivePreviewPage .live-panel .dcl.field .ui.input {
+  width: 100%;
+}
+
+.LivePreviewPage .connect-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.LivePreviewPage .connect-row .dcl.field {
+  flex: 1;
+  /* Let the field shrink below the input's intrinsic width so the button never overflows. */
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.LivePreviewPage .connect-row .dcl.field .ui.input {
+  min-width: 0;
+}
+
+.LivePreviewPage .connect-row .dcl.field .ui.input input {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  font-size: 14px;
+}
+
+.LivePreviewPage .connect-row .ui.button {
+  flex: none;
+  margin: 18px 0 0 16px;
+}
+
 .LivePreviewPage .actions {
   display: flex;
   align-items: center;
-  gap: 12px;
   margin-bottom: 16px;
+}
+
+.LivePreviewPage .actions .ui.button {
+  margin: 0 16px 0 0;
+}
+
+.LivePreviewPage .actions .ui.button:last-child {
+  margin-right: 0;
+}
+
+.LivePreviewPage .actions .ui.button span {
+  margin-left: 8px;
+}
+
+.LivePreviewPage .actions .last-update {
+  font-size: 12px;
+  color: var(--secondary-text);
+  white-space: nowrap;
 }
 
 .LivePreviewPage .panel-section .actions:last-child {
   margin-bottom: 0;
 }
 
-.LivePreviewPage .status {
-  font-size: 13px;
+.LivePreviewPage .status-pill {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  background-color: rgba(115, 110, 125, 0.32);
   color: var(--secondary-text);
 }
 
-.LivePreviewPage .status--connected {
-  color: var(--primary);
+.LivePreviewPage .status-pill.status--connected {
+  background-color: rgba(52, 206, 118, 0.16);
+  color: #34ce76;
 }
 
-.LivePreviewPage .status--error {
+.LivePreviewPage .status-pill.status--error {
+  background-color: rgba(255, 77, 77, 0.16);
   color: var(--error);
 }
 
@@ -87,16 +148,23 @@
   margin-bottom: 12px;
 }
 
+/* The preview area reuses the item editor's CenterPanel styles (footer, avatar sheet, gradient background). */
 .LivePreviewPage .live-preview {
-  flex: 1;
-  position: relative;
   min-width: 0;
+  /* Clip the avatar-attributes sheet, which hides below the panel via a negative margin. */
+  overflow: hidden;
 }
 
 .LivePreviewPage .live-preview iframe {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+/* Hide the half-rendered model while the spinner is up: they overlap otherwise.
+   decentraland-ui2's WearablePreview renders a bare iframe with no class, so target the tag. */
+.LivePreviewPage .live-preview.is-loading iframe {
+  visibility: hidden;
 }
 
 .LivePreviewPage .live-placeholder {

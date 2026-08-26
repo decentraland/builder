@@ -2210,6 +2210,8 @@
     "center_panel": {
       "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion",
       "play_emote": "Reproducir Animación",
+      "customize_avatar": "Personalizar Avatar",
+      "randomize_avatar": "Aleatorizar Avatar",
       "stop": "Parar",
       "from_collection": "Desde la Colección",
       "from_items": "Desde los Items",

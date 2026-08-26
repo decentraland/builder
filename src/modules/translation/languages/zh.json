@@ -2194,6 +2194,8 @@
     "center_panel": {
       "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画",
       "play_emote": "玩表情",
+      "customize_avatar": "自定义头像",
+      "randomize_avatar": "随机头像",
       "stop": "停止",
       "from_collection": "从收藏",
       "from_items": "从项目",
