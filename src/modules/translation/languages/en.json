@@ -2321,6 +2321,7 @@
     "errors": {
       "unreachable": "Could not reach the Blender bridge",
       "bridge_response": "Bridge responded with {status}",
+      "invalid_state": "The bridge returned an invalid state",
       "model_fetch": "Failed to fetch model.glb ({status})"
     },
     "add_to_collection": "Add to collection"

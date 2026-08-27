@@ -36,6 +36,7 @@ import { getDefaultSpringBoneParams, getDefaultSpringBoneRoots } from 'lib/sprin
 import { loadAndValidateModel, EngineType } from 'lib/getModelData'
 import type { ValidationIssue } from 'lib/glbValidation/types'
 import Info from 'components/Info'
+import { SelectTrigger } from 'components/SelectTrigger'
 import { ValidationStatusBadge } from 'components/ValidationStatusBadge'
 import Select from 'components/ItemEditorPage/RightPanel/Select'
 import MultiSelect from 'components/ItemEditorPage/RightPanel/MultiSelect'
@@ -62,11 +63,25 @@ const POLL_INTERVAL_MS = 1000 * 2
 const ERROR_POLL_INTERVAL_MS = 1000 * 15
 const BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
-/** The `bridge` query param carries the local bridge port (`?bridge=8081`) or a full URL. */
+const LOCAL_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]']
+
+/**
+ * The `bridge` query param carries the local bridge port (`?bridge=8081`) or a full URL. Only
+ * local origins are trusted: a crafted link must not point the page at an external server.
+ */
 function getInitialBridgeUrl(): string {
   const param = new URLSearchParams(window.location.search).get('bridge')
   if (!param) return DEFAULT_BRIDGE_URL
-  return /^\d+$/.test(param) ? `http://localhost:${param}` : param
+  if (/^\d+$/.test(param)) return `http://localhost:${param}`
+  try {
+    const url = new URL(param)
+    if ((url.protocol === 'http:' || url.protocol === 'https:') && LOCAL_HOSTNAMES.includes(url.hostname)) {
+      return param
+    }
+  } catch {
+    // Not a valid URL: fall through to the default.
+  }
+  return DEFAULT_BRIDGE_URL
 }
 
 function formatTimeAgo(timestamp: number): string {
@@ -89,16 +104,6 @@ function TimeAgoLabel({ timestamp }: { timestamp: number }) {
     <span className="last-update" title={new Date(timestamp).toLocaleTimeString()}>
       {t('live_preview_page.updated', { time_ago: formatTimeAgo(timestamp) })}
     </span>
-  )
-}
-
-function renderSelectTrigger(label: string, value: string) {
-  return (
-    <>
-      <div className="label">{label}</div>
-      <div className="value">{value}</div>
-      <div className="handle" />
-    </>
   )
 }
 
@@ -163,17 +168,21 @@ export default function LivePreviewPage() {
     let interval = POLL_INTERVAL_MS
     try {
       const state = await fetchBridgeState(bridgeUrl)
+      // Bail out after each await: a disconnect mid-flight must not overwrite the DISCONNECTED status.
+      if (!isConnectedRef.current) return
       setStatus(LivePreviewStatus.CONNECTED)
       setError(null)
 
       if (state.version !== lastVersionRef.current) {
         const model = await fetchModelBlob(bridgeUrl)
+        if (!isConnectedRef.current) return
         lastVersionRef.current = state.version
         setBridgeState(state)
         setGlb(model)
         setLastUpdateAt(Date.now())
       }
     } catch (e) {
+      if (!isConnectedRef.current) return
       interval = ERROR_POLL_INTERVAL_MS
       setStatus(LivePreviewStatus.ERROR)
       setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
@@ -260,6 +269,9 @@ export default function LivePreviewPage() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type !== 'ready') return
+      // Only trust the preview iframe: any window can post a `ready`-shaped message.
+      const iframe = document.getElementById(PREVIEW_ID) as HTMLIFrameElement | null
+      if (!iframe || event.source !== iframe.contentWindow) return
       setRevision(current => current + 1)
     }
     window.addEventListener('message', handleMessage)
@@ -359,7 +371,9 @@ export default function LivePreviewPage() {
       revision
     })
   }, [bridgeState, glb, categoryOverride, hides, emoteLoop, revision])
-  definitionIdRef.current = definition?.blob.id ?? LIVE_PREVIEW_ITEM_ID
+  useEffect(() => {
+    definitionIdRef.current = definition?.blob.id ?? LIVE_PREVIEW_ITEM_ID
+  }, [definition])
 
   // Mirror the editor's center panel: validate the streamed GLB, re-running on category/hides edits.
   const [validationIssues, setValidationIssues] = useState<ValidationIssue[] | undefined>(undefined)
@@ -668,10 +682,12 @@ export default function LivePreviewPage() {
                   className="Select"
                   value={bodyShape}
                   options={bodyShapeOptions}
-                  trigger={renderSelectTrigger(
-                    t('wearable.category.body_shape'),
-                    bodyShapeOptions.find(option => option.value === bodyShape)?.text ?? ''
-                  )}
+                  trigger={
+                    <SelectTrigger
+                      label={t('wearable.category.body_shape')}
+                      value={bodyShapeOptions.find(option => option.value === bodyShape)?.text ?? ''}
+                    />
+                  }
                   onChange={handleBodyShapeChange}
                 />
               </div>

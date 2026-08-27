@@ -2339,6 +2339,7 @@
     "errors": {
       "unreachable": "No se pudo conectar con el bridge de Blender",
       "bridge_response": "El bridge respondió con {status}",
+      "invalid_state": "El bridge devolvió un estado inválido",
       "model_fetch": "No se pudo descargar model.glb ({status})"
     },
     "add_to_collection": "Agregar a colección"

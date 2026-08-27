@@ -18,6 +18,7 @@ import { toBase64, toHex } from 'modules/editor/utils'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
 import BuilderIcon from 'components/Icon'
 import { FacialExpressionsBadge } from 'components/FacialExpressionsBadge'
+import { SelectTrigger } from 'components/SelectTrigger'
 import { ValidationStatusBadge } from 'components/ValidationStatusBadge'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import AvatarWearableDropdown from './AvatarWearableDropdown'
@@ -218,23 +219,13 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     onSetBaseWearable(category, bodyShape, wearable)
   }
 
-  renderSelectTrigger(label: string, value: string) {
-    return (
-      <>
-        <div className="label">{label}</div>
-        <div className="value">{value}</div>
-        <div className="handle" />
-      </>
-    )
-  }
-
   getDropdownAttributes<T>(value: T, options: any[], label: string) {
     const selected = options.find(option => option.value === value)
 
     return {
       value,
       options,
-      trigger: this.renderSelectTrigger(label, selected ? selected.text : '')
+      trigger: <SelectTrigger label={label} value={selected ? selected.text : ''} />
     }
   }
 

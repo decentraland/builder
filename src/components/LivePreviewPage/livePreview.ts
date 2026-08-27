@@ -4,7 +4,6 @@ import {
   EmoteCategory,
   EmoteWithBlobs,
   Locale,
-  PreviewEmote,
   WearableCategory,
   WearableWithBlobs
 } from '@dcl/schemas'
@@ -70,13 +69,17 @@ function isEmoteCategory(category?: string): boolean {
   return (EmoteCategory.schema.enum as string[]).includes(category)
 }
 
-/** Fetch the current bridge metadata. Throws if the bridge is unreachable. */
+/** Fetch the current bridge metadata. Throws if the bridge is unreachable or the state is malformed. */
 export async function fetchBridgeState(bridgeUrl: string): Promise<BridgeState> {
   const response = await fetch(`${bridgeUrl.replace(/\/$/, '')}/state`, { cache: 'no-store' })
   if (!response.ok) {
     throw new Error(t('live_preview_page.errors.bridge_response', { status: response.status }))
   }
-  return (await response.json()) as BridgeState
+  const state = (await response.json()) as Partial<BridgeState> | null
+  if (!state || (typeof state.version !== 'string' && typeof state.version !== 'number')) {
+    throw new Error(t('live_preview_page.errors.invalid_state'))
+  }
+  return state as BridgeState
 }
 
 /** Fetch the latest exported GLB from the bridge as a Blob. */
@@ -158,5 +161,3 @@ export function buildDefinition(
   }
   return { blob: wearable, isEmote: false }
 }
-
-export const DEFAULT_PREVIEW_EMOTE = PreviewEmote.IDLE

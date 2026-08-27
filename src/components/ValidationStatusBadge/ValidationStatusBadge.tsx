@@ -12,7 +12,9 @@ export default function ValidationStatusBadge({ issues, isWaiting }: Props) {
   const hasErrors = issues?.some(issue => issue.severity === ValidationSeverity.ERROR) ?? false
   const hasWarnings = issues?.some(issue => issue.severity === ValidationSeverity.WARNING) ?? false
   const hasIssues = hasErrors || hasWarnings
-  const isPass = !isWaiting && issues !== undefined && !hasIssues
+  // Issues still undefined means validation hasn't produced a result yet, even if no run is in flight.
+  const isPending = isWaiting || issues === undefined
+  const isPass = !isPending && !hasIssues
   const isClickable = hasIssues
 
   const handleOpenModal = useCallback(() => {
@@ -28,7 +30,7 @@ export default function ValidationStatusBadge({ issues, isWaiting }: Props) {
   else if (isPass) statusClass = 'validation-pass'
 
   let tooltipContent: string
-  if (isWaiting) {
+  if (isPending) {
     tooltipContent = t('item_editor.center_panel.validation_running')
   } else if (isPass) {
     tooltipContent = t('item_editor.center_panel.validation_pass')
@@ -41,7 +43,7 @@ export default function ValidationStatusBadge({ issues, isWaiting }: Props) {
   }
 
   let iconElement: React.ReactNode
-  if (isWaiting || issues === undefined) {
+  if (isPending) {
     iconElement = <Loader active inline size="tiny" inverted />
   } else if (isPass) {
     iconElement = <Icon name="check circle" className="validation-icon pass" />

@@ -2323,6 +2323,7 @@
     "errors": {
       "unreachable": "无法连接到 Blender 桥接服务",
       "bridge_response": "桥接服务返回了 {status}",
+      "invalid_state": "桥接服务返回了无效的状态",
       "model_fetch": "获取 model.glb 失败（{status}）"
     },
     "add_to_collection": "添加到收藏品系列"
