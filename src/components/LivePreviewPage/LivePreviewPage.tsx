@@ -163,8 +163,13 @@ export default function LivePreviewPage() {
   // Single polling tick: read bridge state, and if the export changed, pull the fresh GLB. The
   // definition is derived below, and updating it makes <WearablePreview> fire an UPDATE
   // postMessage to the iframe — a hot-swap with no reload.
+  // Reentrant calls bail instead of forking a second setTimeout chain: refreshes can fire while a
+  // tick is mid-fetch (tab return raises both visibilitychange and focus), and only the latest
+  // chain's timer is tracked — an orphaned one would keep polling until disconnect.
+  const isPollingRef = useRef(false)
   const poll = useCallback(async () => {
-    if (!isConnectedRef.current) return
+    if (!isConnectedRef.current || isPollingRef.current) return
+    isPollingRef.current = true
     let interval = POLL_INTERVAL_MS
     try {
       const state = await fetchBridgeState(bridgeUrl)
@@ -187,6 +192,7 @@ export default function LivePreviewPage() {
       setStatus(LivePreviewStatus.ERROR)
       setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
     } finally {
+      isPollingRef.current = false
       // Pause the loop while the tab is hidden: the visibility handler restarts it on return.
       if (isConnectedRef.current && !document.hidden) {
         timerRef.current = setTimeout(() => void poll(), interval)
@@ -220,6 +226,8 @@ export default function LivePreviewPage() {
 
   // Auto-connect with the bridge from the URL, and load the base wearables catalog into redux
   // (its success handler also randomizes the avatar's base outfit, like the item editor).
+  // Mount-only on purpose despite using `connect`/`stopPolling`: reconnecting is user-driven
+  // through the Connect button, never a reaction to the bridge URL field changing.
   useEffect(() => {
     if (!selectedBaseWearablesByBodyShape) {
       dispatch(fetchBaseWearablesRequest())
