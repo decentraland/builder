@@ -1,12 +1,4 @@
-import {
-  BodyPartCategory,
-  BodyShape,
-  EmoteCategory,
-  EmoteWithBlobs,
-  Locale,
-  WearableCategory,
-  WearableWithBlobs
-} from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, EmoteWithBlobs, Locale, WearableCategory, WearableWithBlobs } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 /**
