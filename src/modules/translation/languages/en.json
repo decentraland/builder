@@ -14,6 +14,17 @@
     "title": "Add Existing Item",
     "subtitle": "Select an item that is not part of a collection yet"
   },
+  "add_to_collection_modal": {
+    "title": "Add to Collection",
+    "subtitle": "Choose the collection where the item will be added",
+    "continue": "Continue",
+    "create_new": "New collection",
+    "sign_in": {
+      "title": "Sign in to continue",
+      "subtitle": "You need to sign in to add this item to a collection. You'll be brought back here after signing in.",
+      "action": "Sign in"
+    }
+  },
   "move_item_to_collection_modal": {
     "title": "Move Item to Collection",
     "subtitle": "Select the collection that you want to move the item to",
@@ -318,6 +329,7 @@
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
     "adding_representation": "This will be added as {bodyShape} for the following item",
     "change_item_file": "Edit representation",
+    "importing": "Importing...",
     "import_information": "For more information about uploading Wearables or Emotes {link}",
     "import_information_link_label": "click here",
     "upload_video_information": "Maximum file size {max_size}",
@@ -2298,6 +2310,7 @@
     "updated": "Updated {time_ago}",
     "time_ago": {
       "now": "now",
+      "moment": "a moment ago",
       "minutes": "{minutes} {minutes, plural, one {minute} other {minutes}} ago",
       "hours": "{hours} {hours, plural, one {hour} other {hours}} ago"
     },
@@ -2309,7 +2322,8 @@
       "unreachable": "Could not reach the Blender bridge",
       "bridge_response": "Bridge responded with {status}",
       "model_fetch": "Failed to fetch model.glb ({status})"
-    }
+    },
+    "add_to_collection": "Add to collection"
   },
   "deploy_entities_modal": {
     "success_title": "Success",

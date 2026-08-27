@@ -14,6 +14,17 @@
     "title": "Agregar Item",
     "subtitle": "Selecciona un item que no pertenezca a ninguna colección"
   },
+  "add_to_collection_modal": {
+    "title": "Agregar a una colección",
+    "subtitle": "Elige la colección donde se agregará el item",
+    "continue": "Continuar",
+    "create_new": "Nueva colección",
+    "sign_in": {
+      "title": "Inicia sesión para continuar",
+      "subtitle": "Necesitas iniciar sesión para agregar este item a una colección. Volverás aquí después de iniciar sesión.",
+      "action": "Iniciar sesión"
+    }
+  },
   "move_item_to_collection_modal": {
     "title": "Mover item a colección",
     "subtitle": "Selecciona la colección a la que quieras mover el item",
@@ -298,6 +309,7 @@
     "mapping_type_info": "Vincula éste Wearable a uno o múltiples IDs de token"
   },
   "create_single_item_modal": {
+    "importing": "Importando...",
     "title": "Nuevo item",
     "thumbnail_step_title": "Editar el thumbnail",
     "upload_video_step_title": "Sube un video para tu vestimenta inteligente",
@@ -2316,6 +2328,7 @@
     "updated": "Actualizado {time_ago}",
     "time_ago": {
       "now": "ahora",
+      "moment": "hace un momento",
       "minutes": "hace {minutes} {minutes, plural, one {minuto} other {minutos}}",
       "hours": "hace {hours} {hours, plural, one {hora} other {horas}}"
     },
@@ -2327,7 +2340,8 @@
       "unreachable": "No se pudo conectar con el bridge de Blender",
       "bridge_response": "El bridge respondió con {status}",
       "model_fetch": "No se pudo descargar model.glb ({status})"
-    }
+    },
+    "add_to_collection": "Agregar a colección"
   },
   "deploy_entities_modal": {
     "success_title": "Éxito",

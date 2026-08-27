@@ -47,7 +47,7 @@ export type BridgeState = {
 }
 
 export const MODEL_KEY = 'model.glb'
-/** Definition id fed to the preview; also the key the iframe's physics controller expects. */
+/** Base of the definition id fed to the preview; buildDefinition appends the version/revision. */
 export const LIVE_PREVIEW_ITEM_ID = 'live-preview'
 const BOTH_BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
@@ -103,12 +103,14 @@ export function buildDefinition(
   const category = isEmote ? state.category : overrides.category ?? state.category
 
   const base = {
-    id: LIVE_PREVIEW_ITEM_ID,
+    // The version and revision ride in the id so every push looks like a brand-new item. Two
+    // consumers depend on it changing: decentraland-ui2 deep-equals successive updates (two
+    // different Blobs compare as equal empty objects, so only a changing field gets the UPDATE
+    // through), and the Unity renderer caches loaded models by this id (as the entity URN) —
+    // with a constant id it would keep the first GLB forever.
+    id: `${LIVE_PREVIEW_ITEM_ID}-${String(state.version)}-${overrides.revision ?? 0}`,
     name,
-    // The version rides along because the parent (decentraland-ui2) deep-equals successive
-    // updates and two different Blobs compare as equal empty objects: without a changing
-    // field, a re-export that only changes the model bytes would never reach the iframe.
-    description: `Live preview streamed from Blender (v${String(state.version)}.${overrides.revision ?? 0})`,
+    description: 'Live preview streamed from Blender',
     thumbnail: '',
     image: '',
     i18n: [{ code: Locale.EN, text: name }]

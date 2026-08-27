@@ -152,6 +152,19 @@
   margin-bottom: 12px;
 }
 
+.LivePreviewPage .panel-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: 20px 28px;
+  background-color: var(--void);
+  border-top: 1px solid var(--divider);
+}
+
+.LivePreviewPage .panel-footer .ui.button {
+  width: 100%;
+}
+
 .LivePreviewPage .panel-section .Collapsable {
   margin-bottom: 0;
 }

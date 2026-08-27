@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Center, Dropdown, DropdownItemProps, DropdownProps, Field, Icon, Loader, Popup, Radio } from 'decentraland-ui'
-import { BodyPartCategory, BodyShape, PreviewEmote, PreviewUnityMode, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, BodyShape, EmoteCategory, PreviewEmote, PreviewUnityMode, WearableCategory } from '@dcl/schemas'
+import { openModal } from 'decentraland-dapps/dist/modules/modal'
 import { WearablePreview } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isDevelopment } from 'lib/environment'
@@ -56,7 +57,7 @@ import 'components/ItemEditorPage/CenterPanel/CenterPanel.css'
 import './LivePreviewPage.css'
 
 const PREVIEW_ID = 'blender-live-preview'
-const POLL_INTERVAL_MS = 1000
+const POLL_INTERVAL_MS = 1000 * 15
 const BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
 /** The `bridge` query param carries the local bridge port (`?bridge=8081`) or a full URL. */
@@ -68,8 +69,9 @@ function getInitialBridgeUrl(): string {
 
 function formatTimeAgo(timestamp: number): string {
   const elapsed = Date.now() - timestamp
-  if (elapsed < 10_000) return t('live_preview_page.time_ago.now')
-  const minutes = Math.max(1, Math.floor(elapsed / 60_000))
+  if (elapsed < 5_000) return t('live_preview_page.time_ago.now')
+  if (elapsed < 60_000) return t('live_preview_page.time_ago.moment')
+  const minutes = Math.floor(elapsed / 60_000)
   if (minutes < 60) return t('live_preview_page.time_ago.minutes', { minutes })
   return t('live_preview_page.time_ago.hours', { hours: Math.floor(minutes / 60) })
 }
@@ -93,6 +95,7 @@ export default function LivePreviewPage() {
   const [bridgeState, setBridgeState] = useState<BridgeState | null>(null)
   const [glb, setGlb] = useState<Blob | null>(null)
   const [lastUpdateAt, setLastUpdateAt] = useState<number | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
   const [isShowingAvatarAttributes, setIsShowingAvatarAttributes] = useState(false)
 
@@ -173,14 +176,19 @@ export default function LivePreviewPage() {
     void poll()
   }, [poll, stopPolling])
 
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = useCallback(async () => {
     if (!isConnectedRef.current) return
     if (timerRef.current) {
       clearTimeout(timerRef.current)
       timerRef.current = null
     }
     lastVersionRef.current = null
-    void poll()
+    setIsRefreshing(true)
+    try {
+      await poll()
+    } finally {
+      setIsRefreshing(false)
+    }
   }, [poll])
 
   // Auto-connect with the bridge from the URL, and load the base wearables catalog into redux
@@ -202,7 +210,7 @@ export default function LivePreviewPage() {
   useEffect(() => {
     const handleReturn = () => {
       if (!document.hidden) {
-        handleRefresh()
+        void handleRefresh()
       }
     }
     document.addEventListener('visibilitychange', handleReturn)
@@ -217,7 +225,7 @@ export default function LivePreviewPage() {
   const [, setTimeAgoTick] = useState(0)
   useEffect(() => {
     if (lastUpdateAt === null) return
-    const interval = setInterval(() => setTimeAgoTick(tick => (tick + 1) % 10), 15000)
+    const interval = setInterval(() => setTimeAgoTick(tick => (tick + 1) % 10), 5000)
     return () => clearInterval(interval)
   }, [lastUpdateAt])
 
@@ -255,6 +263,9 @@ export default function LivePreviewPage() {
   const hasSpringBonesInGlb = useMemo(() => bones.some(bone => bone.type === 'spring'), [bones])
   const springBoneParamsRef = useRef(springBoneParams)
   springBoneParamsRef.current = springBoneParams
+  // The definition id is versioned per push (see buildDefinition), and both renderers key their
+  // spring bone registries by it, so physics calls must target the id currently loaded.
+  const definitionIdRef = useRef<string>(LIVE_PREVIEW_ITEM_ID)
   // Bones the user explicitly removed, so a re-export from Blender doesn't re-seed them.
   const deletedSpringBonesRef = useRef<Set<string>>(new Set())
 
@@ -291,7 +302,7 @@ export default function LivePreviewPage() {
     (controller = wearableController) => {
       if (!controller || !hasSpringBonesInGlb) return
       controller.physics
-        .setSpringBonesParams(LIVE_PREVIEW_ITEM_ID, springBoneParamsRef.current)
+        .setSpringBonesParams(definitionIdRef.current, springBoneParamsRef.current)
         .catch(e => console.warn('[LivePreview] failed to push spring bone params:', e))
     },
     [wearableController, hasSpringBonesInGlb]
@@ -338,6 +349,7 @@ export default function LivePreviewPage() {
       revision
     })
   }, [bridgeState, glb, categoryOverride, hides, emoteLoop, revision])
+  definitionIdRef.current = definition?.blob.id ?? LIVE_PREVIEW_ITEM_ID
 
   // Mirror the editor's center panel: validate the streamed GLB, re-running on category/hides edits.
   const [validationIssues, setValidationIssues] = useState<ValidationIssue[] | undefined>(undefined)
@@ -410,6 +422,25 @@ export default function LivePreviewPage() {
     [dispatch]
   )
 
+  const handleAddToCollection = useCallback(() => {
+    if (!glb || !bridgeState) return
+    // Snapshot the current model: pushes from Blender while the modals are open don't affect it.
+    const file = new File([glb], MODEL_KEY, { type: 'model/gltf-binary' })
+    dispatch(
+      openModal('AddToCollectionModal', {
+        file,
+        prefill: {
+          // The bridge always reports the same placeholder name: leave it for the user to complete.
+          name: '',
+          category: isEmote ? (bridgeState.category as EmoteCategory | undefined) : category,
+          hides: isEmote ? undefined : hides,
+          // Only hand over tuned params: when empty, the modal seeds defaults from the GLB as usual.
+          springBoneParams: !isEmote && Object.keys(springBoneParams).length > 0 ? springBoneParams : undefined
+        }
+      })
+    )
+  }, [dispatch, glb, bridgeState, isEmote, category, hides, springBoneParams])
+
   // The category helpers only inspect the file names, so advertise the model key even before
   // the first GLB arrives — otherwise they fall back to the image-only category set.
   const contents = useMemo(() => ({ [MODEL_KEY]: glb ?? new Blob() }), [glb])
@@ -470,8 +501,8 @@ export default function LivePreviewPage() {
             </div>
             {isConnected && (
               <div className="actions">
-                <Button icon onClick={handleRefresh}>
-                  <Icon name="refresh" />
+                <Button icon disabled={isRefreshing} onClick={() => void handleRefresh()}>
+                  <Icon name="refresh" loading={isRefreshing} />
                   <span>{t('live_preview_page.refresh')}</span>
                 </Button>
                 {lastUpdateAt !== null && (
@@ -533,6 +564,12 @@ export default function LivePreviewPage() {
               />
             </div>
           )}
+
+          <div className="panel-footer">
+            <Button primary fluid disabled={!hasDefinition} onClick={handleAddToCollection}>
+              {t('live_preview_page.add_to_collection')}
+            </Button>
+          </div>
         </div>
 
         <div className={`live-preview CenterPanel ${isPreviewLoading ? 'is-loading' : ''}`}>
