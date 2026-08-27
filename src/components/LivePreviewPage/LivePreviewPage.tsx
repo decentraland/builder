@@ -57,7 +57,9 @@ import 'components/ItemEditorPage/CenterPanel/CenterPanel.css'
 import './LivePreviewPage.css'
 
 const PREVIEW_ID = 'blender-live-preview'
-const POLL_INTERVAL_MS = 1000 * 15
+const POLL_INTERVAL_MS = 1000 * 2
+// While the bridge is unreachable, back off so a stopped bridge isn't hammered every 2s.
+const ERROR_POLL_INTERVAL_MS = 1000 * 15
 const BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
 /** The `bridge` query param carries the local bridge port (`?bridge=8081`) or a full URL. */
@@ -74,6 +76,20 @@ function formatTimeAgo(timestamp: number): string {
   const minutes = Math.floor(elapsed / 60_000)
   if (minutes < 60) return t('live_preview_page.time_ago.minutes', { minutes })
   return t('live_preview_page.time_ago.hours', { hours: Math.floor(minutes / 60) })
+}
+
+/** Isolated so the periodic tick keeping the relative label fresh doesn't re-render the page. */
+function TimeAgoLabel({ timestamp }: { timestamp: number }) {
+  const [, setTick] = useState(0)
+  useEffect(() => {
+    const interval = setInterval(() => setTick(tick => (tick + 1) % 10), 5000)
+    return () => clearInterval(interval)
+  }, [])
+  return (
+    <span className="last-update" title={new Date(timestamp).toLocaleTimeString()}>
+      {t('live_preview_page.updated', { time_ago: formatTimeAgo(timestamp) })}
+    </span>
+  )
 }
 
 function renderSelectTrigger(label: string, value: string) {
@@ -144,6 +160,7 @@ export default function LivePreviewPage() {
   // postMessage to the iframe — a hot-swap with no reload.
   const poll = useCallback(async () => {
     if (!isConnectedRef.current) return
+    let interval = POLL_INTERVAL_MS
     try {
       const state = await fetchBridgeState(bridgeUrl)
       setStatus(LivePreviewStatus.CONNECTED)
@@ -157,12 +174,13 @@ export default function LivePreviewPage() {
         setLastUpdateAt(Date.now())
       }
     } catch (e) {
+      interval = ERROR_POLL_INTERVAL_MS
       setStatus(LivePreviewStatus.ERROR)
       setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
     } finally {
       // Pause the loop while the tab is hidden: the visibility handler restarts it on return.
       if (isConnectedRef.current && !document.hidden) {
-        timerRef.current = setTimeout(() => void poll(), POLL_INTERVAL_MS)
+        timerRef.current = setTimeout(() => void poll(), interval)
       }
     }
   }, [bridgeUrl])
@@ -220,14 +238,6 @@ export default function LivePreviewPage() {
       window.removeEventListener('focus', handleReturn)
     }
   }, [handleRefresh])
-
-  // Re-render every few seconds so the relative "updated x ago" label stays fresh.
-  const [, setTimeAgoTick] = useState(0)
-  useEffect(() => {
-    if (lastUpdateAt === null) return
-    const interval = setInterval(() => setTimeAgoTick(tick => (tick + 1) % 10), 5000)
-    return () => clearInterval(interval)
-  }, [lastUpdateAt])
 
   const handleRandomizeAvatar = useCallback(() => {
     const shape = pickRandom(BODY_SHAPES)
@@ -505,11 +515,7 @@ export default function LivePreviewPage() {
                   <Icon name="refresh" loading={isRefreshing} />
                   <span>{t('live_preview_page.refresh')}</span>
                 </Button>
-                {lastUpdateAt !== null && (
-                  <span className="last-update" title={new Date(lastUpdateAt).toLocaleTimeString()}>
-                    {t('live_preview_page.updated', { time_ago: formatTimeAgo(lastUpdateAt) })}
-                  </span>
-                )}
+                {lastUpdateAt !== null && <TimeAgoLabel timestamp={lastUpdateAt} />}
               </div>
             )}
           </div>
@@ -590,7 +596,7 @@ export default function LivePreviewPage() {
               wheelZoom={1.5}
               wheelStart={100}
               dev={isDevelopment}
-              unity={false}
+              unity
               unityMode={PreviewUnityMode.BUILDER}
               onError={e => console.error('[LivePreview] preview error:', e.message)}
               onUpdate={() => setIsPreviewLoading(true)}
