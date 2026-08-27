@@ -618,6 +618,7 @@ export default function LivePreviewPage() {
               wheelZoom={1.5}
               wheelStart={100}
               dev={isDevelopment}
+              baseUrl="https://wearable-preview-git-feat-unity-blob-support-decentraland1.vercel.app"
               unity
               unityMode={PreviewUnityMode.BUILDER}
               onError={e => console.error('[LivePreview] preview error:', e.message)}
