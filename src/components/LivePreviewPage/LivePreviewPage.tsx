@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Center, Dropdown, DropdownItemProps, DropdownProps, Field, Icon, Loader, Popup, Radio } from 'decentraland-ui'
+import { Button, Center, Dropdown, DropdownItemProps, DropdownProps, EmoteControls, Field, Icon, Loader, Popup, Radio } from 'decentraland-ui'
 import { BodyPartCategory, BodyShape, EmoteCategory, PreviewEmote, PreviewUnityMode, WearableCategory } from '@dcl/schemas'
 import { openModal } from 'decentraland-dapps/dist/modules/modal'
 import { WearablePreview } from 'decentraland-ui2'
@@ -546,7 +546,8 @@ export default function LivePreviewPage() {
             <div className="panel-section">
               <div className="section-title">
                 {t('live_preview_page.emote')}
-                <Info content={t('live_preview_page.emote_info')} />
+                {/* The panel sits against the left edge, so a centered tooltip would overflow the viewport. */}
+                <Info content={t('live_preview_page.emote_info')} position="right center" />
               </div>
               <Radio toggle label={t('live_preview_page.loop')} checked={emoteLoop} onChange={(_e, data) => setEmoteLoop(!!data.checked)} />
             </div>
@@ -636,6 +637,11 @@ export default function LivePreviewPage() {
             </Center>
           )}
           <div className="footer">
+            {isEmote && !isPreviewLoading && wearableController && (
+              <div className="emote-controls-container">
+                <EmoteControls className="emote-controls" wearablePreviewId={PREVIEW_ID} wearablePreviewController={wearableController} />
+              </div>
+            )}
             <div className="options">
               <Popup
                 content={t('item_editor.center_panel.customize_avatar')}

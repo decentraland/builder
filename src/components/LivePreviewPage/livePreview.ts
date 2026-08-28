@@ -116,6 +116,9 @@ export function buildDefinition(
   if (isEmote) {
     const emote: EmoteWithBlobs = {
       ...base,
+      // The Unity renderer caches the loaded emote clip (and its loop wrap mode) by the entity id,
+      // so toggling loop must also change the id or the reload keeps the previous clip.
+      id: `${base.id}-${overrides.loop ? 'loop' : 'once'}`,
       emoteDataADR74: {
         category: (category as EmoteCategory) || EmoteCategory.DANCE,
         representations: [
