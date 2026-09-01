@@ -1,6 +1,8 @@
 import { Authorization } from './auth'
-import { BuilderAPI } from './builder'
+import { BuilderAPI, RemoteCollectionCuration } from './builder'
 import { Item } from 'modules/item/types'
+import { CollectionCuration } from 'modules/curations/collectionCuration/types'
+import { CurationStatus } from 'modules/curations/types'
 
 jest.mock('./auth')
 
@@ -121,6 +123,45 @@ describe('when saving item contents', () => {
       await mockBuilder.saveItemContents(item, contents)
       expect(BuilderAPI.prototype.request).toHaveBeenCalledWith('post', `/items/${item.id}/files`, { params: expect.any(FormData) })
       expect(BuilderAPI.prototype.request).toHaveBeenCalledWith('post', `/items/${item.id}/videos`, { params: expect.any(FormData) })
+    })
+  })
+})
+
+describe('when working with collection curations', () => {
+  const remoteCuration: RemoteCollectionCuration = {
+    id: 'curation-id',
+    collection_id: 'collection-id',
+    assignee: '0xassignee',
+    status: CurationStatus.PENDING,
+    created_at: new Date(100),
+    updated_at: new Date(200)
+  }
+  const expectedCuration: CollectionCuration = {
+    id: 'curation-id',
+    collectionId: 'collection-id',
+    assignee: '0xassignee',
+    status: CurationStatus.PENDING,
+    createdAt: 100,
+    updatedAt: 200
+  }
+
+  beforeEach(() => {
+    jest.spyOn(BuilderAPI.prototype, 'request').mockResolvedValue(remoteCuration)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('when pushing a curation', () => {
+    it('should return the curation with its properties mapped from the server response', async () => {
+      await expect(mockBuilder.pushCuration('collection-id', '0xassignee')).resolves.toEqual(expectedCuration)
+    })
+  })
+
+  describe('when updating a curation', () => {
+    it('should return the curation with its properties mapped from the server response', async () => {
+      await expect(mockBuilder.updateCuration('collection-id', { assignee: '0xassignee' })).resolves.toEqual(expectedCuration)
     })
   })
 })
