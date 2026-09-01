@@ -90,7 +90,7 @@ export function* rootSaga(
     authorizationSaga(),
     collectionSaga(builderAPI, newBuilderClient, creditsService),
     committeeSaga(builderAPI),
-    deploymentSaga(builderAPI, catalystClient, worldsApi),
+    deploymentSaga(catalystClient),
     editorSaga(),
     ensSaga(newBuilderClient, ensApi, worldsApi),
     entitySaga(catalystClient),
