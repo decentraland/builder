@@ -33,6 +33,10 @@
   max-width: 386px;
 }
 
+.ui.small.modal.ExportModal .export-modal-convert {
+  margin-top: 20px;
+}
+
 .ui.small.modal.ExportModal .export-modal-actions {
   display: flex;
   flex-direction: column;

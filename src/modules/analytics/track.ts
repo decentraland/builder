@@ -5,17 +5,7 @@ import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/di
 import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
 import { OPEN_MODAL, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { TRANSACTION_ACTION_FLAG } from 'decentraland-dapps/dist/modules/transaction'
-import {
-  DROP_ITEM,
-  RESET_ITEM,
-  DUPLICATE_ITEM,
-  SET_GROUND,
-  AddItemAction,
-  DropItemAction,
-  SetGroundAction,
-  MIGRATE_TO_SDK7_SUCCESS,
-  MIGRATE_TO_SDK7_FAILURE
-} from 'modules/scene/actions'
+import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
   EDITOR_REDO,
@@ -404,10 +394,6 @@ add(
 )
 
 addPayload(SET_COLLECTION_CURATION_ASSIGNEE_FAILURE, 'Assign curator error')
-
-add(MIGRATE_TO_SDK7_SUCCESS, 'Migrate to SDK7')
-
-add(MIGRATE_TO_SDK7_FAILURE, 'Migrate to SDK7 error')
 
 add(SET_ENS_ADDRESS_SUCCESS, 'Map Address to Name', action => ({
   address: action.payload.address,

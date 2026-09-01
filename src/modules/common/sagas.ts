@@ -109,7 +109,7 @@ export function* rootSaga(
     poolSaga(builderAPI),
     createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL(), getIdentity })(),
     projectSaga(builderAPI),
-    sceneSaga(builderAPI),
+    sceneSaga(),
     statsSaga(),
     syncSaga(builderAPI),
     thirdPartySaga(builderAPI, catalystClient),

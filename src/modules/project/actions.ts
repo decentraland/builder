@@ -91,7 +91,7 @@ export type DuplicateProjectFailureAction = ReturnType<typeof duplicateProjectFa
 export const EXPORT_PROJECT_REQUEST = '[Request] Export project'
 export const EXPORT_PROJECT_SUCCESS = '[Success] Export project'
 
-export const exportProjectRequest = (project: Project) => action(EXPORT_PROJECT_REQUEST, { project })
+export const exportProjectRequest = (project: Project, migrateToSDK7 = false) => action(EXPORT_PROJECT_REQUEST, { project, migrateToSDK7 })
 export const exportProjectSuccess = () => action(EXPORT_PROJECT_SUCCESS, {})
 
 export type ExportProjectRequestAction = ReturnType<typeof exportProjectRequest>

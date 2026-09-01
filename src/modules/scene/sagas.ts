@@ -1,7 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { History } from 'history'
-import { takeLatest, put, select, call, delay, take, race, getContext } from 'redux-saga/effects'
-import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -25,12 +23,7 @@ import {
   FIX_LEGACY_NAMESPACES_REQUEST,
   FixLegacyNamespacesRequestAction,
   fixLegacyNamespacesSuccess,
-  syncSceneAssetsSuccess,
-  MIGRATE_TO_SDK7_REQUEST,
-  MigrateToSDK7RequestAction,
-  migrateToSDK7Failure,
-  updateScene,
-  migrateToSDK7Success
+  syncSceneAssetsSuccess
 } from 'modules/scene/actions'
 import {
   getGLTFsByAssetId,
@@ -41,7 +34,7 @@ import {
   getCollectiblesByURL,
   getShapesByEntityId
 } from 'modules/scene/selectors'
-import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
+import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6 } from 'modules/scene/types'
 import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
 import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
@@ -63,21 +56,11 @@ import { loadAssets } from 'modules/asset/actions'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import {
-  DUPLICATE_PROJECT_FAILURE,
-  DUPLICATE_PROJECT_SUCCESS,
-  DuplicateProjectFailureAction,
-  DuplicateProjectSuccessAction,
-  duplicateProjectRequest
-} from 'modules/project/actions'
-import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
-import { locations } from 'routing/locations'
-import { EditorWindow, PreviewType } from 'modules/editor/types'
-import { BuilderAPI } from 'lib/api/builder'
+import { EditorWindow } from 'modules/editor/types'
 
 const editorWindow = window as EditorWindow
 
-export function* sceneSaga(builderApi: BuilderAPI) {
+export function* sceneSaga() {
   yield takeLatest(ADD_ITEM, handleAddItem)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(RESET_ITEM, handleResetItem)
@@ -88,7 +71,6 @@ export function* sceneSaga(builderApi: BuilderAPI) {
   yield takeLatest(SYNC_SCENE_ASSETS_REQUEST, handleSyncSceneAssetsAction)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
-  yield takeLatest(MIGRATE_TO_SDK7_REQUEST, handleMigrateToSDK7Request)
 
   function* handleAddItem(action: AddItemAction) {
     const isEditorReady: boolean = yield select(isReady)
@@ -723,56 +705,6 @@ export function* sceneSaga(builderApi: BuilderAPI) {
         }
         yield put(provisionScene(newScene))
       }
-    }
-  }
-
-  function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
-    const { project, shouldSaveCopy } = action.payload
-    const history: History = yield getContext('history')
-
-    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-    const scene = scenes[project.sceneId]
-    if (scene.sdk7) {
-      put(migrateToSDK7Failure('Scene is already in SDK7'))
-      return
-    }
-    try {
-      if (shouldSaveCopy) {
-        const oldProject = {
-          ...project,
-          title: `Old_${project.title}`
-        }
-        yield put(duplicateProjectRequest(oldProject, PreviewType.PROJECT, false))
-        const duplicateProject: {
-          success: DuplicateProjectSuccessAction
-          failure: DuplicateProjectFailureAction
-        } = yield race({
-          success: take(DUPLICATE_PROJECT_SUCCESS),
-          failure: take(DUPLICATE_PROJECT_FAILURE)
-        })
-
-        if (duplicateProject.failure) {
-          put(migrateToSDK7Failure(duplicateProject.failure.payload.error))
-          return
-        }
-      }
-
-      const composite = toComposite(scene.sdk6, project)
-      const mappings = toMappings(scene.sdk6)
-      const crdt = new Blob([toCrdt(scene.sdk6) as BlobPart])
-
-      const newSDK7Scene: SceneSDK7 = {
-        id: scene.sdk6.id,
-        composite,
-        mappings
-      }
-
-      yield call([builderApi, 'uploadCrdt'], crdt, project.id)
-      yield put(updateScene(newSDK7Scene))
-      history.push(locations.inspector(project.id))
-      yield put(migrateToSDK7Success())
-    } catch (error) {
-      put(migrateToSDK7Failure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }
