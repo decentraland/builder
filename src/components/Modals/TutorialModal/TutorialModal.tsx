@@ -5,7 +5,6 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
 import { preventDefault } from 'lib/event'
 import { getSlides } from './slides'
 import { Props, State } from './TutorialModal.types'
@@ -19,6 +18,7 @@ const TUTORIAL_STEP_EVENT = 'Tutorial Step'
 const TUTORIAL_SKIP_EVENT = 'Tutorial Skip'
 const TUTORIAL_COMPLETE = 'Tutorial Complete'
 
+export const LOCALSTORAGE_TUTORIAL_KEY = 'builder-tutorial'
 export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
 
 export default class TutorialModal extends React.PureComponent<Props, State> {

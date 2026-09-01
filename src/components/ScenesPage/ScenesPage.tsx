@@ -1,20 +1,8 @@
 import React, { useCallback, useEffect } from 'react'
 import classNames from 'classnames'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import {
-  Button,
-  Container,
-  Dropdown,
-  DropdownProps,
-  Pagination,
-  PaginationProps,
-  Row,
-  Header,
-  Icon,
-  Section,
-  Column
-} from 'decentraland-ui'
+import { Container, Dropdown, DropdownProps, Pagination, PaginationProps, Row, Header, Section, Column } from 'decentraland-ui'
 
 import ProjectCard from 'components/ProjectCard'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -28,12 +16,8 @@ import { Props, DefaultProps } from './ScenesPage.types'
 import './ScenesPage.css'
 
 const ScenesPage: React.FC<Props> = props => {
-  const { page, poolList, projects, sortBy, totalPages, isFetching, isLoggingIn, onLoadFromScenePool, onOpenModal } = props
+  const { page, projects, sortBy, totalPages, isFetching, isLoggingIn, onOpenModal } = props
   const history = useHistory()
-
-  useEffect(() => {
-    onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
-  }, [onLoadFromScenePool])
 
   useEffect(() => {
     if (!isFetching) {
@@ -149,27 +133,6 @@ const ScenesPage: React.FC<Props> = props => {
               <Pagination {...paginationProps} activePage={page} totalPages={totalPages} onPageChange={handlePageChange} />
             ) : null}
           </Section>
-          {poolList ? (
-            <>
-              <Row>
-                <Row className="scene-pool-menu">
-                  <Header sub>{t('scenes_page.from_scene_pool')}</Header>
-                </Row>
-                <Row align="right">
-                  <Link to={locations.poolSearch()}>
-                    <Button basic>
-                      {t('global.view_more')}&nbsp;<Icon name="chevron right"></Icon>
-                    </Button>
-                  </Link>
-                </Row>
-              </Row>
-              <div className="scene-pool-projects">
-                {poolList.map(pool => (
-                  <ProjectCard key={pool.id} project={pool} />
-                ))}
-              </div>
-            </>
-          ) : null}
         </Container>
       </>
     )

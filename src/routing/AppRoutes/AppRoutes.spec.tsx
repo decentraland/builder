@@ -35,3 +35,16 @@ describe('when visiting a sunset scene creation route on desktop', () => {
     expect(renderAt(path).location.pathname).toBe(locations.scenes())
   })
 })
+
+describe('when visiting a retired scene viewer route on desktop', () => {
+  beforeEach(() => {
+    window.innerWidth = 1280
+  })
+
+  it.each([locations.poolSearch(), locations.sceneView('aProjectId'), locations.poolView('aProjectId', 'pool')])(
+    'should redirect %s to the scenes list',
+    path => {
+      expect(renderAt(path).location.pathname).toBe(locations.scenes())
+    }
+  )
+})

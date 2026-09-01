@@ -13,8 +13,6 @@ const ScenesPage = React.lazy(() => import('components/ScenesPage'))
 const HomePage = React.lazy(() => import('components/HomePage'))
 const SignInPage = React.lazy(() => import('components/SignInPage'))
 const NotFoundPage = React.lazy(() => import('components/NotFoundPage'))
-const SceneListPage = React.lazy(() => import('components/SceneListPage'))
-const SceneViewPage = React.lazy(() => import('components/SceneViewPage'))
 const LandPage = React.lazy(() => import('components/LandPage'))
 const LandDetailPage = React.lazy(() => import('components/LandDetailPage'))
 const LandTransferPage = React.lazy(() => import('components/LandTransferPage'))
@@ -49,9 +47,6 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
     <React.Suspense fallback={<Loader size="huge" active />}>
       <Responsive maxWidth={1024} as={React.Fragment}>
         <Switch>
-          <Route exact path={locations.poolSearch()} component={SceneListPage} />
-          <Route exact path={locations.sceneView()} component={SceneViewPage} />
-          <Route exact path={locations.poolView()} component={SceneViewPage} />
           <Route component={MobilePage} />
         </Switch>
       </Responsive>
@@ -59,9 +54,6 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
         <Switch>
           <Route exact path={locations.root()} component={HomePage} />
           <Route exact path={locations.notFound()} component={NotFoundPage} />
-          <Route exact path={locations.poolSearch()} component={SceneListPage} />
-          <Route exact path={locations.sceneView()} component={SceneViewPage} />
-          <Route exact path={locations.poolView()} component={SceneViewPage} />
           <Route exact path={locations.callback()} component={LoadingPage} />
           <Route exact path={locations.signIn()} component={SignInPage} />
           <Route exact path={locations.land()} component={LandPage} />
@@ -86,6 +78,9 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
           <Route exact key={5} path={locations.curation()} component={CurationPage} />
           <Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />
           <Redirect from={locations.sceneEditor()} to={locations.scenes()} />
+          <Redirect from={locations.poolSearch()} to={locations.scenes()} />
+          <Redirect from={locations.poolView()} to={locations.scenes()} />
+          <Redirect from={locations.sceneView()} to={locations.scenes()} />
           <Redirect from={locations.inspector()} to={locations.scenes()} />
           <Redirect from={locations.templates()} to={locations.scenes()} />
           <Redirect from={locations.templateDetail()} to={locations.scenes()} />

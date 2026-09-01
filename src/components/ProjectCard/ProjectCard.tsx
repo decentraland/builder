@@ -4,7 +4,6 @@ import { Confirm, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { Pool } from 'modules/pool/types'
 import { isRemoteURL } from 'modules/media/utils'
 import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
@@ -56,14 +55,12 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   render() {
     const { project, parcels, items, onClick, isUploading, hasError, scene } = this.props
     const { isDeleting } = this.state
-    const isFromScenePool = 'likes' in (project as Pool)
 
     let style = {}
     let classes = 'ProjectCard'
 
     let thumbnailUrl = getThumbnailUrl(project, scene)
     if (thumbnailUrl) {
-      // prevent caching remote images when they are updated
       if (thumbnailUrl && isRemoteURL(thumbnailUrl)) {
         thumbnailUrl += `?updated_at=${+new Date(project.updatedAt)}`
       }
@@ -79,15 +76,11 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     const children = (
       <>
         <div className="project-thumbnail" style={style} />
-        {isFromScenePool ? null : (
-          <>
-            <DeploymentStatus projectId={project.id} className="deployment-status" />
-            <div className="options-container">
-              <SDKTag scene={scene} />
-              <OptionsDropdown className="options-dropdown" options={dropdownOptions} />
-            </div>
-          </>
-        )}
+        <DeploymentStatus projectId={project.id} className="deployment-status" />
+        <div className="options-container">
+          <SDKTag scene={scene} />
+          <OptionsDropdown className="options-dropdown" options={dropdownOptions} />
+        </div>
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{project.title}</div>
@@ -109,7 +102,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             {children}
           </div>
         ) : (
-          <Link to={isFromScenePool ? locations.poolView(project.id, 'pool') : locations.sceneDetail(project.id)} className={classes}>
+          <Link to={locations.sceneDetail(project.id)} className={classes}>
             {children}
           </Link>
         )}

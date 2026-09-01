@@ -8,10 +8,10 @@ import { PARCEL_SIZE } from 'modules/project/constants'
 import { Layout, Project } from 'modules/project/types'
 import { resizeScreenshot } from 'modules/editor/utils'
 import { getCurrentScene } from 'modules/scene/selectors'
-import { EditorWindow } from 'components/Preview/Preview.types'
 import { setSelectedEntities } from 'modules/editor/actions'
 import { Scene } from 'modules/scene/types'
 import { RECORD_MEDIA_REQUEST, recordMediaProgress, recordMediaSuccess } from './actions'
+import { EditorWindow } from 'modules/editor/types'
 import { RawMedia } from './types'
 
 const editorWindow = window as EditorWindow
