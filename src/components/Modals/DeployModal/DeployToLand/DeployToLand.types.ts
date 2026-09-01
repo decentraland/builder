@@ -39,7 +39,6 @@ export type Props = {
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
-  onDeployToPool: () => void
   onDeployToWorld: () => void
   onBack: () => void
 } & RouteComponentProps

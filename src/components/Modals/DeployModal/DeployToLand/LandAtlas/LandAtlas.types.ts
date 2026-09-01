@@ -12,7 +12,6 @@ export type Props = {
   deployment?: Deployment | null
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
-  onNoAuthorizedParcels: () => void
   onConfirmPlacement: (placement: Placement, overrideDeploymentId?: string) => void
 }
 

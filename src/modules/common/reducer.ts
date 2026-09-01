@@ -27,8 +27,6 @@ import { identityReducer as identity } from 'modules/identity/reducer'
 import { itemReducer as item } from 'modules/item/reducer'
 import { landReducer as land } from 'modules/land/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
-import { poolGroupReducer as poolGroup } from 'modules/poolGroup/reducer'
-import { poolReducer as pool } from 'modules/pool/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { statsReducer as stats } from 'modules/stats/reducer'
@@ -58,8 +56,6 @@ export function createRootReducer() {
       land,
       media,
       modal,
-      pool,
-      poolGroup,
       profile,
       project,
       scene,

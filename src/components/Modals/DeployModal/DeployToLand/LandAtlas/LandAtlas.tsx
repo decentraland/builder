@@ -147,10 +147,6 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     })
   }
 
-  handleNoAuthorizedParcels = () => {
-    this.props.onNoAuthorizedParcels()
-  }
-
   truncateTitle(input: string, max = 10) {
     if (input.length > max) {
       return input.substring(0, max) + '...'
@@ -210,14 +206,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
     return (
       <div className="LandAtlas">
-        {parcelCount === 0 && (
-          <div className="notice">
-            {t('deployment_modal.land.map.no_land_warning')}
-            <span className="inline-action" onClick={this.handleNoAuthorizedParcels}>
-              {t('deployment_modal.land.map.no_land_action')}
-            </span>
-          </div>
-        )}
+        {parcelCount === 0 && <div className="notice">{t('deployment_modal.land.map.no_land_warning')}</div>}
         {conflictingDeployment && (
           <div className="notice">
             <DCLIcon name="warning sign" />

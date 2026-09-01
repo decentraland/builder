@@ -4,7 +4,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import Icon from 'components/Icon'
 import DeployToLand from './DeployToLand'
-import DeployToPool from './DeployToPool'
 import DeployToWorld from './DeployToWorld'
 import ClearDeployment from './ClearDeployment'
 import { Props, State, DeployModalView } from './DeployModal.types'
@@ -34,12 +33,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     })
   }
 
-  handleDeployToPool = () => {
-    this.setState({
-      view: DeployModalView.DEPLOY_TO_POOL
-    })
-  }
-
   handleDeployToWorld = () => {
     this.setState({
       view: DeployModalView.DEPLOY_TO_WORLD
@@ -66,7 +59,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderChoiceForm = () => {
-    const { name, project, scene } = this.props
+    const { name, project } = this.props
     return (
       <Modal name={name} onClose={this.handleClickOutside}>
         <div className="modal-body">
@@ -113,18 +106,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
               </div>
             </div>
           </div>
-          {scene && scene.sdk6 ? (
-            <div className="scene-pool-option">
-              <div className="thumbnail deploy-to-pool" />
-              <div className="scene-pool-description">
-                <span className="option-title">{t('deployment_modal.options.pool.title')}</span>
-                <span className="option-description">{t('deployment_modal.options.pool.description')}</span>
-              </div>
-              <Button secondary onClick={this.handleDeployToPool} className="scene-pool-action">
-                <span>{t('deployment_modal.options.pool.action')}</span>
-              </Button>
-            </div>
-          ) : null}
         </div>
       </Modal>
     )
@@ -132,27 +113,22 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   render() {
     const { view, deploymentId, claimedName } = this.state
-    const { name, currentPoolGroup, scene } = this.props
+    const { name, scene } = this.props
 
     if (view === DeployModalView.CLEAR_DEPLOYMENT && deploymentId) {
       return <ClearDeployment deploymentId={deploymentId} name={name} onClose={this.handleClose} />
     }
 
-    if (view === DeployModalView.DEPLOY_TO_LAND || currentPoolGroup) {
+    if (view === DeployModalView.DEPLOY_TO_LAND) {
       return (
         <DeployToLand
           name={name}
           scene={scene}
-          onDeployToPool={this.handleDeployToPool}
           onDeployToWorld={this.handleDeployToWorld}
           onBack={this.handleBack}
           onClose={this.handleClose}
         />
       )
-    }
-
-    if (view === DeployModalView.DEPLOY_TO_POOL) {
-      return <DeployToPool name={name} onClose={this.handleClose} />
     }
 
     if (view === DeployModalView.DEPLOY_TO_WORLD) {

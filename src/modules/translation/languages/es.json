@@ -548,7 +548,6 @@
       },
       "map": {
         "continue": "Continuar",
-        "no_land_action": "Sube tu Escena al Pool",
         "no_land_warning": "Parece que no posees LAND",
         "occupied_tooltip": "Libera espacio de tu LAND{br}Despublica la Escena desde el dashboard",
         "occupied_warning": "Al menos una Escena ya está publicada en esta ubicación",
@@ -601,28 +600,8 @@
       "description": "Publica tu Escena en tu LAND o Estate.",
       "title": "Mi LAND"
     },
-    "option_pool": {
-      "action": "Aplicar",
-      "description": "Aplica para que tu Escena sea publicada en una LAND que pertenece a otros.",
-      "title": "Pool de Escenas"
-    },
     "pool": {
-      "action": "Enviar",
-      "contact_information": "Información de contacto",
-      "i_accept_the": "Al hacer click sobre \"enviar\" aceptas recibir noticias de Decentraland",
-      "progress": "Procesando",
-      "sign_in": {
-        "action": "Iniciar Sesión",
-        "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
-        "title": "Iniciar Sesión"
-      },
-      "subtitle": "Su escena está a punto de cargarse en el grupo de la comunidad, lo que significa que cualquiera puede usarla.",
-      "success": {
-        "body": "Se incluirá en nuestra galería de escenas públicas para cualquier persona interesada en usarla.¡Gracias por tu contribución!",
-        "title": "¡Tu escena ahora es parte del grupo de escenas!"
-      },
-      "title": "Publica tu Escena",
-      "uploading": "Subiendo..."
+      "title": "Publica tu Escena"
     },
     "deploy_world": {
       "title": "Publicar en tu Mundo",
@@ -678,11 +657,6 @@
         "title": "Mi Tierra",
         "description": "Se puede encontrar en el mapa de Genesis City.<br></br>Un número ilimitado de usuarios pueden unirse al mismo tiempo.",
         "action": "Publicar en la tierra"
-      },
-      "pool": {
-        "title": "Subir al grupo de escenas",
-        "description": "Tu escena aparecerá en una galería de escenas y estará disponible públicamente para su descarga.",
-        "action": "Subir al grupo de escenas"
       }
     }
   },
@@ -707,31 +681,6 @@
     "body": "Usa {newName} como el nuevo alias de tu avatar. ¡Los nombres únicos son una excelente manera de ayudar a tus amigos a encontrarte en Metaverso! Esto reemplazará a {oldName}.",
     "success": "{name} es tu nuevo alias en el Metaverso! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo.",
     "error": "Algo salió mal... Vuelve a intentarlo más tarde."
-  },
-  "deployment_contest_modal": {
-    "action": "Únete al Contest",
-    "submit": {
-      "title": "Creator Contest",
-      "subtitle": "Gana hasta 200 MANA (  ̴$5 USD) por cada escena que envies al Creator Contest. ¡Puedes enviar hasta 20!.",
-      "eth_address": "Dirección ETH (optional)",
-      "invalid_eth_address": "Dirección ETH inválida"
-    },
-    "recording": {
-      "title": "Preparando tu escena",
-      "subtitle": "Estamos preparando su escena para el concurso, por favor espere."
-    },
-    "uploading": {
-      "title": "Preparando tu escena",
-      "subtitle": "Estamos preparando su escena para el concurso, por favor espere."
-    },
-    "success": {
-      "title": "¡Gracias por subir tu escena!",
-      "subtitle": "Recibiras una notificación por correo electrónico si se selecciona tu escena."
-    },
-    "sign_in": {
-      "title": "Inicia sesión",
-      "subtitle": "Debes iniciar sesión antes de enviar tu escena al concurso."
-    }
   },
   "dissolve_modal": {
     "title": "Disolver Estate",

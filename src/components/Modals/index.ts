@@ -2,7 +2,6 @@ export { default as LoginModal } from 'decentraland-dapps/dist/containers/LoginM
 export { default as AddExistingItemModal } from './AddExistingItemModal'
 export { default as ApprovalFlowModal } from './ApprovalFlowModal'
 export { default as CollectionManagersModal } from './CollectionManagersModal'
-export { default as ContestModal } from './ContestModal'
 export { default as CreateAssetPackModal } from './CreateAssetPackModal'
 export { default as CreateCollectionModal } from './CreateCollectionModal'
 export { default as CreateSingleItemModal } from './CreateSingleItemModal'

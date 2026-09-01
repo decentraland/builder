@@ -24,8 +24,6 @@ import { IdentityState } from 'modules/identity/reducer'
 import { ItemState } from 'modules/item/reducer'
 import { LandState } from 'modules/land/reducer'
 import { MediaState } from 'modules/media/reducer'
-import { PoolGroupState } from 'modules/poolGroup/reducer'
-import { PoolState } from 'modules/pool/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { StatsState } from 'modules/stats/reducer'
 import { SyncState } from 'modules/sync/types'
@@ -58,8 +56,6 @@ export type RootState = {
   land: LandState
   media: MediaState
   modal: ModalState
-  pool: PoolState
-  poolGroup: PoolGroupState
   profile: ProfileState
   project: ProjectState
   scene: UndoableSceneState

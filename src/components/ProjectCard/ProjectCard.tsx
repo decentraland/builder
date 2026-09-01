@@ -24,7 +24,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    this.props.onLoadProjectScene(this.props.project, this.props.type)
+    this.props.onLoadProjectScene(this.props.project)
   }
 
   handleOnClick = () => {
