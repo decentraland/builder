@@ -37,7 +37,6 @@ import { UndoableSceneState } from 'modules/scene/reducer'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCurationState } from 'modules/curations/collectionCuration/reducer'
 import { ItemCurationState } from 'modules/curations/itemCuration/reducer'
-import { InspectorState } from 'modules/inspector/reducer'
 import { WorldsState } from 'modules/worlds/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
@@ -77,7 +76,6 @@ export type RootState = {
   collectionCuration: CollectionCurationState
   itemCuration: ItemCurationState
   features: FeaturesState
-  inspector: InspectorState
   worlds: WorldsState
   gateway: GatewayState
   credits: CreditsState

@@ -36,7 +36,6 @@ import { syncReducer as sync } from 'modules/sync/reducer'
 import { thirdPartyReducer as thirdParty } from 'modules/thirdParty/reducer'
 import { tileReducer as tile } from 'modules/tile/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
-import { inspectorReducer as inspector } from 'modules/inspector/reducer'
 import { worldsReducer as worlds } from 'modules/worlds/reducer'
 
 export function createRootReducer() {
@@ -75,7 +74,6 @@ export function createRootReducer() {
       ui,
       wallet,
       features,
-      inspector,
       worlds,
       gateway,
       credits

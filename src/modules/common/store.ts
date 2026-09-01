@@ -192,7 +192,6 @@ sagasMiddleware.run(
   catalystClient,
   contentfulClient,
   getClientAuthAuthority,
-  store,
   ensApi,
   worldsAPI,
   tradeService,

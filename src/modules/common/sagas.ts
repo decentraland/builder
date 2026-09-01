@@ -49,14 +49,12 @@ import { loginSaga } from 'modules/login/sagas'
 import { newsletterSagas } from 'modules/newsletter/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
-import { inspectorSaga } from 'modules/inspector/sagas'
 import { worldsSaga } from 'modules/worlds/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
 import { ENSApi } from 'lib/api/ens'
 import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
-import { RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
 
 const newIdentitySaga = createIdentitySaga({
@@ -76,7 +74,6 @@ export function* rootSaga(
   catalystClient: CatalystClient,
   contentfulClient: ContentfulClient,
   getIdentity: () => AuthIdentity | undefined,
-  store: RootStore,
   ensApi: ENSApi,
   worldsApi: WorldsAPI,
   tradeService: TradeService,
@@ -127,7 +124,6 @@ export function* rootSaga(
     featuresSaga({
       polling: { apps: [ApplicationName.BUILDER, ApplicationName.DAPPS, ApplicationName.MARKETPLACE], delay: 60000 /** 60 seconds */ }
     }),
-    inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
     worldsSaga(worldsApi),

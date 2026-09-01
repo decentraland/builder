@@ -1,9 +1,6 @@
 import { takeLatest, select, put, call, takeEvery, take } from 'redux-saga/effects'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import type { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import { MessageTransport } from '@dcl/mini-rpc'
-import { SceneMetricsClient } from '@dcl/inspector'
-import type { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { BuilderAPI } from 'lib/api/builder'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
@@ -19,7 +16,7 @@ import {
 } from 'modules/project/actions'
 import { getData as getProjects, getCurrentProject } from 'modules/project/selectors'
 import type { Project } from 'modules/project/types'
-import { PROVISION_SCENE, ProvisionSceneAction, UpdateSceneAction, UPDATE_SCENE, updateMetrics } from 'modules/scene/actions'
+import { PROVISION_SCENE, ProvisionSceneAction, UpdateSceneAction, UPDATE_SCENE } from 'modules/scene/actions'
 import { getData as getScenes } from 'modules/scene/selectors'
 import {
   SAVE_PROJECT_REQUEST,
@@ -83,18 +80,6 @@ export function* syncSaga(builder: BuilderAPI) {
     try {
       yield call(() => saveProject(project.id, project, scene, builder, debounce))
       yield put(saveProjectSuccess(project))
-      if (scene.sdk7) {
-        const iframe = document.getElementById('inspector') as HTMLIFrameElement | null
-        if (!iframe || !iframe.contentWindow!) return
-
-        const transport = new MessageTransport(window, iframe.contentWindow, '*')
-        const sceneMetrics = new SceneMetricsClient(transport)
-
-        const metrics: SceneMetrics = yield call(sceneMetrics.getMetrics)
-        const limits: SceneMetrics = yield call(sceneMetrics.getLimits)
-        const entitiesOutOfBoundaries: number = yield call(sceneMetrics.getEntitiesOutOfBoundaries)
-        yield put(updateMetrics(scene.sdk7.id, metrics, limits, entitiesOutOfBoundaries))
-      }
     } catch (e) {
       yield put(saveProjectFailure(project, isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }

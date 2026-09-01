@@ -2514,14 +2514,6 @@
       "action": "迁移并删除智能项目"
     }
   },
-  "inspector": {
-    "top_bar": {
-      "back": "回到你的现场",
-      "download": "下载",
-      "publish": "发布",
-      "preview": "预览"
-    }
-  },
   "worlds_your_storage_modal": {
     "your_storage": "您的存储",
     "total_available_storage": "总可用存储",
