@@ -1041,8 +1041,12 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollectionCuration(curation)
   }
 
-  async pushCuration(collectionId: string, assignee?: string | null): Promise<void> {
-    return this.request('post', `/collections/${collectionId}/curation`, { params: { curation: { assignee } } }) as Promise<void>
+  async pushCuration(collectionId: string, assignee?: string | null): Promise<CollectionCuration> {
+    const curation: RemoteCollectionCuration = await this.request('post', `/collections/${collectionId}/curation`, {
+      params: { curation: { assignee } }
+    })
+
+    return fromRemoteCollectionCuration(curation)
   }
 
   async pushItemCuration(itemId: string): Promise<ItemCuration> {
@@ -1101,12 +1105,23 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', `/collections/${collectionId}/approvalData`) as Promise<ItemApprovalData>
   }
 
-  async updateCurationStatus(collectionId: string, status: CurationStatus) {
-    return this.request('patch', `/collections/${collectionId}/curation`, { params: { curation: { status } } })
+  async updateCurationStatus(collectionId: string, status: CurationStatus): Promise<CollectionCuration> {
+    const curation: RemoteCollectionCuration = await this.request('patch', `/collections/${collectionId}/curation`, {
+      params: { curation: { status } }
+    })
+
+    return fromRemoteCollectionCuration(curation)
   }
 
-  async updateCuration(collectionId: string, curation: Partial<Pick<CollectionCuration, 'assignee' | 'status'>>) {
-    return this.request('patch', `/collections/${collectionId}/curation`, { params: { curation } })
+  async updateCuration(
+    collectionId: string,
+    curation: Partial<Pick<CollectionCuration, 'assignee' | 'status'>>
+  ): Promise<CollectionCuration> {
+    const updatedCuration: RemoteCollectionCuration = await this.request('patch', `/collections/${collectionId}/curation`, {
+      params: { curation }
+    })
+
+    return fromRemoteCollectionCuration(updatedCuration)
   }
 
   async updateItemCurationStatus(itemId: string, status: CurationStatus): Promise<ItemCuration> {

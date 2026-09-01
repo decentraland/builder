@@ -1244,7 +1244,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         const curationsByCollectionId: Record<string, CollectionCuration> = yield select(getCurationsByCollectionId)
         const curation = curationsByCollectionId[collection.id]
         if (curation && curation.status === CurationStatus.PENDING) {
-          yield put(approveCollectionCurationRequest(curation.collectionId))
+          yield put(approveCollectionCurationRequest(collection.id))
 
           // wait for actions
           const { failure }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } =
