@@ -494,10 +494,6 @@
     "title": "Editar URN",
     "subtitle": "Actualizar el URN para {name}"
   },
-  "custom_layout_modal": {
-    "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
-    "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
-  },
   "share_modal": {
     "title": "Comparte tu Escena",
     "description": "Deja que tus amigos y co-creadores vean tu trabajo",
@@ -747,11 +743,6 @@
     "confirm": "Estás por disolver a {name}. Deseas continuar?",
     "too_big": "Este Estate es muy grane para ser disuelto en una transacción. Por favor remueve parcelas hasta que tenga como máximo un tamaño de {max} parcelas."
   },
-  "edit_project_modal": {
-    "custom_layout_label": "Dimensiones",
-    "title": "Detalles de la Escena",
-    "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
-  },
   "ens_list_page": {
     "title": "Tus NOMBREs",
     "sort_by": "Ordernar por",
@@ -974,7 +965,6 @@
     "submit": "Enviar",
     "subscribe": "Subscribirse",
     "terms_and_conditions": "Términos y Condiciones",
-    "view_more": "Ver Más",
     "click_here": "Has click aquí",
     "proceed": "Proceder",
     "open_in_editor": "Abrir en el editor",
@@ -1071,39 +1061,20 @@
   },
   "scenes_page": {
     "my_scenes": "Mis Escenas",
-    "upload_scene": "Subir Escene",
-    "create_scene": "Crear Escene",
-    "no_projects": "Puede publicar sus escenas en su LAND, sus mundos o cargarlas en el Pool de escenas.{br}Alternativamente, también puede <link>cargar un archivo de escena</link> y continuar trabajando desde allí.",
-    "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
     "sdk6_support": "El soporte técnico para SDK 6 finalizará el 23 de diciembre de 2023.",
     "project_actions": {
       "delete_project": "Borrar Escena",
-      "duplicate_project": "Duplicar Escena",
-      "export_project": "Descargar Escena",
-      "unpublish": "Despublicar"
+      "export_project": "Descargar Escena"
     },
-    "choose_scene_creation": "Elija la mejor opción para construir su escena",
     "no_scenes": {
       "title": "Crea tu primera escena",
-      "description": "Desata tu creatividad. Comienza a construir escenas para sus tierras y mundos y comparta con la comunidad.<a> Aprenda más sobre cómo crear escenas. </a>",
-      "from_scratch": {
-        "title": "Empezar desde el principio",
-        "description": "Comience a construir sus escenas desde cero con el constructor en línea de una manera simple e intuitiva."
-      },
-      "from_template": {
-        "title": "Use plantillas predefinidas",
-        "description": "Elija una de estas plantillas pulidas y lance una escena increíble con solo unos pocos clics!"
-      }
+      "description": "Desata tu creatividad. Comienza a construir escenas para sus tierras y mundos y comparta con la comunidad.<a> Aprenda más sobre cómo crear escenas. </a>"
     },
     "sort": {
       "name": "Nombre",
       "newest": "Más Nuevas",
       "size": "Tamaño"
     },
-    "start": "Comenzar",
-    "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
-    "templates_title": "Escoge el tamaño de tu Escena para comenzar",
-    "title": "¡Construye algo genial!",
     "migration": "Necesitas {link} tus Escenas",
     "migration_link": "migrar",
     "migration_banner": "El Builder ha comenzado a utilizar billeteras en lugar de emails. Usa la {link} para migrar tus escenas.",
@@ -1112,21 +1083,6 @@
     "migration_modal_message": "Los siguientes datos han sido migrados:",
     "migration_modal_dismiss": "Aceptar",
     "results": "{count} {count, plural, one {resultado} other {resultados}}"
-  },
-  "templates_page": {
-    "title": "Elija una plantilla",
-    "back_to_scenes": "Volver a las escenas",
-    "parcels": "{size} parcelas",
-    "coming_soon": "Muy pronto"
-  },
-  "import_modal": {
-    "action": "Cargar",
-    "action_many": "Cargar {count} Escenas",
-    "cta": "Arrastra un archivo .zip o {action}",
-    "description": "Para transferir escenas entre diferentes cuentas o cargar una escena previamente descargada desde el grupo de escenas, utilice la función de carga. Asegúrese de cargar el archivo zip exactamente como se descargó.",
-    "invalid_file": "Archivo inválido",
-    "title": "Cargar Escena",
-    "upload_manually": "buscarlo en su computadora"
   },
   "upload_video": {
     "cta": "Arrastre y suelte un video (formato .MP4) para mostrar la funcionalidad portátil inteligente o {acción}",
@@ -1163,10 +1119,6 @@
   "collection_dropdown": {
     "placeholder": "Selecciona una colección",
     "no_collections": "No hay colecciones válidas"
-  },
-  "layout_picker": {
-    "columns": "columnas",
-    "rows": "filas"
   },
   "metrics": {
     "bodies": "cuerpos",
@@ -1304,23 +1256,6 @@
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
   },
-  "scene_list_page": {
-    "projects_title": "Escenas de la comunidad",
-    "no_projects": "No se encotraron Escenas",
-    "filters": {
-      "creator-contest-2019-12": "Creator Contest (Submission)",
-      "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "Todas las colecciones",
-      "all_users": "Todos los usuarios",
-      "only_me": "Solo yo",
-      "newest": "Más Nuevas",
-      "likes": "Más Favoritos",
-      "size": "Tamaño",
-      "items": "Más Objetos",
-      "smart_items": "Más Objetos Interactivos",
-      "name": "Nombre"
-    }
-  },
   "public_page": {
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",
@@ -1344,18 +1279,6 @@
     "move_to_collection": "Mover a colección",
     "confirm_delete_content": "¿Seguro que quieres borrar tu item \"{name}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{name}\""
-  },
-  "project_fields": {
-    "description_field_label": "Descripción",
-    "description_field_placeholder": "Sin descripción",
-    "title_field_label": "Título",
-    "title_field_placeholder": "Título de la Escena"
-  },
-  "project_layout_picker": {
-    "max_area_error": "Tu Escena no puede tener más de {area} parcelas",
-    "min_area_error": "Tu Escena es muy chica",
-    "decimals_error": "El tamaño de parcelas de su escena no debe tener un valor decimal",
-    "empty_field_error": "Debe completar la cantidad de filas y columnas para establecer el tamaño de la escena"
   },
   "quota_exceeded_modal": {
     "retry": {
@@ -1385,16 +1308,6 @@
     "description": "Descripción",
     "url": "URL"
   },
-  "template_detail_page": {
-    "select_template": "Seleccionar plantilla",
-    "download_scene": "Descargar Escena",
-    "description": "Descripción",
-    "creator": "Creador",
-    "scene_details": "Detalles de la escena",
-    "built_for_world": "Construido para Mundos",
-    "personalize_it_yourself": "Personalizalo tu mismo",
-    "parcels": "{rows} x {cols} parcelas"
-  },
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
@@ -1422,28 +1335,6 @@
     "item_shortcuts": "Objeto",
     "other_shortcuts": "Otros",
     "title": "Atajos"
-  },
-  "create_modal": {
-    "title": "Crear una Escena",
-    "name_subtitle": "Escribe un nombre y una descripcion de tu Escena",
-    "size_subtitle": "Elige el tamaño de tu nueva Escena",
-    "sdk_title": "Experimente el nuevo editor de Decentraland",
-    "sdk_subtitle": "Aproveche el poder de SDK 7 sin ningún código.",
-    "sdk_description": "Mejore su proceso de construcción de escenas con nuestro editor visual mejorado. Se incluyen todas las características del Builder anterior.",
-    "sdk_image_alt": "SDK 7",
-    "name_label": "Nombre",
-    "description_label": "Descripción",
-    "description_placeholder": "Una descripción...",
-    "use_sdk7": "Use el nuevo editor web de Decentraland",
-    "use_sdk6": "Use el antiguo constructor de escenas (SDK 6)",
-    "change_item_file": "Editar representation"
-  },
-  "clone_template_modal": {
-    "title": "Escribe un nombre y una descripcion de tu Escena",
-    "name_label": "Nombre",
-    "name_max_length": "El nombre puede tener un máximo de 32 caracteres",
-    "description_label": "Descripción",
-    "description_placeholder": "Una descripción..."
   },
   "sync": {
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
@@ -1524,36 +1415,6 @@
   "toasts": {
     "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la nube!"
   },
-  "topbar": {
-    "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
-    "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
-    "up_to_date": "¡Al día!{br}Todos los cambios están actualizados",
-    "update_scene": "Actualizar Escena"
-  },
-  "tutorial_modal": {
-    "slide0": {
-      "description": "Este es el nuevo constructor de Escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
-      "title": "¡Bienvenido al Builder!"
-    },
-    "slide1": {
-      "description": "Para mover un objeto, haz clic y arrastralo.",
-      "title": "Moviendo objetos"
-    },
-    "slide2": {
-      "description": "Agrega objetos a tu Escena desde la barra lateral a la derecha.",
-      "title": "Añadiendo objetos"
-    },
-    "slide3": {
-      "description": "Girar objetos haciendo clic en la herramienta Rotar y arrastrando las órbitas.",
-      "title": "Flechas y órbitas"
-    },
-    "slide4": {
-      "description": "Arrastra con el botón izquierdo para girar la cámara. Use el botón derecho para desplazarse.",
-      "title": "Controlando la cámara"
-    },
-    "subtitle": "El Builder es muy fácil de usar, aquí hay algunos consejos antes de comenzar",
-    "title": "Comienza con el Builder"
-  },
   "unsupported_browser_page": {
     "back": "Volver a tus Escenas",
     "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
@@ -1563,16 +1424,6 @@
     "guest": "Invitado",
     "sign_in": "Iniciar Sesión",
     "sign_out": "Cerrar Sesión"
-  },
-  "validation": {
-    "project": {
-      "description": {
-        "length": "La longitud de la descripción debe estar entre {min} y {max} caracteres."
-      },
-      "title": {
-        "length": "La longitud del título debe estar entre {min} y {max} caracteres."
-      }
-    }
   },
   "validation_issues_panel": {
     "title_errors": "{count, plural, one {# Error de Validación} other {# Errores de Validación}}",

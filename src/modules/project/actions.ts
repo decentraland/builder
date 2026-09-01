@@ -2,26 +2,9 @@ import { action } from 'typesafe-actions'
 
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Template } from 'modules/template/types'
 import { SDKVersion, Scene } from 'modules/scene/types'
 import { Pool } from 'modules/pool/types'
 import { PreviewType } from 'modules/editor/types'
-
-// Create project from template
-
-export const CREATE_PROJECT_FROM_TEMPLATE = 'Create project from template'
-
-export const createProjectFromTemplate = (template: Template, meta: CreateProjectFromTemplateMeta = {}) =>
-  action(CREATE_PROJECT_FROM_TEMPLATE, { template }, meta)
-
-type CreateProjectFromTemplateMeta = {
-  title?: string
-  description?: string
-  sdk?: SDKVersion
-  onSuccess?: (project: Project, scene: Scene) => any
-}
-
-export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFromTemplate>
 
 // Create project (like SET_PROJECT but only called on creation)
 
@@ -38,14 +21,6 @@ export const SET_PROJECT = 'Set project'
 export const setProject = (project: Project) => action(SET_PROJECT, { project })
 
 export type SetProjectAction = ReturnType<typeof setProject>
-
-// Edit project
-
-export const EDIT_PROJECT = 'Edit project'
-
-export const editProject = (id: string, project: Partial<Project>) => action(EDIT_PROJECT, { id, project })
-
-export type EditProjectAction = ReturnType<typeof editProject>
 
 // Share project
 
@@ -71,21 +46,6 @@ export const deleteProject = (project: Project) => action(DELETE_PROJECT, { proj
 
 export type DeleteProjectAction = ReturnType<typeof deleteProject>
 
-// Duplicate project
-
-export const DUPLICATE_PROJECT_REQUEST = '[Request] Duplicate project'
-export const DUPLICATE_PROJECT_SUCCESS = '[Success] Duplicate project'
-export const DUPLICATE_PROJECT_FAILURE = '[Failure] Duplicate project'
-
-export const duplicateProjectRequest = (project: Project, type?: PreviewType, shouldRedirect = true) =>
-  action(DUPLICATE_PROJECT_REQUEST, { project, type, shouldRedirect })
-export const duplicateProjectSuccess = (project: Project, type?: PreviewType) => action(DUPLICATE_PROJECT_SUCCESS, { project, type })
-export const duplicateProjectFailure = (error: string) => action(DUPLICATE_PROJECT_FAILURE, { error })
-
-export type DuplicateProjectRequestAction = ReturnType<typeof duplicateProjectRequest>
-export type DuplicateProjectSuccessAction = ReturnType<typeof duplicateProjectSuccess>
-export type DuplicateProjectFailureAction = ReturnType<typeof duplicateProjectFailure>
-
 // Export project
 
 export const EXPORT_PROJECT_REQUEST = '[Request] Export project'
@@ -96,14 +56,6 @@ export const exportProjectSuccess = () => action(EXPORT_PROJECT_SUCCESS, {})
 
 export type ExportProjectRequestAction = ReturnType<typeof exportProjectRequest>
 export type ExportProjectSuccessAction = ReturnType<typeof exportProjectSuccess>
-
-// Import project
-
-export const IMPORT_PROJECT = 'Import project'
-
-export const importProject = (projects: Manifest[]) => action(IMPORT_PROJECT, { projects })
-
-export type ImportProjectAction = ReturnType<typeof importProject>
 
 // Loud cloud projects
 

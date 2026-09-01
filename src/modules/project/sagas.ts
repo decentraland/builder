@@ -1,31 +1,16 @@
-import uuidv4 from 'uuid/v4'
 import { History } from 'history'
-import { Composite } from '@dcl/ecs'
-import { createEngineContext, dumpEngineToComposite } from '@dcl/inspector'
-import { takeLatest, put, select, take, call, all, race, delay, takeEvery, getContext } from 'redux-saga/effects'
-import { ActionCreators } from 'redux-undo'
+import { takeLatest, put, select, take, call, race, delay, takeEvery, getContext } from 'redux-saga/effects'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
-  CREATE_PROJECT_FROM_TEMPLATE,
-  CreateProjectFromTemplateAction,
-  DUPLICATE_PROJECT_REQUEST,
-  DuplicateProjectRequestAction,
   EXPORT_PROJECT_REQUEST,
   ExportProjectRequestAction,
-  IMPORT_PROJECT,
-  ImportProjectAction,
   exportProjectSuccess,
   LOAD_PROJECTS_REQUEST,
   loadProjectsSuccess,
   loadManifestSuccess,
   LOAD_MANIFEST_REQUEST,
-  EDIT_PROJECT,
   setProject,
-  EditProjectAction,
-  createProject,
   LoadManifestRequestAction,
   loadManifestFailure,
   loadProjectsFailure,
@@ -46,46 +31,31 @@ import {
   LOAD_TEMPLATES_REQUEST,
   loadTemplatesSuccess,
   loadTemplatesFailure,
-  loadTemplatesRequest,
-  duplicateProjectSuccess,
-  duplicateProjectFailure
+  loadTemplatesRequest
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
-import { SDKVersion, Scene, SceneSDK7 } from 'modules/scene/types'
+import { Scene, SceneSDK7 } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
-import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene, setGround, applyLayout, updateScene } from 'modules/scene/actions'
-import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
+import { takeScreenshot, setExportProgress, setGizmo } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
-import {
-  SAVE_PROJECT_SUCCESS,
-  saveProjectRequest,
-  SAVE_PROJECT_FAILURE,
-  SaveProjectSuccessAction,
-  SaveProjectFailureAction
-} from 'modules/sync/actions'
+import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo, PreviewType } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
-import { changeLayout, getParcels, toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
+import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { getName } from 'modules/profile/selectors'
-import { getDefaultGroundAsset } from 'modules/deployment/utils'
 import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
-import { didUpdateLayout, getImageAsDataUrl, getTemplate, getTemplates } from './utils'
+import { getTemplate, getTemplates } from './utils'
 import { createFiles, createSDK7Files } from './export'
 
 export function* projectSaga(builder: BuilderAPI) {
-  yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
-  yield takeLatest(DUPLICATE_PROJECT_REQUEST, handleDuplicateProjectRequest)
-  yield takeLatest(EDIT_PROJECT, handleEditProject)
   yield takeLatest(SHARE_PROJECT, handleShareProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
-  yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_TEMPLATES_REQUEST, handleLoadTemplatesRequest)
@@ -93,167 +63,6 @@ export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeEvery(LOAD_PROJECT_SCENE_REQUEST, handleLoadProjectSceneRequest)
-
-  function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
-    const { template } = action.payload
-    const { rows, cols } = template
-    const { title, description, sdk, onSuccess } = action.meta
-
-    let scene: Scene
-
-    if (sdk === SDKVersion.SDK7) {
-      const { engine, components } = createEngineContext()
-      components.Scene.createOrReplace(engine.RootEntity, {
-        layout: {
-          parcels: getParcels({
-            rows,
-            cols
-          }),
-          base: {
-            x: 0,
-            y: 0
-          }
-        }
-      })
-
-      scene = {
-        sdk6: null,
-        sdk7: {
-          id: uuidv4(),
-          composite: Composite.toJson(dumpEngineToComposite(engine as any, 'json')),
-          mappings: {}
-        }
-      }
-    } else {
-      scene = {
-        sdk6: {
-          id: uuidv4(),
-          entities: {},
-          components: {},
-          assets: {},
-          metrics: EMPTY_SCENE_METRICS,
-          limits: EMPTY_SCENE_METRICS,
-          ground: null
-        },
-        sdk7: null
-      }
-    }
-
-    const ethAddress: string = yield select(getAddress)
-
-    const project: Project = {
-      id: uuidv4(),
-      title: title || t('global.new_scene'),
-      description: description || '',
-      thumbnail: '',
-      isPublic: false,
-      layout: {
-        rows,
-        cols
-      },
-      sceneId: scene.sdk6 ? scene.sdk6.id : scene.sdk7.id,
-      ethAddress: ethAddress || null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isTemplate: false,
-      video: null,
-      templateStatus: null
-    }
-
-    yield put(createScene(scene))
-    yield put(createProject(project, sdk))
-
-    if (onSuccess) {
-      onSuccess(project, scene)
-      yield put(setGround(project.id, getDefaultGroundAsset()))
-    }
-  }
-
-  function* handleDuplicateProjectRequest(action: DuplicateProjectRequestAction) {
-    const { project, type, shouldRedirect } = action.payload
-    const ethAddress: string = yield select(getAddress)
-    const scene: Scene = yield getSceneByProjectId(project.id, type)
-    const history: History = yield getContext('history')
-
-    let thumbnail: string = project.thumbnail
-
-    try {
-      thumbnail = yield call(getImageAsDataUrl, project.thumbnail)
-
-      const newSceneId = uuidv4()
-      const newScene: Scene = scene.sdk6
-        ? { sdk6: { ...scene.sdk6, id: newSceneId }, sdk7: null }
-        : { sdk7: { ...scene.sdk7, id: newSceneId }, sdk6: null }
-
-      const newProject = {
-        ...project,
-        ethAddress,
-        sceneId: newSceneId,
-        id: uuidv4(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        thumbnail,
-        isTemplate: false,
-        video: null,
-        templateStatus: null
-      }
-
-      yield put(createScene(newScene))
-      yield put(createProject(newProject, scene.sdk6 ? SDKVersion.SDK6 : SDKVersion.SDK7))
-
-      if (project.isTemplate) {
-        yield take(SAVE_PROJECT_SUCCESS)
-        history.push(scene.sdk6 ? locations.sceneEditor(newProject.id) : locations.inspector(newProject.id))
-      } else if (shouldRedirect) {
-        history.push(locations.scenes())
-      }
-
-      yield put(duplicateProjectSuccess(newProject, type))
-    } catch (error) {
-      yield put(duplicateProjectFailure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
-    }
-  }
-
-  function* handleEditProject(action: EditProjectAction) {
-    const { id, project } = action.payload
-    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-    const targetProject = projects[id]
-
-    if (!targetProject || !project) return
-
-    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-    const scene = scenes[targetProject.sceneId]
-
-    if (!scene) return
-
-    const shouldApplyLayout = didUpdateLayout(project, targetProject)
-    const newProject = { ...targetProject, ...project }
-
-    yield put(setProject(newProject))
-
-    if (shouldApplyLayout) {
-      if (scene.sdk6) {
-        yield put(setEditorReady(false))
-        yield put(createEditorScene(newProject))
-        yield take(SET_EDITOR_READY)
-        yield put(applyLayout(newProject))
-        yield put(ActionCreators.clearHistory())
-        yield put(takeScreenshot())
-      } else if (scene.sdk7) {
-        const newScene = changeLayout(scene.sdk7, project.layout!)
-
-        yield put(updateScene(newScene))
-        const { failure }: { success: SaveProjectSuccessAction | null; failure: SaveProjectFailureAction | null } = yield race({
-          success: take(SAVE_PROJECT_SUCCESS),
-          failure: take(SAVE_PROJECT_FAILURE)
-        })
-
-        if (failure) {
-          console.error(`Error saving project=${project.id!}`)
-        }
-      }
-    }
-  }
 
   function* handleShareProject(action: ShareProjectAction) {
     const { id } = action.payload
@@ -316,16 +125,6 @@ export function* projectSaga(builder: BuilderAPI) {
     const name = project.title.replace(/\s/g, '_')
     yield call(downloadZip, name, files)
     yield put(exportProjectSuccess())
-  }
-
-  function* handleImportProject(action: ImportProjectAction) {
-    const { projects } = action.payload
-
-    for (const saved of projects) {
-      if (saved.scene && saved.project) {
-        yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, ethAddress: yield select(getAddress) }))])
-      }
-    }
   }
 
   function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {

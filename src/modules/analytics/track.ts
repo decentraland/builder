@@ -17,7 +17,7 @@ import {
   RESET_CAMERA
 } from 'modules/editor/actions'
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
-import { SET_PROJECT, EXPORT_PROJECT_REQUEST, IMPORT_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
+import { SET_PROJECT, EXPORT_PROJECT_REQUEST, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { SHARE_SCENE } from 'modules/ui/share/actions'
 import { LIKE_POOL_REQUEST } from 'modules/pool/actions'
@@ -159,7 +159,6 @@ addPayload(RESET_CAMERA, 'Reset camera')
 // import/export
 // Do not change this event name format
 addPayload(EXPORT_PROJECT_REQUEST, 'Export project', trimProject)
-addPayload(IMPORT_PROJECT, 'Import project', () => ({}))
 
 // sync
 addPayload(SAVE_PROJECT_SUCCESS, 'Save project success', trimProject)
