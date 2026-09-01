@@ -10,7 +10,6 @@ import {
   getSelectedCollectionIdFromSearchParams,
   getSelectedItemIdFromSearchParams,
   getSortByFromSearchParams,
-  getTemplateIdFromPath,
   isReviewingFromSearchParams
 } from './url-parsers'
 
@@ -42,12 +41,6 @@ export const useGetProjectIdFromCurrentUrl = (): string | null => {
   const location = useLocation()
   const projectId = useMemo(() => getProjectIdFromPath(location.pathname), [location.pathname])
   return projectId
-}
-
-export const useGetTemplateIdFromCurrentUrl = (): string | null => {
-  const location = useLocation()
-  const templateId = useMemo(() => getTemplateIdFromPath(location.pathname), [location.pathname])
-  return templateId
 }
 
 export const useGetCollectionIdFromCurrentUrl = (): string | null => {

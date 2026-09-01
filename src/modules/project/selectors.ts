@@ -48,13 +48,3 @@ export const isFetching = createSelector<RootState, LoadingState, boolean>(
   getLoading,
   projectLoading => isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST) || isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST)
 )
-
-export const getTemplates = createSelector(getData, projects => {
-  return Object.keys(projects).reduce((record, projectId) => {
-    const project = projects[projectId]
-    if (project.isTemplate) {
-      record[projectId] = project
-    }
-    return record
-  }, {} as ProjectState['data'])
-})
