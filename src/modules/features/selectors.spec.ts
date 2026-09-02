@@ -9,6 +9,7 @@ import {
   getIsMaintenanceEnabled,
   getIsOffchainPublicItemOrdersEnabled,
   getIsPublishCollectionsWertEnabled,
+  getIsSegmentAltIngestionEnabled,
   getIsSocialEmotesEnabled,
   getIsUnityWearablePreviewEnabled,
   getIsCreditsForCollectionsFeeEnabled,
@@ -83,7 +84,8 @@ const ffSelectors = [
   { selector: getIsUnityWearablePreviewEnabled, app: ApplicationName.DAPPS, feature: FeatureName.UNITY_WEARABLE_PREVIEW },
   { selector: getIsCreditsForCollectionsFeeEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_FOR_COLLECTIONS_FEE },
   { selector: getIsSocialEmotesEnabled, app: ApplicationName.DAPPS, feature: FeatureName.SOCIAL_EMOTES },
-  { selector: getIsCreditsPrimaryListingsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_PRIMARY_LISTINGS }
+  { selector: getIsCreditsPrimaryListingsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_PRIMARY_LISTINGS },
+  { selector: getIsSegmentAltIngestionEnabled, app: ApplicationName.DAPPS, feature: FeatureName.SEGMENT_ALT_INGESTION }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

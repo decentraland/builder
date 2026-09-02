@@ -18,6 +18,7 @@ import { ContentfulClient, fetchCampaignRequest } from 'decentraland-dapps/dist/
 import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
 import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 
+import { getAnalyticsProxyOptions } from 'modules/analytics/proxy'
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
@@ -142,10 +143,14 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   }
 })
 const transactionMiddleware = createTransactionMiddleware()
-// analytics.js is served from a first party proxy where configured, ad blockers drop the requests to Segment's CDN
+// Both analytics.js and the events it sends go through a first party proxy where configured, ad blockers drop the
+// requests to Segment's own CDN and ingestion endpoint. The `dapps-seg-alt` kill switch turns the proxy off.
 const analyticsMiddleware = isTestEnv
   ? null
-  : createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'), { analyticsUrl: config.get('SEGMENT_ANALYTICS_URL', '') || undefined })
+  : createAnalyticsMiddleware(
+      config.get('SEGMENT_API_KEY'),
+      getAnalyticsProxyOptions(config.get('SEGMENT_ANALYTICS_URL', ''), config.get('SEGMENT_API_HOST', ''))
+    )
 
 const middlewares = [sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware].filter(
   mdw => mdw !== null

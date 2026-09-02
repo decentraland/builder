@@ -15,5 +15,7 @@ export enum FeatureName {
   SHOP_CREDITS_FOR_COLLECTIONS_FEE = 'shop-credits-for-collections-fee',
   UNITY_WEARABLE_PREVIEW = 'unity-wearable-preview',
   SOCIAL_EMOTES = 'social-emotes',
-  CREDITS_PRIMARY_LISTINGS = 'credits-primary-listings'
+  CREDITS_PRIMARY_LISTINGS = 'credits-primary-listings',
+  /** Kill switch for the first party analytics proxy: on means send the events straight to Segment. */
+  SEGMENT_ALT_INGESTION = 'seg-alt'
 }
