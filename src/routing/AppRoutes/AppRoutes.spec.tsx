@@ -21,6 +21,12 @@ const renderAt = (path: string): MemoryHistory => {
   return history
 }
 
+const originalInnerWidth = window.innerWidth
+
+afterEach(() => {
+  window.innerWidth = originalInnerWidth
+})
+
 describe('when visiting a sunset scene creation route on desktop', () => {
   beforeEach(() => {
     window.innerWidth = 1280

@@ -12,8 +12,6 @@ import {
   DuplicateItemAction,
   DeleteItemAction,
   DELETE_ITEM,
-  SET_GROUND,
-  SetGroundAction,
   UPDATE_TRANSFORM,
   UpdateTransfromAction
 } from 'modules/scene/actions'
@@ -43,7 +41,6 @@ function* builderAnalyticsSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(ADD_ITEM, handleNewItem)
   yield takeLatest(DUPLICATE_ITEM, handleNewItem)
-  yield takeLatest(SET_GROUND, handleNewItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
@@ -77,7 +74,7 @@ function* handleOpenEditor(_: OpenEditorAction) {
   track('Open project', { projectId: project.id })
 }
 
-function* handleNewItem(action: AddItemAction | DuplicateItemAction | SetGroundAction) {
+function* handleNewItem(action: AddItemAction | DuplicateItemAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
 

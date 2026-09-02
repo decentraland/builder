@@ -3,7 +3,6 @@ import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { Scene, ComponentType, ComponentData, SceneSDK6, SceneSDK7 } from './types'
 import { ModelMetrics, Vector3 } from 'modules/models/types'
-import { Project } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)
 
@@ -82,22 +81,6 @@ export const DELETE_ITEM = 'Delete item'
 export const deleteItem = () => action(DELETE_ITEM, {})
 
 export type DeleteItemAction = ReturnType<typeof deleteItem>
-
-// Set ground
-
-export const SET_GROUND = 'Set ground'
-
-export const setGround = (projectId: string, asset?: Asset) => action(SET_GROUND, { projectId, asset })
-
-export type SetGroundAction = ReturnType<typeof setGround>
-
-// Set Layout
-
-export const APPLY_LAYOUT = 'Apply Layout'
-
-export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project })
-
-export type ApplyLayoutAction = ReturnType<typeof applyLayout>
 
 // Fix Lagacy Namespaces Request
 

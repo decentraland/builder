@@ -4,7 +4,6 @@ import { config } from 'config'
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
   TUTORIAL = 'builder-app-tutorial',
-  PUBLISH_POOL = 'builder-publish-pool',
   PUBLISH_DIRECT = 'builder-publish-direct'
 }
 

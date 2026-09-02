@@ -724,9 +724,9 @@
   },
   "export_modal": {
     "action": "下载场景",
-    "convert_to_sdk7": "Convert this scene to SDK7 (your saved scene stays unchanged)",
+    "convert_to_sdk7": "将此场景转换为 SDK7（您保存的场景保持不变）",
     "docs": "什么是分散的SDK？",
-    "description": "没有建造者问题的过渡到SDK，以进行更具交互性和个性化的场景。考虑到您可以选择从场景和模板组下载场景并将其加载到不同的帐户中。",
+    "description": "从构建器无缝切换到 SDK，打造更具互动性和个性化的场景。请注意，您可以选择下载场景并在不同账户之间上传。",
     "loading": "下载...",
     "title": "下载场景并以更高的复杂程度创建."
   },

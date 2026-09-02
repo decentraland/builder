@@ -27,8 +27,7 @@ export type MapStateProps = Pick<Props, 'project' | 'isLoading' | 'isLoggedIn' |
 export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin' | 'onShare'>
 
 export enum ShareModalType {
-  PROJECT = 'project',
-  POOL = 'pool'
+  PROJECT = 'project'
 }
 
 export type ShareModalMetadata = {

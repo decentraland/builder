@@ -11,6 +11,8 @@ function readAsText(blob: Blob) {
   })
 }
 
+const originalFetch = global.fetch
+
 describe('when creating the SDK7 files', () => {
   let project: Project
   let scene: SceneSDK7
@@ -27,6 +29,11 @@ describe('when creating the SDK7 files', () => {
     scene = { id: 'scene-id', composite: { version: 1, components: [] }, mappings: {} } as unknown as SceneSDK7
     builderAPI = { fetchCrdt: jest.fn().mockResolvedValue(new Blob(['fetched'])) } as unknown as BuilderAPI
     global.fetch = jest.fn().mockResolvedValue({ blob: () => Promise.resolve(new Blob(['file'])) }) as unknown as typeof fetch
+  })
+
+  afterEach(() => {
+    global.fetch = originalFetch
+    jest.restoreAllMocks()
   })
 
   describe('and a crdt is provided', () => {

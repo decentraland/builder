@@ -733,7 +733,7 @@
     "action": "Download scene",
     "convert_to_sdk7": "Convert this scene to SDK7 (your saved scene stays unchanged)",
     "docs": "What is the Decentraland SDK?",
-    "description": "Transition seamlessly from the Builder to the SDK for a more interactive and personalized scene. Keep in mind that you have the option to download scenes from the scene pool and templates and upload it across different accounts.",
+    "description": "Transition seamlessly from the Builder to the SDK for a more interactive and personalized scene. Keep in mind that you have the option to download your scenes and upload them across different accounts.",
     "loading": "Downloading...",
     "title": "Download scenes and create with a higher level of complexity."
   },
