@@ -102,8 +102,11 @@ const WorldPermissionsModal = (props: Props) => {
       if (!isValidAddress) {
         setErrorInvalidAddress(true)
       }
-      if (isValidAddress && metadata.worldName && newAddress && !collaboratorUserList.includes(newAddress)) {
-        setCollaboratorUserList(prev => [...prev, newAddress.toLowerCase()])
+      const address = newAddress.toLowerCase()
+      if (isValidAddress && metadata.worldName && address && !collaboratorUserList.includes(address)) {
+        setCollaboratorUserList(prev => [...prev, address])
+        // Collaborators only exist as allowlist entries, so grant deployment by default to persist them
+        onPutWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, address)
       }
       onGetProfile(newAddress)
     },
