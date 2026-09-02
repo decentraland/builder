@@ -76,6 +76,7 @@ export async function fetchBridgeState(
 ): Promise<BridgeState> {
   const response = await fetch(buildStateUrl(bridgeUrl, since), { cache: 'no-store', signal })
   if (!response.ok) {
+    await response.body?.cancel()
     throw new Error(t('live_preview_page.errors.bridge_response', { status: response.status }))
   }
   const state = (await response.json()) as Partial<BridgeState> | null
@@ -89,6 +90,7 @@ export async function fetchBridgeState(
 export async function fetchModelBlob(bridgeUrl: string, signal?: AbortSignal): Promise<Blob> {
   const response = await fetch(`${bridgeBase(bridgeUrl)}/${MODEL_KEY}`, { cache: 'no-store', signal })
   if (!response.ok) {
+    await response.body?.cancel()
     throw new Error(t('live_preview_page.errors.model_fetch', { status: response.status }))
   }
   return response.blob()
@@ -105,8 +107,13 @@ export async function blobsAreEqual(a: Blob, b: Blob): Promise<boolean> {
 
 /** Whether two states describe the same item, ignoring the version counter. */
 export function isSameModelMetadata(a: BridgeState | null, b: BridgeState): boolean {
-  // key-order sensitive, fine while both payloads come from the same bridge serializer.
-  return !!a && JSON.stringify({ ...a, version: 0 }) === JSON.stringify({ ...b, version: 0 })
+  return (
+    !!a &&
+    a.type === b.type &&
+    a.name === b.name &&
+    a.category === b.category &&
+    JSON.stringify(a.bodyShapes ?? []) === JSON.stringify(b.bodyShapes ?? [])
+  )
 }
 
 /**

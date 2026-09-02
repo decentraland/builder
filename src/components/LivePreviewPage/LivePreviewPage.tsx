@@ -577,7 +577,8 @@ export default function LivePreviewPage() {
         urns: urnsKey ? urnsKey.split(',') : [],
         emote: isEmote ? undefined : emote
       }
-      target.postMessage({ type: 'update', payload: { options } }, '*')
+      // Scoped to the preview origin: a navigated-away iframe must not receive the message.
+      target.postMessage({ type: 'update', payload: { options } }, new URL(iframe.src).origin)
     }, 300)
     return () => clearTimeout(timer)
   }, [definition, iframeBoots, bodyShape, skin, eyes, hair, urnsKey, emote, isEmote])
