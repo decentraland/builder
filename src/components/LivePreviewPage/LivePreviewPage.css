@@ -199,3 +199,9 @@
 .LivePreviewPage .footer .option.validation-status {
   margin-left: 12px;
 }
+
+/* The emote controls stay mounted while the model reloads (they must keep their event
+   subscription to catch the autoplay), so hide them visually instead of unmounting. */
+.LivePreviewPage .live-preview.is-loading .emote-controls-container {
+  visibility: hidden;
+}

@@ -9,7 +9,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
  *   - GET  <bridge>/state    -> JSON metadata { version, type, name, category, bodyShapes }
  *   - GET  <bridge>/model.glb -> the exported .glb binary
  *
- * This module polls <bridge>/state, and whenever `version` changes it fetches the fresh GLB as a
+ * This module watches <bridge>/state (long-polling with `?since=` when the bridge supports it,
+ * plain interval polling otherwise), and whenever `version` changes it fetches the fresh GLB as a
  * Blob and builds a `WearableWithBlobs` / `EmoteWithBlobs` definition. Feeding that object into the
  * <WearablePreview blob={...} /> prop makes the component diff its props and fire a `postMessage`
  * UPDATE to the iframe, hot-swapping the model with no iframe reload and nothing uploaded to
@@ -61,9 +62,26 @@ function isEmoteCategory(category?: string): boolean {
   return (EmoteCategory.schema.enum as string[]).includes(category)
 }
 
+function bridgeBase(bridgeUrl: string): string {
+  return bridgeUrl.replace(/\/$/, '')
+}
+
+/**
+ * `/state` URL. With `since`, a bridge that supports long-polling holds the request until its
+ * version differs; older bridges ignore the query and answer at once, which the caller detects
+ * from the elapsed time.
+ */
+export function buildStateUrl(bridgeUrl: string, since?: BridgeState['version'] | null): string {
+  const url = `${bridgeBase(bridgeUrl)}/state`
+  return since === null || since === undefined ? url : `${url}?since=${encodeURIComponent(String(since))}`
+}
+
 /** Fetch the current bridge metadata. Throws if the bridge is unreachable or the state is malformed. */
-export async function fetchBridgeState(bridgeUrl: string): Promise<BridgeState> {
-  const response = await fetch(`${bridgeUrl.replace(/\/$/, '')}/state`, { cache: 'no-store' })
+export async function fetchBridgeState(
+  bridgeUrl: string,
+  { since, signal }: { since?: BridgeState['version'] | null; signal?: AbortSignal } = {}
+): Promise<BridgeState> {
+  const response = await fetch(buildStateUrl(bridgeUrl, since), { cache: 'no-store', signal })
   if (!response.ok) {
     throw new Error(t('live_preview_page.errors.bridge_response', { status: response.status }))
   }
@@ -75,12 +93,27 @@ export async function fetchBridgeState(bridgeUrl: string): Promise<BridgeState> 
 }
 
 /** Fetch the latest exported GLB from the bridge as a Blob. */
-export async function fetchModelBlob(bridgeUrl: string): Promise<Blob> {
-  const response = await fetch(`${bridgeUrl.replace(/\/$/, '')}/${MODEL_KEY}`, { cache: 'no-store' })
+export async function fetchModelBlob(bridgeUrl: string, signal?: AbortSignal): Promise<Blob> {
+  const response = await fetch(`${bridgeBase(bridgeUrl)}/${MODEL_KEY}`, { cache: 'no-store', signal })
   if (!response.ok) {
     throw new Error(t('live_preview_page.errors.model_fetch', { status: response.status }))
   }
   return response.blob()
+}
+
+/** Byte-wise comparison, so a re-export of an unchanged scene can be recognised and skipped. */
+export async function blobsAreEqual(a: Blob, b: Blob): Promise<boolean> {
+  if (a === b) return true
+  if (a.size !== b.size) return false
+  const [x, y] = await Promise.all([a.arrayBuffer(), b.arrayBuffer()])
+  const v = new Uint8Array(y)
+  return new Uint8Array(x).every((byte, i) => byte === v[i])
+}
+
+/** Whether two states describe the same item, ignoring the version counter. */
+export function isSameModelMetadata(a: BridgeState | null, b: BridgeState): boolean {
+  // key-order sensitive, fine while both payloads come from the same bridge serializer.
+  return !!a && JSON.stringify({ ...a, version: 0 }) === JSON.stringify({ ...b, version: 0 })
 }
 
 /**

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Center, Dropdown, DropdownItemProps, DropdownProps, EmoteControls, Field, Icon, Loader, Popup, Radio } from 'decentraland-ui'
+import { Button, Center, Dropdown, DropdownItemProps, DropdownProps, Field, Icon, Loader, Popup, Radio } from 'decentraland-ui'
 import { BodyPartCategory, BodyShape, EmoteCategory, PreviewEmote, PreviewUnityMode, WearableCategory } from '@dcl/schemas'
 import { openModal } from 'decentraland-dapps/dist/modules/modal'
-import { WearablePreview } from 'decentraland-ui2'
+import { EmoteControls, WearablePreview } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isDevelopment } from 'lib/environment'
 import {
@@ -25,6 +25,7 @@ import {
   getSelectedBaseWearablesByBodyShape,
   getSkinColor,
   getWearablePreviewController,
+  isLoadingBaseWearables,
   isPlayingEmote as getIsPlayingEmote
 } from 'modules/editor/selectors'
 import { getRandomBaseWearables, pickRandom, toHex } from 'modules/editor/utils'
@@ -49,17 +50,22 @@ import {
   LIVE_PREVIEW_ITEM_ID,
   LivePreviewStatus,
   MODEL_KEY,
+  blobsAreEqual,
   buildDefinition,
   fetchBridgeState,
-  fetchModelBlob
+  fetchModelBlob,
+  isSameModelMetadata
 } from './livePreview'
 
 import 'components/ItemEditorPage/CenterPanel/CenterPanel.css'
 import './LivePreviewPage.css'
 
 const PREVIEW_ID = 'blender-live-preview'
+// Interval used only with bridges that don't long-poll: those answer `/state?since=` at once.
 const POLL_INTERVAL_MS = 1000 * 2
-// While the bridge is unreachable, back off so a stopped bridge isn't hammered every 2s.
+// A `/state?since=` reply this fast with an unchanged version means the bridge ignored `since`.
+const LONG_POLL_FALLBACK_MS = 1000
+// While the bridge is unreachable, back off so a stopped bridge isn't hammered.
 const ERROR_POLL_INTERVAL_MS = 1000 * 15
 const BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
@@ -115,6 +121,9 @@ export default function LivePreviewPage() {
   const [error, setError] = useState<string | null>(null)
   const [bridgeState, setBridgeState] = useState<BridgeState | null>(null)
   const [glb, setGlb] = useState<Blob | null>(null)
+  // Mounting the preview before the base wearables catalog is in would boot the iframe with no
+  // urns and reboot it (the urns live in its URL) as soon as the catalog lands.
+  const isLoadingCatalog = useSelector(isLoadingBaseWearables)
   const [lastUpdateAt, setLastUpdateAt] = useState<number | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
@@ -144,6 +153,10 @@ export default function LivePreviewPage() {
   const isConnectedRef = useRef<boolean>(false)
   const lastVersionRef = useRef<BridgeState['version'] | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const abortRef = useRef<AbortController | null>(null)
+  // Latest applied model and metadata, to recognise re-exports that changed nothing.
+  const glbRef = useRef<Blob | null>(null)
+  const bridgeStateRef = useRef<BridgeState | null>(null)
 
   const stopPolling = useCallback(() => {
     isConnectedRef.current = false
@@ -151,6 +164,7 @@ export default function LivePreviewPage() {
       clearTimeout(timerRef.current)
       timerRef.current = null
     }
+    abortRef.current?.abort()
   }, [])
 
   const disconnect = useCallback(() => {
@@ -163,6 +177,9 @@ export default function LivePreviewPage() {
   // Single polling tick: read bridge state, and if the export changed, pull the fresh GLB. The
   // definition is derived below, and updating it makes <WearablePreview> fire an UPDATE
   // postMessage to the iframe — a hot-swap with no reload.
+  // Once a version is known the request long-polls (`?since=`): a bridge that supports it answers
+  // only when the version moves, so the next tick starts right away; one that ignores `since`
+  // answers immediately, and then the interval applies.
   // Reentrant calls bail instead of forking a second setTimeout chain: refreshes can fire while a
   // tick is mid-fetch (tab return raises both visibilitychange and focus), and only the latest
   // chain's timer is tracked — an orphaned one would keep polling until disconnect.
@@ -170,32 +187,56 @@ export default function LivePreviewPage() {
   const poll = useCallback(async () => {
     if (!isConnectedRef.current || isPollingRef.current) return
     isPollingRef.current = true
-    let interval = POLL_INTERVAL_MS
+    const controller = new AbortController()
+    abortRef.current = controller
+    const startedAt = Date.now()
+    const previousVersion = lastVersionRef.current
+    let delay = POLL_INTERVAL_MS
     try {
-      const state = await fetchBridgeState(bridgeUrl)
+      const state = await fetchBridgeState(bridgeUrl, { since: previousVersion, signal: controller.signal })
       // Bail out after each await: a disconnect mid-flight must not overwrite the DISCONNECTED status.
       if (!isConnectedRef.current) return
       setStatus(LivePreviewStatus.CONNECTED)
       setError(null)
 
-      if (state.version !== lastVersionRef.current) {
-        const model = await fetchModelBlob(bridgeUrl)
-        if (!isConnectedRef.current) return
-        lastVersionRef.current = state.version
-        setBridgeState(state)
-        setGlb(model)
-        setLastUpdateAt(Date.now())
-      }
-    } catch (e) {
+      const changed = state.version !== previousVersion
+      delay = !changed && Date.now() - startedAt < LONG_POLL_FALLBACK_MS ? POLL_INTERVAL_MS : 0
+      if (!changed) return
+
+      const model = await fetchModelBlob(bridgeUrl, controller.signal)
       if (!isConnectedRef.current) return
-      interval = ERROR_POLL_INTERVAL_MS
-      setStatus(LivePreviewStatus.ERROR)
-      setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
+      const sameBytes = glbRef.current !== null && (await blobsAreEqual(glbRef.current, model))
+      if (!isConnectedRef.current) return
+      lastVersionRef.current = state.version
+      // Blender re-exported an unchanged scene (a save, or the exporter's own side effects):
+      // nothing to redraw, so keep the current definition and spare Unity a reload.
+      if (sameBytes && isSameModelMetadata(bridgeStateRef.current, state)) return
+
+      bridgeStateRef.current = state
+      setBridgeState(state)
+      if (!sameBytes) {
+        glbRef.current = model
+        setGlb(model)
+      }
+      setLastUpdateAt(Date.now())
+    } catch (e) {
+      if (controller.signal.aborted) {
+        // A refresh cut the request short: the next tick runs immediately.
+        delay = 0
+      } else {
+        if (!isConnectedRef.current) return
+        delay = ERROR_POLL_INTERVAL_MS
+        setStatus(LivePreviewStatus.ERROR)
+        setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
+      }
     } finally {
       isPollingRef.current = false
+      if (abortRef.current === controller) abortRef.current = null
+      // An aborted tick is followed at once by the one the refresh asked for: keep the spinner.
+      if (!controller.signal.aborted || !isConnectedRef.current) setIsRefreshing(false)
       // Pause the loop while the tab is hidden: the visibility handler restarts it on return.
       if (isConnectedRef.current && !document.hidden) {
-        timerRef.current = setTimeout(() => void poll(), interval)
+        timerRef.current = setTimeout(() => void poll(), delay)
       }
     }
   }, [bridgeUrl])
@@ -209,18 +250,19 @@ export default function LivePreviewPage() {
     void poll()
   }, [poll, stopPolling])
 
-  const handleRefresh = useCallback(async () => {
+  // Ask the bridge now instead of waiting for the current tick: an in-flight long-poll is cut
+  // short and reschedules itself immediately. The model is only re-fetched if the version moved.
+  const handleRefresh = useCallback(() => {
     if (!isConnectedRef.current) return
+    setIsRefreshing(true)
     if (timerRef.current) {
       clearTimeout(timerRef.current)
       timerRef.current = null
     }
-    lastVersionRef.current = null
-    setIsRefreshing(true)
-    try {
-      await poll()
-    } finally {
-      setIsRefreshing(false)
+    if (abortRef.current) {
+      abortRef.current.abort()
+    } else {
+      void poll()
     }
   }, [poll])
 
@@ -245,7 +287,7 @@ export default function LivePreviewPage() {
   useEffect(() => {
     const handleReturn = () => {
       if (!document.hidden) {
-        void handleRefresh()
+        handleRefresh()
       }
     }
     document.addEventListener('visibilitychange', handleReturn)
@@ -417,9 +459,22 @@ export default function LivePreviewPage() {
     }
   }, [hasDefinition])
 
+  // Create the controller as soon as the iframe is in the DOM, not on load: EmoteControls must be
+  // subscribed before the renderer's autoplay fires ANIMATION_PLAY. Babylon emits it right after
+  // LOAD, before React commits a load-triggered mount, so a controls bar mounted in onLoad misses
+  // it and stays stuck on the unplayed state. The controller lives in redux so the editor saga
+  // tracks the emote play/pause/end events and keeps isPlayingEmote in sync, like the item editor.
+  useEffect(() => {
+    if (hasDefinition && !wearableController) {
+      try {
+        dispatch(setWearablePreviewController(WearablePreview.createController(PREVIEW_ID)))
+      } catch (e) {
+        console.warn('[LivePreview] failed to create preview controller:', e)
+      }
+    }
+  }, [hasDefinition, wearableController, dispatch])
+
   const handlePreviewLoad = useCallback(() => {
-    // The controller lives in redux so the editor saga tracks the emote play/pause/end events
-    // and keeps isPlayingEmote in sync, exactly like the item editor.
     let controller = wearableController
     if (!controller) {
       controller = WearablePreview.createController(PREVIEW_ID)
@@ -533,7 +588,7 @@ export default function LivePreviewPage() {
             </div>
             {isConnected && (
               <div className="actions">
-                <Button icon disabled={isRefreshing} onClick={() => void handleRefresh()}>
+                <Button icon disabled={isRefreshing} onClick={() => handleRefresh()}>
                   <Icon name="refresh" loading={isRefreshing} />
                   <span>{t('live_preview_page.refresh')}</span>
                 </Button>
@@ -602,7 +657,7 @@ export default function LivePreviewPage() {
         </div>
 
         <div className={`live-preview CenterPanel ${isPreviewLoading ? 'is-loading' : ''}`}>
-          {definition ? (
+          {definition && !isLoadingCatalog ? (
             <WearablePreview
               id={PREVIEW_ID}
               profile="default"
@@ -628,7 +683,11 @@ export default function LivePreviewPage() {
             />
           ) : (
             <div className="live-placeholder">
-              {status === LivePreviewStatus.CONNECTING ? <Loader active size="large" /> : <span>{t('live_preview_page.no_model')}</span>}
+              {status === LivePreviewStatus.CONNECTING || definition ? (
+                <Loader active size="large" />
+              ) : (
+                <span>{t('live_preview_page.no_model')}</span>
+              )}
             </div>
           )}
           {definition && isPreviewLoading && (
@@ -637,9 +696,17 @@ export default function LivePreviewPage() {
             </Center>
           )}
           <div className="footer">
-            {isEmote && !isPreviewLoading && wearableController && (
+            {/* Kept mounted while loading (hidden via CSS) and re-keyed per definition: the controls
+                must already be subscribed when the renderer's autoplay fires ANIMATION_PLAY right
+                after load, and the key resets their cached length/state for each streamed model. */}
+            {isEmote && definition && wearableController && (
               <div className="emote-controls-container">
-                <EmoteControls className="emote-controls" wearablePreviewId={PREVIEW_ID} wearablePreviewController={wearableController} />
+                <EmoteControls
+                  key={definition.blob.id}
+                  className="emote-controls"
+                  wearablePreviewId={PREVIEW_ID}
+                  wearablePreviewController={wearableController}
+                />
               </div>
             )}
             <div className="options">
