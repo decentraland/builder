@@ -5,6 +5,7 @@ import { Network } from '@dcl/schemas'
 import { Section, Row, Narrow, Column, Header, Button, Popup, Tabs, Table, Label, SemanticSIZES, Icon } from 'decentraland-ui'
 import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { openExternal } from 'lib/url'
 import { locations } from 'routing/locations'
 import { FromParam } from 'modules/location/types'
 import {
@@ -104,16 +105,9 @@ export default function CollectionDetailPage({
     }
   }, [history, collection, items])
 
-  const navigateTo = useCallback((url: string, target = '') => {
-    const newWindow = window.open(url, target)
-    if (newWindow) {
-      newWindow.focus()
-    }
-  }, [])
-
   const handleNavigateToForum = useCallback(() => {
-    if (collection && collection.isPublished && collection.forumLink) {
-      navigateTo(collection.forumLink, '_blank')
+    if (collection && collection.isPublished) {
+      openExternal(collection.forumLink)
     }
   }, [collection])
 
