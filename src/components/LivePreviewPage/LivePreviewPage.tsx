@@ -311,18 +311,15 @@ export default function LivePreviewPage() {
     }
   }, [dispatch, baseWearables, selectedBaseWearablesByBodyShape])
 
-  // Avatar props (urns, bodyShape, colors, emote) are part of the iframe URL, so changing any of
-  // them reloads the iframe — and the blob, which only travels via postMessage, is gone on the
-  // fresh page. Every boot posts `ready`, so bump a revision that rides inside the definition:
-  // that makes the options deep-unequal and forces decentraland-ui2 to re-send the blob.
-  const [revision, setRevision] = useState(0)
+  // Every iframe boot posts `ready`; the avatar effect below re-sends the full options after each.
+  const [iframeBoots, setIframeBoots] = useState(0)
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type !== 'ready') return
       // Only trust the preview iframe: any window can post a `ready`-shaped message.
       const iframe = document.getElementById(PREVIEW_ID) as HTMLIFrameElement | null
       if (!iframe || event.source !== iframe.contentWindow) return
-      setRevision(current => current + 1)
+      setIframeBoots(current => current + 1)
     }
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
@@ -417,10 +414,9 @@ export default function LivePreviewPage() {
     return buildDefinition(bridgeState, glb, {
       category: categoryOverride ?? undefined,
       hides,
-      loop: emoteLoop,
-      revision
+      loop: emoteLoop
     })
-  }, [bridgeState, glb, categoryOverride, hides, emoteLoop, revision])
+  }, [bridgeState, glb, categoryOverride, hides, emoteLoop])
   useEffect(() => {
     definitionIdRef.current = definition?.blob.id ?? LIVE_PREVIEW_ITEM_ID
   }, [definition])
@@ -452,6 +448,7 @@ export default function LivePreviewPage() {
 
   const isEmote = definition?.isEmote ?? false
   const hasDefinition = !!definition
+  const isPreviewMounted = hasDefinition && !isLoadingCatalog
 
   useEffect(() => {
     if (hasDefinition) {
@@ -550,6 +547,40 @@ export default function LivePreviewPage() {
         .map(wearable => (wearable ? wearable.id : null))
         .filter((urn): urn is string => urn !== null)
     : []
+
+  // decentraland-ui2 bakes bodyShape, colors, urns and emote into the iframe URL, so changing any
+  // of them reboots Unity (~10s). Hand ui2 a frozen snapshot taken when the iframe mounts, and
+  // post every later change (and the blob) straight to the iframe as an UPDATE: the renderer
+  // applies those keys incrementally (~2s). The snapshot never changes, so ui2 never sends.
+  const skin = toHex(skinColor)
+  const eyes = toHex(eyeColor)
+  const hair = toHex(hairColor)
+  const urnsKey = urns.join(',')
+  const initialAvatarRef = useRef<{ bodyShape: BodyShape; skin: string; eyes: string; hair: string; urns: string[] } | null>(null)
+  if (isPreviewMounted && !initialAvatarRef.current) {
+    initialAvatarRef.current = { bodyShape, skin, eyes, hair, urns }
+  }
+  useEffect(() => {
+    if (!definition || iframeBoots === 0) return
+    const iframe = document.getElementById(PREVIEW_ID) as HTMLIFrameElement | null
+    if (!iframe?.contentWindow) return
+    const target = iframe.contentWindow
+    // Coalesce bursts (color pickers, randomize): each UPDATE costs a renderer reload.
+    const timer = setTimeout(() => {
+      setIsPreviewLoading(true)
+      const options = {
+        blob: definition.blob,
+        bodyShape,
+        skin,
+        eyes,
+        hair,
+        urns: urnsKey ? urnsKey.split(',') : [],
+        emote: isEmote ? undefined : emote
+      }
+      target.postMessage({ type: 'update', payload: { options } }, '*')
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [definition, iframeBoots, bodyShape, skin, eyes, hair, urnsKey, emote, isEmote])
 
   const isConnected = status === LivePreviewStatus.CONNECTED || status === LivePreviewStatus.CONNECTING
 
@@ -657,17 +688,12 @@ export default function LivePreviewPage() {
         </div>
 
         <div className={`live-preview CenterPanel ${isPreviewLoading ? 'is-loading' : ''}`}>
-          {definition && !isLoadingCatalog ? (
+          {isPreviewMounted && initialAvatarRef.current ? (
             <WearablePreview
               id={PREVIEW_ID}
               profile="default"
-              bodyShape={bodyShape}
-              emote={isEmote ? undefined : emote}
-              skin={toHex(skinColor)}
-              eyes={toHex(eyeColor)}
-              hair={toHex(hairColor)}
-              urns={urns}
-              blob={definition.blob}
+              {...initialAvatarRef.current}
+              emote={isEmote ? undefined : PreviewEmote.IDLE}
               disableAutoRotate
               disableBackground
               disableDefaultEmotes={isEmote}
@@ -690,7 +716,7 @@ export default function LivePreviewPage() {
               )}
             </div>
           )}
-          {definition && isPreviewLoading && (
+          {isPreviewMounted && isPreviewLoading && (
             <Center>
               <Loader active />
             </Center>

@@ -39,7 +39,7 @@ export type BridgeState = {
 }
 
 export const MODEL_KEY = 'model.glb'
-/** Base of the definition id fed to the preview; buildDefinition appends the version/revision. */
+/** Base of the definition id fed to the preview; buildDefinition appends the version. */
 export const LIVE_PREVIEW_ITEM_ID = 'live-preview'
 const BOTH_BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
@@ -48,13 +48,6 @@ export type DefinitionOverrides = {
   category?: WearableCategory
   hides?: (WearableCategory | BodyPartCategory)[]
   loop?: boolean
-  /**
-   * Bumped every time the preview iframe boots (posts `ready`). Avatar props like urns or
-   * bodyShape are part of the iframe URL, so changing them reloads the iframe — and the blob,
-   * which only travels via postMessage, is lost on the other side. Baking the revision into the
-   * definition makes the next options object deep-unequal, forcing decentraland-ui2 to re-send it.
-   */
-  revision?: number
 }
 
 function isEmoteCategory(category?: string): boolean {
@@ -131,12 +124,12 @@ export function buildDefinition(
   const category = isEmote ? state.category : overrides.category ?? state.category
 
   const base = {
-    // The version and revision ride in the id so every push looks like a brand-new item. Two
-    // consumers depend on it changing: decentraland-ui2 deep-equals successive updates (two
-    // different Blobs compare as equal empty objects, so only a changing field gets the UPDATE
-    // through), and the Unity renderer caches loaded models by this id (as the entity URN) —
-    // with a constant id it would keep the first GLB forever.
-    id: `${LIVE_PREVIEW_ITEM_ID}-${String(state.version)}-${overrides.revision ?? 0}`,
+    // The version rides in the id so every push looks like a brand-new item. Two consumers
+    // depend on it changing: the iframe deep-equals successive updates (two different Blobs
+    // compare as equal empty objects, so only a changing field gets the UPDATE through), and the
+    // Unity renderer caches loaded models by this id (as the entity URN) — with a constant id it
+    // would keep the first GLB forever.
+    id: `${LIVE_PREVIEW_ITEM_ID}-${String(state.version)}`,
     name,
     description: 'Live preview streamed from Blender',
     thumbnail: '',
