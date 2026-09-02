@@ -1,5 +1,6 @@
 import { Authorization } from './auth'
-import { BuilderAPI } from './builder'
+import { BuilderAPI, RemoteCollection } from './builder'
+import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
 jest.mock('./auth')
@@ -122,5 +123,76 @@ describe('when saving item contents', () => {
       expect(BuilderAPI.prototype.request).toHaveBeenCalledWith('post', `/items/${item.id}/files`, { params: expect.any(FormData) })
       expect(BuilderAPI.prototype.request).toHaveBeenCalledWith('post', `/items/${item.id}/videos`, { params: expect.any(FormData) })
     })
+  })
+})
+
+describe('when fetching a collection', () => {
+  const buildRemoteCollection = (forumLink: string | null) =>
+    ({
+      id: 'collectionId',
+      name: 'name',
+      eth_address: 'ethAddress',
+      urn: 'urn',
+      is_published: true,
+      is_approved: false,
+      minters: [],
+      managers: [],
+      forum_link: forumLink,
+      lock: null,
+      reviewed_at: null,
+      created_at: new Date(),
+      updated_at: new Date(),
+      linked_contract_address: null,
+      linked_contract_network: null,
+      is_mapping_complete: false
+    } as unknown as RemoteCollection)
+
+  describe('and its forum link is an https url', () => {
+    it('should keep it', async () => {
+      jest.spyOn(BuilderAPI.prototype, 'request').mockResolvedValue(buildRemoteCollection('https://forum.decentraland.org/t/a-post/1'))
+
+      const collection = await mockBuilder.fetchCollection('collectionId')
+
+      expect(collection.forumLink).toBe('https://forum.decentraland.org/t/a-post/1')
+    })
+  })
+
+  describe('and its forum link is not an https url', () => {
+    it('should leave it undefined', async () => {
+      jest.spyOn(BuilderAPI.prototype, 'request').mockResolvedValue(buildRemoteCollection('javascript:void 0'))
+
+      const collection = await mockBuilder.fetchCollection('collectionId')
+
+      expect(collection.forumLink).toBeUndefined()
+    })
+  })
+})
+
+describe('when saving a collection', () => {
+  let collection: Collection
+  let request: jest.SpyInstance
+
+  beforeEach(() => {
+    collection = {
+      id: 'collectionId',
+      name: 'name',
+      owner: 'ethAddress',
+      urn: 'urn',
+      minters: [],
+      managers: [],
+      forumLink: 'https://forum.decentraland.org/t/a-post/1',
+      reviewedAt: +new Date()
+    } as unknown as Collection
+
+    request = jest.spyOn(BuilderAPI.prototype, 'request').mockResolvedValue({})
+    request.mockClear()
+  })
+
+  it('should not send the fields the server manages', async () => {
+    await mockBuilder.saveCollection(collection, 'data')
+
+    const [, , options] = request.mock.calls[0]
+    expect(options.params.collection).not.toHaveProperty('forum_link')
+    expect(options.params.collection).not.toHaveProperty('reviewed_at')
   })
 })

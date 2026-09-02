@@ -2,6 +2,7 @@ import React from 'react'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { useHistory } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { openExternal } from 'lib/url'
 import { getCollectionEditorURL, isLocked } from 'modules/collection/utils'
 import { FromParam } from 'modules/location/types'
 import { CreateOrEditMultipleItemsModalType } from 'components/Modals/CreateAndEditMultipleItemsModal/CreateAndEditMultipleItemsModal.types'
@@ -14,8 +15,8 @@ const CollectionContextMenu: React.FC<Props> = props => {
   const history = useHistory()
 
   const handleNavigateToForum = () => {
-    if (collection.isPublished && collection.forumLink) {
-      navigateTo(collection.forumLink, '_blank')
+    if (collection.isPublished) {
+      openExternal(collection.forumLink)
     }
   }
 
@@ -44,13 +45,6 @@ const CollectionContextMenu: React.FC<Props> = props => {
   const handleEditInBulk = () => {
     const { collection, onOpenModal } = props
     onOpenModal('CreateAndEditMultipleItemsModal', { collectionId: collection.id, type: CreateOrEditMultipleItemsModalType.EDIT })
-  }
-
-  const navigateTo = (url: string, target = '') => {
-    const newWindow = window.open(url, target)
-    if (newWindow) {
-      newWindow.focus()
-    }
   }
 
   const canDelete = !isLocked(collection) && !collection.isPublished

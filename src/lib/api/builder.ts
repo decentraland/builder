@@ -3,6 +3,7 @@ import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
 import { NO_CACHE_HEADERS } from 'lib/headers'
+import { getSafeExternalUrl } from 'lib/url'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest, TemplateStatus } from 'modules/project/types'
@@ -421,7 +422,9 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   return item
 }
 
-function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock' | 'is_mapping_complete'> {
+function toRemoteCollection(
+  collection: Collection
+): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock' | 'is_mapping_complete' | 'forum_link' | 'reviewed_at'> {
   return {
     id: collection.id,
     name: collection.name,
@@ -434,9 +437,7 @@ function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'cre
     linked_contract_address: collection.linkedContractAddress || null,
     linked_contract_network: collection.linkedContractNetwork || null,
     minters: collection.minters,
-    managers: collection.managers,
-    forum_link: collection.forumLink || null,
-    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null
+    managers: collection.managers
   }
 }
 
@@ -451,7 +452,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     itemCount: Number(remoteCollection.item_count),
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
-    forumLink: remoteCollection.forum_link || undefined,
+    forumLink: getSafeExternalUrl(remoteCollection.forum_link),
     lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
     linkedContractAddress: remoteCollection.linked_contract_address || undefined,

@@ -3,6 +3,8 @@ import { Button, Column, Modal, Row } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import CollectionImage from 'components/CollectionImage'
+import ExternalLink from 'components/ExternalLink'
+import { openExternal } from 'lib/url'
 import './CongratulationsStep.css'
 
 export const CongratulationsStep: React.FC<{ collection: Collection; onClose: () => void; itemsCount: number }> = props => {
@@ -27,9 +29,9 @@ export const CongratulationsStep: React.FC<{ collection: Collection; onClose: ()
                 <span className="subtitle">
                   {t('publish_wizard_collection_modal.congratulations_step.subtitle', {
                     forum_post: (
-                      <a className="forum-post" href={collection.forumLink} rel="noopener noreferrer" target="_blank">
+                      <ExternalLink className="forum-post" href={collection.forumLink}>
                         {t('publish_wizard_collection_modal.congratulations_step.forum_post')}
-                      </a>
+                      </ExternalLink>
                     )
                   })}
                 </span>
@@ -54,7 +56,7 @@ export const CongratulationsStep: React.FC<{ collection: Collection; onClose: ()
           <Button className="finish" secondary onClick={onClose}>
             {t('global.finish')}
           </Button>
-          <Button className="proceed" primary as="a" href={collection.forumLink} target="_blank" rel="noopener noreferrer">
+          <Button className="proceed" primary onClick={() => openExternal(collection.forumLink)}>
             {t('publish_wizard_collection_modal.congratulations_step.view_forum_post')}
           </Button>
         </Row>
