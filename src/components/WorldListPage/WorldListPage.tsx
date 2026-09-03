@@ -75,11 +75,7 @@ const WorldListPage: React.FC<Props> = props => {
     }
   }, [tab])
 
-  const handlePublishScene = useCallback(() => {
-    history.push(locations.scenes())
-  }, [locations, history])
-
-  const handleEditScene = useCallback(
+  const handleViewScene = useCallback(
     (ens: ENS) => {
       const { projectId } = deploymentsByWorlds[ens.subdomain]
       history.push(locations.sceneDetail(projectId as string))
@@ -218,8 +214,7 @@ const WorldListPage: React.FC<Props> = props => {
                           deploymentsByWorlds={deploymentsByWorlds}
                           ens={ens}
                           projects={projects}
-                          onEditScene={handleEditScene}
-                          onPublishScene={handlePublishScene}
+                          onViewScene={handleViewScene}
                           onUnpublishScene={handleUnpublishScene}
                         />
                       </Table.Cell>

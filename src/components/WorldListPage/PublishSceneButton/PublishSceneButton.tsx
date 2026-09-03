@@ -3,22 +3,15 @@ import { Props } from './PublishSceneButton.types'
 import { isWorldDeployed } from '../utils'
 import { t } from 'decentraland-dapps/dist/modules/translation'
 
-export default function PublishSceneButton({
-  deploymentsByWorlds,
-  ens,
-  projects,
-  onEditScene,
-  onUnpublishScene,
-  onPublishScene
-}: Props): JSX.Element {
+export default function PublishSceneButton({ deploymentsByWorlds, ens, projects, onViewScene, onUnpublishScene }: Props): JSX.Element {
   const deployment = deploymentsByWorlds[ens.subdomain]
   return isWorldDeployed(deploymentsByWorlds, ens) ? (
     <div className="publish-scene">
       <Popup content={deployment?.name} on="hover" trigger={<span>{deployment?.name}</span>} />
       {projects.find(project => project.id === deployment?.projectId)
-        ? onEditScene && (
-            <Button inverted size="small" onClick={() => onEditScene(ens)}>
-              {t('worlds_list_page.table.edit_scene')}
+        ? onViewScene && (
+            <Button inverted size="small" onClick={() => onViewScene(ens)}>
+              {t('worlds_list_page.table.view_scene')}
             </Button>
           )
         : onUnpublishScene && (
@@ -37,11 +30,6 @@ export default function PublishSceneButton({
   ) : (
     <div className="publish-scene">
       <span>-</span>
-      {onPublishScene && (
-        <Button primary size="small" onClick={onPublishScene}>
-          {t('worlds_list_page.table.publish_scene')}
-        </Button>
-      )}
     </div>
   )
 }
