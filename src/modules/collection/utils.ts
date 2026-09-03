@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { ChainId } from '@dcl/schemas'
 import { Env } from '@dcl/ui-env'
-import { ContractName, getContract, getContractName } from 'decentraland-transactions'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { getLatestOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trades'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { config } from 'config'
@@ -67,14 +67,17 @@ export function getSaleAddress(chainId: ChainId) {
   return getContract(ContractName.CollectionStore, chainId).address.toLowerCase()
 }
 
+/** Test oracle: no production caller. Specs use it to name one specific version by address. */
 export function getOffchainSaleAddress(chainId: ChainId) {
   return getContract(ContractName.OffChainMarketplace, chainId).address.toLowerCase()
 }
 
+/** Test oracle: no production caller. Specs use it to name one specific version by address. */
 export function getOffchainV2SaleAddress(chainId: ChainId) {
   return getContract(ContractName.OffChainMarketplaceV2, chainId).address.toLowerCase()
 }
 
+/** Test oracle: no production caller. Specs use it to name one specific version by address. */
 export function getOffchainV3SaleAddress(chainId: ChainId) {
   return getContract(ContractName.OffChainMarketplaceV3, chainId).address.toLowerCase()
 }
@@ -102,8 +105,25 @@ const OFFCHAIN_SALE_CONTRACT_NAMES = [
  * collection might hold, not the current one.
  */
 export function getLatestOffchainSale(chainId: ChainId): { contractName: ContractName; address: string } {
-  const { address } = getLatestOffChainMarketplaceContract(chainId)
-  return { contractName: getContractName(address), address: address.toLowerCase() }
+  const address = getLatestOffChainMarketplaceContract(chainId).address.toLowerCase()
+
+  // The NAME is resolved against Builder's own list, on this chain, rather than through getContractName.
+  // Two reasons. getContractName reverse-scans Builder's copy of the registry while the address comes from
+  // dapps' copy, so the moment their semver ranges resolve different registries it throws — uncaught, inside
+  // the put-for-sale submit handler. And it matches on any chain, so a deterministic address reused under
+  // another name elsewhere would silently mislabel the authorization modal. The name is a display label; it
+  // must never be able to abort a sale, hence the fallback. The ADDRESS is what actually gets granted, and
+  // that still comes from dapps.
+  const contractName =
+    OFFCHAIN_SALE_CONTRACT_NAMES.find(name => {
+      try {
+        return getContract(name, chainId).address.toLowerCase() === address
+      } catch {
+        return false
+      }
+    }) ?? ContractName.OffChainMarketplaceV2
+
+  return { contractName, address }
 }
 
 /** Every off-chain marketplace version deployed on the chain, for "is this collection listed" checks. */

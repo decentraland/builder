@@ -22,6 +22,7 @@ import {
   getOffchainV2SaleAddress,
   getOffchainV3SaleAddress,
   getLatestOffchainSale,
+  getOffchainSaleAddresses,
   weiToUsdCents,
   shopCreditsNeededForPrice
 } from './utils'
@@ -405,6 +406,26 @@ describe('when toggling the permissions for the offchain marketplace contract', 
         expect(enableSaleOffchain(collection, wallet, false)).toHaveLength(2)
       })
     })
+
+    describe('and the collection holds no offchain marketplace at all', () => {
+      let collection: Collection
+      let wallet: Wallet
+
+      beforeEach(() => {
+        // `minters: []` rather than an absent field on purpose: the filter calls `.some` on the array and
+        // would throw on undefined, which would pass this test for the wrong reason.
+        collection = { id: 'id', minters: [] } as unknown as Collection
+        wallet = { networks: { MATIC: { chainId: ChainId.MATIC_AMOY } } } as Wallet
+      })
+
+      // The fallback exists so the saga never turns an empty list into a setMinters call with two empty
+      // arrays. Untested, deleting it passed the whole suite.
+      it('should fall back to revoking the latest version', () => {
+        expect(enableSaleOffchain(collection, wallet, false)).toEqual([
+          { address: getOffchainV3SaleAddress(ChainId.MATIC_AMOY), hasAccess: false, collection }
+        ])
+      })
+    })
   })
 })
 
@@ -534,10 +555,47 @@ describe('when signing a trade the way Builder signs an item order', () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    // restoreAllMocks only restores jest.spyOn; getSigner is a module-factory jest.fn(), so its
+    // mockResolvedValue would otherwise survive into whatever runs next.
+    ;(dappsEth.getSigner as jest.Mock).mockReset()
   })
 
+  // Asserted against what enableSaleOffchain actually GRANTS, not against the resolver. Both sides of a
+  // resolver comparison route through the same getLatestOffChainMarketplaceContract, so it cannot drift by
+  // construction — it would pin that Builder's resolver agrees with dapps, not that Builder's grant does.
   it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
-    expect(domain.verifyingContract?.toLowerCase()).toBe(getLatestOffchainSale(chainId).address)
+    const [granted] = enableSaleOffchain({ id: '1' } as Collection, { networks: { MATIC: { chainId } } } as Wallet, true)
+
+    expect(domain.verifyingContract?.toLowerCase()).toBe(granted.address)
+  })
+})
+
+/**
+ * The tripwire for the one thing delegation cannot fix.
+ *
+ * "Latest" comes from decentraland-dapps; the enumeration of what a collection might already hold is
+ * Builder's own list. When dapps ships a V4 and Builder takes the bump, enableSaleOffchain grants V4 while
+ * this list still stops at V3 — so isEnableForSaleOffchain never sees the grant, the collection reads as
+ * not-on-sale, the user re-clicks enable and submits more on-chain grants, and the revoke path cannot see
+ * the V4 rights either. Nothing else in the suite fails when that happens. This does, at the list.
+ */
+describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])('when enumerating the offchain marketplaces on chain %s', chainId => {
+  it('should include the version decentraland-dapps resolves as the latest', () => {
+    expect(getOffchainSaleAddresses(chainId)).toContain(getLatestOffchainSale(chainId).address)
+  })
+})
+
+describe('when a chain is missing one of the marketplace versions', () => {
+  let collection: Collection
+  let wallet: Wallet
+
+  beforeEach(() => {
+    // V3 is testnet-only, so on Polygon mainnet the enumeration's catch branch actually runs.
+    collection = { minters: [getOffchainV2SaleAddress(ChainId.MATIC_MAINNET)], id: '1' } as Collection
+    wallet = { networks: { MATIC: { chainId: ChainId.MATIC_MAINNET } } } as Wallet
+  })
+
+  it('should still report a collection minted by a deployed version as on sale', () => {
+    expect(isEnableForSaleOffchain(collection, wallet)).toBe(true)
   })
 })
