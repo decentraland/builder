@@ -2,6 +2,7 @@ import { takeLatest, select, all, call } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { createAnalyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
+import { FETCH_APPLICATION_FEATURES_SUCCESS } from 'decentraland-dapps/dist/modules/features/actions'
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
@@ -30,6 +31,8 @@ import {
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
+import { getIsSegmentAltIngestionEnabled } from 'modules/features/selectors'
+import { persistSegmentKillSwitch } from './proxy'
 import { trimAsset } from './track'
 import { SyncAction, SYNC } from 'modules/sync/actions'
 import { getLocalProjectIds } from 'modules/sync/selectors'
@@ -70,6 +73,7 @@ function* builderAnalyticsSaga() {
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
   yield takeLatest(DEPLOY_TO_WORLD_SUCCESS, handleDeployToWorldSuccess)
+  yield takeLatest(FETCH_APPLICATION_FEATURES_SUCCESS, handleFetchApplicationFeaturesSuccess)
 }
 
 export function* analyticsSaga() {
@@ -78,6 +82,16 @@ export function* analyticsSaga() {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 export const track = (event: string, params: any) => getAnalytics()?.track(event, params)
+
+/**
+ * The analytics middleware is created while the store is built, before the flags are fetched, so the kill switch value
+ * is persisted here for the next boot to read. Only the success action is handled: a flag service outage has to leave
+ * the last known value alone instead of falling back to a default.
+ */
+function* handleFetchApplicationFeaturesSuccess() {
+  const isAltIngestionEnabled: boolean = yield select(getIsSegmentAltIngestionEnabled)
+  yield call(persistSegmentKillSwitch, isAltIngestionEnabled)
+}
 
 function handlePublishTPItemSuccess(action: PublishThirdPartyItemsSuccessAction) {
   const { items } = action.payload

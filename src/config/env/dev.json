@@ -19,6 +19,7 @@
   "INTERCOM_APP_ID": "z0h94kay",
   "SEGMENT_API_KEY": "H21EgRI4eYwICDZf5uW6ek2BiykIR6wA",
   "SEGMENT_ANALYTICS_URL": "https://evs.e.decentraland.org/z8jpJNrQbg/PbFpPU15ic.min.js",
+  "SEGMENT_API_HOST": "api.e.decentraland.org/v1",
   "ROLLBAR_ACCESS_TOKEN": "46e4b7e45c844b9ab81315c8b0919e99",
   "MANA_TOKEN_CONTRACT_ADDRESS": "0xfa04d2e2ba9aec166c93dfeeba7427b2303befa9",
   "LAND_REGISTRY_CONTRACT_ADDRESS": "0x42f4ba48791e2de32f5fbf553441c2672864bb33",

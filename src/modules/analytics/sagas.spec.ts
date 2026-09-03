@@ -1,10 +1,14 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { fetchApplicationFeaturesFailure, fetchApplicationFeaturesSuccess } from 'decentraland-dapps/dist/modules/features/actions'
+import { ApplicationFeatures, ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { Project } from 'modules/project/types'
 import { deployToWorldSuccess } from 'modules/deployment/actions'
 import { Deployment } from 'modules/deployment/types'
 import { getCurrentProject } from 'modules/project/selectors'
+import { getIsSegmentAltIngestionEnabled } from 'modules/features/selectors'
+import { persistSegmentKillSwitch } from './proxy'
 import { analyticsSaga, track } from './sagas'
 
 describe('when handling the deploy to world success action', () => {
@@ -79,5 +83,32 @@ describe('when handling the deploy to world success action', () => {
         .dispatch(deployToWorldSuccess({ world } as Deployment))
         .silentRun()
     })
+  })
+})
+
+describe('when handling the fetch application features success action', () => {
+  const features = {} as Record<ApplicationName, ApplicationFeatures>
+
+  describe.each([true, false])('and the segment alt ingestion flag is %s', isEnabled => {
+    it('should persist the kill switch value so the next boot honours it', () => {
+      return expectSaga(analyticsSaga)
+        .provide([
+          [select(getIsSegmentAltIngestionEnabled), isEnabled],
+          [call(persistSegmentKillSwitch, isEnabled), undefined]
+        ])
+        .call(persistSegmentKillSwitch, isEnabled)
+        .dispatch(fetchApplicationFeaturesSuccess([ApplicationName.DAPPS], features))
+        .silentRun()
+    })
+  })
+})
+
+describe('when handling the fetch application features failure action', () => {
+  it('should leave the persisted kill switch value alone', () => {
+    return expectSaga(analyticsSaga)
+      .provide([[select(getIsSegmentAltIngestionEnabled), false]])
+      .not.call(persistSegmentKillSwitch, false)
+      .dispatch(fetchApplicationFeaturesFailure([ApplicationName.DAPPS], 'anerror'))
+      .silentRun()
   })
 })
