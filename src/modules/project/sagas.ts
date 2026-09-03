@@ -91,7 +91,7 @@ export function* projectSaga(builder: BuilderAPI) {
         project,
         scene: sdk7Scene,
         builderAPI: builder,
-        crdt: new Blob([toCrdt(scene.sdk6) as Uint8Array<ArrayBuffer>])
+        crdt: new Blob([toCrdt(scene.sdk6, project) as Uint8Array<ArrayBuffer>])
       })
     } else if (scene.sdk6) {
       const author: string = yield select(getName)

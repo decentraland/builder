@@ -1,4 +1,4 @@
-import { takeLatest, select, put, call, takeEvery, take } from 'redux-saga/effects'
+import { takeLatest, select, put, call, takeEvery } from 'redux-saga/effects'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import type { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { BuilderAPI } from 'lib/api/builder'
@@ -10,9 +10,7 @@ import {
   SET_PROJECT,
   SetProjectAction,
   DELETE_PROJECT,
-  DeleteProjectAction,
-  EDIT_PROJECT_THUMBNAIL,
-  EditProjectThumbnailAction
+  DeleteProjectAction
 } from 'modules/project/actions'
 import { getData as getProjects, getCurrentProject } from 'modules/project/selectors'
 import type { Project } from 'modules/project/types'
@@ -87,15 +85,8 @@ export function* syncSaga(builder: BuilderAPI) {
 
   function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
     const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-    let project = projects[action.payload.project.id]
-    if (!project) return
-    if (!project.thumbnail) {
-      const action: EditProjectThumbnailAction = yield take(EDIT_PROJECT_THUMBNAIL)
-      project = {
-        ...project,
-        thumbnail: action.payload.thumbnail
-      }
-    }
+    const project = projects[action.payload.project.id]
+    if (!project?.thumbnail) return
     try {
       saveThumbnail(project.id, project, builder)
     } catch (e) {
