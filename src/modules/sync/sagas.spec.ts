@@ -1,7 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { select } from 'redux-saga/effects'
 import { BuilderAPI } from 'lib/api/builder'
-import { editProjectThumbnail } from 'modules/project/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { saveProjectSuccess } from './actions'
@@ -24,11 +23,10 @@ describe('when handling the saveProjectSuccess action', () => {
       project = { id: 'project-id', thumbnail: '' } as Project
     })
 
-    it('should not save a thumbnail belonging to another project', () => {
+    it('should not save a thumbnail', () => {
       return expectSaga(syncSaga, builderAPI)
         .provide([[select(getProjects), { [project.id]: project }]])
         .dispatch(saveProjectSuccess(project))
-        .dispatch(editProjectThumbnail('another-project-id', 'data:image/png;base64,other'))
         .run({ silenceTimeout: true })
         .then(() => {
           expect(saveThumbnail).not.toHaveBeenCalled()

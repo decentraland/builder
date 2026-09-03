@@ -3,7 +3,6 @@ import { Coordinate, Rotation } from 'modules/deployment/types'
 import { getDimensions } from 'lib/layout'
 import { Scene } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
-import { Media } from 'modules/media/types'
 
 export function getProjectDimensions(project: Project): string {
   const { rows, cols } = project.layout
@@ -53,8 +52,8 @@ export function getParcelOrientation(layout: Layout, point: Coordinate, rotation
   return parcels
 }
 
-export function getThumbnailUrl(project: Project, scene?: Scene | null, media?: Media | null) {
-  let thumbnailUrl = media ? media.preview : project.thumbnail
+export function getThumbnailUrl(project: Project, scene?: Scene | null) {
+  let thumbnailUrl = project.thumbnail
   if (scene && scene.sdk7?.metadata?.display?.navmapThumbnail) {
     const hash = scene.sdk7.mappings[scene.sdk7?.metadata?.display?.navmapThumbnail]
     if (hash) {

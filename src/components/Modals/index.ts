@@ -28,7 +28,6 @@ export { default as PushCollectionChangesModal } from './PushCollectionChangesMo
 export { default as QuotaExceededModal } from './QuotaExceededModal'
 export { default as ResetItemModal } from './ResetItemModal'
 export { default as SellCollectionModal } from './SellCollectionModal'
-export { default as ShareModal } from './ShareModal'
 export { default as ShortcutsModal } from './ShortcutsModal'
 export { default as UnsetENSContentModal } from './UnsetENSContentModal'
 export { default as UseAsAliasModal } from './UseAsAliasModal'

@@ -493,16 +493,6 @@
     "title": "Edit URN",
     "subtitle": "Update the URN for {name}"
   },
-  "share_modal": {
-    "title": "Share your Scene",
-    "description": "Let your friends and co-creators see your work",
-    "copy": "copy link",
-    "copied": "copied",
-    "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=Introducing my latest creation, now live in Decentraland! View it below and then help me build the Metaverse by adding one of your own.",
-      "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
-    }
-  },
   "deployment_status": {
     "online": "Published at {coords}",
     "online_multiple": "Published at {count} locations",
@@ -781,7 +771,6 @@
     "save": "Save",
     "send": "Send",
     "see_in_decentraland": "See in Decentraland",
-    "share": "Share",
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -1111,7 +1100,6 @@
       "delete": "Delete",
       "unpublish": "Unpublish"
     },
-    "edit_scene": "Edit Scene",
     "download_scene": "Download Scene",
     "published_in": "Published In",
     "no_deployments": "This scene has not been published yet.",

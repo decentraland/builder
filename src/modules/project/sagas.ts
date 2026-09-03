@@ -1,5 +1,5 @@
 import { History } from 'history'
-import { takeLatest, put, select, take, call, race, delay, takeEvery, getContext } from 'redux-saga/effects'
+import { takeLatest, put, select, call, takeEvery, getContext } from 'redux-saga/effects'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import {
@@ -10,14 +10,10 @@ import {
   loadProjectsSuccess,
   loadManifestSuccess,
   LOAD_MANIFEST_REQUEST,
-  setProject,
   LoadManifestRequestAction,
   loadManifestFailure,
   loadProjectsFailure,
   loadProjectsRequest,
-  ShareProjectAction,
-  SHARE_PROJECT,
-  EDIT_PROJECT_THUMBNAIL,
   DELETE_PROJECT,
   DeleteProjectAction,
   loadProjectSceneSuccess,
@@ -27,14 +23,12 @@ import {
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, SceneSDK7 } from 'modules/scene/types'
-import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
-import { takeScreenshot, setExportProgress, setGizmo } from 'modules/editor/actions'
+import { setExportProgress } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
-import { saveProjectRequest } from 'modules/sync/actions'
-import { Gizmo, PreviewType } from 'modules/editor/types'
+import { PreviewType } from 'modules/editor/types'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { getName } from 'modules/profile/selectors'
@@ -43,34 +37,12 @@ import { downloadZip } from 'lib/zip'
 import { createFiles, createSDK7Files } from './export'
 
 export function* projectSaga(builder: BuilderAPI) {
-  yield takeLatest(SHARE_PROJECT, handleShareProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadManifestRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeEvery(LOAD_PROJECT_SCENE_REQUEST, handleLoadProjectSceneRequest)
-
-  function* handleShareProject(action: ShareProjectAction) {
-    const { id } = action.payload
-
-    const scene: Scene = yield getSceneByProjectId(id)
-    if (!scene) return
-
-    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-    const project = projects[id]
-    if (!project) return
-
-    if (!project.isPublic) {
-      const newProject = { ...project, isPublic: true }
-      yield put(setProject(newProject))
-    }
-    yield put(setGizmo(Gizmo.NONE))
-    yield put(takeScreenshot())
-    yield race([take(EDIT_PROJECT_THUMBNAIL), delay(1000)])
-
-    yield put(saveProjectRequest(project, false))
-  }
 
   function* handleExportProject(action: ExportProjectRequestAction) {
     const { project, migrateToSDK7 } = action.payload

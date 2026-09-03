@@ -3,8 +3,6 @@ import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import {
   DeleteProjectAction,
   DELETE_PROJECT,
-  EDIT_PROJECT_THUMBNAIL,
-  EditProjectThumbnailAction,
   LOAD_PROJECTS_SUCCESS,
   LoadProjectsSuccessAction,
   LOAD_PROJECTS_REQUEST,
@@ -20,8 +18,7 @@ import {
   LoadManifestSuccessAction,
   LoadManifestFailureAction,
   LOAD_MANIFEST_SUCCESS,
-  LOAD_MANIFEST_FAILURE,
-  ShareProjectAction
+  LOAD_MANIFEST_FAILURE
 } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
 
@@ -40,8 +37,6 @@ export const INITIAL_STATE: ProjectState = {
 export type ProjectReducerAction =
   | SetProjectAction
   | CreateProjectAction
-  | ShareProjectAction
-  | EditProjectThumbnailAction
   | DeleteProjectAction
   | LoadProjectsRequestAction
   | LoadProjectsSuccessAction
@@ -61,17 +56,6 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         data: {
           ...state.data,
           [project.id]: { ...project, updatedAt: new Date().toISOString() }
-        }
-      }
-    }
-    case EDIT_PROJECT_THUMBNAIL: {
-      const { id, thumbnail } = action.payload
-
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [id]: { ...state.data[id], thumbnail, updatedAt: new Date().toISOString() }
         }
       }
     }

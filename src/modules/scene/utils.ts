@@ -11,37 +11,8 @@ import { getData as getScenes } from 'modules/scene/selectors'
 import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
 import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue, Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { PreviewType } from 'modules/editor/types'
-import { ModelMetrics, Vector3 } from 'modules/models/types'
+import { Vector3 } from 'modules/models/types'
 import { ComponentType, ComponentDefinition, AnyComponent, EntityDefinition, SceneSDK6 } from './types'
-
-/**
- * Returns a new random position bound to y: 0
- * Can be overriden using the position argument
- */
-export function getRandomPosition(position: Partial<Vector3> = {}) {
-  const x = Math.floor(Math.random() * 6) + 1
-  const z = Math.floor(Math.random() * 6) + 1
-  return { x, y: 0, z, ...position }
-}
-
-export function isWithinBounds(position: Vector3, bounds: Vector3) {
-  return position.x <= bounds.x && position.y <= bounds.y && position.z <= bounds.z && position.x >= 0 && position.y >= 0 && position.z >= 0
-}
-
-export function getExceededMetrics(metrics: ModelMetrics, limits: ModelMetrics) {
-  const metricsExceeded: (keyof ModelMetrics)[] = []
-
-  for (const key in metrics) {
-    const metric = key as keyof ModelMetrics
-    if (metrics[metric] > limits[metric]) {
-      if (!metricsExceeded.includes(metric)) {
-        metricsExceeded.push(metric)
-      }
-    }
-  }
-
-  return metricsExceeded
-}
 
 export function snapToGrid(position: Vector3, grid = 0.5): Vector3 {
   return {
@@ -57,20 +28,6 @@ export function snapToBounds(position: Vector3, bounds: Vector3): Vector3 {
     y: Math.max(Math.min(position.y, bounds.y), 0),
     z: Math.max(Math.min(position.z, bounds.z), 0)
   }
-}
-
-export function areEqualMappings(mappingsA: Record<string, string> = {}, mappingsB: Record<string, string> = {}) {
-  for (const keyA of Object.keys(mappingsA)) {
-    if (mappingsA[keyA] !== mappingsB[keyA]) {
-      return false
-    }
-  }
-  for (const keyB of Object.keys(mappingsB)) {
-    if (mappingsA[keyB] !== mappingsB[keyB]) {
-      return false
-    }
-  }
-  return true
 }
 
 export function* getSceneByProjectId(projectId: string, type: PreviewType = PreviewType.PROJECT) {
