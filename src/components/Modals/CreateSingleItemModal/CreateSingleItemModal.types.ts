@@ -1,7 +1,7 @@
 import { AnimationClip, Object3D } from 'three'
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { Mappings, OutcomeGroup, Rarity, StartAnimation, WearableCategory } from '@dcl/schemas'
+import { BodyPartCategory, EmoteCategory, Mappings, OutcomeGroup, Rarity, SpringBoneParams, StartAnimation, WearableCategory } from '@dcl/schemas'
 import { Metrics } from 'modules/models/types'
 import type { ValidationIssue } from 'lib/glbValidation/types'
 import { Collection } from 'modules/collection/types'
@@ -80,6 +80,16 @@ export type CreateSingleItemModalMetadata = {
   item?: Item
   addRepresentation?: boolean
   changeItemFile?: boolean
+  /** Pre-loaded model file (e.g. streamed from the Blender live preview): the import step processes it automatically. */
+  file?: File
+  /** Values known by the caller, applied over what the import step derives from the file. */
+  prefill?: {
+    name?: string
+    category?: WearableCategory | EmoteCategory
+    hides?: (WearableCategory | BodyPartCategory)[]
+    /** Tuned spring bone params by bone name, replacing the defaults seeded from the file. */
+    springBoneParams?: Record<string, SpringBoneParams>
+  }
 }
 
 export type ModelData = {

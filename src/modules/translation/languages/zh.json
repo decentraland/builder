@@ -14,6 +14,17 @@
     "title": "添加现有项目",
     "subtitle": "选择一个不属于集合的项目"
   },
+  "add_to_collection_modal": {
+    "title": "添加到收藏品系列",
+    "subtitle": "选择要将物品添加到的收藏品系列",
+    "continue": "继续",
+    "create_new": "新建收藏品系列",
+    "sign_in": {
+      "title": "登录后继续",
+      "subtitle": "您需要登录才能将此物品添加到收藏品系列。登录后将返回此页面。",
+      "action": "登录"
+    }
+  },
   "move_item_to_collection_modal": {
     "title": "将项目移至收藏夹",
     "subtitle": "选择要将项目移动到的集合",
@@ -292,6 +303,7 @@
     "mapping_type_info": "将此可穿戴物品链接到一个或多个令牌 ID"
   },
   "create_single_item_modal": {
+    "importing": "导入中...",
     "title": "新物品",
     "thumbnail_step_title": "编辑缩略图",
     "upload_video_step_title": "上传您的智能可穿戴设备的视频",
@@ -2195,6 +2207,8 @@
     "center_panel": {
       "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画",
       "play_emote": "玩表情",
+      "customize_avatar": "自定义头像",
+      "randomize_avatar": "随机头像",
       "stop": "停止",
       "from_collection": "从收藏",
       "from_items": "从项目",
@@ -2280,6 +2294,40 @@
         }
       }
     }
+  },
+  "live_preview_page": {
+    "title": "Blender 实时预览",
+    "title_info": "连接本地 Blender 桥接服务，实时预览可穿戴或表情。每次从 Blender 推送都会直接热替换模型，无需重新加载。",
+    "status": {
+      "connected": "已连接",
+      "connecting": "连接中…",
+      "disconnected": "已断开",
+      "error": "错误"
+    },
+    "model_loaded": "模型已加载",
+    "waiting_for_export": "等待 Blender 导出",
+    "bridge_url": "Blender URL",
+    "connect": "连接",
+    "disconnect": "断开连接",
+    "refresh": "刷新",
+    "updated": "{time_ago}更新",
+    "time_ago": {
+      "now": "刚刚",
+      "moment": "片刻前",
+      "minutes": "{minutes} 分钟前",
+      "hours": "{hours} 小时前"
+    },
+    "emote": "表情",
+    "emote_info": "从 Blender 传输的表情会自动在头像上播放。",
+    "loop": "循环",
+    "no_model": "还没有模型。",
+    "errors": {
+      "unreachable": "无法连接到 Blender 桥接服务",
+      "bridge_response": "桥接服务返回了 {status}",
+      "invalid_state": "桥接服务返回了无效的状态",
+      "model_fetch": "获取 model.glb 失败（{status}）"
+    },
+    "add_to_collection": "添加到收藏品系列"
   },
   "deploy_entities_modal": {
     "success_title": "成功",

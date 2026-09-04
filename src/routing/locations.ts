@@ -60,7 +60,8 @@ export const locations = {
   worlds: () => '/worlds',
   curation: () => '/curation',
   templates: () => '/templates',
-  templateDetail: (templateId = ':templateId') => `/templates/${templateId}`
+  templateDetail: (templateId = ':templateId') => `/templates/${templateId}`,
+  livePreview: () => '/live-preview'
 }
 
 export function redirectToAuthDapp(customRedirect?: string) {

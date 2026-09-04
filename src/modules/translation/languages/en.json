@@ -14,6 +14,17 @@
     "title": "Add Existing Item",
     "subtitle": "Select an item that is not part of a collection yet"
   },
+  "add_to_collection_modal": {
+    "title": "Add to Collection",
+    "subtitle": "Choose the collection where the item will be added",
+    "continue": "Continue",
+    "create_new": "New collection",
+    "sign_in": {
+      "title": "Sign in to continue",
+      "subtitle": "You need to sign in to add this item to a collection. You'll be brought back here after signing in.",
+      "action": "Sign in"
+    }
+  },
   "move_item_to_collection_modal": {
     "title": "Move Item to Collection",
     "subtitle": "Select the collection that you want to move the item to",
@@ -318,6 +329,7 @@
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
     "adding_representation": "This will be added as {bodyShape} for the following item",
     "change_item_file": "Edit representation",
+    "importing": "Importing...",
     "import_information": "For more information about uploading Wearables or Emotes {link}",
     "import_information_link_label": "click here",
     "upload_video_information": "Maximum file size {max_size}",
@@ -2193,6 +2205,8 @@
     "center_panel": {
       "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation",
       "play_emote": "Play Emote",
+      "customize_avatar": "Customize Avatar",
+      "randomize_avatar": "Randomize Avatar",
       "stop": "Stop",
       "from_collection": "From Collection",
       "from_items": "From Items",
@@ -2278,6 +2292,40 @@
         }
       }
     }
+  },
+  "live_preview_page": {
+    "title": "Blender Live Preview",
+    "title_info": "Connect to the local Blender bridge and preview a wearable or emote in real time. Every change in Blender refreshes the model without reloading.",
+    "status": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "error": "Error"
+    },
+    "model_loaded": "Model loaded",
+    "waiting_for_export": "Waiting for an export from Blender",
+    "bridge_url": "Blender URL",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "refresh": "Refresh",
+    "updated": "Updated {time_ago}",
+    "time_ago": {
+      "now": "now",
+      "moment": "a moment ago",
+      "minutes": "{minutes} {minutes, plural, one {minute} other {minutes}} ago",
+      "hours": "{hours} {hours, plural, one {hour} other {hours}} ago"
+    },
+    "emote": "Emote",
+    "emote_info": "The emote streamed from Blender plays automatically on the avatar.",
+    "loop": "Loop",
+    "no_model": "No model yet.",
+    "errors": {
+      "unreachable": "Could not reach the Blender bridge",
+      "bridge_response": "Bridge responded with {status}",
+      "invalid_state": "The bridge returned an invalid state",
+      "model_fetch": "Failed to fetch model.glb ({status})"
+    },
+    "add_to_collection": "Add to collection"
   },
   "deploy_entities_modal": {
     "success_title": "Success",

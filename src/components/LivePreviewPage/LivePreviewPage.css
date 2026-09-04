@@ -1,0 +1,207 @@
+.LivePreviewPage {
+  --live-panel-width: 450px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.LivePreviewPage .live-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.LivePreviewPage .live-panel {
+  width: var(--live-panel-width);
+  flex: none;
+  background-color: var(--void);
+  border-right: 1px solid var(--divider);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.LivePreviewPage .live-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.LivePreviewPage .panel-section {
+  padding: 28px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.LivePreviewPage .panel-section:last-child {
+  border-bottom: none;
+}
+
+.LivePreviewPage h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.LivePreviewPage .section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--secondary-text);
+  margin-bottom: 12px;
+}
+
+.LivePreviewPage .spring-bones-header-label {
+  font-weight: 600;
+}
+
+.LivePreviewPage .section-title.overrides {
+  margin-top: 20px;
+}
+
+.LivePreviewPage .live-panel .dcl.field,
+.LivePreviewPage .live-panel .dcl.field .ui.input {
+  width: 100%;
+}
+
+.LivePreviewPage .connect-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.LivePreviewPage .connect-row .dcl.field {
+  flex: 1;
+  /* Let the field shrink below the input's intrinsic width so the button never overflows. */
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.LivePreviewPage .connect-row .dcl.field .ui.input {
+  min-width: 0;
+}
+
+.LivePreviewPage .connect-row .dcl.field .ui.input input {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  font-size: 14px;
+}
+
+.LivePreviewPage .connect-row .ui.button {
+  flex: none;
+  margin: 18px 0 0 16px;
+}
+
+.LivePreviewPage .actions {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.LivePreviewPage .actions .ui.button {
+  margin: 0 16px 0 0;
+}
+
+.LivePreviewPage .actions .ui.button:last-child {
+  margin-right: 0;
+}
+
+.LivePreviewPage .actions .ui.button span {
+  margin-left: 8px;
+}
+
+.LivePreviewPage .actions .last-update {
+  font-size: 12px;
+  color: var(--secondary-text);
+  white-space: nowrap;
+}
+
+.LivePreviewPage .panel-section .actions:last-child {
+  margin-bottom: 0;
+}
+
+.LivePreviewPage .status-pill {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  background-color: rgba(115, 110, 125, 0.32);
+  color: var(--secondary-text);
+}
+
+.LivePreviewPage .status-pill.status--connected {
+  background-color: rgba(52, 206, 118, 0.16);
+  color: #34ce76;
+}
+
+.LivePreviewPage .status-pill.status--error {
+  background-color: rgba(255, 77, 77, 0.16);
+  color: var(--error);
+}
+
+.LivePreviewPage .live-panel .Select,
+.LivePreviewPage .live-panel .MultiSelect {
+  margin-bottom: 12px;
+}
+
+.LivePreviewPage .panel-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: 20px 28px;
+  background-color: var(--void);
+  border-top: 1px solid var(--divider);
+}
+
+.LivePreviewPage .panel-footer .ui.button {
+  width: 100%;
+}
+
+.LivePreviewPage .panel-section .Collapsable {
+  margin-bottom: 0;
+}
+
+/* The preview area reuses the item editor's CenterPanel styles (footer, avatar sheet, gradient background). */
+.LivePreviewPage .live-preview {
+  min-width: 0;
+  /* Clip the avatar-attributes sheet, which hides below the panel via a negative margin. */
+  overflow: hidden;
+}
+
+.LivePreviewPage .live-preview iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Hide the half-rendered model while the spinner is up: they overlap otherwise.
+   decentraland-ui2's WearablePreview renders a bare iframe with no class, so target the tag. */
+.LivePreviewPage .live-preview.is-loading iframe {
+  visibility: hidden;
+}
+
+.LivePreviewPage .live-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+}
+
+.LivePreviewPage .footer .option.validation-status {
+  margin-left: 12px;
+}
+
+/* The emote controls stay mounted while the model reloads (they must keep their event
+   subscription to catch the autoplay), so hide them visually instead of unmounting. */
+.LivePreviewPage .live-preview.is-loading .emote-controls-container {
+  visibility: hidden;
+}

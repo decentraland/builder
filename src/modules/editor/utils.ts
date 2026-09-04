@@ -269,6 +269,20 @@ export function filterWearables(wearables: Wearable[], category: WearableCategor
 }
 
 /**
+ * Pick a random base wearable for each avatar slot of the given body shape, with no facial
+ * hair for the female shape.
+ */
+export function getRandomBaseWearables(wearables: Wearable[], bodyShape: BodyShape): Record<string, Wearable | null> {
+  return {
+    [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, bodyShape)),
+    [WearableCategory.FACIAL_HAIR]:
+      bodyShape === BodyShape.MALE ? pickRandom(filterWearables(wearables, WearableCategory.FACIAL_HAIR, bodyShape)) : null,
+    [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, bodyShape)),
+    [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, bodyShape))
+  }
+}
+
+/**
  * Given a color return the hex value
  *
  * @param color - a Color4 value
