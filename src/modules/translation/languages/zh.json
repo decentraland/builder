@@ -487,16 +487,6 @@
     "title": "编辑 URN",
     "subtitle": "更新 {name} 的 URN"
   },
-  "share_modal": {
-    "title": "分享您的场景",
-    "description": "让你的朋友和合作者欣赏您的作品",
-    "copy": "复制链接",
-    "copied": "已复制",
-    "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=我的最新作品已经在 Decentraland 中安家了！ 敬请查看，并且添加自己的场景共建虚拟世界。",
-      "twitter": "https://twitter.com/intent/tweet?text=刚刚通过 Builder 在 Decentraland 中部署了我的新设计。 敬请查看，也请您创建您自己的场景。 因为虚拟世界也不会凭空而建! {url}&hashtags=builder,virtualworld,gaming"
-    }
-  },
   "deployment_status": {
     "online": "发布到{coords}",
     "online_multiple": "在{count}个位置发布",
@@ -662,9 +652,8 @@
       "url": "url",
       "owner": "所有者",
       "published_scene": "出版的场景",
-      "publish_scene": "发布场景",
       "unpublish_scene": "取消发布场景",
-      "edit_scene": "编辑场景",
+      "view_scene": "查看场景",
       "status": "地位",
       "status_active": "积极的",
       "status_inactive": "不活动",
@@ -772,7 +761,6 @@
     "skip": "跳过",
     "send": "发送",
     "see_in_decentraland": "参见 Decentraland",
-    "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
     "sign_in": "登录",
     "sign_up": "注册",
@@ -1104,7 +1092,6 @@
       "delete": "删除",
       "unpublish": "取消发布"
     },
-    "edit_scene": "编辑场景",
     "download_scene": "下载场景",
     "published_in": "出版于",
     "no_deployments": "这个场景尚未出版。",
@@ -2166,13 +2153,6 @@
     "names_holdings": "由于持有 {owned} Decentraland NAMEs，您拥有 {mbs} Mb。",
     "names_buy": "购买 NAME",
     "proposal": "这些存储规则经过治理 DAO 提案的投票并获得通过。",
-    "learn_more": "了解更多"
-  },
-  "worlds_for_ens_owners_announcement_modal": {
-    "title": "为ENS持有者介绍世界与扩展的世界大小限制",
-    "description_ens": "ENS域名持有者现在将自动获得自己的Decentraland世界，场景大小限制为25 Mb。",
-    "description_dcl": "同时，来自Decentraland NAME的世界将具有动态的最大文件大小限制，具体取决于用户的Decentraland持有量。 <b>每个NAME、LAND和2,000个MANA代币的集合所拥有的</b>将在Worlds内容服务器上额外获得<b>100 Mb的存储空间</b>，可随意使用。",
-    "start_building": "开始建设",
     "learn_more": "了解更多"
   },
   "creator_hub_upgrade_modal": {

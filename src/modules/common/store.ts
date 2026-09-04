@@ -20,7 +20,7 @@ import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
-import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
+import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
@@ -99,7 +99,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
     SAVE_PROJECT_SUCCESS,
-    EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
     SET_SYNC

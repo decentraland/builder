@@ -31,7 +31,6 @@ import { itemSaga } from 'modules/item/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 import { landSaga } from 'modules/land/sagas'
 import { locationSaga } from 'modules/location/sagas'
-import { mediaSaga } from 'modules/media/sagas'
 import { modalSaga } from 'modules/modal/sagas'
 import { projectSaga } from 'modules/project/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
@@ -101,7 +100,6 @@ export function* rootSaga(
     keyboardSaga(),
     landSaga(),
     locationSaga(),
-    mediaSaga(),
     modalSaga(),
     createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL(), getIdentity })(),
     projectSaga(builderAPI),

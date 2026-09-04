@@ -493,16 +493,6 @@
     "title": "Edit URN",
     "subtitle": "Update the URN for {name}"
   },
-  "share_modal": {
-    "title": "Share your Scene",
-    "description": "Let your friends and co-creators see your work",
-    "copy": "copy link",
-    "copied": "copied",
-    "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=Introducing my latest creation, now live in Decentraland! View it below and then help me build the Metaverse by adding one of your own.",
-      "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
-    }
-  },
   "deployment_status": {
     "online": "Published at {coords}",
     "online_multiple": "Published at {count} locations",
@@ -662,9 +652,8 @@
       "url": "URL",
       "owner": "Owner",
       "published_scene": "Published Scene",
-      "publish_scene": "Publish Scene",
       "unpublish_scene": "Unpublish Scene",
-      "edit_scene": "Edit Scene",
+      "view_scene": "View scene",
       "status": "Status",
       "status_active": "Active",
       "status_inactive": "Inactive",
@@ -781,7 +770,6 @@
     "save": "Save",
     "send": "Send",
     "see_in_decentraland": "See in Decentraland",
-    "share": "Share",
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -1111,7 +1099,6 @@
       "delete": "Delete",
       "unpublish": "Unpublish"
     },
-    "edit_scene": "Edit Scene",
     "download_scene": "Download Scene",
     "published_in": "Published In",
     "no_deployments": "This scene has not been published yet.",
@@ -2167,13 +2154,6 @@
     "names_buy": "BUY NAME",
     "proposal": "These storage rules were voted on and passed in a governance DAO proposal.",
     "learn_more": "LEARN MORE"
-  },
-  "worlds_for_ens_owners_announcement_modal": {
-    "title": "Introducing Worlds for ENS Holders & Expanded World Size Limits",
-    "description_ens": "ENS domain holders will now automatically have access to their own Decentraland World with a scene size limit of 25 Mb.",
-    "description_dcl": "Meanwhile, Worlds from Decentraland NAMEs will have a dynamic maximum file size limit depending on a user's Decentraland holdings. <b>Each NAME, LAND, and set of 2,000 MANA tokens owned </b> will grant an additional <b>100 Mb of storage</b> on the Worlds content server to be used as you wish.",
-    "start_building": "start building",
-    "learn_more": "learn more"
   },
   "creator_hub_upgrade_modal": {
     "badge": "Web scene editor sunset on September 1st",

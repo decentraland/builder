@@ -26,7 +26,6 @@ import { entityReducer as entity } from 'modules/entity/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
 import { itemReducer as item } from 'modules/item/reducer'
 import { landReducer as land } from 'modules/land/reducer'
-import { mediaReducer as media } from 'modules/media/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { statsReducer as stats } from 'modules/stats/reducer'
@@ -54,7 +53,6 @@ export function createRootReducer() {
       identity,
       item,
       land,
-      media,
       modal,
       profile,
       project,
