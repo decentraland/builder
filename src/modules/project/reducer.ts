@@ -28,13 +28,7 @@ import {
   LOAD_PUBLIC_PROJECT_REQUEST,
   LOAD_PUBLIC_PROJECT_SUCCESS,
   LOAD_PUBLIC_PROJECT_FAILURE,
-  ShareProjectAction,
-  LoadTemplatesRequestAction,
-  LoadTemplatesSuccessAction,
-  LoadTemplatesFailureAction,
-  LOAD_TEMPLATES_REQUEST,
-  LOAD_TEMPLATES_SUCCESS,
-  LOAD_TEMPLATES_FAILURE
+  ShareProjectAction
 } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
 
@@ -65,9 +59,6 @@ export type ProjectReducerAction =
   | LoadManifestRequestAction
   | LoadManifestSuccessAction
   | LoadManifestFailureAction
-  | LoadTemplatesRequestAction
-  | LoadTemplatesSuccessAction
-  | LoadTemplatesFailureAction
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
@@ -105,8 +96,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       delete newState.data[project.id]
       return newState
     }
-    case LOAD_PROJECTS_SUCCESS:
-    case LOAD_TEMPLATES_SUCCESS: {
+    case LOAD_PROJECTS_SUCCESS: {
       const { projects } = action.payload
       return {
         ...state,
@@ -118,7 +108,6 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
     }
     case LOAD_PROJECTS_FAILURE:
-    case LOAD_TEMPLATES_FAILURE:
     case LOAD_PUBLIC_PROJECT_FAILURE:
     case LOAD_MANIFEST_FAILURE: {
       const { error } = action.payload
@@ -162,7 +151,6 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
     }
     case LOAD_PROJECTS_REQUEST:
-    case LOAD_TEMPLATES_REQUEST:
     case LOAD_PUBLIC_PROJECT_REQUEST:
     case LOAD_MANIFEST_REQUEST: {
       return {

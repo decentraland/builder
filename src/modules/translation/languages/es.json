@@ -691,11 +691,6 @@
     "description": "Cree su escena con el constructor y publíquela en un mundo en unos pocos clics.",
     "create_scene": "Crear Escena"
   },
-  "templates_announcement_modal": {
-    "title": "Amplíe su creatividad con plantillas y el grupo de escenas comunitarias",
-    "description": "De ahora en adelante puede comenzar a descargar y usar plantillas y escenas del grupo de la comunidad.¡Deja que tu imaginación moldee tus Mundos y Tierras!",
-    "go_to_scenes": "Ir a mis escenas"
-  },
   "smart_wearables_announcement_modal": {
     "title": "¡La vestimenta interactiva ya está disponible! 🟢",
     "description": "<b>Lleva la Vestimenta al siguiente nivel con Experiencias Portátiles</b><br></br>Monetiza tus Experiencias Portátiles a través de la Vestimenta Interactiva y amplía la usabilidad de la Vestimenta ofreciendo a los jugadores nuevas habilidades (¡como volar!) o una capa adicional de contenido superpuesto en escenas de Decentraland.",
@@ -1341,16 +1336,6 @@
     "loading": "Guardando...",
     "retry": "Reintentar",
     "success": "¡Escenas guardadas exitosamente!"
-  },
-  "templates": {
-    "big": "Grande (2x3)",
-    "custom_layout": {
-      "title": "A medida",
-      "up_to": "Hasta {max} parcelas"
-    },
-    "description": "{dimensions} - {amount} objetos aprox",
-    "medium": "Estándar (2x2)",
-    "small": "Mini (1x1)"
   },
   "activity_page": {
     "latest_activity": "Ultima Actividad",

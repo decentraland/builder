@@ -31,11 +31,6 @@ export const getProjectIdFromPath = (url: string): string | null => {
   return result ? result.params.projectId : null
 }
 
-export const getTemplateIdFromPath = (url: string): string | null => {
-  const result = matchPath<{ templateId: string }>(url, { path: locations.templateDetail() })
-  return result ? result.params.templateId : null
-}
-
 export const getCollectionIdFromPath = (url: string): string | null => {
   const result = matchPath<{ collectionId: string }>(url, { path: locations.collectionDetail() })
   return result ? result.params.collectionId : null

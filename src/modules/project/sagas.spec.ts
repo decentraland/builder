@@ -3,12 +3,10 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { AuthIdentity } from '@dcl/crypto'
 import { BuilderAPI } from 'lib/api/builder'
 import { loginSuccess } from 'modules/identity/actions'
-import { loadProjectsRequest, loadTemplatesRequest } from './actions'
+import { loadProjectsRequest } from './actions'
 import { projectSaga } from './sagas'
 
-const builderAPI = {
-  fetchTemplates: jest.fn()
-} as unknown as BuilderAPI
+const builderAPI = {} as unknown as BuilderAPI
 
 describe('when handling the loginSuccess action', () => {
   let wallet: Wallet
@@ -19,22 +17,10 @@ describe('when handling the loginSuccess action', () => {
     identity = {} as AuthIdentity
   })
 
-  describe('and the FF Templates is enabled', () => {
-    it('should put a loadTemplatesRequest action', () => {
-      return expectSaga(projectSaga, builderAPI)
-        .put(loadTemplatesRequest())
-        .put(loadProjectsRequest())
-        .dispatch(loginSuccess(wallet, identity))
-        .run({ silenceTimeout: true })
-    })
-  })
-
-  describe('and the FF Templates is disabled', () => {
-    it('should not put a loadTemplatesRequest action', () => {
-      return expectSaga(projectSaga, builderAPI)
-        .put(loadProjectsRequest())
-        .dispatch(loginSuccess(wallet, identity))
-        .run({ silenceTimeout: true })
-    })
+  it('should put a loadProjectsRequest action', () => {
+    return expectSaga(projectSaga, builderAPI)
+      .put(loadProjectsRequest())
+      .dispatch(loginSuccess(wallet, identity))
+      .run({ silenceTimeout: true })
   })
 })

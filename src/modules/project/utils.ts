@@ -1,4 +1,4 @@
-import { Project, Layout, Manifest } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
 import { getDimensions } from 'lib/layout'
 import { Scene } from 'modules/scene/types'
@@ -51,19 +51,6 @@ export function getParcelOrientation(layout: Layout, point: Coordinate, rotation
   }
 
   return parcels
-}
-
-export async function getTemplates(): Promise<Manifest[]> {
-  return (await import('@dcl/builder-templates/templates.json')).templates as unknown as Manifest[]
-}
-
-export async function getTemplate(projectId: string) {
-  const templates = await getTemplates()
-  const template = templates.find(template => template.project.id === projectId)
-  if (!template) {
-    throw new Error(`Could not find template with projectId="${projectId}"`)
-  }
-  return template
 }
 
 export function getThumbnailUrl(project: Project, scene?: Scene | null, media?: Media | null) {

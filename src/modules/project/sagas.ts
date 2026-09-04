@@ -27,11 +27,7 @@ import {
   loadProjectSceneSuccess,
   loadProjectSceneFailure,
   LoadProjectSceneRequestAction,
-  LOAD_PROJECT_SCENE_REQUEST,
-  LOAD_TEMPLATES_REQUEST,
-  loadTemplatesSuccess,
-  loadTemplatesFailure,
-  loadTemplatesRequest
+  LOAD_PROJECT_SCENE_REQUEST
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, SceneSDK7 } from 'modules/scene/types'
@@ -50,7 +46,6 @@ import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { getName } from 'modules/profile/selectors'
 import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
-import { getTemplate, getTemplates } from './utils'
 import { createFiles, createSDK7Files } from './export'
 
 export function* projectSaga(builder: BuilderAPI) {
@@ -58,7 +53,6 @@ export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
-  yield takeLatest(LOAD_TEMPLATES_REQUEST, handleLoadTemplatesRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadManifestRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
@@ -160,18 +154,13 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoadProjectSceneRequest(action: LoadProjectSceneRequestAction) {
     const { project, type } = action.payload
     try {
-      if (type === PreviewType.TEMPLATE) {
-        const template: Manifest = yield call(getTemplate, project.id)
-        yield put(loadProjectSceneSuccess(template.scene))
-      } else {
-        const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-        if (scenes && scenes[project.sceneId]) {
-          yield put(loadProjectSceneSuccess(scenes[project.sceneId]))
-          return
-        }
-        const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], project.id, type)
-        yield put(loadProjectSceneSuccess(manifest.scene))
+      const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+      if (scenes && scenes[project.sceneId]) {
+        yield put(loadProjectSceneSuccess(scenes[project.sceneId]))
+        return
       }
+      const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], project.id, type)
+      yield put(loadProjectSceneSuccess(manifest.scene))
     } catch (e) {
       yield put(loadProjectSceneFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
@@ -180,36 +169,15 @@ export function* projectSaga(builder: BuilderAPI) {
   function* handleLoadManifestRequest(action: LoadManifestRequestAction) {
     const { id, type } = action.payload
     try {
-      if (type === PreviewType.TEMPLATE) {
-        const manifest: Manifest = yield call(getTemplate, id)
-        yield put(loadManifestSuccess(manifest))
-      } else {
-        const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)
-        yield put(loadManifestSuccess(manifest))
-      }
+      const manifest: Manifest<Project> = yield call([builder, 'fetchManifest'], id, type)
+      yield put(loadManifestSuccess(manifest))
     } catch (e) {
       yield put(loadManifestFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
     }
   }
 
-  function* handleLoadTemplatesRequest() {
-    try {
-      const projects: Project[] = ((yield call(getTemplates)) as Manifest[]).map(template => template.project)
-      const record: ModelById<Project> = {}
-
-      for (const project of projects) {
-        record[project.id] = project
-      }
-
-      yield put(loadTemplatesSuccess(record))
-    } catch (e) {
-      yield put(loadTemplatesFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
-    }
-  }
-
   function* handleLoginSuccess(_action: LoginSuccessAction) {
     yield put(loadProjectsRequest())
-    yield put(loadTemplatesRequest())
   }
 
   function* handleDeleteProject(_action: DeleteProjectAction) {
