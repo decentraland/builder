@@ -19,7 +19,7 @@ import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsCl
 import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
-import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
+import { CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
@@ -95,7 +95,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     EDITOR_UNDO,
     EDITOR_REDO,
     DELETE_PROJECT,
-    DEPLOY_TO_LAND_SUCCESS,
     CLEAR_DEPLOYMENT_SUCCESS,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,

@@ -1,48 +1,23 @@
-import { merge } from 'ts-deepmerge'
 import { CatalystClient, ContentClient, createContentClient } from 'dcl-catalyst-client'
 import { Authenticator, AuthIdentity } from '@dcl/crypto'
 import { Entity, EntityType } from '@dcl/schemas'
 import cryptoFetch from 'decentraland-crypto-fetch'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { buildEntity } from 'dcl-catalyst-client/dist/client/utils/DeploymentBuilder'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
-import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
-import { takeLatest, takeEvery, put, select, call, take, all } from 'redux-saga/effects'
+import { takeLatest, takeEvery, put, select, call } from 'redux-saga/effects'
 import { config } from 'config'
-import { BuilderAPI, getEmptySceneUrl, getPreviewUrl } from 'lib/api/builder'
-import { WorldsAPI } from 'lib/api/worlds'
-import { Deployment, SceneDefinition, Placement, Coordinate, DeploymentError } from 'modules/deployment/types'
-import { takeScreenshot } from 'modules/editor/actions'
-import { fetchENSWorldStatusRequest } from 'modules/ens/actions'
-import { isLoggedIn } from 'modules/identity/selectors'
+import { getEmptySceneUrl } from 'lib/api/builder'
+import { Deployment, SceneDefinition, Placement, Coordinate } from 'modules/deployment/types'
 import { getIdentity } from 'modules/identity/utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
 import { getCoordsByEstateId, getLandTiles } from 'modules/land/selectors'
 import { coordsToId, idToCoords } from 'modules/land/utils'
 import { LandType } from 'modules/land/types'
-import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
-import { getMedia } from 'modules/media/selectors'
-import { objectURLToBlob } from 'modules/media/utils'
-import { Media } from 'modules/media/types'
-import { getName } from 'modules/profile/selectors'
 import { createFiles, EXPORT_PATH } from 'modules/project/export'
-import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { getData as getDeployments } from 'modules/deployment/selectors'
-import { Project } from 'modules/project/types'
-import { getSceneByProjectId } from 'modules/scene/utils'
-import { Scene } from 'modules/scene/types'
 import { store } from 'modules/common/store' // PREVENTS IMPORT UNDEFINED
-import { getParcelOrientation } from 'modules/project/utils'
 import {
-  DEPLOY_TO_POOL_REQUEST,
-  deployToPoolFailure,
-  deployToPoolSuccess,
   setProgress,
-  DEPLOY_TO_LAND_REQUEST,
-  deployToLandFailure,
-  DeployToLandRequestAction,
-  DeployToPoolRequestAction,
-  deployToLandSuccess,
   CLEAR_DEPLOYMENT_REQUEST,
   ClearDeploymentRequestAction,
   clearDeploymentFailure,
@@ -52,15 +27,10 @@ import {
   fetchDeploymentsRequest,
   fetchDeploymentsSuccess,
   fetchDeploymentsFailure,
-  deployToWorldSuccess,
-  deployToWorldFailure,
-  DeployToWorldRequestAction,
-  DEPLOY_TO_WORLD_REQUEST,
   FetchWorldDeploymentsRequestAction,
   FETCH_WORLD_DEPLOYMENTS_REQUEST,
   fetchWorldDeploymentsSuccess,
-  fetchWorldDeploymentsFailure,
-  fetchWorldDeploymentsRequest
+  fetchWorldDeploymentsFailure
 } from './actions'
 import { makeContentFiles } from './contentUtils'
 import { UNPUBLISHED_PROJECT_ID, getEmptyDeployment, getThumbnail } from './utils'
@@ -77,346 +47,11 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
   store.dispatch(setProgress(type, progress))
 }
 
-export function* deploymentSaga(builder: BuilderAPI, catalystClient: CatalystClient, worldsApi: WorldsAPI) {
-  yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
-  yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
+export function* deploymentSaga(catalystClient: CatalystClient) {
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
-  yield takeLatest(DEPLOY_TO_WORLD_REQUEST, handleDeployToWorldRequest)
   yield takeEvery(FETCH_WORLD_DEPLOYMENTS_REQUEST, handleFetchWorldDeploymentsRequest)
-
-  function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
-    const { projectId, additionalInfo } = action.payload
-    const rawProject: Project | null = yield select(getCurrentProject)
-
-    if (rawProject && rawProject.id === projectId) {
-      const { thumbnail: _thumbnail, ...project } = rawProject
-
-      try {
-        yield put(setProgress(ProgressStage.NONE, 1))
-        yield put(recordMediaRequest())
-        const successAction: RecordMediaSuccessAction = yield take(RECORD_MEDIA_SUCCESS)
-        const { north, east, south, west, preview } = successAction.payload.media
-
-        if (!north || !east || !south || !west || !preview) {
-          throw new Error('Failed to capture scene preview')
-        }
-
-        yield put(setProgress(ProgressStage.NONE, 30))
-        yield call(() => builder.uploadMedia(rawProject.id, preview, { north, east, south, west }))
-
-        yield put(setProgress(ProgressStage.NONE, 60))
-        yield put(takeScreenshot())
-
-        yield put(setProgress(ProgressStage.NONE, 90))
-        yield call(() => builder.deployToPool(project.id, additionalInfo))
-
-        yield put(setProgress(ProgressStage.NONE, 100))
-        yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
-      } catch (e) {
-        yield put(deployToPoolFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
-      }
-    } else if (rawProject) {
-      yield put(deployToPoolFailure('Unable to Publish: Not current project'))
-    } else {
-      yield put(deployToPoolFailure('Unable to Publish: Invalid project'))
-    }
-  }
-
-  function* deployScene(
-    deployFailure: typeof deployToWorldFailure | typeof deployToLandFailure,
-    contentClient: ContentClient,
-    projectId: string,
-    placement: Placement,
-    world?: string
-  ) {
-    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-
-    const project = projects[projectId]
-    if (!project) {
-      yield put(deployFailure('Unable to Publish: Invalid project'))
-      return
-    }
-
-    const scene: Scene = yield call(getSceneByProjectId, project.id)
-    if (!scene) {
-      yield put(deployFailure('Unable to Publish: Invalid scene'))
-      return
-    }
-
-    if (scene.sdk6) {
-      const identity: AuthIdentity = yield call(getIdentity)
-      if (!identity) {
-        yield put(deployFailure('Unable to Publish: Invalid identity'))
-        return
-      }
-
-      const author: ReturnType<typeof getName> = yield select(getName)
-
-      // upload media if logged in
-      let previewUrl: string | null = null
-      const isLoggedInResult: boolean = yield select(isLoggedIn)
-      if (isLoggedInResult) {
-        const media: Media | null = yield select(getMedia)
-        if (media) {
-          const [north, east, south, west, thumbnail]: Array<Blob> = yield all([
-            call(objectURLToBlob, media.north),
-            call(objectURLToBlob, media.east),
-            call(objectURLToBlob, media.south),
-            call(objectURLToBlob, media.west),
-            call(objectURLToBlob, media.preview)
-          ])
-
-          yield call(
-            [builder, 'uploadMedia'],
-            project.id,
-            thumbnail,
-            { north, east, south, west },
-            handleProgress(ProgressStage.UPLOAD_RECORDING)
-          )
-
-          previewUrl = getPreviewUrl(project.id)
-        } else {
-          console.warn('Failed to upload scene preview')
-        }
-      }
-
-      const files: Record<string, string> = yield call(createFiles, {
-        project,
-        scene: scene.sdk6,
-        point: placement.point,
-        rotation: placement.rotation,
-        author,
-        thumbnail: previewUrl,
-        isDeploy: true,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES),
-        world
-      })
-
-      const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
-
-      // Remove the old communications property if it exists
-      const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-
-      const { entityId, files: hashedFiles } = yield call(buildEntity, {
-        type: EntityType.SCENE,
-        pointers: [...sceneDefinition.scene.parcels],
-        metadata: sceneDefinition,
-        files: contentFiles
-      })
-
-      const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
-      // generate new deployment
-      const address: string = yield select(getAddress) || ''
-
-      return {
-        id: entityId,
-        placement,
-        owner: address,
-        timestamp: +new Date(),
-        layout: project.layout,
-        name: project.title,
-        thumbnail: previewUrl,
-        projectId: project.id,
-        base: sceneDefinition.scene.base,
-        parcels: sceneDefinition.scene.parcels,
-        world
-      }
-    } else {
-      const identity: AuthIdentity = yield call(getIdentity)
-      if (!identity) {
-        yield put(deployFailure('Unable to Publish: Invalid identity'))
-        return
-      }
-
-      const address: ReturnType<typeof getAddress> = yield select(getAddress)
-      const name: ReturnType<typeof getName> = yield select(getName)
-
-      const files: Record<string, string | Blob> = {}
-
-      files['bin/index.js'] = yield call([builder, 'fetchMain'], project.id)
-      files['main.crdt'] = yield call([builder, 'fetchCrdt'], project.id)
-
-      const promises: Promise<{ path: string; blob: Blob }>[] = []
-      for (const path of Object.keys(scene.sdk7.mappings)) {
-        const hash = scene.sdk7.mappings[path]
-        const promise = builder.fetchContent(hash).then(blob => ({ path, blob }))
-        promises.push(promise)
-      }
-      const results: { path: string; blob: Blob }[] = yield call([Promise, 'all'], promises)
-      for (const { path, blob } of results) {
-        files[path] = blob
-      }
-
-      let previewUrl: string | null = null
-      const media: Media | null = yield select(getMedia)
-      if (media) {
-        const thumbnail: Blob = yield call(objectURLToBlob, media.preview)
-        yield call(
-          [builder, 'uploadMedia'],
-          project.id,
-          thumbnail,
-          { north: thumbnail, east: thumbnail, south: thumbnail, west: thumbnail },
-          handleProgress(ProgressStage.UPLOAD_RECORDING)
-        )
-        files['assets/scene/thumbnail.png'] = thumbnail
-        previewUrl = getPreviewUrl(project.id)
-      } else {
-        console.warn('Failed to upload scene preview')
-      }
-
-      const parcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
-      const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
-
-      const toString = ({ x, y }: { x: number; y: number }) => `${x},${y}`
-
-      const componentNames = scene.sdk7.composite.components.reduce(
-        (components, component) => components.add(component.name),
-        new Set<string>()
-      )
-      const smartItemComponents = ['asset-packs::Actions', 'asset-packs::Triggers']
-      const hasSmartItems = Array.from(componentNames).some(componentName => smartItemComponents.includes(componentName))
-
-      let definition: SceneDefinition = {
-        allowedMediaHostnames: [],
-        owner: address || '',
-        main: 'bin/index.js',
-        contact: {
-          name: name || '',
-          email: ''
-        },
-        display: {
-          title: project.title,
-          favicon: 'favicon_asset',
-          navmapThumbnail: 'assets/scene/thumbnail.png'
-        },
-        tags: hasSmartItems ? ['is_smart'] : [],
-        scene: {
-          base: toString(base),
-          parcels: parcels.map(toString)
-        },
-        ecs7: true,
-        runtimeVersion: '7',
-        source: {
-          version: 1,
-          origin: 'builder',
-          point: base,
-          projectId: project.id,
-          layout: {
-            rows: project.layout.rows,
-            cols: project.layout.cols
-          }
-        }
-      }
-
-      if (scene.sdk7.metadata) {
-        definition = merge.withOptions(
-          { mergeArrays: false },
-          definition,
-          // override base definition with configuration in the scene.json
-          scene.sdk7.metadata as unknown as SceneDefinition,
-          {
-            // override coords with actual placement
-            scene: {
-              base: toString(base),
-              parcels: parcels.map(toString)
-            } as unknown as SceneDefinition
-          }
-        )
-      }
-
-      if (world) {
-        definition.worldConfiguration = {
-          name: world
-        }
-      }
-
-      const contents: Map<string, Buffer> = yield call(makeContentFiles, files)
-
-      const { entityId, files: hashedFiles } = yield call(buildEntity, {
-        type: EntityType.SCENE,
-        pointers: definition.scene.parcels,
-        metadata: definition,
-        files: contents
-      })
-
-      const authChain = Authenticator.signPayload(identity, entityId)
-      yield call([contentClient, 'deploy'], { entityId, files: hashedFiles, authChain })
-
-      return {
-        id: entityId,
-        placement,
-        owner: address,
-        timestamp: +new Date(),
-        layout: project.layout,
-        name: project.title,
-        thumbnail: previewUrl,
-        projectId: project.id,
-        base: definition.scene.base,
-        parcels: definition.scene.parcels,
-        world
-      }
-    }
-  }
-
-  function* handleDeployToWorldRequest(action: DeployToWorldRequestAction) {
-    const { world, projectId } = action.payload
-    const contentClient = createContentClient({
-      url: getWorldsContentServerUrl(),
-      fetcher
-    })
-    try {
-      const scenesResponse: Awaited<ReturnType<typeof worldsApi.fetchWorldScenes>> = yield call(
-        [worldsApi, worldsApi.fetchWorldScenes],
-        world,
-        { limit: 1, offset: 0 }
-      )
-      const totalScenes = scenesResponse?.total ?? 0
-
-      if (totalScenes >= 2) {
-        yield put(deployToWorldFailure(DeploymentError.MULTI_SCENE_BLOCKED))
-        return
-      }
-
-      let point: Coordinate = { x: 0, y: 0 }
-      if (totalScenes === 1 && scenesResponse && scenesResponse.scenes.length > 0) {
-        const firstParcel = scenesResponse.scenes[0].parcels[0]
-        if (firstParcel) {
-          const [x, y] = firstParcel.split(',').map(n => parseInt(n, 10))
-          if (!isNaN(x) && !isNaN(y)) {
-            point = { x, y }
-          }
-        }
-      }
-
-      const deployment: Deployment = yield call(
-        deployScene,
-        deployToWorldFailure,
-        contentClient,
-        projectId,
-        { point, rotation: 'north' },
-        world
-      )
-      yield put(fetchENSWorldStatusRequest(world))
-      yield put(fetchWorldDeploymentsRequest([world]))
-      yield put(deployToWorldSuccess(deployment))
-    } catch (e) {
-      yield put(deployToWorldFailure(isErrorWithMessage(e) ? e.message.split('\n')[0] : 'Unknown error'))
-    }
-  }
-
-  function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
-    const { placement, projectId, overrideDeploymentId } = action.payload
-    try {
-      const contentClient: ContentClient = yield call([catalystClient, 'getContentClient'])
-      const deployment: Deployment = yield call(deployScene, deployToLandFailure, contentClient, projectId, placement)
-      yield put(deployToLandSuccess(deployment, overrideDeploymentId))
-    } catch (e) {
-      yield put(deployToLandFailure(isErrorWithMessage(e) ? e.message.split('\n')[0] : 'Unknown error'))
-    }
-  }
 
   function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     const { deploymentId } = action.payload

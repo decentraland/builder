@@ -487,10 +487,6 @@ const toRemoteCollectionQueryParameters = (params?: FetchCollectionsParams) => {
   return queryParams
 }
 
-export type PoolDeploymentAdditionalFields = {
-  groups?: string[]
-}
-
 export type Sort = {
   sort_by?: string
   sort_order?: 'asc' | 'desc'
@@ -645,10 +641,6 @@ export class BuilderAPI extends BaseAPI {
     }
 
     return hasEnvelope ? parsed.data : parsed
-  }
-
-  async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
-    await this.request('put', `/projects/${projectId}/pool`, { params: additionalInfo })
   }
 
   async uploadMedia(projectId: string, preview: Blob, shots: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {

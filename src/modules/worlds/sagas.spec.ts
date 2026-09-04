@@ -22,8 +22,7 @@ import {
   putWorldPermissionsSuccess
 } from './actions'
 import { worldsSaga } from './sagas'
-import { clearDeploymentSuccess, deployToWorldSuccess } from 'modules/deployment/actions'
-import { Deployment } from 'modules/deployment/types'
+import { clearDeploymentSuccess } from 'modules/deployment/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { loadProfileRequest, loadProfilesRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { Authorization } from 'lib/api/auth'
@@ -128,31 +127,6 @@ describe('when handling the connect wallet success action', () => {
         ])
         .put(fetchWorldsWalletStatsRequest(address))
         .dispatch(connectWalletSuccess({} as Wallet))
-        .silentRun()
-    })
-  })
-})
-
-describe('when handling the deploy to world success action', () => {
-  describe('when there is no address in the store', () => {
-    it('should not put the request action to fetch worlds wallet stats', () => {
-      return expectSaga(worldsSaga, worldsApi)
-        .provide([[select(getAddress), undefined]])
-        .not.put(fetchWorldsWalletStatsRequest(address))
-        .dispatch(deployToWorldSuccess({} as Deployment))
-        .silentRun()
-    })
-  })
-
-  describe('when there is an address in the store', () => {
-    it('should put the request action to fetch worlds wallet stats with the stored address', () => {
-      return expectSaga(worldsSaga, worldsApi)
-        .provide([
-          [select(getAddress), address],
-          [put(fetchWorldsWalletStatsRequest(address)), undefined]
-        ])
-        .put(fetchWorldsWalletStatsRequest(address))
-        .dispatch(deployToWorldSuccess({} as Deployment))
         .silentRun()
     })
   })

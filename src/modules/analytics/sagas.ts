@@ -1,4 +1,4 @@
-import { takeLatest, select, all, call } from 'redux-saga/effects'
+import { takeLatest, select, all } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { createAnalyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
@@ -17,16 +17,7 @@ import {
   UPDATE_TRANSFORM,
   UpdateTransfromAction
 } from 'modules/scene/actions'
-import {
-  DeployToPoolSuccessAction,
-  DEPLOY_TO_POOL_SUCCESS,
-  DEPLOY_TO_LAND_SUCCESS,
-  CLEAR_DEPLOYMENT_SUCCESS,
-  DeployToLandSuccessAction,
-  ClearDeploymentSuccessAction,
-  DEPLOY_TO_WORLD_SUCCESS,
-  DeployToWorldSuccessAction
-} from 'modules/deployment/actions'
+import { CLEAR_DEPLOYMENT_SUCCESS, ClearDeploymentSuccessAction } from 'modules/deployment/actions'
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
@@ -43,8 +34,6 @@ import {
   SaveAssetPackFailureAction,
   DeleteAssetPackFailureAction
 } from 'modules/assetPack/actions'
-import { LandTile, Rental } from 'modules/land/types'
-import { getLandTiles, getRentals } from 'modules/land/selectors'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { PublishThirdPartyItemsSuccessAction, PUBLISH_THIRD_PARTY_ITEMS_SUCCESS } from 'modules/thirdParty/actions'
 
@@ -58,8 +47,6 @@ function* builderAnalyticsSaga() {
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
-  yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
-  yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(SEARCH_ASSETS, handleSearchAssets)
   yield takeLatest(SYNC, handleSync)
@@ -69,7 +56,6 @@ function* builderAnalyticsSaga() {
   yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
   yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
   yield takeLatest(PUBLISH_THIRD_PARTY_ITEMS_SUCCESS, handlePublishTPItemSuccess)
-  yield takeLatest(DEPLOY_TO_WORLD_SUCCESS, handleDeployToWorldSuccess)
 }
 
 export function* analyticsSaga() {
@@ -135,30 +121,6 @@ function* handleUpdateTransfrom(_: UpdateTransfromAction) {
   track('Update item', { projectId: project.id })
 }
 
-function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
-  const project: Project | null = yield select(getCurrentProject)
-  if (!project) return
-  const ethAddress: string = yield select(getAddress)
-  // Do not change this event name format
-  track('[Success] Deploy to LAND pool', { project_id: project.id, eth_address: ethAddress })
-}
-
-function* handleDeployToLandSuccess(action: DeployToLandSuccessAction) {
-  const {
-    deployment: { placement }
-  } = action.payload
-  const project: Project | null = yield select(getCurrentProject)
-  if (!project) return
-  const ethAddress: string = yield select(getAddress)
-  const rentals: Rental[] = yield select(getRentals)
-  const landTiles: Record<string, LandTile> = yield select(getLandTiles)
-  const landToDeploy = landTiles[`${placement.point.x},${placement.point.y}`]
-  const isRented =
-    landToDeploy && rentals.some(rental => rental.tokenId === landToDeploy.land.tokenId && rental.type === landToDeploy.land.type)
-  // Do not change this event name format
-  track('[Success] Deploy to LAND', { project_id: project.id, eth_address: ethAddress, isRented })
-}
-
 function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
@@ -217,18 +179,4 @@ function* handleDeleteAssetPackFailure(action: DeleteAssetPackFailureAction) {
   if (!project) return
   const ethAddress: string = yield select(getAddress)
   track('[Failure] Delete AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
-}
-
-function* handleDeployToWorldSuccess(action: DeployToWorldSuccessAction) {
-  const { deployment } = action.payload
-
-  const world = deployment.world
-  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
-  const ethAddress: ReturnType<typeof getAddress> = yield select(getAddress)
-
-  if (!world || !project || !ethAddress) {
-    return
-  }
-
-  yield call(track, '[Success] Deploy to World', { project_id: project.id, eth_address: ethAddress, subdomain: deployment.world })
 }

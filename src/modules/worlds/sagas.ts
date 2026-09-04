@@ -27,14 +27,11 @@ import {
   deleteWorldPermissionsFailure,
   getWorldPermissionsFailure
 } from './actions'
-import { CLEAR_DEPLOYMENT_SUCCESS, DEPLOY_TO_WORLD_SUCCESS } from 'modules/deployment/actions'
+import { CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 
 export function* worldsSaga(WorldsAPIContent: WorldsAPI) {
   yield takeEvery(FETCH_WORLDS_WALLET_STATS_REQUEST, handleFetchWorldsWalletStatsRequest)
-  yield takeEvery(
-    [CONNECT_WALLET_SUCCESS, DEPLOY_TO_WORLD_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS],
-    handleActionsThatTriggerFetchWorldsWalletStatsRequest
-  )
+  yield takeEvery([CONNECT_WALLET_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS], handleActionsThatTriggerFetchWorldsWalletStatsRequest)
   yield takeEvery(GET_WORLD_PERMISSIONS_REQUEST, handleGetWorldPermissionsRequest)
   yield takeEvery(POST_WORLD_PERMISSIONS_REQUEST, handlePostWorldPermissionsRequest)
   yield takeEvery(PUT_WORLD_PERMISSIONS_REQUEST, handlePutWorldPermissionsRequest)

@@ -30,14 +30,6 @@
   animation: progress-active 2s ease infinite;
 }
 
-.DeployModal .choice-form {
-  width: 560px;
-  margin: 0px 24px 24px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .DeployModal .modal-header {
   display: flex;
   align-items: center;
@@ -66,75 +58,9 @@
   padding: 0px 40px;
 }
 
-.DeployModal .choice-form .options {
-  display: flex;
-  flex-direction: row;
-  margin-top: 32px;
-  width: 100%;
-}
-
-.DeployModal .choice-form .card {
-  background: rgba(var(--purplish-grey-raw), 0.32);
-  padding: 20px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: calc(50% - 12px);
-  overflow: hidden;
-  overflow-wrap: break-word;
-}
-
-.DeployModal .choice-form .card + .card {
-  margin-left: 24px;
-}
-
-.DeployModal .choice-form .card .title {
-  font-size: 17px;
-  text-align: center;
-  display: block;
-  font-weight: 500;
-  margin-bottom: 12px;
-}
-
-.DeployModal .choice-form .card .description {
-  font-size: 15px;
-  font-weight: 100;
-  line-height: 24px;
-  text-align: center;
-  margin-bottom: 24px;
-  flex: 1;
-}
-
-.DeployModal .choice-form .card .ui.button {
-  width: 100%;
-}
-
-.DeployModal .thumbnail {
-  height: 162px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position-y: 45%;
-}
-
-.DeployModal .thumbnail.deploy-to-land {
-  background-image: url('../../../images/deploy-to-land.svg');
-  width: 162px;
-}
-
-.DeployModal .thumbnail.deploy-to-world {
-  background-image: url('../../../images/deploy-to-world.svg');
-  width: 162px;
-}
-
 .DeployModal .ui.button {
   height: 36px;
   font-weight: 400;
-}
-
-.DeployModal .ui.button.hollow {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.32);
 }
 
 .DeployModal .error {
@@ -146,105 +72,4 @@
 
 .DeployModal .error.visible {
   visibility: visible;
-}
-
-.DeployModal .ui.button + .ui.button {
-  margin-left: 20px;
-}
-
-/* Deploy to world styles */
-.DeployModal .modal-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 48px;
-  width: 810px;
-  gap: 32px;
-}
-
-.DeployModal .modal-body .modal-title,
-.DeployModal .modal-body .deploy-modal-subtitle {
-  margin: 0;
-}
-
-.DeployModal .deploy-modal-subtitle {
-  font-weight: 300;
-  font-size: 18px;
-  line-height: 22px;
-  margin-top: 0;
-}
-
-.DeployModal .modal-close-icon {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-.DeployModal .deploy-modal-options {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-}
-
-.DeployModal .deploy-modal-options .ui.button {
-  height: auto;
-  width: 100%;
-}
-
-.DeployModal .option-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #716b7c;
-  border-radius: 8px;
-  padding: 24px;
-  flex: 1;
-  background-color: #5e5b67;
-}
-
-.DeployModal .option-container .option-container-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.DeployModal .option-container .thumbnail {
-  height: 162px;
-}
-
-.DeployModal .option-container .option-description {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.DeployModal .option-container .option-title {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 24px;
-}
-
-.DeployModal .learn-more-link {
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 16px;
-  text-decoration: underline;
-  margin-top: 8px;
-  color: white;
-}
-
-.DeployModal .modal-body .ui.header.modal-title {
-  margin: 0px;
-  line-height: 36px;
-  font-size: 30px;
-}
-
-.DeployModal .modal-body .modal-subtitle {
-  margin: 0;
-  line-height: 18px;
 }
