@@ -487,10 +487,6 @@
     "title": "编辑 URN",
     "subtitle": "更新 {name} 的 URN"
   },
-  "custom_layout_modal": {
-    "subtitle_one": "您可以自定义场景布局.",
-    "subtitle_two": "在下面的输入框中输入所需的大小值."
-  },
   "share_modal": {
     "title": "分享您的场景",
     "description": "让你的朋友和合作者欣赏您的作品",
@@ -737,11 +733,6 @@
     "confirm": "您即将解散{name}。您要继续吗？",
     "too_big": "这个产业太大，无法在一项交易中解决。请移除包裹，直到其大小最大为{max}个包裹为止。"
   },
-  "edit_project_modal": {
-    "custom_layout_label": "布局",
-    "title": "场景详细信息",
-    "unpublish_needed": "请在更新您的场景细节之前先取消发布您的场景"
-  },
   "edit_page": {
     "title": "编辑",
     "subtitle": "您正在编辑{name}。"
@@ -967,7 +958,6 @@
     "submit": "提交",
     "subscribe": "订阅",
     "terms_and_conditions": "使用条款",
-    "view_more": "查看更多",
     "click_here": "点击这里",
     "proceed": "继续",
     "open_in_editor": "在编辑器中打开",
@@ -1064,55 +1054,21 @@
   },
   "scenes_page": {
     "my_scenes": "我的场景",
-    "upload_scene": "上传场景",
-    "create_scene": "创建场景",
-    "no_projects": "您可以在您的 LAND、您的世界中发布您的场景或将它们上传到场景池。{br}或者，您也可以<link>上传场景文件</link>并从这里继续工作。",
-    "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "sdk6_support": "SDK 6的技术支持将于2023年12月23日结束。",
     "project_actions": {
       "delete_project": "删除场景",
-      "duplicate_project": "复制场景",
-      "export_project": "场景导出",
-      "unpublish": "撤消发布"
+      "export_project": "场景导出"
     },
-    "choose_scene_creation": "选择建立场景的最佳选择",
     "no_scenes": {
       "title": "创建您的第一个场景",
-      "description": "释放您的创造力。开始为您的土地和世界建立场景，并与社区分享。<a>了解有关创建场景的更多信息。</a>",
-      "from_scratch": {
-        "title": "白手起家",
-        "description": "以简单而直观的方式开始用在线构建器开始构建您的场景."
-      },
-      "from_template": {
-        "title": "使用预定义的模板",
-        "description": "选择这些抛光模板之一，并只需单击几下即可发布一个惊人的场景!"
-      }
+      "description": "释放您的创造力。开始为您的土地和世界建立场景，并与社区分享。<a>了解有关创建场景的更多信息。</a>"
     },
     "sort": {
       "name": "名称",
       "newest": "最新",
       "size": "尺寸"
     },
-    "start": "开始设计",
-    "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
-    "templates_title": "请先选择场景大小",
-    "title": "设计酷炫场景！",
     "results": "{count}结果"
-  },
-  "templates_page": {
-    "title": "选择一个模板",
-    "back_to_scenes": "回到场景",
-    "parcels": "{size} 包裹",
-    "coming_soon": "即将推出"
-  },
-  "import_modal": {
-    "action": "上传",
-    "action_many": "上传{count}场景",
-    "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "要在不同帐户之间传输场景或导入先前从场景池下载的场景，请使用导入功能。确保您按照下载完全导入zip文件。",
-    "invalid_file": "无效文件",
-    "title": "导入场景",
-    "upload_manually": "在您的计算机上浏览它"
   },
   "upload_video": {
     "cta": "拖放视频（格式.MP4）以展示智能可穿戴功能或{action}",
@@ -1149,10 +1105,6 @@
   "collection_dropdown": {
     "placeholder": "选择一个集合",
     "no_collections": "未找到有效集合"
-  },
-  "layout_picker": {
-    "columns": "列",
-    "rows": "行"
   },
   "metrics": {
     "bodies": "物体",
@@ -1286,23 +1238,6 @@
     "revoke": "撤消",
     "invalid_address": "无效地址"
   },
-  "scene_list_page": {
-    "projects_title": "社区场景",
-    "no_projects": "没有结果",
-    "filters": {
-      "creator-contest-2019-12": "Creator Contest (Submission)",
-      "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "所有收藏",
-      "all_users": "全部用户",
-      "only_me": "只有我",
-      "newest": "最新",
-      "likes": "最喜欢",
-      "size": "尺寸",
-      "items": "项目",
-      "smart_items": "互动项目",
-      "name": "名称"
-    }
-  },
   "public_page": {
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",
@@ -1332,18 +1267,6 @@
     "confirm_delete_content": "您确定要删除项目\"{name}\"吗？ 此操作不可逆转！",
     "confirm_delete_header": "删除 \"{name}\""
   },
-  "project_fields": {
-    "description_field_label": "描述或说胆",
-    "description_field_placeholder": "没有说明",
-    "title_field_label": "名称",
-    "title_field_placeholder": "场景名称"
-  },
-  "project_layout_picker": {
-    "max_area_error": "您的场景不得超过 {area} 块地块",
-    "min_area_error": "您的场景太小了",
-    "decimals_error": "您的场景包裹尺寸不应具有小数为小数",
-    "empty_field_error": "您应该完成行和列的数量，以设置包裹尺寸"
-  },
   "quota_exceeded_modal": {
     "retry": {
       "description": "无法保存",
@@ -1371,16 +1294,6 @@
     "location": "位置",
     "description": "描述",
     "url": "URL"
-  },
-  "template_detail_page": {
-    "select_template": "选择模板",
-    "download_scene": "下载场景",
-    "description": "描述",
-    "creator": "创造者",
-    "scene_details": "场景细节",
-    "built_for_world": "为世界建造",
-    "personalize_it_yourself": "自己个性化",
-    "parcels": "{rows} x {cols} 包裹"
   },
   "shortcuts": {
     "delete": "删除",
@@ -1415,27 +1328,6 @@
     "loading": "上传中...",
     "retry": "重试",
     "success": "所有场景成功保存！"
-  },
-  "create_modal": {
-    "title": "创建一个场景",
-    "name_subtitle": "为您的场景设置名称和描述",
-    "size_subtitle": "设置新场景的大小",
-    "sdk_title": "体验新的分散编辑",
-    "sdk_subtitle": "在没有任何代码的情况下利用SDK 7的功率。",
-    "sdk_description": "通过改进的视觉编辑器来增强场景构建过程。包括上一个场景构建器中的所有功能。",
-    "sdk_image_alt": "SDK 7",
-    "name_label": "名称",
-    "description_label": "描述",
-    "description_placeholder": "一些描述...",
-    "use_sdk7": "使用分散网络编辑器",
-    "use_sdk6": "使用传统场景建造者 (SDK 6)"
-  },
-  "clone_template_modal": {
-    "title": "为您的场景设置名称和描述",
-    "name_label": "姓名",
-    "name_max_length": "该名称最多可以是32个字符",
-    "description_label": "描述",
-    "description_placeholder": "一些描述..."
   },
   "templates": {
     "big": "大 (2x3)",
@@ -1508,37 +1400,6 @@
   "toasts": {
     "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
   },
-  "topbar": {
-    "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
-    "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
-    "publish": "发布",
-    "up_to_date": "已最新！{br}所有更改都已发布",
-    "update_scene": "更新场景"
-  },
-  "tutorial_modal": {
-    "slide0": {
-      "description": "这是 Decentraland 的新场景构建器。",
-      "title": "欢迎您的到来！"
-    },
-    "slide1": {
-      "description": "要移动对象，请单击并拖动对象。",
-      "title": "移动物体"
-    },
-    "slide2": {
-      "description": "从右侧边栏向场景添加对象。",
-      "title": "添加对象"
-    },
-    "slide3": {
-      "description": "通过单击\"旋转\"工具并拖动轨道来旋转对象。",
-      "title": "轨道和箭头"
-    },
-    "slide4": {
-      "description": "使用左键拖动可旋转相机。",
-      "title": "相机控制"
-    },
-    "subtitle": "内容编辑器非常容易使用，在您开始之前，这里有一些技巧和提示",
-    "title": "开始使用 the Builder"
-  },
   "unsupported_browser_page": {
     "back": "返回您的场景",
     "subtitle": "The Builder 不支持您的浏览器.{br}请使用 {chrome} 或 {firefox}",
@@ -1548,16 +1409,6 @@
     "guest": "客人",
     "sign_in": "登录",
     "sign_out": "注销"
-  },
-  "validation": {
-    "project": {
-      "description": {
-        "length": "描述长度必须是 {min} 到 {max} 个字符."
-      },
-      "title": {
-        "length": "名称长度必须是 {min} 到 {max} 个字符."
-      }
-    }
   },
   "validation_issues_panel": {
     "title_errors": "{count, plural, one {# 个验证错误} other {# 个验证错误}}",

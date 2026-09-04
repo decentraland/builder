@@ -10,7 +10,6 @@ import {
   LoadProjectsSuccessAction,
   LOAD_PROJECTS_REQUEST,
   LoadProjectsRequestAction,
-  EditProjectAction,
   SetProjectAction,
   SET_PROJECT,
   CREATE_PROJECT,
@@ -35,13 +34,7 @@ import {
   LoadTemplatesFailureAction,
   LOAD_TEMPLATES_REQUEST,
   LOAD_TEMPLATES_SUCCESS,
-  LOAD_TEMPLATES_FAILURE,
-  DuplicateProjectRequestAction,
-  DuplicateProjectSuccessAction,
-  DuplicateProjectFailureAction,
-  DUPLICATE_PROJECT_REQUEST,
-  DUPLICATE_PROJECT_SUCCESS,
-  DUPLICATE_PROJECT_FAILURE
+  LOAD_TEMPLATES_FAILURE
 } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
 
@@ -60,7 +53,6 @@ export const INITIAL_STATE: ProjectState = {
 export type ProjectReducerAction =
   | SetProjectAction
   | CreateProjectAction
-  | EditProjectAction
   | ShareProjectAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
@@ -76,9 +68,6 @@ export type ProjectReducerAction =
   | LoadTemplatesRequestAction
   | LoadTemplatesSuccessAction
   | LoadTemplatesFailureAction
-  | DuplicateProjectRequestAction
-  | DuplicateProjectSuccessAction
-  | DuplicateProjectFailureAction
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
@@ -131,8 +120,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     case LOAD_PROJECTS_FAILURE:
     case LOAD_TEMPLATES_FAILURE:
     case LOAD_PUBLIC_PROJECT_FAILURE:
-    case LOAD_MANIFEST_FAILURE:
-    case DUPLICATE_PROJECT_FAILURE: {
+    case LOAD_MANIFEST_FAILURE: {
       const { error } = action.payload
       return {
         ...state,
@@ -176,18 +164,10 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     case LOAD_PROJECTS_REQUEST:
     case LOAD_TEMPLATES_REQUEST:
     case LOAD_PUBLIC_PROJECT_REQUEST:
-    case LOAD_MANIFEST_REQUEST:
-    case DUPLICATE_PROJECT_REQUEST: {
+    case LOAD_MANIFEST_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
-      }
-    }
-    case DUPLICATE_PROJECT_SUCCESS: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null
       }
     }
     default:
