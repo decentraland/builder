@@ -51,7 +51,7 @@ import {
   duplicateProjectFailure
 } from 'modules/project/actions'
 import { Project, Manifest } from 'modules/project/types'
-import { SDKVersion, Scene } from 'modules/scene/types'
+import { SDKVersion, Scene, SceneSDK7 } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
@@ -71,7 +71,7 @@ import { Gizmo, PreviewType } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
-import { changeLayout, getParcels } from 'modules/inspector/utils'
+import { changeLayout, getParcels, toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { getName } from 'modules/profile/selectors'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
 import { locations } from 'routing/locations'
@@ -277,7 +277,7 @@ export function* projectSaga(builder: BuilderAPI) {
   }
 
   function* handleExportProject(action: ExportProjectRequestAction) {
-    const { project } = action.payload
+    const { project, migrateToSDK7 } = action.payload
     const scene: Scene = yield getSceneByProjectId(
       project.id,
       project.isTemplate || project.isPublic ? PreviewType.PUBLIC : PreviewType.PROJECT
@@ -285,7 +285,19 @@ export function* projectSaga(builder: BuilderAPI) {
     yield put(setExportProgress({ loaded: 0, total: 0 }))
     let files: Record<string, Blob | string> = {}
 
-    if (scene.sdk6) {
+    if (scene.sdk6 && migrateToSDK7) {
+      const sdk7Scene: SceneSDK7 = {
+        id: scene.sdk6.id,
+        composite: toComposite(scene.sdk6, project),
+        mappings: toMappings(scene.sdk6)
+      }
+      files = yield call(createSDK7Files, {
+        project,
+        scene: sdk7Scene,
+        builderAPI: builder,
+        crdt: new Blob([toCrdt(scene.sdk6) as BlobPart])
+      })
+    } else if (scene.sdk6) {
       const author: string = yield select(getName)
       files = yield call(createFiles, {
         project,
@@ -301,7 +313,6 @@ export function* projectSaga(builder: BuilderAPI) {
       files = yield call(createSDK7Files, { project, scene: scene.sdk7, builderAPI: builder })
     }
 
-    // download zip
     const name = project.title.replace(/\s/g, '_')
     yield call(downloadZip, name, files)
     yield put(exportProjectSuccess())
