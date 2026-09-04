@@ -541,7 +541,6 @@
       },
       "map": {
         "continue": "继续",
-        "no_land_action": "提交到场景池",
         "no_land_warning": "好象您没有任何土地",
         "occupied_tooltip": "清空土地空间{br}从仪表板撤回发布的场景",
         "occupied_warning": "在这个位置至少有一个场景布署",
@@ -594,28 +593,8 @@
       "description": "布署场景到 LAND 土地或 Estate 连块土地.",
       "title": "我的 LAND 土地"
     },
-    "option_pool": {
-      "action": "应用",
-      "description": "将你的场景应用到其他人的领地。",
-      "title": "场景池"
-    },
     "pool": {
-      "action": "提交",
-      "contact_information": "联系信息",
-      "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
-      "progress": "正在处理",
-      "sign_in": {
-        "action": "登录",
-        "subtitle": "登录以发布到场景池",
-        "title": "登录"
-      },
-      "subtitle": "您的场景即将上传到社区池，这意味着任何人都可以使用它。",
-      "success": {
-        "body": "它将包含在我们的公共场景库中，适合有兴趣使用它的任何人。感谢您的贡献！",
-        "title": "现在，您的场景是场景池的一部分！"
-      },
-      "title": "正在发布场景",
-      "uploading": "上传中..."
+      "title": "正在发布场景"
     },
     "deploy_world": {
       "title": "发布至世界",
@@ -672,11 +651,6 @@
         "title": "我的地盘",
         "description": "尺寸限制：每个包裹15 MB。<br> </br>在Genesis City Map中可找到。<br> </br>无限用户可以同时加入。",
         "action": "发布到土地"
-      },
-      "pool": {
-        "title": "上传到场景池",
-        "description": "您的场景将在场景库中列出，并公开下载。",
-        "action": "上传到场景池"
       }
     }
   },
@@ -701,27 +675,6 @@
     "body": "使用{newName}作为头像的新别名。 唯一名称是帮助您的朋友在Metaverse中找到您的好方法！ 这将替换{oldName}。",
     "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。",
     "error": "发生错误。请稍后再试。"
-  },
-  "deployment_contest_modal": {
-    "action": "参加比赛",
-    "submit": {
-      "title": "创建大赛",
-      "subtitle": "将场景发送到创建大赛。",
-      "eth_address": "ETH地址 (可选)",
-      "invalid_eth_address": "无效的ETH地址"
-    },
-    "recording": {
-      "title": "准备场景",
-      "subtitle": "我们正在准备您参赛的场景，请稍侯。"
-    },
-    "uploading": {
-      "title": "准备场景",
-      "subtitle": "我们正在准备您参赛的场景，请稍侯。"
-    },
-    "success": {
-      "title": "感谢您上传场景！",
-      "subtitle": "若您的场景入选了，您将接获电邮通知。"
-    }
   },
   "dissolve_modal": {
     "title": "解散产业",

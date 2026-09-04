@@ -15,10 +15,6 @@ import {
   loadManifestFailure,
   loadProjectsFailure,
   loadProjectsRequest,
-  loadPublicProjectSuccess,
-  loadPublicProjectFailure,
-  LoadPublicProjectRequestAction,
-  LOAD_PUBLIC_PROJECT_REQUEST,
   ShareProjectAction,
   SHARE_PROJECT,
   EDIT_PROJECT_THUMBNAIL,
@@ -39,8 +35,6 @@ import { getSceneByProjectId } from 'modules/scene/utils'
 import { BuilderAPI } from 'lib/api/builder'
 import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo, PreviewType } from 'modules/editor/types'
-import { Pool } from 'modules/pool/types'
-import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { getName } from 'modules/profile/selectors'
@@ -51,7 +45,6 @@ import { createFiles, createSDK7Files } from './export'
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(SHARE_PROJECT, handleShareProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
-  yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadManifestRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
@@ -119,21 +112,6 @@ export function* projectSaga(builder: BuilderAPI) {
     const name = project.title.replace(/\s/g, '_')
     yield call(downloadZip, name, files)
     yield put(exportProjectSuccess())
-  }
-
-  function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
-    const { id, type } = action.payload
-    try {
-      const project: Project | Pool = yield call(() => builder.fetchPublicProject(id, type))
-      yield put(loadPublicProjectSuccess(project, type))
-      if (project) {
-        if (project.ethAddress) {
-          yield put(loadProfileRequest(project.ethAddress))
-        }
-      }
-    } catch (e) {
-      yield put(loadPublicProjectFailure(isErrorWithMessage(e) ? e.message : 'Unknown error'))
-    }
   }
 
   function* handleLoadProjectsRequest() {

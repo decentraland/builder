@@ -33,8 +33,6 @@ import { landSaga } from 'modules/land/sagas'
 import { locationSaga } from 'modules/location/sagas'
 import { mediaSaga } from 'modules/media/sagas'
 import { modalSaga } from 'modules/modal/sagas'
-import { poolGroupSaga } from 'modules/poolGroup/sagas'
-import { poolSaga } from 'modules/pool/sagas'
 import { projectSaga } from 'modules/project/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
 import { statsSaga } from 'modules/stats/sagas'
@@ -105,8 +103,6 @@ export function* rootSaga(
     locationSaga(),
     mediaSaga(),
     modalSaga(),
-    poolGroupSaga(builderAPI),
-    poolSaga(builderAPI),
     createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL(), getIdentity })(),
     projectSaga(builderAPI),
     sceneSaga(),

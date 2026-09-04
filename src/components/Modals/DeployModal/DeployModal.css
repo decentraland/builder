@@ -117,11 +117,6 @@
   background-position-y: 45%;
 }
 
-.DeployModal .thumbnail.deploy-to-pool {
-  background-image: url('../../../images/deploy-to-pool.svg');
-  width: 78px;
-}
-
 .DeployModal .thumbnail.deploy-to-land {
   background-image: url('../../../images/deploy-to-land.svg');
   width: 162px;
@@ -230,41 +225,6 @@
 .DeployModal .option-container .option-title {
   font-size: 20px;
   font-weight: 600;
-  line-height: 24px;
-}
-
-.DeployModal .scene-pool-option {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 25px;
-  padding: 16px;
-}
-
-.DeployModal .scene-pool-option .thumbnail {
-  height: 60px;
-}
-
-.DeployModal .scene-pool-description {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.DeployModal .scene-pool-option .scene-pool-action {
-  width: 320px;
-  height: 42px;
-}
-
-.DeployModal .scene-pool-option .option-description {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.DeployModal .scene-pool-option .option-title {
-  font-weight: 600;
-  font-size: 20px;
   line-height: 24px;
 }
 

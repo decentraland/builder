@@ -133,10 +133,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     })
   }
 
-  handleDeployToPool = () => {
-    this.props.onDeployToPool()
-  }
-
   renderConnectForm = () => {
     const { walletError, isConnecting } = this.props
     let errorClasses = 'error'
@@ -268,7 +264,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           landTiles={landTiles}
           deployment={deployment}
           onConfirmPlacement={this.handleConfirmPlacement}
-          onNoAuthorizedParcels={this.handleDeployToPool}
           isLoggedIn={isLoggedIn}
         />
       </div>

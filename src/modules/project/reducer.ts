@@ -1,6 +1,5 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { PreviewType } from 'modules/editor/types'
 import {
   DeleteProjectAction,
   DELETE_PROJECT,
@@ -22,12 +21,6 @@ import {
   LoadManifestFailureAction,
   LOAD_MANIFEST_SUCCESS,
   LOAD_MANIFEST_FAILURE,
-  LoadPublicProjectRequestAction,
-  LoadPublicProjectSuccessAction,
-  LoadPublicProjectFailureAction,
-  LOAD_PUBLIC_PROJECT_REQUEST,
-  LOAD_PUBLIC_PROJECT_SUCCESS,
-  LOAD_PUBLIC_PROJECT_FAILURE,
   ShareProjectAction
 } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
@@ -50,9 +43,6 @@ export type ProjectReducerAction =
   | ShareProjectAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
-  | LoadPublicProjectRequestAction
-  | LoadPublicProjectSuccessAction
-  | LoadPublicProjectFailureAction
   | LoadProjectsRequestAction
   | LoadProjectsSuccessAction
   | LoadProjectsFailureAction
@@ -108,31 +98,12 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
     }
     case LOAD_PROJECTS_FAILURE:
-    case LOAD_PUBLIC_PROJECT_FAILURE:
     case LOAD_MANIFEST_FAILURE: {
       const { error } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error
-      }
-    }
-    case LOAD_PUBLIC_PROJECT_SUCCESS: {
-      const { project, type } = action.payload
-      if (type !== PreviewType.PUBLIC) {
-        return {
-          ...state,
-          loading: loadingReducer(state.loading, action)
-        }
-      }
-
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [project.id]: project
-        },
-        loading: loadingReducer(state.loading, action)
       }
     }
     case LOAD_MANIFEST_SUCCESS: {
@@ -151,7 +122,6 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
     }
     case LOAD_PROJECTS_REQUEST:
-    case LOAD_PUBLIC_PROJECT_REQUEST:
     case LOAD_MANIFEST_REQUEST: {
       return {
         ...state,

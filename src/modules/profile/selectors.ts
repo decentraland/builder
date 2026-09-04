@@ -4,17 +4,13 @@ import { ProfileState } from 'decentraland-dapps/dist/modules/profile/reducer'
 import { getData } from 'decentraland-dapps/dist/modules/profile/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { getCurrentPool } from 'modules/pool/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 
-export const getCurrentAuthor = createSelector(getCurrentProject, getCurrentPool, getData, (project, pool, profiles) => {
+export const getCurrentAuthor = createSelector(getCurrentProject, getData, (project, profiles) => {
   if (project && project.ethAddress && profiles[project.ethAddress]) {
     return profiles[project.ethAddress]
-  } else if (pool && pool.ethAddress && profiles[pool.ethAddress]) {
-    return profiles[pool.ethAddress]
-  } else {
-    return null
   }
+  return null
 })
 
 export const getAvatar = createSelector<RootState, string | undefined, ProfileState['data'], Avatar | null>(

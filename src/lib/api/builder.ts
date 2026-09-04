@@ -12,8 +12,6 @@ import { Scene } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
-import { PoolGroup } from 'modules/poolGroup/types'
-import { Pool } from 'modules/pool/types'
 import { Item, ItemType, WearableData, BlockchainRarity, ItemApprovalData } from 'modules/item/types'
 import { Account } from 'modules/committee/types'
 import { retryParams } from 'modules/common/utils'
@@ -136,26 +134,6 @@ export type RemoteProject = {
   template_status: TemplateStatus | null
 }
 
-export type RemotePoolGroup = {
-  id: string
-  name: string
-  is_active: boolean
-  active_from: string
-  active_until: string
-}
-
-export type RemotePool = RemoteProject & {
-  groups: string[]
-  parcels: number | null
-  transforms: number | null
-  gltf_shapes: number | null
-  nft_shapes: number | null
-  scripts: number | null
-  entities: number | null
-  likes: number
-  like: boolean
-}
-
 export type RemoteAssetPack = {
   id: string
   title: string
@@ -266,29 +244,6 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
   }
 }
 
-function fromRemotePool(remotePool: RemotePool): Pool {
-  const pool = fromRemoteProject(remotePool) as Pool
-
-  pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
-  pool.isPublic = true
-  pool.groups = remotePool.groups || []
-  pool.likes = remotePool.likes || 0
-  pool.like = !!remotePool.like
-
-  if (remotePool.parcels) {
-    pool.statistics = {
-      parcels: remotePool.parcels,
-      transforms: remotePool.transforms as number,
-      gltf_shapes: remotePool.gltf_shapes as number,
-      nft_shapes: remotePool.nft_shapes as number,
-      scripts: remotePool.scripts as number,
-      entities: remotePool.entities as number
-    }
-  }
-
-  return pool
-}
-
 function toRemoteAssetPack(assetPack: FullAssetPack): RemoteAssetPack {
   return {
     id: assetPack.id,
@@ -343,16 +298,6 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     metrics: remoteAsset.metrics,
     parameters: remoteAsset.parameters,
     actions: remoteAsset.actions
-  }
-}
-
-function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
-  return {
-    id: poolGroup.id,
-    name: poolGroup.name,
-    isActive: poolGroup.is_active,
-    activeFrom: new Date(Date.parse(poolGroup.active_from)),
-    activeUntil: new Date(Date.parse(poolGroup.active_until))
   }
 }
 
@@ -554,11 +499,6 @@ export type Sort = {
 export type Pagination = {
   limit?: number
   offset?: number
-}
-
-export type PoolFilters = {
-  group?: string
-  eth_address?: string
 }
 
 /**
@@ -773,21 +713,6 @@ export class BuilderAPI extends BaseAPI {
     return items.map(fromRemoteProject)
   }
 
-  async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
-    const project: RemotePool = await this.request('get', `/projects/${projectId}/${type}`)
-    return type === 'pool' ? fromRemotePool(project) : fromRemoteProject(project)
-  }
-
-  async fetchPoolsPage(filters: PoolFilters & Pagination & Sort) {
-    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', { params: filters })
-    return { items: items.map(fromRemotePool), total }
-  }
-
-  fetchPoolGroups = async (activeOnly = false) => {
-    const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { params: { activeOnly } })
-    return items.map(fromPoolGroup)
-  }
-
   async saveProject(project: Project, scene: Scene) {
     const manifest = createManifest(toRemoteProject(project), scene)
     await this.request('put', `/projects/${project.id}/manifest`, { params: { manifest } })
@@ -874,11 +799,6 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteAssetPack(assetPack: FullAssetPack) {
     await this.request('delete', `/assetPacks/${assetPack.id}`)
-  }
-
-  likePool(pool: string, like = true) {
-    const method = like ? 'put' : 'delete'
-    return this.request(method, `/pools/${pool}/likes`)
   }
 
   async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {

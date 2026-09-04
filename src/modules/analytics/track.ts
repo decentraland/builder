@@ -20,7 +20,6 @@ import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui
 import { SET_PROJECT, EXPORT_PROJECT_REQUEST, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { SHARE_SCENE } from 'modules/ui/share/actions'
-import { LIKE_POOL_REQUEST } from 'modules/pool/actions'
 import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'
 import {
   TRANSFER_LAND_SUCCESS,
@@ -172,7 +171,6 @@ addPayload(LOGOUT, 'Logout')
 addPayload(SHARE_SCENE, 'Share scene')
 
 // Like
-addPayload(LIKE_POOL_REQUEST, 'Like pool')
 
 // Transfer Land
 add(TRANSFER_LAND_SUCCESS, 'Transfer land', action => {
