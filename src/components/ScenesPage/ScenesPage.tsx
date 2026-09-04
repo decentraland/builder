@@ -22,7 +22,6 @@ import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import SceneCreationSelector from 'components/SceneCreationSelector'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './ScenesPage.types'
@@ -80,7 +79,6 @@ const ScenesPage: React.FC<Props> = props => {
             )
           })}
         </span>
-        <SceneCreationSelector />
       </div>
     )
   }

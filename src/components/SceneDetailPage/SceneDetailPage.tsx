@@ -16,7 +16,7 @@ import './SceneDetailPage.css'
 import { useHistory } from 'react-router'
 
 const SceneDetailPage: React.FC<Props> = props => {
-  const { project, scene, isLoading, deployments, onOpenModal, onDelete, onLoadProjectScene } = props
+  const { project, scene, isLoading, deployments, onDelete, onLoadProjectScene } = props
   const [isDeleting, setIsDeleting] = useState(false)
   const history = useHistory()
 
@@ -38,10 +38,6 @@ const SceneDetailPage: React.FC<Props> = props => {
     return <NotFound />
   }
 
-  const handleEditClick = useCallback(() => {
-    onOpenModal('EditProjectModal')
-  }, [onOpenModal])
-
   const handleDeleteClick = useCallback(() => {
     setIsDeleting(true)
   }, [setIsDeleting])
@@ -54,10 +50,6 @@ const SceneDetailPage: React.FC<Props> = props => {
   const handleCancelDeleteProject = useCallback(() => {
     setIsDeleting(false)
   }, [setIsDeleting])
-
-  const handleEditScene = useCallback(() => {
-    history.push(scene?.sdk6 ? locations.sceneEditor(project?.id) : locations.inspector(project?.id))
-  }, [history, project, scene])
 
   const getSceneStatus = () => {
     const { project, isLoading, isLoadingDeployments } = props
@@ -85,10 +77,7 @@ const SceneDetailPage: React.FC<Props> = props => {
             <Column>
               <Row>
                 <Back absolute onClick={() => handleNavigate(locations.scenes())} />
-                <Header className="name">
-                  {project.title}
-                  <Icon name="edit outline" onClick={handleEditClick} />
-                </Header>
+                <Header className="name">{project.title}</Header>
               </Row>
             </Column>
             <Column className="actions" align="right">
@@ -96,10 +85,6 @@ const SceneDetailPage: React.FC<Props> = props => {
                 <Button inverted className="download-button" onClick={() => onOpenModal('ExportModal', { project })}>
                   <Icon name="download" />
                   {t('scene_detail_page.download_scene')}
-                </Button>
-                <Button primary className="edit-button" disabled={!scene} loading={!scene} onClick={handleEditScene}>
-                  <Icon name="edit outline" />
-                  {t('scene_detail_page.edit_scene')}
                 </Button>
                 <Dropdown
                   trigger={
