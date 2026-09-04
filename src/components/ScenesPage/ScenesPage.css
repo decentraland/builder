@@ -94,8 +94,7 @@
   position: relative;
 }
 
-.ScenesPage .projects-menu .items-count,
-.ScenesPage .scene-pool-menu .ui.header.sub {
+.ScenesPage .projects-menu .items-count {
   flex: 1 0 auto;
   color: var(--secondary-text);
   text-transform: uppercase;
@@ -167,17 +166,6 @@
 
 .ScenesPage .SyncToast {
   top: 77px;
-}
-
-.ScenesPage .scene-pool-projects {
-  display: flex;
-  overflow: auto;
-  padding-top: 20px;
-  gap: var(--scenespage-card-margin);
-}
-
-.ScenesPage .scene-pool-projects .ProjectCard {
-  flex: none;
 }
 
 .ScenesPage .ui.button.import-scene,

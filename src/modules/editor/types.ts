@@ -1,5 +1,7 @@
 import { BodyShape, HideableWearableCategory, SpringBoneParams, WearableCategory } from '@dcl/schemas'
 import type { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
+import type { Vector3 } from 'modules/models/types'
+import type { CloseEditorAction, SetScriptUrlAction, TogglePreviewAction, UpdateEditorAction } from './actions'
 
 export enum Gizmo {
   MOVE = 'MOVE',
@@ -94,3 +96,31 @@ export type SpringBoneNode = BaseBoneNode & {
 }
 
 export type BoneNode = AvatarBoneNode | SpringBoneNode
+
+export type Editor = {
+  initEngine: (container: HTMLElement, buildConfigPath: string) => Promise<void>
+  getDCLCanvas: () => Promise<HTMLCanvasElement>
+  on: (event: string, listener: (...args: any[]) => void) => void
+  off: (event: string, listener: (...args: any[]) => void) => void
+  handleMessage: (msg: { type: 'update'; payload: any }) => void
+  sendExternalAction: (action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction | SetScriptUrlAction) => void
+  setPlayMode: (enabled: boolean) => void
+  setCameraZoomDelta: (delta: number) => void
+  setCameraRotation: (alpha: number, beta: number) => void
+  resetCameraZoom: () => void
+  setCameraPosition: (position: Vector3) => void
+  selectGizmo: (gizmo: Gizmo) => void
+  setSelectedEntities: (entityId: string[]) => void
+  getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
+  preloadFile: (url: string, arrayBuffer?: boolean) => void
+  getCameraTarget: () => Promise<Vector3>
+  takeScreenshot: (mime?: string) => Promise<string>
+  setGridResolution: (position: number, rotation: number, scale: number) => void
+  getLoadingEntities: () => string[] | null
+  onKeyDown: (key: UnityKeyboardEvent) => void
+}
+
+export type EditorWindow = typeof window & {
+  initDCL: () => void
+  editor: Editor
+}

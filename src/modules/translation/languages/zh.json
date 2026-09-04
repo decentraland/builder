@@ -1096,8 +1096,7 @@
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
     "title": "设计酷炫场景！",
-    "results": "{count}结果",
-    "from_scene_pool": "自场景池"
+    "results": "{count}结果"
   },
   "templates_page": {
     "title": "选择一个模板",
@@ -2438,10 +2437,6 @@
     "loading": "加载中...",
     "synced": "同步",
     "unsynced": "未同步"
-  },
-  "editor_preview": {
-    "loading_unity": "正在加载统一...",
-    "loading_unity_error": "请重新加载您的浏览器。 如果问题持续存在，请尝试使用更轻的场景或联系支持。"
   },
   "approval_flow": {
     "loading": {

@@ -46,7 +46,6 @@ import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
 import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/constants'
-import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import {
   snapToGrid,
@@ -73,7 +72,7 @@ import {
 } from 'modules/project/actions'
 import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
 import { locations } from 'routing/locations'
-import { PreviewType } from 'modules/editor/types'
+import { EditorWindow, PreviewType } from 'modules/editor/types'
 import { BuilderAPI } from 'lib/api/builder'
 
 const editorWindow = window as EditorWindow
