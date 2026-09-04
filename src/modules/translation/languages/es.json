@@ -2530,14 +2530,6 @@
       "action": "Migrar y eliminar elementos inteligentes"
     }
   },
-  "inspector": {
-    "top_bar": {
-      "back": "Volver a tu escena",
-      "download": "Descargar escena",
-      "publish": "Publicar escena",
-      "preview": "Avance de escena"
-    }
-  },
   "worlds_your_storage_modal": {
     "your_storage": "Su Almacenamiento",
     "total_available_storage": "ALMACENAMIENTO TOTAL DISPONIBLE",

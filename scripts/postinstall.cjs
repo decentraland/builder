@@ -16,23 +16,3 @@ const pretty = prettier.format(ecs, {
 })
 console.log(`Saving file to ${targetEcsPath}`)
 fs.writeFileSync(targetEcsPath, pretty, { encoding: 'utf8' })
-
-// Copy inspector assets to the public folder
-const inspectorAssetsPath = path.resolve(__dirname, '../node_modules/@dcl/inspector/public')
-console.log('Inspector assets:', inspectorAssetsPath)
-const files = fs.readdirSync(inspectorAssetsPath)
-const publicPath = path.resolve(__dirname, '../public')
-console.log('Public folder:', publicPath)
-for (const file of files) {
-  const source = path.resolve(inspectorAssetsPath, file)
-  const isDirectory = fs.statSync(source).isDirectory()
-  const targetFile = isDirectory ? file : `inspector-${file}`
-  const target = path.resolve(publicPath, targetFile)
-  console.log(`> Copying ${file} as ${targetFile}...`)
-  fs.cpSync(source, target, { recursive: true })
-}
-console.log(`> Add "inspector-" prefix to files in inspector-index.html`)
-const htmlPath = path.resolve(publicPath, `inspector-index.html`)
-const originalHtml = fs.readFileSync(htmlPath, 'utf-8')
-const modifiedHtml = originalHtml.replace(/bundle\./g, 'inspector-bundle.')
-fs.writeFileSync(htmlPath, modifiedHtml, 'utf-8')

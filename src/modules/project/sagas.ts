@@ -72,7 +72,6 @@ import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'decentraland-dapps/dist/modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { changeLayout, getParcels } from 'modules/inspector/utils'
-import { setInspectorReloading } from 'modules/inspector/actions'
 import { getName } from 'modules/profile/selectors'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
 import { locations } from 'routing/locations'
@@ -243,15 +242,11 @@ export function* projectSaga(builder: BuilderAPI) {
       } else if (scene.sdk7) {
         const newScene = changeLayout(scene.sdk7, project.layout!)
 
-        yield put(setInspectorReloading(true))
-
         yield put(updateScene(newScene))
         const { failure }: { success: SaveProjectSuccessAction | null; failure: SaveProjectFailureAction | null } = yield race({
           success: take(SAVE_PROJECT_SUCCESS),
           failure: take(SAVE_PROJECT_FAILURE)
         })
-
-        yield put(setInspectorReloading(false))
 
         if (failure) {
           console.error(`Error saving project=${project.id!}`)
