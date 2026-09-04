@@ -18,10 +18,16 @@
    layers pick the URL up from the container with `background-image: inherit`. */
 
 .banner {
-  /* Out to the window edges. Both pages that show a banner sit inside a 24px page gutter - the homepage
-     from `.dcl.page.fullscreen` (index.css), the collections page from `.dcl.page.LoggedInDetailPage` -
-     and unlike the marketplace that gutter stays put on mobile, so this needs no breakpoint. */
-  margin-inline: -24px;
+  /* The gutter of the page hosting the banner: both pages that show one indent their content by 24px - the
+     homepage through `.dcl.page.fullscreen` (index.css), the collections page through
+     `.dcl.page.LoggedInDetailPage.CollectionsPage` - and unlike the marketplace that gutter stays put on
+     mobile, so this needs no breakpoint. It is a variable because the value is needed twice, pulling in
+     opposite directions: out here to reach the window edges, back in below to put the copy on the page's
+     content line. A page with a different gutter only has to override this one declaration. */
+  --page-gutter: 24px;
+
+  /* Out to the window edges. */
+  margin-inline: calc(-1 * var(--page-gutter));
   /* The homepage used to render the banner with no spacing at all, so its title sat right against the
      artwork. */
   margin-bottom: 40px;
@@ -77,11 +83,10 @@
     /* Above both artwork layers. */
     position: relative;
     z-index: 2;
-    /* Back onto the page's content: 24px is the page gutter the tabs, cards and filters start at. Once
-       the window is wide enough that the gutter would leave the copy stranded against the edge, it
-       follows the artwork instead - the same rule the marketplace uses, shifted by the 24px of page
-       padding this app does not have. */
-    padding-inline: max(24px, calc((100% - 1360px) / 2 - 24px));
+    /* Back onto the page's content line, where the tabs, cards and filters start. Once the window is wide
+       enough that the gutter would leave the copy stranded against the edge, it follows the artwork
+       instead - the same rule the marketplace uses, shifted by the gutter this app does not have. */
+    padding-inline: max(var(--page-gutter), calc((100% - 1360px) / 2 - var(--page-gutter)));
   }
 
   /* ui2 gives side aligned copy half of the banner, and now that the banner is as wide as the window that
