@@ -727,9 +727,9 @@
   },
   "export_modal": {
     "action": "Descargar escena",
-    "convert_to_sdk7": "Convert this scene to SDK7 (your saved scene stays unchanged)",
+    "convert_to_sdk7": "Convierte esta escena a SDK7 (tu escena guardada permanecerá sin cambios)",
     "docs": "¿Qué es el SDK de Decentraland?",
-    "description": "Transicione sin problemas del constructor al SDK para una escena más interactiva y personalizada.Tenga en cuenta que tiene la opción de descargar escenas del grupo de escenas y plantillas y cargarlo en diferentes cuentas.",
+    "description": "Pasa sin problemas del Builder al SDK para crear una escena más interactiva y personalizada. Ten en cuenta que tienes la opción de descargar tus escenas y subirlas a diferentes cuentas.",
     "loading": "Descargando...",
     "title": "Descargue escenas y cree con un mayor nivel de complejidad."
   },

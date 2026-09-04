@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const prettier = require('prettier')
 
-const ecsPath = path.resolve(__dirname, process.argv[3] || require.resolve('decentraland-ecs/dist/src/index.min.js'))
+const ecsPath = path.resolve(__dirname, process.argv[2] || require.resolve('decentraland-ecs/dist/src/index.min.js'))
 const targetEcsPath = path.resolve(__dirname, '../src/ecsScene/ecs.js.raw')
 
 console.log(`> Reading file ${ecsPath}`)

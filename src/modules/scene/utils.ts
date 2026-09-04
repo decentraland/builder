@@ -28,32 +28,6 @@ export function isWithinBounds(position: Vector3, bounds: Vector3) {
   return position.x <= bounds.x && position.y <= bounds.y && position.z <= bounds.z && position.x >= 0 && position.y >= 0 && position.z >= 0
 }
 
-// Note: if we start making extensive use of scene cloning we may replace this by a proper deep clone
-export function cloneEntities(scene: SceneSDK6) {
-  return Object.keys(scene.entities).reduce<SceneSDK6['entities']>(
-    (entities, entityId) => ({
-      ...entities,
-      [entityId]: { ...scene.entities[entityId], components: [...scene.entities[entityId].components] }
-    }),
-    {}
-  )
-}
-
-export function filterEntitiesWithComponent(componentId: string, entities: SceneSDK6['entities']): SceneSDK6['entities'] {
-  const newEntities: SceneSDK6['entities'] = {}
-
-  for (const id in entities) {
-    const entity = entities[id]
-    const index = entity.components.indexOf(componentId)
-
-    if (index === -1) {
-      newEntities[id] = entity
-    }
-  }
-
-  return newEntities
-}
-
 export function getExceededMetrics(metrics: ModelMetrics, limits: ModelMetrics) {
   const metricsExceeded: (keyof ModelMetrics)[] = []
 

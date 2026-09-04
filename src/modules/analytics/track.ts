@@ -5,7 +5,7 @@ import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/di
 import { SET_PROFILE_AVATAR_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/profile/actions'
 import { OPEN_MODAL, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
 import { TRANSACTION_ACTION_FLAG } from 'decentraland-dapps/dist/modules/transaction'
-import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
+import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, AddItemAction, DropItemAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
   EDITOR_REDO,
@@ -94,7 +94,7 @@ function addPayload(actionType: string, eventName: string, getPayload = (action:
   add(actionType, eventName, getPayload)
 }
 
-export function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
+export function trimAsset(action: AddItemAction | DropItemAction) {
   if (!action.payload.asset) {
     return action.payload
   }
@@ -106,10 +106,9 @@ export function trimAsset(action: AddItemAction | DropItemAction | SetGroundActi
   }
 }
 
-function trimProject(action: AnyAction) {
+function trimProject(action: AnyAction): Record<string, unknown> {
   if (!action.payload.project) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return action.payload
+    return action.payload as Record<string, unknown>
   }
   const { id, layout } = action.payload.project
   const { rows, cols } = layout
@@ -148,7 +147,6 @@ addPayload(SELECT_CATEGORY, 'Select category')
 addPayload(OPEN_MODAL, 'Open modal', () => ({}))
 addPayload(CLOSE_MODAL, 'Close modal')
 addPayload(SET_GIZMO, 'Set gizmo')
-addPayload(SET_GROUND, 'Set ground', trimAsset)
 
 // camera actions
 addPayload(ZOOM_IN, 'Zoom in')
@@ -157,7 +155,10 @@ addPayload(RESET_CAMERA, 'Reset camera')
 
 // import/export
 // Do not change this event name format
-addPayload(EXPORT_PROJECT_REQUEST, 'Export project', trimProject)
+addPayload(EXPORT_PROJECT_REQUEST, 'Export project', action => ({
+  ...trimProject(action),
+  migrateToSDK7: action.payload.migrateToSDK7
+}))
 
 // sync
 addPayload(SAVE_PROJECT_SUCCESS, 'Save project success', trimProject)
@@ -169,8 +170,6 @@ addPayload(LOGOUT, 'Logout')
 
 // Share
 addPayload(SHARE_SCENE, 'Share scene')
-
-// Like
 
 // Transfer Land
 add(TRANSFER_LAND_SUCCESS, 'Transfer land', action => {

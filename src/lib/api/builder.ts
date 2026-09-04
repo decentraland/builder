@@ -667,15 +667,6 @@ export class BuilderAPI extends BaseAPI {
     return { hash }
   }
 
-  async uploadCrdt(file: Blob, projectId: string): Promise<void> {
-    const formData = new FormData()
-    formData.append('file', file)
-    await this.request('put', `/projects/${projectId}/crdt`, {
-      params: formData
-    })
-    return
-  }
-
   async fetchMain(projectId: string): Promise<Blob> {
     const request = async (path: string) => fetch(this.url + path, { headers: this.authorization.createAuthHeaders('get', path) })
     const about: { configurations: { scenesUrn: string[] } } = await request(`/projects/${projectId}/about`).then(resp => resp.json())
