@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isLoggedIn } from 'modules/identity/selectors'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { RootState } from 'modules/common/types'
@@ -29,6 +30,7 @@ const ThirdPartyCollectionDetailPageContainer: React.FC = () => {
   const items = useSelector((state: RootState) => (collection ? getCollectionItems(state, collection.id) : []))
   const paginatedData = useSelector((state: RootState) => (collection && getPaginationData(state, collection.id)) || null)
   const wallet = useSelector(getWallet)!
+  const isUserLoggedIn = useSelector(isLoggedIn)
   const isThirdPartyV2Enabled = useSelector(getIsLinkedWearablesV2Enabled)
   const isLinkedWearablesPaymentsEnabled = useSelector(getIsLinkedWearablesPaymentsEnabled)
   const thirdParty = useSelector((state: RootState) =>
@@ -62,6 +64,7 @@ const ThirdPartyCollectionDetailPageContainer: React.FC = () => {
       currentPage={currentPage}
       paginatedData={paginatedData}
       wallet={wallet}
+      isLoggedIn={isUserLoggedIn}
       collection={collection}
       isThirdPartyV2Enabled={isThirdPartyV2Enabled}
       isLinkedWearablesPaymentsEnabled={isLinkedWearablesPaymentsEnabled}

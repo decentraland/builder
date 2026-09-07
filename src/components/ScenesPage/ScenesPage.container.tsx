@@ -7,8 +7,6 @@ import { RootState } from '../../modules/common/types'
 import { isFetching } from '../../modules/project/selectors'
 import { isLoggingIn } from '../../modules/identity/selectors'
 import { getTotalPages, didCreate } from '../../modules/ui/dashboard/selectors'
-import { loadPoolsRequest } from '../../modules/pool/actions'
-import { getPoolList } from '../../modules/pool/selectors'
 import ScenesPage from './ScenesPage'
 import { useGetSortByFromCurrentUrl } from 'modules/location/hooks'
 import { SortBy } from 'modules/ui/dashboard/types'
@@ -23,13 +21,8 @@ const ScenesPageContainer: React.FC = () => {
   const isFetchingState = useSelector(isFetching)
   const totalPages = useSelector(getTotalPages)
   const didCreateState = useSelector(didCreate)
-  const poolList = useSelector(getPoolList)
 
   const handleOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
-  const handleLoadFromScenePool: ActionFunction<typeof loadPoolsRequest> = useCallback(
-    filters => dispatch(loadPoolsRequest(filters)),
-    [dispatch]
-  )
 
   return (
     <ScenesPage
@@ -40,9 +33,7 @@ const ScenesPageContainer: React.FC = () => {
       sortBy={sortBy}
       totalPages={totalPages}
       didCreate={didCreateState}
-      poolList={poolList}
       onOpenModal={handleOpenModal}
-      onLoadFromScenePool={handleLoadFromScenePool}
     />
   )
 }

@@ -11,6 +11,7 @@ export const PAGE_SIZE = 50
 
 export type Props = {
   wallet: Wallet
+  isLoggedIn: boolean
   collection: Collection | null
   thirdParty: ThirdParty | null
   totalItems: number | null

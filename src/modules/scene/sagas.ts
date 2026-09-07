@@ -1,7 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { History } from 'history'
-import { takeLatest, put, select, call, delay, take, race, getContext } from 'redux-saga/effects'
-import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
+import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -14,10 +12,6 @@ import {
   DELETE_ITEM,
   DuplicateItemAction,
   DeleteItemAction,
-  SET_GROUND,
-  SetGroundAction,
-  ApplyLayoutAction,
-  APPLY_LAYOUT,
   SET_SCRIPT_VALUES,
   SetScriptValuesAction,
   SYNC_SCENE_ASSETS_REQUEST,
@@ -25,71 +19,41 @@ import {
   FIX_LEGACY_NAMESPACES_REQUEST,
   FixLegacyNamespacesRequestAction,
   fixLegacyNamespacesSuccess,
-  syncSceneAssetsSuccess,
-  MIGRATE_TO_SDK7_REQUEST,
-  MigrateToSDK7RequestAction,
-  migrateToSDK7Failure,
-  updateScene,
-  migrateToSDK7Success
+  syncSceneAssetsSuccess
 } from 'modules/scene/actions'
 import {
   getGLTFsByAssetId,
   getCurrentScene,
   getEntityComponentsByType,
   getComponentsByEntityId,
-  getData as getScenes,
   getCollectiblesByURL,
   getShapesByEntityId
 } from 'modules/scene/selectors'
-import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
+import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent, SceneSDK6 } from 'modules/scene/types'
 import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
 import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
-import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
-import { PARCEL_SIZE } from 'modules/project/constants'
-import { EditorWindow } from 'components/Preview/Preview.types'
+import { getCurrentBounds } from 'modules/project/selectors'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import {
-  snapToGrid,
-  snapToBounds,
-  cloneEntities,
-  filterEntitiesWithComponent,
-  getEntityName,
-  getDefaultValues,
-  renameEntity,
-  removeEntityReferences
-} from './utils'
-import { getData as getAssets, getGroundAssets, getAssetsByEntityName } from 'modules/asset/selectors'
+import { snapToGrid, snapToBounds, getEntityName, getDefaultValues, renameEntity, removeEntityReferences } from './utils'
+import { getData as getAssets, getAssetsByEntityName } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { loadAssets } from 'modules/asset/actions'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import {
-  DUPLICATE_PROJECT_FAILURE,
-  DUPLICATE_PROJECT_SUCCESS,
-  DuplicateProjectFailureAction,
-  DuplicateProjectSuccessAction,
-  duplicateProjectRequest
-} from 'modules/project/actions'
-import { toComposite, toCrdt, toMappings } from 'modules/inspector/utils'
-import { locations } from 'routing/locations'
-import { PreviewType } from 'modules/editor/types'
-import { BuilderAPI } from 'lib/api/builder'
+import { EditorWindow } from 'modules/editor/types'
 
 const editorWindow = window as EditorWindow
 
-export function* sceneSaga(builderApi: BuilderAPI) {
+export function* sceneSaga() {
   yield takeLatest(ADD_ITEM, handleAddItem)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(RESET_ITEM, handleResetItem)
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
-  yield takeLatest(SET_GROUND, handleSetGround)
   yield takeLatest(FIX_LEGACY_NAMESPACES_REQUEST, handleFixLegacyNamespacesRequest)
   yield takeLatest(SYNC_SCENE_ASSETS_REQUEST, handleSyncSceneAssetsAction)
-  yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
-  yield takeLatest(MIGRATE_TO_SDK7_REQUEST, handleMigrateToSDK7Request)
 
   function* handleAddItem(action: AddItemAction) {
     const isEditorReady: boolean = yield select(isReady)
@@ -440,28 +404,6 @@ export function* sceneSaga(builderApi: BuilderAPI) {
     yield put(provisionScene({ ...scene.sdk6, components: newComponents, entities: newEntities, assets: newAssets }))
   }
 
-  function* handleSetGround(action: SetGroundAction) {
-    const { asset, projectId } = action.payload
-    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-    const currentProject = projects[projectId]
-    if (!currentProject) return
-
-    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-    const scene = scenes[currentProject.sceneId]
-    if (!scene) return
-
-    if (!scene.sdk6) {
-      console.error('Scene is not SDK6')
-      return
-    }
-
-    const { rows, cols } = currentProject.layout
-
-    if (asset) {
-      yield applyGround(scene.sdk6, rows, cols, asset)
-    }
-  }
-
   function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAction) {
     /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
       and change them for the asset id instead.
@@ -600,103 +542,6 @@ export function* sceneSaga(builderApi: BuilderAPI) {
     yield put(syncSceneAssetsSuccess(newScene))
   }
 
-  function* handleApplyLayout(action: ApplyLayoutAction) {
-    const { project } = action.payload
-    const { rows, cols } = project.layout
-    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-    const scene = scenes[project.sceneId]
-
-    if (!scene) return
-    if (!scene.sdk6) {
-      console.error('Scene is not SDK6')
-      return
-    }
-
-    if (scene.sdk6.ground) {
-      const groundId = scene.sdk6.ground.assetId
-      const assets: ReturnType<typeof getGroundAssets> = yield select(getGroundAssets)
-      const ground = assets[groundId]
-      yield applyGround(scene.sdk6, rows, cols, ground)
-    }
-  }
-
-  function* applyGround(scene: SceneSDK6, rows: number, cols: number, asset: Asset) {
-    const assets: DataByKey<Asset> = yield select(getAssets)
-    const sceneComponents = { ...scene.components }
-    const sceneAssets = { ...scene.assets }
-    let entities = cloneEntities(scene)
-    let gltfId: string = uuidv4()
-    if (asset) {
-      const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
-      const gltf = gltfs[asset.id]
-      const foundId = gltf ? gltf.id : null
-
-      // Create the Shape component if necessary
-      if (!foundId) {
-        sceneComponents[gltfId] = {
-          id: gltfId,
-          type: ComponentType.GLTFShape,
-          data: {
-            assetId: asset.id
-          }
-        }
-      } else {
-        gltfId = foundId
-      }
-
-      if (scene.ground) {
-        entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
-      }
-
-      for (let j = 0; j < cols; j++) {
-        for (let i = 0; i < rows; i++) {
-          const entityId = uuidv4()
-          const transformId = uuidv4()
-
-          sceneComponents[transformId] = {
-            id: transformId,
-            type: ComponentType.Transform,
-            data: {
-              position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-              rotation: { x: 0, y: 0, z: 0, w: 1 },
-              scale: { x: 1, y: 1, z: 1 }
-            }
-          }
-
-          const newComponents = [gltfId, transformId]
-
-          entities[entityId] = {
-            id: entityId,
-            components: newComponents,
-            disableGizmos: true,
-            name: getEntityName({ ...scene, entities }, newComponents, assets)
-          }
-        }
-      }
-    } else if (scene.ground) {
-      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
-    }
-
-    const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
-
-    // remove unused components
-    for (const component of Object.values(sceneComponents)) {
-      if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
-        delete sceneComponents[component.id]
-      }
-    }
-
-    // update assets removing the old ground and adding the new one
-    if (scene.ground) {
-      delete sceneAssets[scene.ground.assetId]
-    }
-    if (ground) {
-      sceneAssets[ground.assetId] = asset
-    }
-
-    yield put(provisionScene({ ...scene, components: sceneComponents, entities, ground, assets: sceneAssets }))
-  }
-
   function* handleSetScriptParameters(action: SetScriptValuesAction) {
     const { entityId, values } = action.payload
     const scene: Scene | null = yield select(getCurrentScene)
@@ -724,56 +569,6 @@ export function* sceneSaga(builderApi: BuilderAPI) {
         }
         yield put(provisionScene(newScene))
       }
-    }
-  }
-
-  function* handleMigrateToSDK7Request(action: MigrateToSDK7RequestAction) {
-    const { project, shouldSaveCopy } = action.payload
-    const history: History = yield getContext('history')
-
-    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-    const scene = scenes[project.sceneId]
-    if (scene.sdk7) {
-      put(migrateToSDK7Failure('Scene is already in SDK7'))
-      return
-    }
-    try {
-      if (shouldSaveCopy) {
-        const oldProject = {
-          ...project,
-          title: `Old_${project.title}`
-        }
-        yield put(duplicateProjectRequest(oldProject, PreviewType.PROJECT, false))
-        const duplicateProject: {
-          success: DuplicateProjectSuccessAction
-          failure: DuplicateProjectFailureAction
-        } = yield race({
-          success: take(DUPLICATE_PROJECT_SUCCESS),
-          failure: take(DUPLICATE_PROJECT_FAILURE)
-        })
-
-        if (duplicateProject.failure) {
-          put(migrateToSDK7Failure(duplicateProject.failure.payload.error))
-          return
-        }
-      }
-
-      const composite = toComposite(scene.sdk6, project)
-      const mappings = toMappings(scene.sdk6)
-      const crdt = new Blob([toCrdt(scene.sdk6) as BlobPart])
-
-      const newSDK7Scene: SceneSDK7 = {
-        id: scene.sdk6.id,
-        composite,
-        mappings
-      }
-
-      yield call([builderApi, 'uploadCrdt'], crdt, project.id)
-      yield put(updateScene(newSDK7Scene))
-      history.push(locations.inspector(project.id))
-      yield put(migrateToSDK7Success())
-    } catch (error) {
-      put(migrateToSDK7Failure(isErrorWithMessage(error) ? error.message : 'Unknown error'))
     }
   }
 }

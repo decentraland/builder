@@ -582,8 +582,17 @@ export async function downloadSDK7File(key: string, url: string): Promise<{ path
     .then(blob => ({ path: key, file: blob }))
 }
 
-export async function createSDK7Files({ project, scene, builderAPI }: { project: Project; scene: SceneSDK7; builderAPI: BuilderAPI }) {
-  // external files
+export async function createSDK7Files({
+  project,
+  scene,
+  builderAPI,
+  crdt
+}: {
+  project: Project
+  scene: SceneSDK7
+  builderAPI: BuilderAPI
+  crdt?: Blob
+}) {
   const staticFiles: Record<string, string> = {
     [EXPORT_PATH.DCLIGNORE_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.DCLIGNORE_FILE}`,
     [EXPORT_PATH.PACKAGE_FILE]: `${SCENE_TEMPLATE_URL}/${EXPORT_PATH.PACKAGE_FILE}`,
@@ -610,8 +619,7 @@ export async function createSDK7Files({ project, scene, builderAPI }: { project:
     return result
   }, {} as Record<string, Blob>)
 
-  // dynamic Files
-  const mainCrdt = await builderAPI.fetchCrdt(project.id)
+  const mainCrdt = crdt ?? (await builderAPI.fetchCrdt(project.id))
   const mainComposite = new Blob([new TextEncoder().encode(JSON.stringify(scene.composite))])
   const sceneJson = new Blob([
     new TextEncoder().encode(

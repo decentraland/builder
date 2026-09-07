@@ -7,7 +7,7 @@ import { AuthorizedAction } from 'decentraland-dapps/dist/containers/withAuthori
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { t } from 'decentraland-dapps/dist/modules/translation'
 import { Item } from 'modules/item/types'
-import { getOffchainV2SaleAddress } from 'modules/collection/utils'
+import { getLatestOffchainSale } from 'modules/collection/utils'
 import { PriceDenomination } from 'modules/trade/denomination'
 import { getError, getPutForSaleOffChainStatus } from 'modules/item/selectors'
 import { Props } from './PutForSaleOffchainModal.types'
@@ -42,15 +42,16 @@ function PutForSaleOffchainModal({
     }
 
     const chainId = getChainIdByNetwork(Network.MATIC)
+    const offchainSale = getLatestOffchainSale(chainId)
 
     onAuthorizedAction({
       // Override the automatic Magic sign in if the user needs to pay gas for the transaction
       manual: connectedChainId === chainId,
       targetContractName: ContractName.ERC721CollectionV2,
-      authorizedContractLabel: ContractName.OffChainMarketplaceV2,
+      authorizedContractLabel: offchainSale.contractName,
       targetContractLabel: collection.name,
       authorizationType: AuthorizationType.MINT,
-      authorizedAddress: getOffchainV2SaleAddress(chainId),
+      authorizedAddress: offchainSale.address,
       targetContract: {
         address: collection.contractAddress,
         chainId: chainId,

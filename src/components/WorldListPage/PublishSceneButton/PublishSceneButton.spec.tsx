@@ -26,15 +26,7 @@ let projects: Project[]
 
 function renderPublishSceneButton(props: Partial<Props>) {
   return render(
-    <PublishSceneButton
-      deploymentsByWorlds={{}}
-      ens={ens}
-      projects={[]}
-      onEditScene={jest.fn()}
-      onPublishScene={jest.fn()}
-      onUnpublishScene={jest.fn()}
-      {...props}
-    />
+    <PublishSceneButton deploymentsByWorlds={{}} ens={ens} projects={[]} onViewScene={jest.fn()} onUnpublishScene={jest.fn()} {...props} />
   )
 }
 
@@ -53,18 +45,18 @@ describe('when the world has a scene deployed', () => {
       projects = [{ id: '1' } as Project]
     })
 
-    it('should show the edit scene button', () => {
+    it('should show the view scene button', () => {
       const screen = renderPublishSceneButton({ projects, deploymentsByWorlds })
-      expect(screen.getByRole('button', { name: t('worlds_list_page.table.edit_scene') })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: t('worlds_list_page.table.view_scene') })).toBeInTheDocument()
     })
 
-    describe('when the editScene button is clicked', () => {
-      it('should trigger onEditScene callback action', () => {
-        const onEditScene = jest.fn()
-        const screen = renderPublishSceneButton({ onEditScene, projects, deploymentsByWorlds })
-        const editSceneButton = screen.getByRole('button', { name: t('worlds_list_page.table.edit_scene') })
-        userEvent.click(editSceneButton)
-        expect(onEditScene).toHaveBeenCalled()
+    describe('when the viewScene button is clicked', () => {
+      it('should trigger onViewScene callback action', () => {
+        const onViewScene = jest.fn()
+        const screen = renderPublishSceneButton({ onViewScene, projects, deploymentsByWorlds })
+        const viewSceneButton = screen.getByRole('button', { name: t('worlds_list_page.table.view_scene') })
+        userEvent.click(viewSceneButton)
+        expect(onViewScene).toHaveBeenCalled()
       })
     })
   })
@@ -87,23 +79,6 @@ describe('when the world has a scene deployed', () => {
         userEvent.click(unpublishSceneButton)
         expect(onUnpublishScene).toHaveBeenCalled()
       })
-    })
-  })
-})
-
-describe('when the world has no scene deployed', () => {
-  it('should show the publish scene button', () => {
-    const screen = renderPublishSceneButton({})
-    expect(screen.getByRole('button', { name: t('worlds_list_page.table.publish_scene') })).toBeInTheDocument()
-  })
-
-  describe('when the publish button is clicked', () => {
-    it('should trigger onPublish callback action', () => {
-      const onPublishScene = jest.fn()
-      const screen = renderPublishSceneButton({ onPublishScene })
-      const publishButton = screen.getByRole('button', { name: t('worlds_list_page.table.publish_scene') })
-      userEvent.click(publishButton)
-      expect(onPublishScene).toHaveBeenCalled()
     })
   })
 })

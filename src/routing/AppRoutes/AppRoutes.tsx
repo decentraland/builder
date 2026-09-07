@@ -13,10 +13,6 @@ const ScenesPage = React.lazy(() => import('components/ScenesPage'))
 const HomePage = React.lazy(() => import('components/HomePage'))
 const SignInPage = React.lazy(() => import('components/SignInPage'))
 const NotFoundPage = React.lazy(() => import('components/NotFoundPage'))
-const EditorPage = React.lazy(() => import('components/EditorPage'))
-const InspectorPage = React.lazy(() => import('components/InspectorPage'))
-const SceneListPage = React.lazy(() => import('components/SceneListPage'))
-const SceneViewPage = React.lazy(() => import('components/SceneViewPage'))
 const LandPage = React.lazy(() => import('components/LandPage'))
 const LandDetailPage = React.lazy(() => import('components/LandDetailPage'))
 const LandTransferPage = React.lazy(() => import('components/LandTransferPage'))
@@ -37,8 +33,6 @@ const CollectionDetailPage = React.lazy(() => import('components/CollectionDetai
 const ThirdPartyCollectionDetailPage = React.lazy(() => import('components/ThirdPartyCollectionDetailPage'))
 const ItemEditorPage = React.lazy(() => import('components/ItemEditorPage'))
 const CurationPage = React.lazy(() => import('components/CurationPage'))
-const TemplatesPage = React.lazy(() => import('components/TemplatesPage'))
-const TemplateDetailPage = React.lazy(() => import('components/TemplateDetailPage'))
 
 export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
   usePageTracking()
@@ -53,9 +47,6 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
     <React.Suspense fallback={<Loader size="huge" active />}>
       <Responsive maxWidth={1024} as={React.Fragment}>
         <Switch>
-          <Route exact path={locations.poolSearch()} component={SceneListPage} />
-          <Route exact path={locations.sceneView()} component={SceneViewPage} />
-          <Route exact path={locations.poolView()} component={SceneViewPage} />
           <Route component={MobilePage} />
         </Switch>
       </Responsive>
@@ -63,11 +54,6 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
         <Switch>
           <Route exact path={locations.root()} component={HomePage} />
           <Route exact path={locations.notFound()} component={NotFoundPage} />
-          <Route exact path={locations.sceneEditor()} component={EditorPage} />
-          <Route exact path={locations.inspector()} component={InspectorPage} />
-          <Route exact path={locations.poolSearch()} component={SceneListPage} />
-          <Route exact path={locations.sceneView()} component={SceneViewPage} />
-          <Route exact path={locations.poolView()} component={SceneViewPage} />
           <Route exact path={locations.callback()} component={LoadingPage} />
           <Route exact path={locations.signIn()} component={SignInPage} />
           <Route exact path={locations.land()} component={LandPage} />
@@ -79,8 +65,6 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
           <Route exact path={locations.settings()} component={SettingsPage} />
           <ProtectedRoute exact path={locations.scenes()} component={ScenesPage} />
           <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
-          <Route exact path={locations.templates()} component={TemplatesPage} />
-          <Route exact path={locations.templateDetail()} component={TemplateDetailPage} />
           <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
           <Route exact path={locations.ensDetail()} component={ENSDetailPage} />
           <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
@@ -93,6 +77,13 @@ export const AppRoutes: React.FC<Props> = ({ onLocationChange }) => {
           <Route exact key={4} path={locations.itemEditor()} component={ItemEditorPage} />,
           <Route exact key={5} path={locations.curation()} component={CurationPage} />
           <Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />
+          <Redirect from={locations.sceneEditor()} to={locations.scenes()} />
+          <Redirect from={locations.poolSearch()} to={locations.scenes()} />
+          <Redirect from={locations.poolView()} to={locations.scenes()} />
+          <Redirect from={locations.sceneView()} to={locations.scenes()} />
+          <Redirect from={locations.inspector()} to={locations.scenes()} />
+          <Redirect from={locations.templates()} to={locations.scenes()} />
+          <Redirect from={locations.templateDetail()} to={locations.scenes()} />
           <Redirect to={locations.root()} />
         </Switch>
       </Responsive>

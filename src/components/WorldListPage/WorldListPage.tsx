@@ -13,7 +13,6 @@ import { locations } from 'routing/locations'
 import Icon from 'components/Icon'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import { canOpenWorldsForENSOwnersAnnouncementModal } from 'components/Modals/WorldsForENSOwnersAnnouncementModal/utils'
 import { Props, SortBy } from './WorldListPage.types'
 import NameTabs from './NameTabs'
 import WorldsStorage from './WorldsStorage'
@@ -42,7 +41,6 @@ const WorldListPage: React.FC<Props> = props => {
     isWorldContributorEnabled,
     ensTotal,
     onOpenYourStorageModal,
-    onOpenWorldsForENSOwnersAnnouncementModal,
     onUnpublishWorld,
     onOpenPermissionsModal,
     onFetchContributableNames,
@@ -75,11 +73,7 @@ const WorldListPage: React.FC<Props> = props => {
     }
   }, [tab])
 
-  const handlePublishScene = useCallback(() => {
-    history.push(locations.scenes())
-  }, [locations, history])
-
-  const handleEditScene = useCallback(
+  const handleViewScene = useCallback(
     (ens: ENS) => {
       const { projectId } = deploymentsByWorlds[ens.subdomain]
       history.push(locations.sceneDetail(projectId as string))
@@ -218,8 +212,7 @@ const WorldListPage: React.FC<Props> = props => {
                           deploymentsByWorlds={deploymentsByWorlds}
                           ens={ens}
                           projects={projects}
-                          onEditScene={handleEditScene}
-                          onPublishScene={handlePublishScene}
+                          onViewScene={handleViewScene}
                           onUnpublishScene={handleUnpublishScene}
                         />
                       </Table.Cell>
@@ -335,12 +328,6 @@ const WorldListPage: React.FC<Props> = props => {
     setSortBy(SortBy.ASC)
     setPage(1)
   }, [tab, setPage, setSortBy])
-
-  useEffect(() => {
-    if (canOpenWorldsForENSOwnersAnnouncementModal()) {
-      onOpenWorldsForENSOwnersAnnouncementModal()
-    }
-  }, [canOpenWorldsForENSOwnersAnnouncementModal, onOpenWorldsForENSOwnersAnnouncementModal])
 
   return (
     <LoggedInDetailPage

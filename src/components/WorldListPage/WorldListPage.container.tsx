@@ -70,10 +70,6 @@ const WorldListPageContainer: React.FC = () => {
       dispatch(openModal('CreatorHubUpgradeModal', { worldName: name, isCollaboratorsTabShown, variant: 'permissions' })),
     [dispatch]
   )
-  const onOpenWorldsForENSOwnersAnnouncementModal = useCallback(
-    () => dispatch(openModal('WorldsForENSOwnersAnnouncementModal')),
-    [dispatch]
-  )
   const onUnpublishWorld: ActionFunction<typeof clearDeploymentRequest> = useCallback(
     deploymentId => dispatch(clearDeploymentRequest(deploymentId)),
     [dispatch]
@@ -103,7 +99,6 @@ const WorldListPageContainer: React.FC = () => {
       ensTotal={ensTotal}
       onOpenYourStorageModal={onOpenYourStorageModal}
       onOpenPermissionsModal={onOpenPermissionsModal}
-      onOpenWorldsForENSOwnersAnnouncementModal={onOpenWorldsForENSOwnersAnnouncementModal}
       onUnpublishWorld={onUnpublishWorld}
       onFetchContributableNames={onFetchContributableNames}
       onFetchENSList={onFetchENSList}

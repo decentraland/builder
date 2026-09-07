@@ -1,8 +1,7 @@
-import { merge } from 'ts-deepmerge'
 import { Composite, CompositeDefinition } from '@dcl/ecs'
 import { createEngineContext, dumpEngineToComposite, dumpEngineToCrdtCommands } from '@dcl/inspector'
 import { Layout, Project } from 'modules/project/types'
-import { ComponentData, ComponentType, SceneSDK6, SceneSDK7 } from 'modules/scene/types'
+import { ComponentData, ComponentType, SceneSDK6 } from 'modules/scene/types'
 
 export function getParcels(layout: Layout) {
   const parcels: { x: number; y: number }[] = []
@@ -74,15 +73,4 @@ export function toMappings(scene: SceneSDK6): Record<string, string> {
 export function toCrdt(scene: SceneSDK6, project?: Project) {
   const engine = getEngine(scene, project)
   return dumpEngineToCrdtCommands(engine as any)
-}
-
-export function changeLayout(scene: SceneSDK7, layout: Layout) {
-  const newScene: SceneSDK7 = merge({}, scene)
-  const parcels = getParcels(layout).map(({ x, y }) => `${x},${y}`)
-  newScene.metadata = merge.withOptions({ mergeArrays: false }, newScene.metadata!, {
-    scene: {
-      parcels
-    }
-  })
-  return newScene
 }

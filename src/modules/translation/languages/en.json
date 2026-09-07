@@ -493,20 +493,6 @@
     "title": "Edit URN",
     "subtitle": "Update the URN for {name}"
   },
-  "custom_layout_modal": {
-    "subtitle_one": "You can create custom layouts for your Scene.",
-    "subtitle_two": "Enter values in the inputs below for the desired size."
-  },
-  "share_modal": {
-    "title": "Share your Scene",
-    "description": "Let your friends and co-creators see your work",
-    "copy": "copy link",
-    "copied": "copied",
-    "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=Introducing my latest creation, now live in Decentraland! View it below and then help me build the Metaverse by adding one of your own.",
-      "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
-    }
-  },
   "deployment_status": {
     "online": "Published at {coords}",
     "online_multiple": "Published at {count} locations",
@@ -535,169 +521,12 @@
         "title": "Unpublish scene",
         "description": "Please wait while your scene is being unpublished"
       }
-    },
-    "description": "Deploy your Scene to your LAND or apply for a permit from landowners.",
-    "land": {
-      "confirmation": {
-        "action": "Publish",
-        "description": "You are publishing the following Scene to your LANDs:",
-        "location_label": "Published at",
-        "size_label": "Size",
-        "title_label": "Title"
-      },
-      "connect": {
-        "description": "Connect your wallet to continue.",
-        "title": "Publish Scene"
-      },
-      "map": {
-        "continue": "Continue",
-        "no_land_action": "Submit to Scene pool",
-        "no_land_warning": "It seems that you don't own any LAND",
-        "occupied_tooltip": "You can't publish here{br}It's overlapping with the scene \"{name}\"",
-        "occupied_warning": "This location is overlapping with the scene \"{name}\"",
-        "placement_active": "Placing a {count} LAND Scene at {x},{y}",
-        "placement_default": "Select the LANDs that will host your Scene",
-        "reset": "Reset",
-        "title": "Publish Scene"
-      },
-      "progress": {
-        "creating_files": {
-          "description": "Please wait while we create the files to be uploaded.",
-          "title": "Creating Asset Files"
-        },
-        "recording": {
-          "description": "Please wait while a preview of your Scene is captured.",
-          "title": "Capturing preview"
-        },
-        "uploading_assets": {
-          "description": "Please wait while your Scene is uploaded.",
-          "title": "Uploading to the Metaverse"
-        },
-        "uploading_recording": {
-          "description": "Please wait while your Scene preview is uploaded.",
-          "title": "Uploading Preview"
-        }
-      },
-      "success": {
-        "jump_in": "Jump In",
-        "continue": "Continue working",
-        "description": "Your Scene has now been published.",
-        "title": "Done!"
-      },
-      "empty": {
-        "title": "You don’t own any LAND",
-        "description": "<b>Buy your own LAND or rent it during a period</b><br></br>Your scene is {landSize} so make sure to get a {dimension, plural, one {land} other {estate}} that is equal or bigger than that.",
-        "buy_land": "Buy land",
-        "rent_land": "Rent land"
-      },
-      "not_enough_land": {
-        "title": "This scene is bigger than your LAND",
-        "description": "This scene requires an area of {cols}x{rows} parcels. Ensure your LANDs are equal to or larger than this to acommodate this scene. Keep in mind, this scene could be a perfect fit for a world.",
-        "publish_world": "Publish to my world",
-        "return_scenes": "Return to scenes",
-        "claim_name": "Claim your unique name for a free World"
-      },
-      "title": "Publish Scene"
-    },
-    "option_land": {
-      "action": "Publish to LAND",
-      "description": "Deploy your Scene to your LAND or Estate.",
-      "title": "My LAND"
-    },
-    "option_pool": {
-      "action": "Apply",
-      "description": "Apply with your Scene to be deployed on LAND that belongs to others.",
-      "title": "Scene Pool"
-    },
-    "pool": {
-      "action": "Submit",
-      "contact_information": "Contact information",
-      "i_accept_the": "By clicking \"submit\" you agree to receive news from Decentraland",
-      "progress": "Processing",
-      "sign_in": {
-        "action": "Sign In",
-        "subtitle": "You need to sign in before you publish to the Scene pool",
-        "title": "Sign In"
-      },
-      "subtitle": "Your scene is about to be uploaded to the community pool, which means anyone can use it.",
-      "success": {
-        "body": "It will be included in our public scene gallery for anyone interested in using it. Thank you for your contribution!",
-        "title": "Your scene now is part of the scene pool!"
-      },
-      "title": "Publish your Scene",
-      "uploading": "Uploading"
-    },
-    "deploy_world": {
-      "title": "Publish to World",
-      "description": "Select the Decentraland NAME or ENS Domain that will define the URL",
-      "action": "Publish",
-      "world_label": "World (NAME)",
-      "world_placeholder": "Select a NAME",
-      "world_label_ens": "World (ENS Domain)",
-      "world_placeholder_ens": "Select an ENS Domain",
-      "back": "Go back to publish scene",
-      "close": "Close publish modal",
-      "claim_name": "Claim a new NAME",
-      "claim_name_ens": "Claim an ENS Domain",
-      "empty_state_title": "You don't have any available World",
-      "empty_state_description": "<b>Get a free World when you own a NAME</b>.<br></br>Each NAME will give you access to one World. You can have as many as you want.",
-      "name_type": {
-        "dcl": "NAME",
-        "ens": "ENS Domain"
-      },
-      "success": {
-        "title": "Your scene is published!",
-        "subtitle": "You can now explore and play in your World:",
-        "jump_in": "Jump In",
-        "share_in_twitter": "Share on Twitter",
-        "share_in_twitter_text": "I just published new content on my World✨\n\nCheck it out:\n📍"
-      },
-      "failure": {
-        "title": "Something went wrong",
-        "subtitle": "We couldn't publish your scene",
-        "subtitle_size_error": "The scene is too big to be published in a World.<br></br>The maximum size is <b>{maxSizeMbs} mbs</b>, but the current scene is <b>{deployedSizedMbs} mbs</b> large."
-      },
-      "world_url_description": "The URL to jump in your World will be:<br></br><b>{world_url}</b>",
-      "world_has_content": "The existing content in {world} World will be replaced with the new content you're about to publish.",
-      "confirm_world_replace_content": "I understand that this action is irreversible",
-      "scene_information": "Scene Information",
-      "multi_scene_blocked": {
-        "title": "This World has multiple scenes",
-        "description": "This World contains multiple scenes that can only be managed from Creator Hub.\n Download Creator Hub to publish to this world.",
-        "download_creator_hub": "Download Creator Hub",
-        "go_back": "Go back"
-      }
-    },
-    "title": "Publish {sceneName} Scene",
-    "subtitle": "Select where you want to deploy this scene:",
-    "learn_more": "Learn more",
-    "options": {
-      "world": {
-        "title": "Worlds",
-        "description": "Not findable in Genesis City map.<br></br>Up to 100 users can join concurrently.",
-        "action": "Publish to world"
-      },
-      "land": {
-        "title": "My Land",
-        "description": "Findable in Genesis City map.<br></br>Unlimited users can join concurrently.",
-        "action": "Publish to land"
-      },
-      "pool": {
-        "title": "Upload to Scene Pool",
-        "description": "Your scene will be listed in a scene gallery and publicly available for download.",
-        "action": "Upload to Scene Pool"
-      }
     }
   },
   "deploy_to_world_announcement_modal": {
     "title": "You can now publish<br></br>your scenes to Worlds",
     "description": "Create your scene with the Builder and publish it to a World in a few clicks.",
     "create_scene": "Create Scene"
-  },
-  "templates_announcement_modal": {
-    "title": "Expand your creativity with templates and the community scene pool",
-    "description": "From now on you can start downloading and using templates and scenes from the community pool. Let your imagination shape your Worlds and LANDs!",
-    "go_to_scenes": "Go to my scenes"
   },
   "smart_wearables_announcement_modal": {
     "title": "Smart Wearables are now live! 🟢",
@@ -716,36 +545,10 @@
     "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world.",
     "error": "Something went wrong... Please try again later."
   },
-  "deployment_contest_modal": {
-    "action": "Join the Contest",
-    "submit": {
-      "title": "Creator Contest",
-      "subtitle": "Earn 200 MANA (  ̴$5 USD) for each qualifying scene that you submit to the Contest, up to a maximum of 20 scenes.",
-      "eth_address": "ETH address (optional)",
-      "invalid_eth_address": "Invalid ETH address"
-    },
-    "recording": {
-      "title": "Preparing your scene",
-      "subtitle": "We are prepering your scene for the Contest, please wait."
-    },
-    "uploading": {
-      "title": "Preparing your scene",
-      "subtitle": "We are prepering your scene for the Contest, please wait."
-    },
-    "success": {
-      "title": "Thanks for uploading your Scene!",
-      "subtitle": "You will receive an email notification if your scene is selected."
-    }
-  },
   "dissolve_modal": {
     "title": "Dissolve Estate",
     "confirm": "You are about to dissolve {name}. Do you want to proceed?",
     "too_big": "This Estate is too big to be dissolved in one transaction. Please remove parcels until its size is at most {max} parcels."
-  },
-  "edit_project_modal": {
-    "custom_layout_label": "Layout",
-    "title": "Scene details",
-    "unpublish_needed": "Please Unpublish your Scene before updating your Scene Details"
   },
   "edit_page": {
     "title": "Edit",
@@ -849,9 +652,8 @@
       "url": "URL",
       "owner": "Owner",
       "published_scene": "Published Scene",
-      "publish_scene": "Publish Scene",
       "unpublish_scene": "Unpublish Scene",
-      "edit_scene": "Edit Scene",
+      "view_scene": "View scene",
       "status": "Status",
       "status_active": "Active",
       "status_inactive": "Inactive",
@@ -918,8 +720,9 @@
   },
   "export_modal": {
     "action": "Download scene",
+    "convert_to_sdk7": "Convert this scene to SDK7 (your saved scene stays unchanged)",
     "docs": "What is the Decentraland SDK?",
-    "description": "Transition seamlessly from the Builder to the SDK for a more interactive and personalized scene. Keep in mind that you have the option to download scenes from the scene pool and templates and upload it across different accounts.",
+    "description": "Transition seamlessly from the Builder to the SDK for a more interactive and personalized scene. Keep in mind that you have the option to download your scenes and upload them across different accounts.",
     "loading": "Downloading...",
     "title": "Download scenes and create with a higher level of complexity."
   },
@@ -967,7 +770,6 @@
     "save": "Save",
     "send": "Send",
     "see_in_decentraland": "See in Decentraland",
-    "share": "Share",
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -975,7 +777,6 @@
     "submit": "Submit",
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",
-    "view_more": "View More",
     "click_here": "Click here",
     "proceed": "Proceed",
     "open_in_editor": "Open in editor",
@@ -1072,56 +873,21 @@
   },
   "scenes_page": {
     "my_scenes": "My Scenes",
-    "upload_scene": "Upload Scene",
-    "create_scene": "Create Scene",
-    "no_projects": "You can publish your scenes in your LAND, your Worlds or upload them to the Scene Pool.{br}Alternatively, you can also <link>upload a scene file</link> and continue working from here.",
-    "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "sdk6_support": "Technical support for SDK 6 will end on December 23rd, 2023.",
     "project_actions": {
       "delete_project": "Delete",
-      "duplicate_project": "Duplicate",
-      "export_project": "Download",
-      "unpublish": "Unpublish"
+      "export_project": "Download"
     },
-    "choose_scene_creation": "Choose the best option to build your scene",
     "no_scenes": {
       "title": "Create your first scene",
-      "description": "Unleash your creativity. Start building scenes for your LANDs and Worlds and share with the community. <a>Learn more about creating Scenes.</a>",
-      "from_scratch": {
-        "title": "Start from scratch",
-        "description": "Start building your scenes from the ground up with the online builder in a simple and intuitive way."
-      },
-      "from_template": {
-        "title": "Use predefined templates",
-        "description": "Choose one of these polished templates and release an amazing scene with just a few clicks!"
-      }
+      "description": "Unleash your creativity. Start building scenes for your LANDs and Worlds and share with the community. <a>Learn more about creating Scenes.</a>"
     },
     "sort": {
       "name": "Name",
       "newest": "Newest",
       "size": "Size"
     },
-    "start": "Start building",
-    "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
-    "templates_title": "Choose the size of your Scene to get started",
-    "title": "Build something Cool!",
-    "results": "{count} {count, plural, one {result} other {results}}",
-    "from_scene_pool": "From The Scene Pool"
-  },
-  "templates_page": {
-    "title": "Choose a template",
-    "back_to_scenes": "Back to scenes",
-    "parcels": "{size} parcels",
-    "coming_soon": "Coming soon"
-  },
-  "import_modal": {
-    "action": "Upload",
-    "action_many": "Upload {count} Scenes",
-    "cta": "Drag your Scene .zip file here, or {action}",
-    "description": "To transfer scenes between different accounts or upload a scene previously downloaded from the scene pool, utilize the 'upload scene' feature. Ensure that you upload the zip file exactly as it was downloaded.",
-    "invalid_file": "Invalid file",
-    "title": "Upload Scene",
-    "upload_manually": "browse for it on your computer"
+    "results": "{count} {count, plural, one {result} other {results}}"
   },
   "upload_video": {
     "cta": "Drag and drop a video (.MP4 format) to showcase the Smart Wearable's functionality or {action}",
@@ -1159,10 +925,6 @@
     "placeholder": "Select a collection",
     "no_collections": "No valid collections were found"
   },
-  "layout_picker": {
-    "columns": "columns",
-    "rows": "rows"
-  },
   "metrics": {
     "bodies": "bodies",
     "entities": "entities",
@@ -1199,23 +961,6 @@
     "third_paragraph_bold_text": "create estates and manage permissions",
     "fourth_paragraph": "Claim your {bold_text} and assign it to your avatar or parcels.",
     "fourth_paragraph_bold_text": "unique name"
-  },
-  "scene_list_page": {
-    "projects_title": "Scene Pool",
-    "no_projects": "It looks like we don't have any Scenes",
-    "filters": {
-      "creator-contest-2019-12": "Creator Contest (Submission)",
-      "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "All collections",
-      "all_users": "All users",
-      "only_me": "Only me",
-      "newest": "Newest",
-      "likes": "Likes",
-      "items": "Items",
-      "smart_items": "Smart items",
-      "size": "Size",
-      "name": "Name"
-    }
   },
   "public_page": {
     "made_with": "Scene made with Builder",
@@ -1338,18 +1083,6 @@
     "confirm_delete_content": "Are you sure you want to delete your item \"{name}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{name}\""
   },
-  "project_fields": {
-    "description_field_label": "Description",
-    "description_field_placeholder": "No description",
-    "title_field_label": "Title",
-    "title_field_placeholder": "Scene title"
-  },
-  "project_layout_picker": {
-    "max_area_error": "Your Scene can't have more than {area} parcels",
-    "min_area_error": "Your Scene is too small",
-    "decimals_error": "Your scene parcels size should not have a decimal value",
-    "empty_field_error": "You should complete the amount of rows and columns to set the scene size"
-  },
   "quota_exceeded_modal": {
     "retry": {
       "description": "We were unable to save your work",
@@ -1366,7 +1099,6 @@
       "delete": "Delete",
       "unpublish": "Unpublish"
     },
-    "edit_scene": "Edit Scene",
     "download_scene": "Download Scene",
     "published_in": "Published In",
     "no_deployments": "This scene has not been published yet.",
@@ -1377,16 +1109,6 @@
     "location": "Location",
     "description": "Description",
     "url": "URL"
-  },
-  "template_detail_page": {
-    "select_template": "Select Template",
-    "download_scene": "Download Scene",
-    "description": "Description",
-    "creator": "Creator",
-    "scene_details": "Scene Details",
-    "built_for_world": "Built for World",
-    "personalize_it_yourself": "Personalize it yourself",
-    "parcels": "{rows} x {cols} parcels"
   },
   "shortcuts": {
     "delete": "Delete item",
@@ -1421,37 +1143,6 @@
     "loading": "Uploading...",
     "retry": "Retry",
     "success": "All Scenes saved successfully!"
-  },
-  "create_modal": {
-    "title": "Create a Scene",
-    "name_subtitle": "Set a name and a description for your scene",
-    "size_subtitle": "Set the parcels size of your new scene",
-    "sdk_title": "Experience the new Decentraland Web Editor",
-    "sdk_subtitle": "Harness the power of SDK 7 without any code.",
-    "sdk_description": "Enhance your scene-building process with our improved visual editor. All features from the previous Scene Builder are included.",
-    "sdk_image_alt": "SDK 7",
-    "name_label": "Name",
-    "description_label": "Description",
-    "description_placeholder": "Some description...",
-    "use_sdk7": "Use decentraland web editor",
-    "use_sdk6": "Use legacy scene builder (SDK 6)"
-  },
-  "clone_template_modal": {
-    "title": "Set a name and a description for your scene",
-    "name_label": "Name",
-    "name_max_length": "The name can be 32 characters at most",
-    "description_label": "Description",
-    "description_placeholder": "Some description..."
-  },
-  "templates": {
-    "big": "Big (2x3)",
-    "custom_layout": {
-      "title": "Custom",
-      "up_to": "Up to {max} parcels"
-    },
-    "description": "{dimensions} - about {amount} items max",
-    "medium": "Standard (2x2)",
-    "small": "Mini (1x1)"
   },
   "activity_page": {
     "latest_activity": "Latest Activity",
@@ -1517,36 +1208,6 @@
   "toasts": {
     "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!"
   },
-  "topbar": {
-    "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
-    "limits_exceeded": "Too many {metric}{br}Try deleting some items!",
-    "up_to_date": "Up to date!{br}All the changes are published",
-    "update_scene": "Update Scene"
-  },
-  "tutorial_modal": {
-    "slide0": {
-      "description": "This is Decentraland’s new Scene builder. Before you get started, let us show you around.",
-      "title": "Welcome to the Builder!"
-    },
-    "slide1": {
-      "description": "To move an object, click and drag the object.",
-      "title": "Moving objects"
-    },
-    "slide2": {
-      "description": "Add objects to your Scene from the sidebar on the right.",
-      "title": "Adding objects"
-    },
-    "slide3": {
-      "description": "Rotate objects by clicking on the Rotate tool and dragging the orbits.",
-      "title": "Arrows and orbits"
-    },
-    "slide4": {
-      "description": "Drag with the left button to rotate the camera. Use the right button to pan.",
-      "title": "Controlling the camera"
-    },
-    "subtitle": "The Builder is super easy to use, here are some tips before you begin",
-    "title": "Get started with the Builder"
-  },
   "unsupported_browser_page": {
     "back": "Back to your Scenes",
     "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
@@ -1556,16 +1217,6 @@
     "guest": "Guest",
     "sign_in": "Sign In",
     "sign_out": "Sign Out"
-  },
-  "validation": {
-    "project": {
-      "description": {
-        "length": "Description length must be between {min} and {max} characters."
-      },
-      "title": {
-        "length": "Title length must be between {min} and {max} characters."
-      }
-    }
   },
   "validation_issues_panel": {
     "title_errors": "{count, plural, one {# Validation Error} other {# Validation Errors}}",
@@ -2437,10 +2088,6 @@
     "synced": "Synced",
     "unsynced": "Unsynced"
   },
-  "editor_preview": {
-    "loading_unity": "Loading Unity...",
-    "loading_unity_error": "Please reload your browser. If the problem persist, try using a lighter scene or contact support."
-  },
   "approval_flow": {
     "loading": {
       "title": "Loading...",
@@ -2490,41 +2137,6 @@
     "description": "Update your hand Wearables to the new category in the Editor once you've modified them accordingly. Please note, the Handwear category is for hand accessories or Wearables that replace hands with other functionally similar ones, not for items that are held.",
     "action": "Learn more"
   },
-  "migrate_to_sdk7_modal": {
-    "use_legacy_builder": "Continue with legacy scene builder (SDK 6)",
-    "save_a_copy": "Save a copy of the original scene in SDK 6.",
-    "saving_copy": "Saving copy in SDK 6",
-    "migrating_scene": "Migrating scene to SDK 7",
-    "image_alt": "Migrate to SDK 7",
-    "info": {
-      "title": "Upgrade Your Scene to SDK 7 with the New Decentraland Web Editor",
-      "subtitle": "<b>This scene is currently built with SDK 6, which will stop receiving support in a few months, but it can be automatically migrated to SDK 7.</b> All features from the previous Scene Builder are included, while smart items will be added in an upcoming update.",
-      "action": "Use decentraland web editor (SDK 7)"
-    },
-    "info_smart_items": {
-      "title": "Upgrade Your Scene to SDK 7 with the New Decentraland Web Editor",
-      "subtitle": "<b>This scene is currently built with SDK 6, which will stop receiving support in a few months, and contains smart items</b>. If you choose to upgrade to SDK 7 using our improved visual editor, these smart items will be removed, as they are not yet supported.",
-      "action": "Use decentraland web editor (SDK 7)"
-    },
-    "migrate": {
-      "title": "Automatic Migration to SDK 7",
-      "subtitle": "This scene is currently built with SDK 6 but can be <b>automatically migrated to SDK 7</b>. This will enhance your scene-building experience with our new and improved Web Editor. <br></br><br></br><b>Ready to upgrade?</b>",
-      "action": "Migrate now"
-    },
-    "migrate_smart_items": {
-      "title": "Migration Options for Your Scene",
-      "subtitle": "Your scene contains <b>{smartItemsCount} Smart Items</b> which are currently only supported in SDK 6.<br></br>You can choose to migrate to SDK 7 by removing these items, or continue using the legacy Scene Builder until Smart Items are available for SDK 7 (coming soon).",
-      "action": "Migrate and remove smart items"
-    }
-  },
-  "inspector": {
-    "top_bar": {
-      "back": "Back to your Scene",
-      "download": "Download scene",
-      "publish": "Publish scene",
-      "preview": "Preview scene"
-    }
-  },
   "worlds_your_storage_modal": {
     "your_storage": "Your Storage",
     "total_available_storage": "TOTAL AVAILABLE STORAGE",
@@ -2542,13 +2154,6 @@
     "names_buy": "BUY NAME",
     "proposal": "These storage rules were voted on and passed in a governance DAO proposal.",
     "learn_more": "LEARN MORE"
-  },
-  "worlds_for_ens_owners_announcement_modal": {
-    "title": "Introducing Worlds for ENS Holders & Expanded World Size Limits",
-    "description_ens": "ENS domain holders will now automatically have access to their own Decentraland World with a scene size limit of 25 Mb.",
-    "description_dcl": "Meanwhile, Worlds from Decentraland NAMEs will have a dynamic maximum file size limit depending on a user's Decentraland holdings. <b>Each NAME, LAND, and set of 2,000 MANA tokens owned </b> will grant an additional <b>100 Mb of storage</b> on the Worlds content server to be used as you wish.",
-    "start_building": "start building",
-    "learn_more": "learn more"
   },
   "creator_hub_upgrade_modal": {
     "badge": "Web scene editor sunset on September 1st",
