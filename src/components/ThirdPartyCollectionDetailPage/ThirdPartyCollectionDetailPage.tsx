@@ -62,6 +62,7 @@ export default function ThirdPartyCollectionDetailPage({
   currentPage,
   lastLocation,
   wallet,
+  isLoggedIn,
   thirdParty,
   items,
   collection,
@@ -90,10 +91,10 @@ export default function ThirdPartyCollectionDetailPage({
   }, [thirdParty, isLoadingAvailableSlots, onFetchAvailableSlots])
 
   useEffect(() => {
-    if (!isLoading && !thirdParty && collection?.urn) {
+    if (isLoggedIn && !isLoading && !thirdParty && collection?.urn) {
       onFetchThirdParty(extractThirdPartyId(collection.urn))
     }
-  }, [collection?.urn, isLoading, thirdParty])
+  }, [collection?.urn, isLoading, thirdParty, isLoggedIn])
 
   useEffect(() => {
     // update the state if the page query param changes

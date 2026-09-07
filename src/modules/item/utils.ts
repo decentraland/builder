@@ -59,8 +59,7 @@ import {
   isSocialEmote
 } from './types'
 import { getChainIdByNetwork, getSigner } from 'decentraland-dapps/dist/lib'
-import { getOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trades'
-import { getTradeSignature } from 'lib/trades'
+import { getOffChainMarketplaceContract, getTradeSignature } from 'decentraland-dapps/dist/lib/trades'
 import { PriceDenomination } from 'modules/trade/denomination'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { BigNumber } from 'eth-connect'
