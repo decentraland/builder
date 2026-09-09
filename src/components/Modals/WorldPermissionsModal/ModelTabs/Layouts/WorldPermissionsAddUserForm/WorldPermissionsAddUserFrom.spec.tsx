@@ -96,7 +96,7 @@ describe('when rendering the Worlds Permissions Add User Form', () => {
         renderedComponent = renderWorldPermissionsAddUserForm({ showAddUserForm, error })
       })
 
-      it('should render the the button as disabled', () => {
+      it('should render the button as disabled', () => {
         const { getByTestId } = renderedComponent
         const changePermissionButton = getByTestId(WORLD_PERMISSIONS_ADD_USER_FORM_CHANGE_PERMISSION_BUTTON_DATA_TEST_ID)
 
