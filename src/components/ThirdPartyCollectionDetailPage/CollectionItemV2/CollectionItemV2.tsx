@@ -82,10 +82,6 @@ export default function CollectionItemV2({
     [item, loading, onSelect]
   )
 
-  const handleSeeInWorld = useCallback(() => {
-    onOpenModal('SeeInWorldModal', { itemIds: [item.id] })
-  }, [item, onOpenModal])
-
   const handleEditURN = useCallback(() => {
     if (!item.isPublished) {
       onOpenModal('EditItemURNModal', { item })
@@ -139,7 +135,6 @@ export default function CollectionItemV2({
             >
               <Dropdown.Menu>
                 <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-                <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={handleSeeInWorld} />
                 <Dropdown.Item text={t('global.open_in_editor')} onClick={handleNavigateToEditor} />
                 <Popup
                   content={t('collection_item.cannot_edit_urn')}
