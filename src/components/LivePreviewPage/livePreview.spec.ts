@@ -1,5 +1,5 @@
 import { BodyPartCategory, WearableCategory } from '@dcl/schemas'
-import { BridgeState, blobsAreEqual, buildDefinition, buildStateUrl, isSameModelMetadata } from './livePreview'
+import { BridgeState, blobsAreEqual, buildDefinition, buildStateUrl, isSameModelMetadata, queryLocalNetworkPermission } from './livePreview'
 
 jest.mock('decentraland-dapps/dist/modules/translation/utils', () => ({ t: (key: string) => key }))
 
@@ -73,5 +73,53 @@ describe('when building a wearable definition', () => {
   it('should not remove any default hiding for other categories', () => {
     const { blob } = buildDefinition(state(WearableCategory.HAT), glb)
     expect('data' in blob && blob.data.removesDefaultHiding).toEqual([])
+  })
+})
+
+describe('when querying the local network permission', () => {
+  const query = jest.fn()
+  let permissions: PropertyDescriptor | undefined
+
+  beforeEach(() => {
+    permissions = Object.getOwnPropertyDescriptor(navigator, 'permissions')
+    Object.defineProperty(navigator, 'permissions', { value: { query }, configurable: true })
+  })
+
+  afterEach(() => {
+    query.mockReset()
+    if (permissions) {
+      Object.defineProperty(navigator, 'permissions', permissions)
+    } else {
+      delete (navigator as { permissions?: unknown }).permissions
+    }
+  })
+
+  it('should resolve to null when the page itself is served from localhost', async () => {
+    await expect(queryLocalNetworkPermission('localhost')).resolves.toBeNull()
+    expect(query).not.toHaveBeenCalled()
+  })
+
+  it('should return the status under the legacy permission name', async () => {
+    const status = { state: 'prompt' }
+    query.mockResolvedValueOnce(status)
+    await expect(queryLocalNetworkPermission('builder.example.com')).resolves.toBe(status)
+    expect(query).toHaveBeenCalledWith({ name: 'local-network-access' })
+  })
+
+  it('should fall back to the loopback permission name when the legacy one is unknown', async () => {
+    const status = { state: 'denied' }
+    query.mockRejectedValueOnce(new TypeError('unknown name')).mockResolvedValueOnce(status)
+    await expect(queryLocalNetworkPermission('builder.example.com')).resolves.toBe(status)
+    expect(query).toHaveBeenLastCalledWith({ name: 'loopback-network' })
+  })
+
+  it('should resolve to null when the browser has no such permission', async () => {
+    query.mockRejectedValue(new TypeError('unknown name'))
+    await expect(queryLocalNetworkPermission('builder.example.com')).resolves.toBeNull()
+  })
+
+  it('should resolve to null when the Permissions API is missing', async () => {
+    Object.defineProperty(navigator, 'permissions', { value: undefined, configurable: true })
+    await expect(queryLocalNetworkPermission('builder.example.com')).resolves.toBeNull()
   })
 })

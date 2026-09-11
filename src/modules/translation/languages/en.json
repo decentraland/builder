@@ -1969,11 +1969,16 @@
     "emote": "Emote",
     "emote_info": "The emote streamed from Blender plays automatically on the avatar.",
     "loop": "Loop",
+    "local_network": {
+      "prompt": "Your browser will ask for permission to connect to your local network. Click Allow so this page can reach Blender.",
+      "denied": "Your browser blocked this page from reaching your local network. Open the site information in the address bar, allow local network access, then reload."
+    },
     "no_model": "No model yet.",
     "errors": {
       "unreachable": "Could not reach the Blender bridge",
       "bridge_response": "Bridge responded with {status}",
       "invalid_state": "The bridge returned an invalid state",
+      "local_network_denied": "Your browser blocked the connection to Blender: allow local network access for this site",
       "model_fetch": "Failed to fetch model.glb ({status})"
     },
     "add_to_collection": "Add to collection"

@@ -18,6 +18,15 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
  */
 
 export const DEFAULT_BRIDGE_URL = 'http://localhost:8080'
+export const LOCAL_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]']
+
+export function isLocalHostname(hostname: string): boolean {
+  return LOCAL_HOSTNAMES.includes(hostname)
+}
+
+// Chromium's Local Network Access permission. The spec is splitting the original name into
+// `local-network` and `loopback-network` and keeps the first as an alias.
+const LOCAL_NETWORK_PERMISSION_NAMES = ['local-network-access', 'loopback-network']
 
 export enum LivePreviewStatus {
   DISCONNECTED = 'disconnected',
@@ -84,6 +93,24 @@ export async function fetchBridgeState(
     throw new Error(t('live_preview_page.errors.invalid_state'))
   }
   return state as BridgeState
+}
+
+/**
+ * Chromium gates requests from a public page to localhost behind a "Local Network Access" prompt,
+ * and a blocked request fails like any network error. Resolves to the permission status so the UI
+ * can tell the user to allow it, or to null when no prompt can appear: browsers without the
+ * permission (Firefox, Safari, older Chromium) or a page served from localhost, which is exempt.
+ */
+export async function queryLocalNetworkPermission(pageHostname: string = window.location.hostname): Promise<PermissionStatus | null> {
+  if (isLocalHostname(pageHostname) || typeof navigator.permissions?.query !== 'function') return null
+  for (const name of LOCAL_NETWORK_PERMISSION_NAMES) {
+    try {
+      return await navigator.permissions.query({ name: name as PermissionName })
+    } catch {
+      // Unknown permission name in this browser: try the next alias.
+    }
+  }
+  return null
 }
 
 /** Fetch the latest exported GLB from the bridge as a Blob. */

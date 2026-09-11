@@ -1969,11 +1969,16 @@
     "emote": "表情",
     "emote_info": "从 Blender 传输的表情会自动在头像上播放。",
     "loop": "循环",
+    "local_network": {
+      "prompt": "浏览器将请求连接本地网络的权限。请点击“允许”，以便此页面可以访问 Blender。",
+      "denied": "浏览器已阻止此页面访问本地网络。请在地址栏中打开网站信息，允许本地网络访问，然后重新加载页面。"
+    },
     "no_model": "还没有模型。",
     "errors": {
       "unreachable": "无法连接到 Blender 桥接服务",
       "bridge_response": "桥接服务返回了 {status}",
       "invalid_state": "桥接服务返回了无效的状态",
+      "local_network_denied": "浏览器阻止了与 Blender 的连接：请为此网站允许本地网络访问",
       "model_fetch": "获取 model.glb 失败（{status}）"
     },
     "add_to_collection": "添加到收藏品系列"

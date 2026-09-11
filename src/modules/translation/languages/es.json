@@ -1975,11 +1975,16 @@
     "emote": "Animación",
     "emote_info": "La animación transmitida desde Blender se reproduce automáticamente en el avatar.",
     "loop": "Repetir",
+    "local_network": {
+      "prompt": "Tu navegador pedirá permiso para conectarse a tu red local. Haz clic en Permitir para que esta página pueda acceder a Blender.",
+      "denied": "Tu navegador bloqueó el acceso de esta página a tu red local. Abre la información del sitio en la barra de direcciones, permite el acceso a la red local y recarga la página."
+    },
     "no_model": "Todavía no hay modelo.",
     "errors": {
       "unreachable": "No se pudo conectar con el bridge de Blender",
       "bridge_response": "El bridge respondió con {status}",
       "invalid_state": "El bridge devolvió un estado inválido",
+      "local_network_denied": "Tu navegador bloqueó la conexión con Blender: permite el acceso a la red local para este sitio",
       "model_fetch": "No se pudo descargar model.glb ({status})"
     },
     "add_to_collection": "Agregar a colección"

@@ -54,7 +54,9 @@ import {
   buildDefinition,
   fetchBridgeState,
   fetchModelBlob,
-  isSameModelMetadata
+  isLocalHostname,
+  isSameModelMetadata,
+  queryLocalNetworkPermission
 } from './livePreview'
 
 import 'components/ItemEditorPage/CenterPanel/CenterPanel.css'
@@ -69,8 +71,6 @@ const LONG_POLL_FALLBACK_MS = 1000
 const ERROR_POLL_INTERVAL_MS = 1000 * 15
 const BODY_SHAPES = [BodyShape.MALE, BodyShape.FEMALE]
 
-const LOCAL_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]']
-
 /**
  * The `bridge` query param carries the local bridge port (`?bridge=8081`) or a full URL. Only
  * local origins are trusted: a crafted link must not point the page at an external server.
@@ -81,7 +81,7 @@ function getInitialBridgeUrl(): string {
   if (/^\d+$/.test(param)) return `http://localhost:${param}`
   try {
     const url = new URL(param)
-    if ((url.protocol === 'http:' || url.protocol === 'https:') && LOCAL_HOSTNAMES.includes(url.hostname)) {
+    if ((url.protocol === 'http:' || url.protocol === 'https:') && isLocalHostname(url.hostname)) {
       return param
     }
   } catch {
@@ -128,6 +128,8 @@ export default function LivePreviewPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
   const [isShowingAvatarAttributes, setIsShowingAvatarAttributes] = useState(false)
+  // Chromium's Local Network Access permission; null where no prompt applies.
+  const [localNetworkPermission, setLocalNetworkPermission] = useState<PermissionState | null>(null)
 
   // Preview controls. A null category follows whatever the bridge reports until the user picks one.
   const [categoryOverride, setCategoryOverride] = useState<WearableCategory | null>(null)
@@ -226,8 +228,15 @@ export default function LivePreviewPage() {
       } else {
         if (!isConnectedRef.current) return
         delay = ERROR_POLL_INTERVAL_MS
+        let message = e instanceof Error ? e.message : t('live_preview_page.errors.unreachable')
+        // A request the browser blocked rejects like an unreachable bridge; the permission tells them apart.
+        if (e instanceof TypeError) {
+          const permission = await queryLocalNetworkPermission()
+          if (!isConnectedRef.current) return
+          if (permission?.state === 'denied') message = t('live_preview_page.errors.local_network_denied')
+        }
         setStatus(LivePreviewStatus.ERROR)
-        setError(e instanceof Error ? e.message : t('live_preview_page.errors.unreachable'))
+        setError(message)
       }
     } finally {
       isPollingRef.current = false
@@ -278,6 +287,24 @@ export default function LivePreviewPage() {
     return () => {
       stopPolling()
       dispatch(setWearablePreviewController(null))
+    }
+  }, [])
+
+  // Track the Local Network Access permission so the hint follows the user's choice in the prompt
+  // or in the site settings without a reload.
+  useEffect(() => {
+    let permission: PermissionStatus | null = null
+    let isCancelled = false
+    const handleChange = () => setLocalNetworkPermission(permission?.state ?? null)
+    void queryLocalNetworkPermission().then(result => {
+      if (isCancelled || !result) return
+      permission = result
+      permission.addEventListener('change', handleChange)
+      handleChange()
+    })
+    return () => {
+      isCancelled = true
+      permission?.removeEventListener('change', handleChange)
     }
   }, [])
 
@@ -618,6 +645,12 @@ export default function LivePreviewPage() {
                 </Button>
               )}
             </div>
+            {(localNetworkPermission === 'prompt' || localNetworkPermission === 'denied') && (
+              <div className={`permission-notice permission-notice--${localNetworkPermission}`}>
+                <Icon name={localNetworkPermission === 'denied' ? 'warning sign' : 'info circle'} />
+                <span>{t(`live_preview_page.local_network.${localNetworkPermission}`)}</span>
+              </div>
+            )}
             {isConnected && (
               <div className="actions">
                 <Button icon disabled={isRefreshing} onClick={() => handleRefresh()}>
