@@ -168,12 +168,20 @@ export function buildDefinition(
     return { blob: emote, isEmote: true }
   }
 
+  const wearableCategory = (category as WearableCategory) || WearableCategory.HAT
+  const hides = overrides.hides ?? []
+  // Renderers hide the base hands under any upper body unless told otherwise (legacy upper bodies
+  // shipped their own hands). Mirror what the Builder sets when the item is added to a collection.
+  const removesDefaultHiding =
+    wearableCategory === WearableCategory.UPPER_BODY || hides.includes(WearableCategory.UPPER_BODY) ? [BodyPartCategory.HANDS] : []
+
   const wearable: WearableWithBlobs = {
     ...base,
     data: {
-      category: (category as WearableCategory) || WearableCategory.HAT,
-      hides: overrides.hides ?? [],
+      category: wearableCategory,
+      hides,
       replaces: [],
+      removesDefaultHiding,
       tags: [],
       representations: [
         {
@@ -181,7 +189,7 @@ export function buildDefinition(
           mainFile: MODEL_KEY,
           contents: representationContents,
           // The editor keeps overrideHides in sync with hides (see RightPanel.setHides).
-          overrideHides: overrides.hides ?? [],
+          overrideHides: hides,
           overrideReplaces: []
         }
       ]

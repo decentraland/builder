@@ -1,4 +1,5 @@
-import { blobsAreEqual, buildStateUrl, isSameModelMetadata } from './livePreview'
+import { BodyPartCategory, WearableCategory } from '@dcl/schemas'
+import { BridgeState, blobsAreEqual, buildDefinition, buildStateUrl, isSameModelMetadata } from './livePreview'
 
 jest.mock('decentraland-dapps/dist/modules/translation/utils', () => ({ t: (key: string) => key }))
 
@@ -52,5 +53,25 @@ describe('when comparing blobs', () => {
 
   it('should differ on content', async () => {
     expect(await blobsAreEqual(withBuffer([1, 2, 3]).blob, withBuffer([1, 2, 4]).blob)).toBe(false)
+  })
+})
+
+describe('when building a wearable definition', () => {
+  const glb = new Blob([new Uint8Array([1, 2, 3])])
+  const state = (category: string): BridgeState => ({ version: 1, type: 'wearable', name: 'x', category })
+
+  it('should remove the default hand hiding for upper bodies', () => {
+    const { blob } = buildDefinition(state(WearableCategory.UPPER_BODY), glb)
+    expect('data' in blob && blob.data.removesDefaultHiding).toEqual([BodyPartCategory.HANDS])
+  })
+
+  it('should remove the default hand hiding when the wearable hides the upper body', () => {
+    const { blob } = buildDefinition(state(WearableCategory.HAT), glb, { hides: [WearableCategory.UPPER_BODY] })
+    expect('data' in blob && blob.data.removesDefaultHiding).toEqual([BodyPartCategory.HANDS])
+  })
+
+  it('should not remove any default hiding for other categories', () => {
+    const { blob } = buildDefinition(state(WearableCategory.HAT), glb)
+    expect('data' in blob && blob.data.removesDefaultHiding).toEqual([])
   })
 })
