@@ -58,5 +58,4 @@ export type State = {
   socialEmote?: SocialEmoteAnimation
   validationIssues?: ValidationIssue[]
   isValidating: boolean
-  isValidationModalOpen: boolean
 }

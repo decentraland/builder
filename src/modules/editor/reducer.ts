@@ -1,5 +1,5 @@
 import type { Wearable } from 'decentraland-ecs'
-import { PreviewEmote, BodyShape, WearableCategory, IPreviewController, SpringBonesData } from '@dcl/schemas'
+import { PreviewEmote, BodyShape, IPreviewController, SpringBonesData } from '@dcl/schemas'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
@@ -81,7 +81,7 @@ import {
   DeleteSpringBoneParamsAction
 } from './actions'
 import { Gizmo } from './types'
-import { pickRandom, filterWearables } from './utils'
+import { pickRandom, getRandomBaseWearables } from './utils'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -391,18 +391,8 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         loading: loadingReducer(state.loading, action),
         // Initialize the selectedBaseWearables randomly
         selectedBaseWearablesByBodyShape: {
-          [BodyShape.FEMALE]: {
-            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, BodyShape.FEMALE)),
-            [WearableCategory.FACIAL_HAIR]: null,
-            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, BodyShape.FEMALE)),
-            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, BodyShape.FEMALE))
-          },
-          [BodyShape.MALE]: {
-            [WearableCategory.HAIR]: pickRandom(filterWearables(wearables, WearableCategory.HAIR, BodyShape.MALE)),
-            [WearableCategory.FACIAL_HAIR]: pickRandom(filterWearables(wearables, WearableCategory.FACIAL_HAIR, BodyShape.MALE)),
-            [WearableCategory.UPPER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.UPPER_BODY, BodyShape.MALE)),
-            [WearableCategory.LOWER_BODY]: pickRandom(filterWearables(wearables, WearableCategory.LOWER_BODY, BodyShape.MALE))
-          }
+          [BodyShape.FEMALE]: getRandomBaseWearables(wearables, BodyShape.FEMALE),
+          [BodyShape.MALE]: getRandomBaseWearables(wearables, BodyShape.MALE)
         }
       }
     }

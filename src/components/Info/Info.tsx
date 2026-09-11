@@ -7,12 +7,12 @@ import './Info.css'
 
 export default class Info extends React.PureComponent<Props> {
   render() {
-    const { className, content = '' } = this.props
+    const { className, content = '', position = 'top center' } = this.props
     return (
       <Popup
         className="info-popup"
         content={content}
-        position="top center"
+        position={position}
         trigger={<InfoIcon className={classNames(className, 'info-icon')} />}
         on="hover"
         inverted

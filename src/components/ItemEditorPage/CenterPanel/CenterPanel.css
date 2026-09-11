@@ -1,7 +1,7 @@
 .CenterPanel {
   position: relative;
   flex: 1 1 auto;
-  background-color: #4c4852;
+  background: radial-gradient(ellipse 80% 70% at 50% 38%, #5d5865 0%, #4c4852 60%, #383440 100%);
   display: flex;
   flex-direction: column;
 }
@@ -27,7 +27,7 @@
   padding: 4px 12px 6px 12px;
   border-radius: 4px;
   display: inline-block;
-  margin-left: 16px;
+  margin-left: 12px;
   cursor: pointer;
   display: flex;
   height: 35px;
@@ -37,6 +37,11 @@
 .CenterPanel .footer .option .user.icon {
   margin-bottom: 4px;
   margin-left: 2px;
+}
+
+.CenterPanel .footer .option.randomize-avatar .random.icon {
+  margin: 0 0 4px 0;
+  width: 22px;
 }
 
 .CenterPanel .footer .right-container {
