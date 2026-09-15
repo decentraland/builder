@@ -76,10 +76,6 @@ export default function CollectionItem({
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
   }, [item, onOpenModal])
 
-  const handleSeeInWorld = useCallback(() => {
-    onOpenModal('SeeInWorldModal', { itemIds: [item.id] })
-  }, [onOpenModal, item])
-
   const handleNavigateToEditor = useCallback(() => {
     onSetItems([item])
     history.push(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }), { fromParam: FromParam.COLLECTIONS })
@@ -101,7 +97,7 @@ export default function CollectionItem({
 
   const handleCopyURN = useCallback(() => {
     if (item.urn) {
-      navigator.clipboard.writeText(item.urn)
+      void navigator.clipboard.writeText(item.urn)
     }
   }, [item.urn])
 
@@ -219,7 +215,6 @@ export default function CollectionItem({
           <Dropdown.Menu className={styles.contextMenu}>
             <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
             {item.urn && <Dropdown.Item text={t('collection_item.copy_urn')} onClick={handleCopyURN} />}
-            <Dropdown.Item text={t('collection_context_menu.see_in_decentraland')} onClick={handleSeeInWorld} />
             <Dropdown.Item text={t('collection_item.preview')} onClick={handleNavigateToEditor} />
             {!collection.isPublished && (
               <Dropdown.Item text={t('collection_item.move_to_another_collection')} onClick={handleMoveToAnotherCollection} />
@@ -247,7 +242,6 @@ export default function CollectionItem({
     item,
     ethAddress,
     handleCopyURN,
-    handleSeeInWorld,
     handleNavigateToEditor,
     handleMoveToAnotherCollection,
     handleEditPriceAndBeneficiary,

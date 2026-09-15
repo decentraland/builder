@@ -2,6 +2,7 @@ import * as React from 'react'
 import { ModalNavigation, Button, Icon, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { openExternal } from 'lib/url'
 import { getItemsToPublish, getItemsWithChanges } from 'modules/item/utils'
 import { PublishThirdPartyCollectionModalStep } from 'modules/ui/thirdparty/types'
 import { PublishButtonAction } from 'components/ThirdPartyCollectionDetailPage/CollectionPublishButton/CollectionPublishButton.types'
@@ -45,9 +46,7 @@ export default class PublishThirdPartyCollectionModal extends React.PureComponen
 
   handleViewForumPost = () => {
     const { collection } = this.props
-    if (collection) {
-      window.open(collection.forumLink, '_blank', 'noopener noreferrer')
-    }
+    openExternal(collection?.forumLink)
   }
 
   getModalDescriptionText = () => {

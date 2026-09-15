@@ -31,10 +31,7 @@ import { itemSaga } from 'modules/item/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 import { landSaga } from 'modules/land/sagas'
 import { locationSaga } from 'modules/location/sagas'
-import { mediaSaga } from 'modules/media/sagas'
 import { modalSaga } from 'modules/modal/sagas'
-import { poolGroupSaga } from 'modules/poolGroup/sagas'
-import { poolSaga } from 'modules/pool/sagas'
 import { projectSaga } from 'modules/project/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
 import { statsSaga } from 'modules/stats/sagas'
@@ -49,14 +46,12 @@ import { loginSaga } from 'modules/login/sagas'
 import { newsletterSagas } from 'modules/newsletter/sagas'
 import { collectionCurationSaga } from 'modules/curations/collectionCuration/sagas'
 import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
-import { inspectorSaga } from 'modules/inspector/sagas'
 import { worldsSaga } from 'modules/worlds/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
 import { ENSApi } from 'lib/api/ens'
 import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
-import { RootStore } from './types'
 import { WorldsAPI } from 'lib/api/worlds'
 
 const newIdentitySaga = createIdentitySaga({
@@ -76,7 +71,6 @@ export function* rootSaga(
   catalystClient: CatalystClient,
   contentfulClient: ContentfulClient,
   getIdentity: () => AuthIdentity | undefined,
-  store: RootStore,
   ensApi: ENSApi,
   worldsApi: WorldsAPI,
   tradeService: TradeService,
@@ -95,7 +89,7 @@ export function* rootSaga(
     authorizationSaga(),
     collectionSaga(builderAPI, newBuilderClient, creditsService),
     committeeSaga(builderAPI),
-    deploymentSaga(builderAPI, catalystClient, worldsApi),
+    deploymentSaga(catalystClient),
     editorSaga(),
     ensSaga(newBuilderClient, ensApi, worldsApi),
     entitySaga(catalystClient),
@@ -106,13 +100,10 @@ export function* rootSaga(
     keyboardSaga(),
     landSaga(),
     locationSaga(),
-    mediaSaga(),
     modalSaga(),
-    poolGroupSaga(builderAPI),
-    poolSaga(builderAPI),
     createProfileSaga({ peerUrl: PEER_URL, peerWithNoGbCollectorUrl: getPeerWithNoGBCollectorURL(), getIdentity })(),
     projectSaga(builderAPI),
-    sceneSaga(builderAPI),
+    sceneSaga(),
     statsSaga(),
     syncSaga(builderAPI),
     thirdPartySaga(builderAPI, catalystClient),
@@ -127,7 +118,6 @@ export function* rootSaga(
     featuresSaga({
       polling: { apps: [ApplicationName.BUILDER, ApplicationName.DAPPS, ApplicationName.MARKETPLACE], delay: 60000 /** 60 seconds */ }
     }),
-    inspectorSaga(builderAPI, store),
     loginSaga(),
     newsletterSagas(builderAPI),
     worldsSaga(worldsApi),

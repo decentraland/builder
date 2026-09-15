@@ -6,7 +6,6 @@ export type Props = {
   deploymentsByWorlds: Record<string, Deployment>
   ens: ENS
   projects: Project[]
-  onEditScene?: (ens: ENS) => void
+  onViewScene?: (ens: ENS) => void
   onUnpublishScene?: (ens: ENS) => void
-  onPublishScene?: () => void
 }

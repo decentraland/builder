@@ -149,12 +149,6 @@ export type SetEditorReadOnlyAction = ReturnType<typeof setEditorReadOnly>
 
 // Screenshot
 
-export const TAKE_SCREENSHOT = 'Take screenshot'
-
-export const takeScreenshot = () => action(TAKE_SCREENSHOT, {})
-
-export type TakeScreenshotAction = ReturnType<typeof takeScreenshot>
-
 export const SET_SCREENSHOT_READY = 'Set screenshot ready'
 
 export const setScreenshotReady = (isScreenshotReady: boolean) => action(SET_SCREENSHOT_READY, { isScreenshotReady })

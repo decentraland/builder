@@ -19,8 +19,8 @@ import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsCl
 import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
-import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
-import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
+import { CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
+import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
@@ -95,12 +95,10 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     EDITOR_UNDO,
     EDITOR_REDO,
     DELETE_PROJECT,
-    DEPLOY_TO_LAND_SUCCESS,
     CLEAR_DEPLOYMENT_SUCCESS,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
     SAVE_PROJECT_SUCCESS,
-    EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
     SET_SYNC
@@ -135,8 +133,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   },
   onError: (err, store) => {
     const isQuotaModalOpen = !!getOpenModals(store.getState())['QuotaExceededModal']
-    const isCloneTemplateModalOpen = !!getOpenModals(store.getState())['CloneTemplateModal']
-    if (err instanceof DOMException && err.name === 'QuotaExceededError' && !isQuotaModalOpen && !isCloneTemplateModalOpen) {
+    if (err instanceof DOMException && err.name === 'QuotaExceededError' && !isQuotaModalOpen) {
       store.dispatch(openModal('QuotaExceededModal'))
     }
   }
@@ -192,7 +189,6 @@ sagasMiddleware.run(
   catalystClient,
   contentfulClient,
   getClientAuthAuthority,
-  store,
   ensApi,
   worldsAPI,
   tradeService,

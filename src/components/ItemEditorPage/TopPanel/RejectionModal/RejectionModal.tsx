@@ -6,6 +6,7 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { CurationStatus } from 'modules/curations/types'
+import ExternalLink from 'components/ExternalLink'
 import { Props, RejectionType } from './RejectionModal.types'
 
 import './RejectionModal.css'
@@ -97,13 +98,13 @@ const Verdict = ({ link, onClose }: { link?: string; onClose: () => void }) => (
     <Modal.Header>{t(i18nBase + '.veredict_explanation')}</Modal.Header>
     <Modal.Content>{t(i18nBase + '.go_to_forum')}</Modal.Content>
     <Modal.Actions>
-      <a href={link} className="forum-link" target="_blank" rel="noopener noreferrer">
+      <ExternalLink href={link} className="forum-link">
         <Button secondary icon labelPosition="right">
           <div>{t(i18nBase + '.forum_link')}</div>
           <div className="discussion">{t(i18nBase + '.discussion')}</div>
           <Icon name="chevron right" />
         </Button>
-      </a>
+      </ExternalLink>
       <Button basic onClick={onClose}>
         {t('global.done')}
       </Button>

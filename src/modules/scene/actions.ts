@@ -3,7 +3,6 @@ import { SceneMetrics } from '@dcl/inspector/dist/redux/scene-metrics/types'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { Scene, ComponentType, ComponentData, SceneSDK6, SceneSDK7 } from './types'
 import { ModelMetrics, Vector3 } from 'modules/models/types'
-import { Project } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)
 
@@ -83,22 +82,6 @@ export const deleteItem = () => action(DELETE_ITEM, {})
 
 export type DeleteItemAction = ReturnType<typeof deleteItem>
 
-// Set ground
-
-export const SET_GROUND = 'Set ground'
-
-export const setGround = (projectId: string, asset?: Asset) => action(SET_GROUND, { projectId, asset })
-
-export type SetGroundAction = ReturnType<typeof setGround>
-
-// Set Layout
-
-export const APPLY_LAYOUT = 'Apply Layout'
-
-export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project })
-
-export type ApplyLayoutAction = ReturnType<typeof applyLayout>
-
 // Fix Lagacy Namespaces Request
 
 export const FIX_LEGACY_NAMESPACES_REQUEST = '[Request] Fix Legacy Namespaces'
@@ -145,20 +128,3 @@ export const UPDATE_SCENE = 'Update scene'
 export const updateScene = (scene: SceneSDK7) => action(UPDATE_SCENE, { scene })
 
 export type UpdateSceneAction = ReturnType<typeof updateScene>
-
-// Migrate scene
-export const MIGRATE_TO_SDK7_REQUEST = '[Request] Migrate to SDK7'
-export const migrateToSDK7Request = (project: Project, shouldSaveCopy: boolean) =>
-  action(MIGRATE_TO_SDK7_REQUEST, {
-    project,
-    shouldSaveCopy
-  })
-export type MigrateToSDK7RequestAction = ReturnType<typeof migrateToSDK7Request>
-
-export const MIGRATE_TO_SDK7_SUCCESS = '[Success] Migrate to SDK7'
-export const migrateToSDK7Success = () => action(MIGRATE_TO_SDK7_SUCCESS)
-export type MigrateToSDK7SuccessAction = ReturnType<typeof migrateToSDK7Success>
-
-export const MIGRATE_TO_SDK7_FAILURE = '[Failure] Migrate to SDK7'
-export const migrateToSDK7Failure = (error: string) => action(MIGRATE_TO_SDK7_FAILURE, { error })
-export type MigrateToSDK7FailureAction = ReturnType<typeof migrateToSDK7Failure>

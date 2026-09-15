@@ -1,21 +1,23 @@
 import * as React from 'react'
-import { Button, Close, Icon, Loader } from 'decentraland-ui'
+import { Button, Checkbox, Close, Icon, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
 import { Props } from './ExportModal.types'
 import './ExportModal.css'
 
-export default class ExportModal extends React.PureComponent<Props> {
+export default class ExportModal extends React.PureComponent<Props, { migrateToSDK7: boolean }> {
+  state = { migrateToSDK7: false }
+
   handleExport = () => {
     const { metadata, onExport } = this.props
     if (metadata) {
-      onExport(metadata.project)
+      onExport(metadata.project, this.state.migrateToSDK7)
     }
   }
 
   render() {
-    const { name, onClose, isLoading, progress, total, metadata } = this.props
+    const { name, onClose, isLoading, isSDK6, progress, total, metadata } = this.props
 
     let action = t('export_modal.action')
     if (total > 0) {
@@ -28,6 +30,15 @@ export default class ExportModal extends React.PureComponent<Props> {
         <Modal.Content>
           <div className="export-modal-content-image" />
           <span className="details">{t('export_modal.description')}</span>
+          {isSDK6 && (
+            <Checkbox
+              className="export-modal-convert"
+              disabled={isLoading}
+              checked={this.state.migrateToSDK7}
+              label={t('export_modal.convert_to_sdk7')}
+              onChange={(_, { checked }) => this.setState({ migrateToSDK7: !!checked })}
+            />
+          )}
         </Modal.Content>
         <Modal.Actions className="export-modal-actions">
           <Button primary onClick={this.handleExport} disabled={isLoading || !metadata.project}>

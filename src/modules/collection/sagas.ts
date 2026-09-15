@@ -690,16 +690,21 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
       const addresses: string[] = []
       const values: boolean[] = []
 
-      const newMinters = new Set(collection.minters)
+      // Compared lowercased on both sides. The access list's addresses come from the contract registry
+      // lowercased, while collection.minters comes from the server and may be checksummed — a case
+      // difference would make the delete miss, so the on-chain revoke would succeed while the stale minter
+      // survived in the store and isEnableForSaleOffchain kept reporting the collection as on sale.
+      const newMinters = new Set(collection.minters.map(minter => minter.toLowerCase()))
 
       for (const { address, hasAccess } of accessList) {
         addresses.push(address)
         values.push(hasAccess)
 
+        const minter = address.toLowerCase()
         if (hasAccess) {
-          newMinters.add(address)
+          newMinters.add(minter)
         } else {
-          newMinters.delete(address)
+          newMinters.delete(minter)
         }
       }
 

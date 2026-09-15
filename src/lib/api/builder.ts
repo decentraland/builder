@@ -3,6 +3,7 @@ import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
 import { NO_CACHE_HEADERS } from 'lib/headers'
+import { getSafeExternalUrl } from 'lib/url'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest, TemplateStatus } from 'modules/project/types'
@@ -11,8 +12,6 @@ import { Scene } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
-import { PoolGroup } from 'modules/poolGroup/types'
-import { Pool } from 'modules/pool/types'
 import { Item, ItemType, WearableData, BlockchainRarity, ItemApprovalData } from 'modules/item/types'
 import { Account } from 'modules/committee/types'
 import { retryParams } from 'modules/common/utils'
@@ -135,26 +134,6 @@ export type RemoteProject = {
   template_status: TemplateStatus | null
 }
 
-export type RemotePoolGroup = {
-  id: string
-  name: string
-  is_active: boolean
-  active_from: string
-  active_until: string
-}
-
-export type RemotePool = RemoteProject & {
-  groups: string[]
-  parcels: number | null
-  transforms: number | null
-  gltf_shapes: number | null
-  nft_shapes: number | null
-  scripts: number | null
-  entities: number | null
-  likes: number
-  like: boolean
-}
-
 export type RemoteAssetPack = {
   id: string
   title: string
@@ -265,29 +244,6 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
   }
 }
 
-function fromRemotePool(remotePool: RemotePool): Pool {
-  const pool = fromRemoteProject(remotePool) as Pool
-
-  pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
-  pool.isPublic = true
-  pool.groups = remotePool.groups || []
-  pool.likes = remotePool.likes || 0
-  pool.like = !!remotePool.like
-
-  if (remotePool.parcels) {
-    pool.statistics = {
-      parcels: remotePool.parcels,
-      transforms: remotePool.transforms as number,
-      gltf_shapes: remotePool.gltf_shapes as number,
-      nft_shapes: remotePool.nft_shapes as number,
-      scripts: remotePool.scripts as number,
-      entities: remotePool.entities as number
-    }
-  }
-
-  return pool
-}
-
 function toRemoteAssetPack(assetPack: FullAssetPack): RemoteAssetPack {
   return {
     id: assetPack.id,
@@ -342,16 +298,6 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     metrics: remoteAsset.metrics,
     parameters: remoteAsset.parameters,
     actions: remoteAsset.actions
-  }
-}
-
-function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
-  return {
-    id: poolGroup.id,
-    name: poolGroup.name,
-    isActive: poolGroup.is_active,
-    activeFrom: new Date(Date.parse(poolGroup.active_from)),
-    activeUntil: new Date(Date.parse(poolGroup.active_until))
   }
 }
 
@@ -421,7 +367,9 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   return item
 }
 
-function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock' | 'is_mapping_complete'> {
+function toRemoteCollection(
+  collection: Collection
+): Omit<RemoteCollection, 'created_at' | 'updated_at' | 'lock' | 'is_mapping_complete' | 'forum_link' | 'reviewed_at'> {
   return {
     id: collection.id,
     name: collection.name,
@@ -434,9 +382,7 @@ function toRemoteCollection(collection: Collection): Omit<RemoteCollection, 'cre
     linked_contract_address: collection.linkedContractAddress || null,
     linked_contract_network: collection.linkedContractNetwork || null,
     minters: collection.minters,
-    managers: collection.managers,
-    forum_link: collection.forumLink || null,
-    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null
+    managers: collection.managers
   }
 }
 
@@ -451,7 +397,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     itemCount: Number(remoteCollection.item_count),
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
-    forumLink: remoteCollection.forum_link || undefined,
+    forumLink: getSafeExternalUrl(remoteCollection.forum_link),
     lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
     linkedContractAddress: remoteCollection.linked_contract_address || undefined,
@@ -541,10 +487,6 @@ const toRemoteCollectionQueryParameters = (params?: FetchCollectionsParams) => {
   return queryParams
 }
 
-export type PoolDeploymentAdditionalFields = {
-  groups?: string[]
-}
-
 export type Sort = {
   sort_by?: string
   sort_order?: 'asc' | 'desc'
@@ -553,11 +495,6 @@ export type Sort = {
 export type Pagination = {
   limit?: number
   offset?: number
-}
-
-export type PoolFilters = {
-  group?: string
-  eth_address?: string
 }
 
 /**
@@ -706,10 +643,6 @@ export class BuilderAPI extends BaseAPI {
     return hasEnvelope ? parsed.data : parsed
   }
 
-  async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
-    await this.request('put', `/projects/${projectId}/pool`, { params: additionalInfo })
-  }
-
   async uploadMedia(projectId: string, preview: Blob, shots: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
     const formData = new FormData()
     formData.append('preview', preview)
@@ -732,15 +665,6 @@ export class BuilderAPI extends BaseAPI {
       params: formData
     })
     return { hash }
-  }
-
-  async uploadCrdt(file: Blob, projectId: string): Promise<void> {
-    const formData = new FormData()
-    formData.append('file', file)
-    await this.request('put', `/projects/${projectId}/crdt`, {
-      params: formData
-    })
-    return
   }
 
   async fetchMain(projectId: string): Promise<Blob> {
@@ -770,21 +694,6 @@ export class BuilderAPI extends BaseAPI {
   async fetchProjects() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', { retry: retryParams })
     return items.map(fromRemoteProject)
-  }
-
-  async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
-    const project: RemotePool = await this.request('get', `/projects/${projectId}/${type}`)
-    return type === 'pool' ? fromRemotePool(project) : fromRemoteProject(project)
-  }
-
-  async fetchPoolsPage(filters: PoolFilters & Pagination & Sort) {
-    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', { params: filters })
-    return { items: items.map(fromRemotePool), total }
-  }
-
-  fetchPoolGroups = async (activeOnly = false) => {
-    const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { params: { activeOnly } })
-    return items.map(fromPoolGroup)
   }
 
   async saveProject(project: Project, scene: Scene) {
@@ -873,11 +782,6 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteAssetPack(assetPack: FullAssetPack) {
     await this.request('delete', `/assetPacks/${assetPack.id}`)
-  }
-
-  likePool(pool: string, like = true) {
-    const method = like ? 'put' : 'delete'
-    return this.request(method, `/pools/${pool}/likes`)
   }
 
   async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {

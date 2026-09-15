@@ -14,6 +14,7 @@ import { ThirdPartyKindBadge } from 'components/Badges/ThirdPartyKindBadge'
 import { AssignModalOperationType } from 'components/Modals/EditCurationAssigneeModal/EditCurationAssigneeModal.types'
 import Profile from 'components/Profile'
 import { formatDistanceToNow } from 'lib/date'
+import { openExternal } from 'lib/url'
 import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
@@ -23,7 +24,7 @@ export default function CollectionRow(props: Props) {
 
   const handleNavigateToForum = useCallback(
     (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-      window.open(collection.forumLink, '_blank')
+      openExternal(collection.forumLink)
       event.preventDefault()
       event.stopPropagation()
     },

@@ -25,7 +25,6 @@ export type Props = {
   isWorldContributorEnabled: boolean
   onOpenYourStorageModal: (metadata: WorldsYourStorageModalMetadata) => void
   onOpenPermissionsModal: (worldName: string, isCollaboratorsTabShown?: boolean) => void
-  onOpenWorldsForENSOwnersAnnouncementModal: () => void
   onUnpublishWorld: ActionFunction<typeof clearDeploymentRequest>
   onFetchContributableNames: ActionFunction<typeof fetchContributableNamesRequest>
   onFetchENSList: ActionFunction<typeof fetchENSListRequest>

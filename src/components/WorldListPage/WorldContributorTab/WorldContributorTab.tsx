@@ -14,11 +14,7 @@ import PublishSceneButton from '../PublishSceneButton'
 
 export default function WorldContributorTab({ items, deploymentsByWorlds, projects, loading, error, onUnpublishWorld }: Props) {
   const history = useHistory()
-  const handlePublishScene = useCallback(() => {
-    history.push(locations.scenes())
-  }, [history])
-
-  const handleEditScene = useCallback(
+  const handleViewScene = useCallback(
     (ens: ENS) => {
       const { projectId } = deploymentsByWorlds[ens.subdomain]
       history.push(locations.sceneDetail(projectId as string))
@@ -87,8 +83,7 @@ export default function WorldContributorTab({ items, deploymentsByWorlds, projec
                   deploymentsByWorlds={deploymentsByWorlds}
                   ens={ens}
                   projects={projects}
-                  onEditScene={canUserDeploy ? handleEditScene : undefined}
-                  onPublishScene={canUserDeploy ? handlePublishScene : undefined}
+                  onViewScene={canUserDeploy ? handleViewScene : undefined}
                   onUnpublishScene={canUserDeploy ? handleUnpublishScene : undefined}
                 />
               </Table.Cell>

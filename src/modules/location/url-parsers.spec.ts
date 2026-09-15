@@ -5,7 +5,6 @@ import {
   getNewItemNameFromSearchParams,
   getLandIdFromPath,
   getProjectIdFromPath,
-  getTemplateIdFromPath,
   getCollectionIdFromPath,
   getThirdPartyCollectionIdFromPath,
   getCollectionIdFromUrl,
@@ -235,30 +234,6 @@ describe('when getting the project id from path', () => {
 
     it('should return null', () => {
       expect(getProjectIdFromPath(url)).toBeNull()
-    })
-  })
-})
-
-describe('when getting the template id from path', () => {
-  let url: string
-
-  describe('when given a valid template detail path', () => {
-    beforeEach(() => {
-      url = '/templates/test-template-id'
-    })
-
-    it('should return the template id', () => {
-      expect(getTemplateIdFromPath(url)).toBe('test-template-id')
-    })
-  })
-
-  describe('when given a non-matching path', () => {
-    beforeEach(() => {
-      url = '/scenes/some-project'
-    })
-
-    it('should return null', () => {
-      expect(getTemplateIdFromPath(url)).toBeNull()
     })
   })
 })
