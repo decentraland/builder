@@ -99,6 +99,38 @@ function formatTimeAgo(timestamp: number): string {
   return t('live_preview_page.time_ago.hours', { hours: Math.floor(minutes / 60) })
 }
 
+/**
+ * Shown in the preview area, away from the address bar where the browser's own permission bubble
+ * drops down and would cover a hint placed in the side panel.
+ */
+function LocalNetworkPermissionCard({ state, onRetry }: { state: 'prompt' | 'denied'; onRetry: () => void }) {
+  const isDenied = state === 'denied'
+  return (
+    <div className={`permission-card permission-card--${state}`}>
+      <Icon name={isDenied ? 'warning sign' : 'info circle'} size="big" />
+      <h2>{t(`live_preview_page.local_network.${state}.title`)}</h2>
+      <p>{t(`live_preview_page.local_network.${state}.description`)}</p>
+      {isDenied && (
+        <>
+          <ol>
+            <li>{t('live_preview_page.local_network.denied.steps.site_info')}</li>
+            <li>{t('live_preview_page.local_network.denied.steps.allow')}</li>
+            <li>{t('live_preview_page.local_network.denied.steps.reload')}</li>
+          </ol>
+          <div className="permission-card-actions">
+            <Button primary compact onClick={() => window.location.reload()}>
+              {t('live_preview_page.local_network.denied.reload')}
+            </Button>
+            <Button compact onClick={onRetry}>
+              {t('live_preview_page.local_network.denied.retry')}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 /** Isolated so the periodic tick keeping the relative label fresh doesn't re-render the page. */
 function TimeAgoLabel({ timestamp }: { timestamp: number }) {
   const [, setTick] = useState(0)
@@ -645,12 +677,6 @@ export default function LivePreviewPage() {
                 </Button>
               )}
             </div>
-            {(localNetworkPermission === 'prompt' || localNetworkPermission === 'denied') && (
-              <div className={`permission-notice permission-notice--${localNetworkPermission}`}>
-                <Icon name={localNetworkPermission === 'denied' ? 'warning sign' : 'info circle'} />
-                <span>{t(`live_preview_page.local_network.${localNetworkPermission}`)}</span>
-              </div>
-            )}
             {isConnected && (
               <div className="actions">
                 <Button icon disabled={isRefreshing} onClick={() => handleRefresh()}>
@@ -743,7 +769,9 @@ export default function LivePreviewPage() {
             />
           ) : (
             <div className="live-placeholder">
-              {status === LivePreviewStatus.CONNECTING || definition ? (
+              {localNetworkPermission === 'prompt' || localNetworkPermission === 'denied' ? (
+                <LocalNetworkPermissionCard state={localNetworkPermission} onRetry={connect} />
+              ) : status === LivePreviewStatus.CONNECTING || definition ? (
                 <Loader active size="large" />
               ) : (
                 <span>{t('live_preview_page.no_model')}</span>

@@ -96,29 +96,6 @@
   margin: 18px 0 0 16px;
 }
 
-.LivePreviewPage .permission-notice {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 16px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  line-height: 1.4;
-  background-color: rgba(115, 110, 125, 0.16);
-  color: var(--secondary-text);
-}
-
-.LivePreviewPage .permission-notice--denied {
-  background-color: rgba(255, 77, 77, 0.12);
-  color: var(--error);
-}
-
-.LivePreviewPage .permission-notice .icon {
-  flex: none;
-  margin: 1px 0 0;
-}
-
 .LivePreviewPage .actions {
   display: flex;
   align-items: center;
@@ -217,6 +194,56 @@
   align-items: center;
   justify-content: center;
   color: var(--secondary-text);
+}
+
+.LivePreviewPage .permission-card {
+  max-width: 440px;
+  margin: 0 24px;
+  padding: 32px;
+  border-radius: 12px;
+  text-align: center;
+  background-color: rgba(115, 110, 125, 0.16);
+  color: var(--text);
+}
+
+.LivePreviewPage .permission-card > .icon {
+  margin: 0 0 12px;
+  color: var(--secondary-text);
+}
+
+.LivePreviewPage .permission-card--denied > .icon {
+  color: #ffbc5b;
+}
+
+.LivePreviewPage .permission-card h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.LivePreviewPage .permission-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--secondary-text);
+}
+
+.LivePreviewPage .permission-card ol {
+  text-align: left;
+  margin: 16px 0 0;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.LivePreviewPage .permission-card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.LivePreviewPage .permission-card-actions .ui.button {
+  margin: 0;
 }
 
 .LivePreviewPage .footer .option.validation-status {
