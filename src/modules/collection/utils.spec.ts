@@ -471,16 +471,25 @@ describe('when resolving the newest off-chain marketplace for sales', () => {
     })
   })
 
-  describe('and the chain has no V3 deployment', () => {
+  describe('and the chain is a mainnet, where V2 is still deployed beside V3', () => {
     let chainId: ChainId
 
     beforeEach(() => {
       chainId = ChainId.MATIC_MAINNET
     })
 
-    // Minter rights have to go to the version that will actually mint, and V3 is testnet-only for now.
-    it('should fall back to the V2 address', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV2SaleAddress(chainId))
+    // Minter rights have to go to the version that will actually mint. Both are live during the
+    // rollout, and granting to the older one would leave the mint to revert.
+    it('should resolve to the V3 address there too', () => {
+      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV3SaleAddress(chainId))
+    })
+
+    it('should still enumerate the older versions, which a collection may hold rights on', () => {
+      expect(getOffchainSaleAddresses(chainId)).toEqual([
+        getOffchainV3SaleAddress(chainId),
+        getOffchainV2SaleAddress(chainId),
+        getOffchainSaleAddress(chainId)
+      ])
     })
   })
 })
@@ -585,12 +594,14 @@ describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])('when enumerating the
   })
 })
 
-describe('when a chain is missing one of the marketplace versions', () => {
+describe('when a collection on mainnet holds rights on the version before the newest', () => {
   let collection: Collection
   let wallet: Wallet
 
   beforeEach(() => {
-    // V3 is testnet-only, so on Polygon mainnet the enumeration's catch branch actually runs.
+    // Every version is deployed on every chain the Builder uses now, so the enumeration's catch branch
+    // no longer runs anywhere. What this still covers is the case it was written for: a grant made
+    // before the newest version shipped must keep reading as on sale.
     collection = { minters: [getOffchainV2SaleAddress(ChainId.MATIC_MAINNET)], id: '1' } as Collection
     wallet = { networks: { MATIC: { chainId: ChainId.MATIC_MAINNET } } } as Wallet
   })
