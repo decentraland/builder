@@ -16,6 +16,8 @@ export type Props = {
   wearablePreviewComponent?: React.ReactNode
   isLoading: boolean
   isRepresentation?: boolean
+  /** When set, the file is processed on mount as if the user had dropped it. */
+  initialFile?: File
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>
   onClose: () => void

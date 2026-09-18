@@ -16,7 +16,7 @@ import {
   FileType
 } from '@dcl/builder-client/dist/files'
 import { WearableCategory } from '@dcl/builder-client/dist/item'
-import { ModalNavigation } from 'decentraland-ui'
+import { Loader, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExtension } from 'lib/file'
@@ -78,6 +78,14 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     return {
       id: '',
       isLoading: false
+    }
+  }
+
+  componentDidMount() {
+    const { initialFile } = this.props
+    // A caller-supplied file (e.g. streamed from the Blender live preview) skips the dropzone.
+    if (initialFile) {
+      void this.handleDropAccepted([initialFile])
     }
   }
 
@@ -489,27 +497,34 @@ export default class ImportStep extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { category, metadata, title, wearablePreviewComponent, isLoading, isRepresentation, onClose } = this.props
+    const { category, metadata, title, wearablePreviewComponent, isLoading, isRepresentation, initialFile, onClose } = this.props
     const { error } = this.state
 
     return (
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content className="ImportStep">
-          <ItemImport
-            isLoading={isLoading}
-            acceptedExtensions={
-              isRepresentation || metadata?.changeItemFile
-                ? isImageCategory(category as WearableCategory)
-                  ? IMAGE_EXTENSIONS
-                  : MODEL_EXTENSIONS
-                : ITEM_EXTENSIONS
-            }
-            error={error}
-            moreInformation={this.renderMoreInformation()}
-            onDropAccepted={this.handleDropAccepted}
-            onDropRejected={this.handleDropRejected}
-          />
+          {initialFile && !error ? (
+            <div className="importing-file">
+              <Loader active inline size="large" />
+              <span>{t('create_single_item_modal.importing')}</span>
+            </div>
+          ) : (
+            <ItemImport
+              isLoading={isLoading}
+              acceptedExtensions={
+                isRepresentation || metadata?.changeItemFile
+                  ? isImageCategory(category as WearableCategory)
+                    ? IMAGE_EXTENSIONS
+                    : MODEL_EXTENSIONS
+                  : ITEM_EXTENSIONS
+              }
+              error={error}
+              moreInformation={this.renderMoreInformation()}
+              onDropAccepted={this.handleDropAccepted}
+              onDropRejected={this.handleDropRejected}
+            />
+          )}
           {wearablePreviewComponent}
         </Modal.Content>
       </>

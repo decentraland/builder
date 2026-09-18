@@ -1,0 +1,61 @@
+.AddToCollectionModal .sign-in-text {
+  margin: 0 12px 36px;
+  color: var(--secondary-text);
+  text-align: center;
+}
+
+.AddToCollectionModal.select-collection-step div.content {
+  position: relative;
+  min-height: 60px;
+  margin: 32px;
+}
+
+.AddToCollectionModal.select-collection-step .CollectionDropdown.ui.inline.dropdown {
+  width: 100%;
+  min-height: 40px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--divider);
+}
+
+.AddToCollectionModal.select-collection-step .CollectionDropdown.ui.inline.dropdown.active {
+  border-bottom-color: var(--text);
+}
+
+.AddToCollectionModal.select-collection-step .CollectionDropdown.ui.inline.dropdown > .dropdown.icon {
+  display: block;
+  color: var(--text);
+}
+
+.AddToCollectionModal.select-collection-step .CollectionDropdown .placeholder,
+.AddToCollectionModal.select-collection-step .CollectionDropdown .no-items {
+  margin: 0;
+  color: var(--secondary-text);
+}
+
+.AddToCollectionModal.select-collection-step .CollectionDropdown .selected-item .name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.AddToCollectionModal.select-collection-step .CollectionDropdown .menu {
+  width: 100%;
+}
+
+.AddToCollectionModal.select-collection-step .content .ui.mini.loader {
+  width: 32px;
+  height: 32px;
+}
+
+.AddToCollectionModal.select-collection-step .content .ui.mini.loader::before,
+.AddToCollectionModal.select-collection-step .content .ui.mini.loader::after {
+  width: 32px;
+  height: 32px;
+  margin: 0 0 0 -16px;
+}
+
+.AddToCollectionModal.select-collection-step .actions button.ui.button {
+  flex: 1;
+}

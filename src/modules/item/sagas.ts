@@ -554,10 +554,12 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
 
       // Recompute spring bone metadata from Redux when the editor has uncommitted changes —
       // but only if the caller (modal flow) hasn't already set a different value on the item.
+      // New items (no oldItem) are excluded: their springBones were just decided by the creating
+      // modal, and the editor's state can only hold stale entries for other items' hashes.
       const springBoneHasChanges: boolean = yield select(hasSpringBoneChanges)
       const hasSpringBonesModelChanges =
         isWearable(item) && !!oldItem && isWearable(oldItem) && !deepEqual(item.data.springBones ?? null, oldItem.data.springBones ?? null)
-      if (isWearable(item) && springBoneHasChanges && !hasSpringBonesModelChanges) {
+      if (isWearable(item) && !!oldItem && springBoneHasChanges && !hasSpringBonesModelChanges) {
         const reachableHashes = getRepresentationsModelHashes(item)
         const allParams: SpringBonesData['models'] = yield select(getSpringBoneParamsByHash)
         const models: SpringBonesData['models'] = {}
@@ -613,7 +615,11 @@ export function* itemSaga(legacyBuilder: LegacyBuilderAPI, builder: BuilderClien
     if (ItemModals.some(modal => openModals[modal])) {
       yield put(closeAllModals())
     } else if (openModals['CreateSingleItemModal']) {
-      if (location.pathname === locations.collectionDetail(collectionId) && isEmote(item)) {
+      if (location.pathname === locations.livePreview() && collectionId) {
+        // Items created from the Blender live preview land on their collection page
+        yield put(closeModal('CreateSingleItemModal'))
+        history.push(locations.collectionDetail(collectionId))
+      } else if (location.pathname === locations.collectionDetail(collectionId) && isEmote(item)) {
         // Redirect to the item editor
         yield put(setItems([item]))
         history.push(locations.itemEditor({ collectionId, itemId: item.id, newItem: item.name }), { fromParam: FromParam.COLLECTIONS })

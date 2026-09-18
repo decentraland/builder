@@ -95,6 +95,7 @@ export const Steps: React.FC<StepsProps> = ({ modalContainer }) => {
             wearablePreviewComponent={<div className="importer-thumbnail-container">{renderWearablePreview()}</div>}
             isLoading={!!state.isLoading}
             isRepresentation={!!state.isRepresentation}
+            initialFile={metadata?.file}
             onDropAccepted={handleDropAccepted}
             onClose={onClose}
           />

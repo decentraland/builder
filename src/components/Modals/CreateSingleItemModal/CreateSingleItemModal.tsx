@@ -9,6 +9,7 @@ import {
   PreviewProjection,
   WearableCategory,
   IPreviewController,
+  SpringBonesData,
   StartAnimation
 } from '@dcl/schemas'
 import {
@@ -264,7 +265,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
         data = {
           category: category as WearableCategory,
           replaces: [],
-          hides: [],
+          hides: metadata?.prefill?.hides ?? [],
           removesDefaultHiding,
           tags: tags || [],
           representations: [...representations],
@@ -305,7 +306,19 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       const contents = await computeHashes(sortedContents.all)
 
       if (type === ItemType.WEARABLE) {
-        const springBones = await seedSpringBonesForUpload(representations, sortedContents.all, contents)
+        let springBones = await seedSpringBonesForUpload(representations, sortedContents.all, contents)
+        // Caller-tuned params (e.g. from the Blender live preview) replace the seeded defaults,
+        // for every model hash: the caller supplies a single file, so they all refer to its GLB.
+        const prefillSpringBones = metadata?.prefill?.springBoneParams
+        if (prefillSpringBones && Object.keys(prefillSpringBones).length > 0 && springBones) {
+          springBones = {
+            ...springBones,
+            models: Object.keys(springBones.models).reduce<SpringBonesData['models']>((models, hash) => {
+              models[hash] = prefillSpringBones
+              return models
+            }, {})
+          }
+        }
         if (springBones) {
           ;(data as WearableData).springBones = springBones
         }
@@ -355,7 +368,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       dispatch(createItemActions.setView(CreateItemView.THUMBNAIL))
       dispatch(createItemActions.setFromView(CreateItemView.THUMBNAIL))
     },
-    [address, collection, state, onSave, dispatch]
+    [address, collection, state, metadata, onSave, dispatch]
   )
 
   const addItemRepresentation = useCallback(
@@ -711,11 +724,20 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   const handleDropAccepted = useCallback(
     (acceptedFileProps: AcceptedFileProps) => {
       const { bodyShape, ...acceptedProps } = acceptedFileProps
+      // Caller-provided values (e.g. from the Blender live preview) win over what was derived
+      // from the file. An explicit empty name leaves the field for the user to complete.
+      const prefill = metadata?.prefill
+      if (prefill?.name !== undefined) {
+        acceptedProps.name = prefill.name
+      }
+      if (prefill?.category) {
+        acceptedProps.category = prefill.category
+      }
       dispatch(createItemActions.setLoading(true))
       dispatch(createItemActions.setBodyShape(bodyShape || state.bodyShape))
       dispatch(createItemActions.setAcceptedProps(acceptedProps))
     },
-    [state, dispatch]
+    [state, metadata, dispatch]
   )
 
   const handleOnScreenshotTaken = useCallback(
