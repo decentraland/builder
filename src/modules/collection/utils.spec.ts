@@ -533,51 +533,55 @@ describe('when checking whether a collection listed through an older marketplace
 // Asserted against the EIP-712 domain the signer is ACTUALLY handed, not against a resolver that merely
 // ought to agree with it: Builder used to sign through a vendored copy of this helper that hardcoded V2,
 // so comparing resolvers alone would have reported this invariant as held while it was broken.
-describe('when signing a trade the way Builder signs an item order', () => {
-  let chainId: ChainId
-  let domain: TypedDataDomain
+//
+// Run on both MATIC chains. The two sides call one resolver today, so a mainnet-only mismatch cannot occur
+// by construction; the case is here for the version of that resolver which is gated on chain.
+describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])(
+  'when signing a trade the way Builder signs an item order on chain %s',
+  chainId => {
+    let domain: TypedDataDomain
+    let granted: ReturnType<typeof enableSaleOffchain>[number]
 
-  beforeEach(async () => {
-    chainId = ChainId.MATIC_AMOY
-    ;(dappsEth.getSigner as jest.Mock).mockResolvedValue({
-      _signTypedData: (signedDomain: TypedDataDomain) => {
-        domain = signedDomain
-        return Promise.resolve('0xsignature')
-      }
+    beforeEach(async () => {
+      ;(dappsEth.getSigner as jest.Mock).mockResolvedValue({
+        _signTypedData: (signedDomain: TypedDataDomain) => {
+          domain = signedDomain
+          return Promise.resolve('0xsignature')
+        }
+      })
+
+      await getTradeSignature({
+        chainId,
+        checks: {
+          expiration: 0,
+          effective: 0,
+          uses: 1,
+          salt: '0x',
+          allowedRoot: '0x',
+          contractSignatureIndex: 0,
+          signerSignatureIndex: 0,
+          externalChecks: []
+        },
+        sent: [],
+        received: []
+      } as unknown as Omit<TradeCreation, 'signature'>)
+      ;[granted] = enableSaleOffchain({ id: '1' } as Collection, { networks: { MATIC: { chainId } } } as Wallet, true)
     })
 
-    await getTradeSignature({
-      chainId,
-      checks: {
-        expiration: 0,
-        effective: 0,
-        uses: 1,
-        salt: '0x',
-        allowedRoot: '0x',
-        contractSignatureIndex: 0,
-        signerSignatureIndex: 0,
-        externalChecks: []
-      },
-      sent: [],
-      received: []
-    } as unknown as Omit<TradeCreation, 'signature'>)
-  })
+    afterEach(() => {
+      // restoreAllMocks only restores jest.spyOn; getSigner is a module-factory jest.fn(), so its
+      // mockResolvedValue would otherwise survive into whatever runs next.
+      ;(dappsEth.getSigner as jest.Mock).mockReset()
+    })
 
-  afterEach(() => {
-    // restoreAllMocks only restores jest.spyOn; getSigner is a module-factory jest.fn(), so its
-    // mockResolvedValue would otherwise survive into whatever runs next.
-    ;(dappsEth.getSigner as jest.Mock).mockReset()
-  })
-
-  // Asserted against what enableSaleOffchain actually GRANTS, not against the resolver. Both sides of a
-  // resolver comparison route through the same getLatestOffChainMarketplaceContract, so it cannot drift by
-  // construction — it would pin that Builder's resolver agrees with dapps, not that Builder's grant does.
-  it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
-    const [granted] = enableSaleOffchain({ id: '1' } as Collection, { networks: { MATIC: { chainId } } } as Wallet, true)
-
-    expect(domain.verifyingContract?.toLowerCase()).toBe(granted.address)
-  })
-})
+    // Asserted against what enableSaleOffchain actually GRANTS, not against the resolver. Both sides of a
+    // resolver comparison route through the same getLatestOffChainMarketplaceContract, so it cannot drift by
+    // construction — it would pin that Builder's resolver agrees with dapps, not that Builder's grant does.
+    it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
+      expect(domain.verifyingContract?.toLowerCase()).toBe(granted.address)
+    })
+  }
+)
 
 /**
  * The tripwire for the one thing delegation cannot fix.
