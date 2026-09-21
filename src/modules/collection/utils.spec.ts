@@ -454,45 +454,26 @@ describe('when computing the shop credits needed for a wei USD price', () => {
   })
 })
 
-describe('when resolving the newest off-chain marketplace for sales', () => {
-  describe('and the chain has a V3 deployment', () => {
-    let chainId: ChainId
+// Minter rights have to go to the version that will actually mint. Every version is live during the
+// rollout, and granting to an older one would leave the mint to revert.
+describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])(
+  'when resolving the newest off-chain marketplace for sales on chain %s',
+  chainId => {
+    let latest: ReturnType<typeof getLatestOffchainSale>
 
     beforeEach(() => {
-      chainId = ChainId.MATIC_AMOY
+      latest = getLatestOffchainSale(chainId)
     })
 
     it('should resolve to the V3 address', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV3SaleAddress(chainId))
+      expect(latest.address).toBe(getOffchainV3SaleAddress(chainId))
     })
 
     it('should report V3 as the contract name, which the authorization modal labels', () => {
-      expect(getLatestOffchainSale(chainId).contractName).toBe(ContractName.OffChainMarketplaceV3)
+      expect(latest.contractName).toBe(ContractName.OffChainMarketplaceV3)
     })
-  })
-
-  describe('and the chain is a mainnet, where V2 is still deployed beside V3', () => {
-    let chainId: ChainId
-
-    beforeEach(() => {
-      chainId = ChainId.MATIC_MAINNET
-    })
-
-    // Minter rights have to go to the version that will actually mint. Both are live during the
-    // rollout, and granting to the older one would leave the mint to revert.
-    it('should resolve to the V3 address there too', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV3SaleAddress(chainId))
-    })
-
-    it('should still enumerate the older versions, which a collection may hold rights on', () => {
-      expect(getOffchainSaleAddresses(chainId)).toEqual([
-        getOffchainV3SaleAddress(chainId),
-        getOffchainV2SaleAddress(chainId),
-        getOffchainSaleAddress(chainId)
-      ])
-    })
-  })
-})
+  }
+)
 
 describe('when checking whether a collection listed through an older marketplace is on sale', () => {
   describe('and the V2 marketplace is the minter while V3 is the current version', () => {
@@ -593,8 +574,18 @@ describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])(
  * the V4 rights either. Nothing else in the suite fails when that happens. This does, at the list.
  */
 describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])('when enumerating the offchain marketplaces on chain %s', chainId => {
+  let addresses: string[]
+
+  beforeEach(() => {
+    addresses = getOffchainSaleAddresses(chainId)
+  })
+
   it('should include the version decentraland-dapps resolves as the latest', () => {
-    expect(getOffchainSaleAddresses(chainId)).toContain(getLatestOffchainSale(chainId).address)
+    expect(addresses).toContain(getLatestOffchainSale(chainId).address)
+  })
+
+  it('should list every deployed version newest first, since a collection may hold rights on an older one', () => {
+    expect(addresses).toEqual([getOffchainV3SaleAddress(chainId), getOffchainV2SaleAddress(chainId), getOffchainSaleAddress(chainId)])
   })
 })
 
