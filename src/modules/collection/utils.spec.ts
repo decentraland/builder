@@ -454,36 +454,26 @@ describe('when computing the shop credits needed for a wei USD price', () => {
   })
 })
 
-describe('when resolving the newest off-chain marketplace for sales', () => {
-  describe('and the chain has a V3 deployment', () => {
-    let chainId: ChainId
+// Minter rights have to go to the version that will actually mint. Every version is live during the
+// rollout, and granting to an older one would leave the mint to revert.
+describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])(
+  'when resolving the newest off-chain marketplace for sales on chain %s',
+  chainId => {
+    let latest: ReturnType<typeof getLatestOffchainSale>
 
     beforeEach(() => {
-      chainId = ChainId.MATIC_AMOY
+      latest = getLatestOffchainSale(chainId)
     })
 
     it('should resolve to the V3 address', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV3SaleAddress(chainId))
+      expect(latest.address).toBe(getOffchainV3SaleAddress(chainId))
     })
 
     it('should report V3 as the contract name, which the authorization modal labels', () => {
-      expect(getLatestOffchainSale(chainId).contractName).toBe(ContractName.OffChainMarketplaceV3)
+      expect(latest.contractName).toBe(ContractName.OffChainMarketplaceV3)
     })
-  })
-
-  describe('and the chain has no V3 deployment', () => {
-    let chainId: ChainId
-
-    beforeEach(() => {
-      chainId = ChainId.MATIC_MAINNET
-    })
-
-    // Minter rights have to go to the version that will actually mint, and V3 is testnet-only for now.
-    it('should fall back to the V2 address', () => {
-      expect(getLatestOffchainSale(chainId).address).toBe(getOffchainV2SaleAddress(chainId))
-    })
-  })
-})
+  }
+)
 
 describe('when checking whether a collection listed through an older marketplace is on sale', () => {
   describe('and the V2 marketplace is the minter while V3 is the current version', () => {
@@ -524,51 +514,55 @@ describe('when checking whether a collection listed through an older marketplace
 // Asserted against the EIP-712 domain the signer is ACTUALLY handed, not against a resolver that merely
 // ought to agree with it: Builder used to sign through a vendored copy of this helper that hardcoded V2,
 // so comparing resolvers alone would have reported this invariant as held while it was broken.
-describe('when signing a trade the way Builder signs an item order', () => {
-  let chainId: ChainId
-  let domain: TypedDataDomain
+//
+// Run on both MATIC chains. The two sides call one resolver today, so a mainnet-only mismatch cannot occur
+// by construction; the case is here for the version of that resolver which is gated on chain.
+describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])(
+  'when signing a trade the way Builder signs an item order on chain %s',
+  chainId => {
+    let domain: TypedDataDomain
+    let granted: ReturnType<typeof enableSaleOffchain>[number]
 
-  beforeEach(async () => {
-    chainId = ChainId.MATIC_AMOY
-    ;(dappsEth.getSigner as jest.Mock).mockResolvedValue({
-      _signTypedData: (signedDomain: TypedDataDomain) => {
-        domain = signedDomain
-        return Promise.resolve('0xsignature')
-      }
+    beforeEach(async () => {
+      ;(dappsEth.getSigner as jest.Mock).mockResolvedValue({
+        _signTypedData: (signedDomain: TypedDataDomain) => {
+          domain = signedDomain
+          return Promise.resolve('0xsignature')
+        }
+      })
+
+      await getTradeSignature({
+        chainId,
+        checks: {
+          expiration: 0,
+          effective: 0,
+          uses: 1,
+          salt: '0x',
+          allowedRoot: '0x',
+          contractSignatureIndex: 0,
+          signerSignatureIndex: 0,
+          externalChecks: []
+        },
+        sent: [],
+        received: []
+      } as unknown as Omit<TradeCreation, 'signature'>)
+      ;[granted] = enableSaleOffchain({ id: '1' } as Collection, { networks: { MATIC: { chainId } } } as Wallet, true)
     })
 
-    await getTradeSignature({
-      chainId,
-      checks: {
-        expiration: 0,
-        effective: 0,
-        uses: 1,
-        salt: '0x',
-        allowedRoot: '0x',
-        contractSignatureIndex: 0,
-        signerSignatureIndex: 0,
-        externalChecks: []
-      },
-      sent: [],
-      received: []
-    } as unknown as Omit<TradeCreation, 'signature'>)
-  })
+    afterEach(() => {
+      // restoreAllMocks only restores jest.spyOn; getSigner is a module-factory jest.fn(), so its
+      // mockResolvedValue would otherwise survive into whatever runs next.
+      ;(dappsEth.getSigner as jest.Mock).mockReset()
+    })
 
-  afterEach(() => {
-    // restoreAllMocks only restores jest.spyOn; getSigner is a module-factory jest.fn(), so its
-    // mockResolvedValue would otherwise survive into whatever runs next.
-    ;(dappsEth.getSigner as jest.Mock).mockReset()
-  })
-
-  // Asserted against what enableSaleOffchain actually GRANTS, not against the resolver. Both sides of a
-  // resolver comparison route through the same getLatestOffChainMarketplaceContract, so it cannot drift by
-  // construction — it would pin that Builder's resolver agrees with dapps, not that Builder's grant does.
-  it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
-    const [granted] = enableSaleOffchain({ id: '1' } as Collection, { networks: { MATIC: { chainId } } } as Wallet, true)
-
-    expect(domain.verifyingContract?.toLowerCase()).toBe(granted.address)
-  })
-})
+    // Asserted against what enableSaleOffchain actually GRANTS, not against the resolver. Both sides of a
+    // resolver comparison route through the same getLatestOffChainMarketplaceContract, so it cannot drift by
+    // construction — it would pin that Builder's resolver agrees with dapps, not that Builder's grant does.
+    it('should use the marketplace Builder grants minter rights to as the verifying contract', () => {
+      expect(domain.verifyingContract?.toLowerCase()).toBe(granted.address)
+    })
+  }
+)
 
 /**
  * The tripwire for the one thing delegation cannot fix.
@@ -580,17 +574,29 @@ describe('when signing a trade the way Builder signs an item order', () => {
  * the V4 rights either. Nothing else in the suite fails when that happens. This does, at the list.
  */
 describe.each([ChainId.MATIC_AMOY, ChainId.MATIC_MAINNET])('when enumerating the offchain marketplaces on chain %s', chainId => {
+  let addresses: string[]
+
+  beforeEach(() => {
+    addresses = getOffchainSaleAddresses(chainId)
+  })
+
   it('should include the version decentraland-dapps resolves as the latest', () => {
-    expect(getOffchainSaleAddresses(chainId)).toContain(getLatestOffchainSale(chainId).address)
+    expect(addresses).toContain(getLatestOffchainSale(chainId).address)
+  })
+
+  it('should list every deployed version newest first, since a collection may hold rights on an older one', () => {
+    expect(addresses).toEqual([getOffchainV3SaleAddress(chainId), getOffchainV2SaleAddress(chainId), getOffchainSaleAddress(chainId)])
   })
 })
 
-describe('when a chain is missing one of the marketplace versions', () => {
+describe('when a collection on mainnet holds rights on the version before the newest', () => {
   let collection: Collection
   let wallet: Wallet
 
   beforeEach(() => {
-    // V3 is testnet-only, so on Polygon mainnet the enumeration's catch branch actually runs.
+    // Every version is deployed on every chain the Builder uses now, so the enumeration's catch branch
+    // no longer runs anywhere. What this still covers is the case it was written for: a grant made
+    // before the newest version shipped must keep reading as on sale.
     collection = { minters: [getOffchainV2SaleAddress(ChainId.MATIC_MAINNET)], id: '1' } as Collection
     wallet = { networks: { MATIC: { chainId: ChainId.MATIC_MAINNET } } } as Wallet
   })

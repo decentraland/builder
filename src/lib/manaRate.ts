@@ -7,9 +7,10 @@ import { getOffChainMarketplaceContract } from 'decentraland-dapps/dist/lib/trad
 const MAX_STALENESS_SECONDS = 90000
 
 /**
- * Current MANA price in USD wei per whole MANA (1e18 = $1), read from the same MANA/USD aggregator
- * `OffChainMarketplaceV2` uses to settle USD-pegged trades — so the hint matches what a sale will
- * actually convert at. Throws on an unreachable, incomplete, or stale round so callers can hide the
+ * Current MANA price in USD wei per whole MANA (1e18 = $1), read from the same MANA/USD aggregator the
+ * newest off-chain marketplace uses to settle USD-pegged trades — so the hint matches what a sale will
+ * actually convert at. `getOffChainMarketplaceContract` resolves that newest version, so which deployment
+ * is asked follows the registry rather than being pinned here. Throws on an unreachable, incomplete, or stale round so callers can hide the
  * hint instead of showing a bad rate.
  */
 export async function fetchManaToUsdRate(): Promise<ethers.BigNumber> {
