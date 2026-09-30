@@ -19,7 +19,6 @@ import {
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { SET_PROJECT, EXPORT_PROJECT_REQUEST, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
-import { SHARE_SCENE } from 'modules/ui/share/actions'
 import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'
 import {
   TRANSFER_LAND_SUCCESS,
@@ -167,9 +166,6 @@ addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
 // auth
 addPayload(LOGIN_REQUEST, 'Login')
 addPayload(LOGOUT, 'Logout')
-
-// Share
-addPayload(SHARE_SCENE, 'Share scene')
 
 // Transfer Land
 add(TRANSFER_LAND_SUCCESS, 'Transfer land', action => {

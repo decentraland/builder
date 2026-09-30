@@ -18,7 +18,6 @@ import { creditsSaga } from 'decentraland-dapps/dist/modules/credits/sagas'
 import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
-import { assetPackSaga } from 'modules/assetPack/sagas'
 import { assetSaga } from 'modules/asset/sagas'
 import { cancelledItemOrdersSaga } from 'modules/cancelledItemOrders/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
@@ -86,7 +85,6 @@ export function* rootSaga(
       environment: config.get('CONTENTFUL_ENVIRONMENT'),
       id: config.get('CONTENTFUL_ADMIN_ENTITY_ID')
     }),
-    assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
     authorizationSaga(),
     cancelledItemOrdersSaga(
