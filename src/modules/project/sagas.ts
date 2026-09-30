@@ -36,6 +36,12 @@ import { locations } from 'routing/locations'
 import { downloadZip } from 'lib/zip'
 import { createFiles, createSDK7Files } from './export'
 
+function getManifestType(project: Project): PreviewType {
+  if (project.isTemplate) return PreviewType.TEMPLATE
+  if (project.isPublic) return PreviewType.PUBLIC
+  return PreviewType.PROJECT
+}
+
 export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
@@ -46,10 +52,7 @@ export function* projectSaga(builder: BuilderAPI) {
 
   function* handleExportProject(action: ExportProjectRequestAction) {
     const { project, migrateToSDK7 } = action.payload
-    const scene: Scene = yield getSceneByProjectId(
-      project.id,
-      project.isTemplate || project.isPublic ? PreviewType.PUBLIC : PreviewType.PROJECT
-    )
+    const scene: Scene = yield getSceneByProjectId(project.id, getManifestType(project))
     yield put(setExportProgress({ loaded: 0, total: 0 }))
     let files: Record<string, Blob | string> = {}
 

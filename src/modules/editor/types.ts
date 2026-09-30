@@ -35,7 +35,8 @@ export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightA
 
 export enum PreviewType {
   PROJECT = 'project',
-  PUBLIC = 'public'
+  PUBLIC = 'public',
+  TEMPLATE = 'template'
 }
 
 export type OpenEditorOptions = {

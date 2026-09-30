@@ -2,6 +2,7 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { AuthIdentity } from '@dcl/crypto'
 import { BuilderAPI } from 'lib/api/builder'
+import { PreviewType } from 'modules/editor/types'
 import { loginSuccess } from 'modules/identity/actions'
 import { toCrdt } from 'modules/inspector/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
@@ -56,6 +57,36 @@ describe('when handling the exportProjectRequest action', () => {
         .run({ silenceTimeout: true })
         .then(() => {
           expect(toCrdt).toHaveBeenCalledWith(scene.sdk6, project)
+        })
+    })
+  })
+
+  describe('and the project is a template', () => {
+    beforeEach(() => {
+      project = { ...project, isTemplate: true, isPublic: false }
+    })
+
+    it('should load the scene from the template manifest', () => {
+      return expectSaga(projectSaga, builderAPI)
+        .dispatch(exportProjectRequest(project, true))
+        .run({ silenceTimeout: true })
+        .then(() => {
+          expect(getSceneByProjectId).toHaveBeenCalledWith(project.id, PreviewType.TEMPLATE)
+        })
+    })
+  })
+
+  describe('and the project is public', () => {
+    beforeEach(() => {
+      project = { ...project, isTemplate: false, isPublic: true }
+    })
+
+    it('should load the scene from the public manifest', () => {
+      return expectSaga(projectSaga, builderAPI)
+        .dispatch(exportProjectRequest(project, true))
+        .run({ silenceTimeout: true })
+        .then(() => {
+          expect(getSceneByProjectId).toHaveBeenCalledWith(project.id, PreviewType.PUBLIC)
         })
     })
   })
