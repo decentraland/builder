@@ -11,8 +11,6 @@ import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/tra
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ContentfulClient, fetchCampaignRequest } from 'decentraland-dapps/dist/modules/campaign'
 import { CreditsClient } from 'decentraland-dapps/dist/modules/credits/CreditsClient'
@@ -21,14 +19,11 @@ import { fetcher } from 'decentraland-dapps/dist/lib/fetcher'
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
-import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
 import { migrations } from 'modules/migrations/store'
 import { getData } from 'modules/identity/selectors'
 import { Scene } from 'modules/scene/types'
-import { getLoadingSet } from 'modules/sync/selectors'
-import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
 import { LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 import { fetchTilesRequest } from 'modules/tile/actions'
 import { isDevelopment } from 'lib/environment'
@@ -97,11 +92,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DELETE_PROJECT,
     CLEAR_DEPLOYMENT_SUCCESS,
     LOGIN_SUCCESS,
-    LOGIN_FAILURE,
-    SAVE_PROJECT_SUCCESS,
-    DISMISS_SIGN_IN_TOAST,
-    DISMISS_SYNCED_TOAST,
-    SET_SYNC
+    LOGIN_FAILURE
   ],
   transform: state => {
     const projects: DataByKey<Project> = {}
@@ -130,12 +121,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     }
 
     return newState
-  },
-  onError: (err, store) => {
-    const isQuotaModalOpen = !!getOpenModals(store.getState())['QuotaExceededModal']
-    if (err instanceof DOMException && err.name === 'QuotaExceededError' && !isQuotaModalOpen) {
-      store.dispatch(openModal('QuotaExceededModal'))
-    }
   }
 })
 const transactionMiddleware = createTransactionMiddleware()
@@ -205,11 +190,6 @@ if (isDevelopment) {
   const _window = window as any
   // eslint-disable-next-line @typescript-eslint/unbound-method
   _window.getState = store.getState
-}
-
-window.onbeforeunload = function () {
-  const syncCount = getLoadingSet(store.getState()).size
-  return syncCount > 0 || null
 }
 
 store.dispatch(fetchTilesRequest())

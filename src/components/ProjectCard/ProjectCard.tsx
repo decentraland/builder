@@ -53,7 +53,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, parcels, items, onClick, isUploading, hasError, scene } = this.props
+    const { project, parcels, items, onClick, scene } = this.props
     const { isDeleting } = this.state
 
     let style = {}
@@ -84,8 +84,6 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{project.title}</div>
-            {isUploading ? <Icon name="cloud-upload" className="is-uploading" /> : null}
-            {!isUploading && hasError ? <div className="error-indicator" /> : null}
           </div>
           <div className="description" title={project.description}>
             <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels })}

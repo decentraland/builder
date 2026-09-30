@@ -18,7 +18,6 @@ import {
 } from 'modules/editor/actions'
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { SET_PROJECT, EXPORT_PROJECT_REQUEST, CREATE_PROJECT } from 'modules/project/actions'
-import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'
 import {
   TRANSFER_LAND_SUCCESS,
@@ -160,8 +159,6 @@ addPayload(EXPORT_PROJECT_REQUEST, 'Export project', action => ({
 }))
 
 // sync
-addPayload(SAVE_PROJECT_SUCCESS, 'Save project success', trimProject)
-addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
 
 // auth
 addPayload(LOGIN_REQUEST, 'Login')

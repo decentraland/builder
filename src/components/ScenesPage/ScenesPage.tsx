@@ -7,7 +7,6 @@ import { Container, Dropdown, DropdownProps, Pagination, PaginationProps, Row, H
 import ProjectCard from 'components/ProjectCard'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import LoadingPage from 'components/LoadingPage'
-import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
@@ -111,7 +110,6 @@ const ScenesPage: React.FC<Props> = props => {
   const render = () => {
     return (
       <>
-        <SyncToast />
         <Container>
           <Section className="projects-menu">
             <Row>

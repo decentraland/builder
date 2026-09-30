@@ -1,52 +1,24 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { select } from 'redux-saga/effects'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { AuthIdentity } from '@dcl/crypto'
 import { BuilderAPI } from 'lib/api/builder'
-import { getData as getProjects } from 'modules/project/selectors'
-import { Project } from 'modules/project/types'
-import { saveProjectSuccess } from './actions'
+import { loginSuccess } from 'modules/identity/actions'
 import { syncSaga } from './sagas'
-import { saveThumbnail } from './utils'
 
-jest.mock('./utils', () => ({ ...jest.requireActual<object>('./utils'), saveThumbnail: jest.fn() }))
+describe('when the user logs in with projects stored in the browser', () => {
+  let builderAPI: BuilderAPI
+  let wallet: Wallet
+  let identity: AuthIdentity
 
-const builderAPI = {} as unknown as BuilderAPI
-
-describe('when handling the saveProjectSuccess action', () => {
-  let project: Project
-
-  afterEach(() => {
-    jest.resetAllMocks()
+  beforeEach(() => {
+    builderAPI = {} as unknown as BuilderAPI
+    wallet = { address: '0xa' } as Wallet
+    identity = {} as AuthIdentity
   })
 
-  describe('and the project has no thumbnail', () => {
-    beforeEach(() => {
-      project = { id: 'project-id', thumbnail: '' } as Project
-    })
+  it('should not queue any action to upload them to the builder server', async () => {
+    const { effects } = await expectSaga(syncSaga, builderAPI).dispatch(loginSuccess(wallet, identity)).run({ silenceTimeout: true })
 
-    it('should not save a thumbnail', () => {
-      return expectSaga(syncSaga, builderAPI)
-        .provide([[select(getProjects), { [project.id]: project }]])
-        .dispatch(saveProjectSuccess(project))
-        .run({ silenceTimeout: true })
-        .then(() => {
-          expect(saveThumbnail).not.toHaveBeenCalled()
-        })
-    })
-  })
-
-  describe('and the project has a thumbnail', () => {
-    beforeEach(() => {
-      project = { id: 'project-id', thumbnail: 'https://thumbnail.com/thumb.png' } as Project
-    })
-
-    it('should save the thumbnail of the project', () => {
-      return expectSaga(syncSaga, builderAPI)
-        .provide([[select(getProjects), { [project.id]: project }]])
-        .dispatch(saveProjectSuccess(project))
-        .run({ silenceTimeout: true })
-        .then(() => {
-          expect(saveThumbnail).toHaveBeenCalledWith(project.id, project, builderAPI)
-        })
-    })
+    expect(effects.put).toBeUndefined()
   })
 })

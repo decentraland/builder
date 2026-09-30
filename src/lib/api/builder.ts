@@ -7,9 +7,6 @@ import { getSafeExternalUrl } from 'lib/url'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest, TemplateStatus } from 'modules/project/types'
-import { Scene } from 'modules/scene/types'
-import { dataURLToBlob } from 'modules/media/utils'
-import { createManifest } from 'modules/project/export'
 import { Item, ItemType, WearableData, BlockchainRarity, ItemApprovalData } from 'modules/item/types'
 import { Account } from 'modules/committee/types'
 import { retryParams } from 'modules/common/utils'
@@ -167,28 +164,6 @@ export type RemoteItemCuration = {
   item_id: string
   content_hash: string
 } & BaseCuration
-
-/**
- * Transforms a Project into a RemoteProject for saving purposes only.
- * The `thumbnail` is omitted.
- */
-function toRemoteProject(project: Project): Omit<RemoteProject, 'thumbnail'> {
-  return {
-    id: project.id,
-    title: project.title,
-    description: project.description,
-    is_public: project.isPublic,
-    scene_id: project.sceneId,
-    eth_address: project.ethAddress!,
-    rows: project.layout.rows,
-    cols: project.layout.cols,
-    created_at: project.createdAt,
-    updated_at: project.updatedAt,
-    is_template: project.isTemplate,
-    video: project.video,
-    template_status: project.templateStatus
-  }
-}
 
 function fromRemoteProject(remoteProject: RemoteProject): Project {
   return {
@@ -566,20 +541,6 @@ export class BuilderAPI extends BaseAPI {
   async fetchProjects() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', { retry: retryParams })
     return items.map(fromRemoteProject)
-  }
-
-  async saveProject(project: Project, scene: Scene) {
-    const manifest = createManifest(toRemoteProject(project), scene)
-    await this.request('put', `/projects/${project.id}/manifest`, { params: { manifest } })
-  }
-
-  async saveProjectThumbnail(project: Project) {
-    const blob = dataURLToBlob(project.thumbnail)
-    const formData = new FormData()
-    if (blob) {
-      formData.append('thumbnail', blob)
-      await this.request('post', `/projects/${project.id}/media`, { params: formData })
-    }
   }
 
   async deleteProject(id: string) {

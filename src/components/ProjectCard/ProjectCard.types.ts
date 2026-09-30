@@ -12,8 +12,6 @@ export type DefaultProps = {
 
 export type Props = DefaultProps & {
   project: Project
-  isUploading: boolean
-  hasError: boolean
   deploymentStatus: DeploymentStatus
   deployments: Deployment[]
   scene: Scene
@@ -29,6 +27,6 @@ export type State = {
   isDeleting: boolean
 }
 
-export type MapStateProps = Pick<Props, 'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'isUploading' | 'hasError' | 'scene'>
+export type MapStateProps = Pick<Props, 'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'scene'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onOpenModal' | 'onLoadProjectScene'>
 export type MapDispatch = Dispatch<DeleteProjectAction | OpenModalAction | LoadProjectSceneRequestAction>

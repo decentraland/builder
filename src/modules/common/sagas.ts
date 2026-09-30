@@ -39,7 +39,6 @@ import { syncSaga } from 'modules/sync/sagas'
 import { thirdPartySaga } from 'modules/thirdParty/sagas'
 import { tileSaga } from 'modules/tile/sagas'
 import { translationSaga } from 'modules/translation/sagas'
-import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
 import { entitySaga } from 'modules/entity/sagas'
 import { loginSaga } from 'modules/login/sagas'
@@ -115,7 +114,6 @@ export function* rootSaga(
     toastSaga(),
     transactionSaga(),
     translationSaga(),
-    uiSaga(),
     walletSaga(),
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),

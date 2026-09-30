@@ -5,7 +5,6 @@ import { deleteProject, loadProjectSceneRequest } from 'modules/project/actions'
 import { getDeploymentStatusByProjectId, getDeploymentsByProjectId } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
 
@@ -19,9 +18,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     items,
     scene,
     deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.project.id],
-    deployments: getDeploymentsByProjectId(state)[ownProps.project.id],
-    isUploading: getLoadingSet(state).has(project.id),
-    hasError: getErrorSet(state).has(project.id)
+    deployments: getDeploymentsByProjectId(state)[ownProps.project.id]
   }
 }
 
