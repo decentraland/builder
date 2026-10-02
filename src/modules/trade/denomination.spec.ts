@@ -14,7 +14,7 @@ const MANA_ON_AMOY = '0x7ad72b9f944ea9793cf4055d88f81138cc2c63a0'
 
 // Shapes taken from marketplace-api.decentraland.zone/v1/trades/<id>: a native (shop) listing returns
 // assetType 2 with the amount in USD wei, a legacy one returns assetType 1 with MANA wei. Both live on
-// the same OffChainMarketplaceV2 contract, which is why the contract address cannot discriminate.
+// the same off-chain marketplace contract, which is why the contract address cannot discriminate.
 const usdPeggedTrade = {
   received: [
     {

@@ -20,8 +20,8 @@ import {
   Icon as UIIcon
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Banner } from 'decentraland-dapps/dist/containers/Banner'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import CampaignBanner from 'components/CampaignBanner'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
@@ -297,9 +297,7 @@ export default function CollectionsPage(props: Props) {
 
     return (
       <>
-        <div className="banner-container">
-          <Banner id={BUILDER_BANNER_ID} />
-        </div>
+        <CampaignBanner id={BUILDER_BANNER_ID} />
         <div className="filters">
           <Container>
             {(hasUserOrphanItems || isThirdPartyManager || isLinkedWearablesPaymentsEnabled) && (

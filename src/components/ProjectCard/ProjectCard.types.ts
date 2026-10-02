@@ -1,14 +1,8 @@
 import { Dispatch } from 'redux'
 import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Deployment, DeploymentStatus } from 'modules/deployment/types'
-import {
-  deleteProject,
-  DeleteProjectAction,
-  loadProjectSceneRequest,
-  LoadProjectSceneRequestAction
-} from 'modules/project/actions'
+import { deleteProject, DeleteProjectAction, loadProjectSceneRequest, LoadProjectSceneRequestAction } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
-import { PreviewType } from 'modules/editor/types'
 import { Scene } from 'modules/scene/types'
 
 export type DefaultProps = {
@@ -22,7 +16,6 @@ export type Props = DefaultProps & {
   hasError: boolean
   deploymentStatus: DeploymentStatus
   deployments: Deployment[]
-  type: PreviewType
   scene: Scene
   onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
@@ -36,9 +29,6 @@ export type State = {
   isDeleting: boolean
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'type' | 'isUploading' | 'hasError' | 'scene'
->
+export type MapStateProps = Pick<Props, 'parcels' | 'items' | 'deploymentStatus' | 'deployments' | 'isUploading' | 'hasError' | 'scene'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onOpenModal' | 'onLoadProjectScene'>
 export type MapDispatch = Dispatch<DeleteProjectAction | OpenModalAction | LoadProjectSceneRequestAction>

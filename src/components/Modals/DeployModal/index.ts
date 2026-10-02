@@ -1,3 +1,3 @@
-import DeployModal from './DeployModal.container'
+import DeployModal from './DeployModal'
 
 export default DeployModal

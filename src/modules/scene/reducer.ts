@@ -1,5 +1,4 @@
 import undoable, { StateWithHistory, includeAction, ActionTypes } from 'redux-undo'
-import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { EDITOR_UNDO, EDITOR_REDO, OPEN_EDITOR } from 'modules/editor/actions'
 import { Scene } from 'modules/scene/types'
 import {
@@ -14,13 +13,7 @@ import {
   SYNC_SCENE_ASSETS_SUCCESS,
   SyncSceneAssetsSuccessAction,
   UPDATE_SCENE,
-  UpdateSceneAction,
-  MIGRATE_TO_SDK7_REQUEST,
-  MigrateToSDK7RequestAction,
-  MigrateToSDK7SuccessAction,
-  MigrateToSDK7FailureAction,
-  MIGRATE_TO_SDK7_FAILURE,
-  MIGRATE_TO_SDK7_SUCCESS
+  UpdateSceneAction
 } from 'modules/scene/actions'
 import {
   DeleteProjectAction,
@@ -32,7 +25,6 @@ import {
 
 export type SceneState = {
   data: Record<string, Scene>
-  loading: LoadingState
   error: string | null
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
@@ -47,13 +39,9 @@ export type SceneReducerAction =
   | SyncSceneAssetsSuccessAction
   | LoadProjectSceneSuccessAction
   | UpdateSceneAction
-  | MigrateToSDK7RequestAction
-  | MigrateToSDK7SuccessAction
-  | MigrateToSDK7FailureAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
-  loading: [],
   error: null
 }
 
@@ -180,15 +168,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       }
       delete newState.data[project.sceneId]
       return newState
-    }
-
-    case MIGRATE_TO_SDK7_REQUEST:
-    case MIGRATE_TO_SDK7_FAILURE:
-    case MIGRATE_TO_SDK7_SUCCESS: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
-      }
     }
 
     default:

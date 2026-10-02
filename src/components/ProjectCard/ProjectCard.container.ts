@@ -4,10 +4,8 @@ import { RootState } from 'modules/common/types'
 import { deleteProject, loadProjectSceneRequest } from 'modules/project/actions'
 import { getDeploymentStatusByProjectId, getDeploymentsByProjectId } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
-import { getData as getPoolProjects } from 'modules/pool/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
-import { PreviewType } from 'modules/editor/types'
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
 
@@ -16,8 +14,6 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const parcels = project.layout.cols * project.layout.rows
   const scene = getScenes(state)[project.sceneId]
   const items = scene && scene.sdk6 ? Object.keys(scene.sdk6.entities).length - parcels : 0
-  const type = getPoolProjects(state)[project.id] ? PreviewType.POOL : PreviewType.PROJECT
-
   return {
     parcels,
     items,
@@ -25,8 +21,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.project.id],
     deployments: getDeploymentsByProjectId(state)[ownProps.project.id],
     isUploading: getLoadingSet(state).has(project.id),
-    hasError: getErrorSet(state).has(project.id),
-    type
+    hasError: getErrorSet(state).has(project.id)
   }
 }
 

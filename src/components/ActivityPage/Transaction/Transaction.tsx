@@ -44,6 +44,29 @@ import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
 import { Props } from './Transaction.types'
 
+/**
+ * Which sentence the activity feed shows for a setMinters transaction.
+ *
+ * Exported to be testable: it decides a user-facing label from two address lists whose casing comes from
+ * different places — `minters` is normalized by the saga, `previousMinters` is the server's snapshot — and
+ * `difference` (lib/array) compares with indexOf, so it is case-sensitive where `includes` (lib/address) is
+ * not. Diffing without normalizing first put every case-differing minter in BOTH sets, and since the
+ * revoked branch is checked first, a collection holding the sale address in another casing labelled every
+ * minters transaction "unset collection on sale".
+ */
+export function getSetCollectionMintersTranslationId(minters: string[], previousMinters: string[], saleAddress: string): string {
+  const current = minters.map(minter => minter.toLowerCase())
+  const previous = previousMinters.map(minter => minter.toLowerCase())
+
+  if (includes(difference(previous, current), saleAddress)) {
+    return 'transaction.unset_collection_on_sale'
+  }
+  if (includes(difference(current, previous), saleAddress)) {
+    return 'transaction.set_collection_on_sale'
+  }
+  return 'transaction.updated_collection_minters'
+}
+
 const Transaction = (props: Props) => {
   const { tx } = props
   switch (tx.actionType) {
@@ -283,22 +306,7 @@ const Transaction = (props: Props) => {
       const { chainId } = tx
       const { collection, minters } = tx.payload
 
-      const addedMinters = difference(minters, collection.minters)
-      const removedMinters = difference(collection.minters, minters)
-
-      const saleAddress = getSaleAddress(chainId)
-
-      const hadSaleAccess = includes(removedMinters, saleAddress)
-      const hasNewSaleAccess = includes(addedMinters, saleAddress)
-
-      let translationId = ''
-      if (hadSaleAccess) {
-        translationId = 'transaction.unset_collection_on_sale'
-      } else if (hasNewSaleAccess) {
-        translationId = 'transaction.set_collection_on_sale'
-      } else {
-        translationId = 'transaction.updated_collection_minters'
-      }
+      const translationId = getSetCollectionMintersTranslationId(minters, collection.minters, getSaleAddress(chainId))
       return (
         <TransactionDetail
           collectionId={collection.id}

@@ -487,20 +487,6 @@
     "title": "编辑 URN",
     "subtitle": "更新 {name} 的 URN"
   },
-  "custom_layout_modal": {
-    "subtitle_one": "您可以自定义场景布局.",
-    "subtitle_two": "在下面的输入框中输入所需的大小值."
-  },
-  "share_modal": {
-    "title": "分享您的场景",
-    "description": "让你的朋友和合作者欣赏您的作品",
-    "copy": "复制链接",
-    "copied": "已复制",
-    "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=我的最新作品已经在 Decentraland 中安家了！ 敬请查看，并且添加自己的场景共建虚拟世界。",
-      "twitter": "https://twitter.com/intent/tweet?text=刚刚通过 Builder 在 Decentraland 中部署了我的新设计。 敬请查看，也请您创建您自己的场景。 因为虚拟世界也不会凭空而建! {url}&hashtags=builder,virtualworld,gaming"
-    }
-  },
   "deployment_status": {
     "online": "发布到{coords}",
     "online_multiple": "在{count}个位置发布",
@@ -529,170 +515,12 @@
         "title": "未出版的场景",
         "description": "请等待您的场景未出版时"
       }
-    },
-    "description": "将场景部署到土地上，或向土地所有者申请许可。",
-    "land": {
-      "confirmation": {
-        "action": "发布",
-        "description": "您将发布以下场景到土地:",
-        "location_label": "发布到",
-        "size_label": "大小",
-        "title_label": "标题"
-      },
-      "connect": {
-        "description": "连接您的钱包继续。",
-        "title": "发布场景"
-      },
-      "map": {
-        "continue": "继续",
-        "no_land_action": "提交到场景池",
-        "no_land_warning": "好象您没有任何土地",
-        "occupied_tooltip": "清空土地空间{br}从仪表板撤回发布的场景",
-        "occupied_warning": "在这个位置至少有一个场景布署",
-        "placement_active": "在 {x},{y} 布署 {count} 块土地场景 ",
-        "placement_default": "选择要发布场景的土地",
-        "reset": "重置",
-        "title": "发布场景"
-      },
-      "progress": {
-        "creating_files": {
-          "description": "正在建立上传的文件，请稍等。",
-          "title": "创建资源文件"
-        },
-        "recording": {
-          "description": "请稍等，正在录制场景预览。",
-          "title": "录制场景预览"
-        },
-        "uploading_assets": {
-          "description": "正在上传场景，请稍等。",
-          "title": "上传到虚拟世界"
-        },
-        "uploading_recording": {
-          "description": "正上传场景预览，请稍候。",
-          "title": "正在上传预览"
-        }
-      },
-      "success": {
-        "jump_in": "进入",
-        "continue": "继续工作",
-        "description": "场景已上传。",
-        "title": "已完成!"
-      },
-      "empty": {
-        "title": "您没有任何土地。",
-        "description": "<b>Buy your o在一段时间内租用土地或租用</b><br></br>您的场景是 {landSize} 因此，请确保获得 {dimension, plural, one {土地} other {财产}} 那是相等或更大的。",
-        "buy_land": "购买土地",
-        "rent_land": "出租土地"
-      },
-      "not_enough_land": {
-        "title": "这个场景比你的土地更大",
-        "description": "此场景需要{cols} x {rows}包裹的区域。确保您的土地等于或大于或更大，以适应这一场景。请记住，这个场景可能非常适合一个世界。",
-        "publish_world": "出版给我的世界",
-        "return_scenes": "返回场景",
-        "claim_name": "为自由世界索取您的独特名称"
-      },
-      "title": "发布场景"
-    },
-    "option_land": {
-      "action": "布署到 LAND 土地",
-      "description": "布署场景到 LAND 土地或 Estate 连块土地.",
-      "title": "我的 LAND 土地"
-    },
-    "option_pool": {
-      "action": "应用",
-      "description": "将你的场景应用到其他人的领地。",
-      "title": "场景池"
-    },
-    "pool": {
-      "action": "提交",
-      "contact_information": "联系信息",
-      "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
-      "progress": "正在处理",
-      "sign_in": {
-        "action": "登录",
-        "subtitle": "登录以发布到场景池",
-        "title": "登录"
-      },
-      "subtitle": "您的场景即将上传到社区池，这意味着任何人都可以使用它。",
-      "success": {
-        "body": "它将包含在我们的公共场景库中，适合有兴趣使用它的任何人。感谢您的贡献！",
-        "title": "现在，您的场景是场景池的一部分！"
-      },
-      "title": "正在发布场景",
-      "uploading": "上传中..."
-    },
-    "deploy_world": {
-      "title": "发布至世界",
-      "description": "选择将定义 URL 的 Decentraland NAME 或 ENS 域名",
-      "action": "发布",
-      "world_label": "世界（NAME）",
-      "world_placeholder": "选择一个 NAME",
-      "world_label_ens": "世界 (ENS 域名)",
-      "world_placeholder_ens": "选择一个 ENS 域名",
-      "back": "返回以发布场景",
-      "close": "关闭发布模态",
-      "claim_name": "声明一个新的 NAME",
-      "claim_name_ens": "声明一个 ENS 域名",
-      "empty_state_title": "您没有任何可用的世界",
-      "empty_state_description": "<b>拥有 NAME 时可免费获得一个世界</b>。<br></br>每个 NAME 都会让你访问一个世界。你可以拥有任意多个。",
-      "name_type": {
-        "dcl": "NAME",
-        "ens": "ENS 域名"
-      },
-      "success": {
-        "title": "您的场景已出版！",
-        "subtitle": "您现在可以在您的世界中探索和玩耍：",
-        "jump_in": "跳进去",
-        "share_in_twitter": "分享Twitter",
-        "share_in_twitter_text": "我刚刚在我的世界上发表了新内容✨\n\n一探究竟:\n📍"
-      },
-      "failure": {
-        "title": "出了些问题",
-        "subtitle": "我们无法发布您的场景",
-        "subtitle_size_error": "场景太大，无法发布到世界。<br></br>最大大小为 <b>{maxSizeMbs} mbs</b>，但当前场景为 <b>{deployedSizedMbs} mbs</b> >。"
-      },
-      "world_url_description": "跳入您的世界的URL将是:<br></br><b>{world_url}</b>",
-      "world_has_content": "{world}梦中的现有内容将被您即将发布的新内容替换。",
-      "confirm_world_replace_content": "我知道这个动作是不可逆转的",
-      "scene_information": "场景信息",
-      "multi_scene_blocked": {
-        "title": "此世界包含多个场景",
-        "description": "此世界包含多个场景，只能通过 Creator Hub 管理。\n请下载 Creator Hub 以发布到此世界。",
-        "download_creator_hub": "下载 Creator Hub",
-        "go_back": "返回"
-      }
-    },
-    "title": "正在发布场景 {sceneName}",
-    "subtitle": "选择要部署此场景的位置：",
-    "learn_more": "了解更多",
-    "options": {
-      "world": {
-        "title": "世界",
-        "description": "在Genesis City Map中找不到。<br> </br>最多可以同时加入100位用户。",
-        "description2": "在 Genesis City 地图中找不到。<br></br>最多 100 个用户可以同时加入。",
-        "action": "发布到世界"
-      },
-      "land": {
-        "title": "我的地盘",
-        "description": "尺寸限制：每个包裹15 MB。<br> </br>在Genesis City Map中可找到。<br> </br>无限用户可以同时加入。",
-        "action": "发布到土地"
-      },
-      "pool": {
-        "title": "上传到场景池",
-        "description": "您的场景将在场景库中列出，并公开下载。",
-        "action": "上传到场景池"
-      }
     }
   },
   "deploy_to_world_announcement_modal": {
     "title": "您现在可以发布<br></br>您的场景给世界",
     "description": "使用构建器创建您的场景，并单击几下将其发布到世界。",
     "create_scene": "创建场景"
-  },
-  "templates_announcement_modal": {
-    "title": "通过模板和社区场景池扩大创造力",
-    "description": "从现在开始，您可以开始下载和使用社区池中的模板和场景。让您的想象力塑造您的世界和土地！",
-    "go_to_scenes": "去我的场景"
   },
   "smart_wearables_announcement_modal": {
     "title": "智能穿戴设备现已上线！🟢",
@@ -711,36 +539,10 @@
     "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。",
     "error": "发生错误。请稍后再试。"
   },
-  "deployment_contest_modal": {
-    "action": "参加比赛",
-    "submit": {
-      "title": "创建大赛",
-      "subtitle": "将场景发送到创建大赛。",
-      "eth_address": "ETH地址 (可选)",
-      "invalid_eth_address": "无效的ETH地址"
-    },
-    "recording": {
-      "title": "准备场景",
-      "subtitle": "我们正在准备您参赛的场景，请稍侯。"
-    },
-    "uploading": {
-      "title": "准备场景",
-      "subtitle": "我们正在准备您参赛的场景，请稍侯。"
-    },
-    "success": {
-      "title": "感谢您上传场景！",
-      "subtitle": "若您的场景入选了，您将接获电邮通知。"
-    }
-  },
   "dissolve_modal": {
     "title": "解散产业",
     "confirm": "您即将解散{name}。您要继续吗？",
     "too_big": "这个产业太大，无法在一项交易中解决。请移除包裹，直到其大小最大为{max}个包裹为止。"
-  },
-  "edit_project_modal": {
-    "custom_layout_label": "布局",
-    "title": "场景详细信息",
-    "unpublish_needed": "请在更新您的场景细节之前先取消发布您的场景"
   },
   "edit_page": {
     "title": "编辑",
@@ -850,9 +652,8 @@
       "url": "url",
       "owner": "所有者",
       "published_scene": "出版的场景",
-      "publish_scene": "发布场景",
       "unpublish_scene": "取消发布场景",
-      "edit_scene": "编辑场景",
+      "view_scene": "查看场景",
       "status": "地位",
       "status_active": "积极的",
       "status_inactive": "不活动",
@@ -912,8 +713,9 @@
   },
   "export_modal": {
     "action": "下载场景",
+    "convert_to_sdk7": "将此场景转换为 SDK7（您保存的场景保持不变）",
     "docs": "什么是分散的SDK？",
-    "description": "没有建造者问题的过渡到SDK，以进行更具交互性和个性化的场景。考虑到您可以选择从场景和模板组下载场景并将其加载到不同的帐户中。",
+    "description": "从构建器无缝切换到 SDK，打造更具互动性和个性化的场景。请注意，您可以选择下载场景并在不同账户之间上传。",
     "loading": "下载...",
     "title": "下载场景并以更高的复杂程度创建."
   },
@@ -959,14 +761,12 @@
     "skip": "跳过",
     "send": "发送",
     "see_in_decentraland": "参见 Decentraland",
-    "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
     "sign_in": "登录",
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
     "terms_and_conditions": "使用条款",
-    "view_more": "查看更多",
     "click_here": "点击这里",
     "proceed": "继续",
     "open_in_editor": "在编辑器中打开",
@@ -1063,56 +863,21 @@
   },
   "scenes_page": {
     "my_scenes": "我的场景",
-    "upload_scene": "上传场景",
-    "create_scene": "创建场景",
-    "no_projects": "您可以在您的 LAND、您的世界中发布您的场景或将它们上传到场景池。{br}或者，您也可以<link>上传场景文件</link>并从这里继续工作。",
-    "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "sdk6_support": "SDK 6的技术支持将于2023年12月23日结束。",
     "project_actions": {
       "delete_project": "删除场景",
-      "duplicate_project": "复制场景",
-      "export_project": "场景导出",
-      "unpublish": "撤消发布"
+      "export_project": "场景导出"
     },
-    "choose_scene_creation": "选择建立场景的最佳选择",
     "no_scenes": {
       "title": "创建您的第一个场景",
-      "description": "释放您的创造力。开始为您的土地和世界建立场景，并与社区分享。<a>了解有关创建场景的更多信息。</a>",
-      "from_scratch": {
-        "title": "白手起家",
-        "description": "以简单而直观的方式开始用在线构建器开始构建您的场景."
-      },
-      "from_template": {
-        "title": "使用预定义的模板",
-        "description": "选择这些抛光模板之一，并只需单击几下即可发布一个惊人的场景!"
-      }
+      "description": "释放您的创造力。开始为您的土地和世界建立场景，并与社区分享。<a>了解有关创建场景的更多信息。</a>"
     },
     "sort": {
       "name": "名称",
       "newest": "最新",
       "size": "尺寸"
     },
-    "start": "开始设计",
-    "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
-    "templates_title": "请先选择场景大小",
-    "title": "设计酷炫场景！",
-    "results": "{count}结果",
-    "from_scene_pool": "自场景池"
-  },
-  "templates_page": {
-    "title": "选择一个模板",
-    "back_to_scenes": "回到场景",
-    "parcels": "{size} 包裹",
-    "coming_soon": "即将推出"
-  },
-  "import_modal": {
-    "action": "上传",
-    "action_many": "上传{count}场景",
-    "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "要在不同帐户之间传输场景或导入先前从场景池下载的场景，请使用导入功能。确保您按照下载完全导入zip文件。",
-    "invalid_file": "无效文件",
-    "title": "导入场景",
-    "upload_manually": "在您的计算机上浏览它"
+    "results": "{count}结果"
   },
   "upload_video": {
     "cta": "拖放视频（格式.MP4）以展示智能可穿戴功能或{action}",
@@ -1149,10 +914,6 @@
   "collection_dropdown": {
     "placeholder": "选择一个集合",
     "no_collections": "未找到有效集合"
-  },
-  "layout_picker": {
-    "columns": "列",
-    "rows": "行"
   },
   "metrics": {
     "bodies": "物体",
@@ -1286,23 +1047,6 @@
     "revoke": "撤消",
     "invalid_address": "无效地址"
   },
-  "scene_list_page": {
-    "projects_title": "社区场景",
-    "no_projects": "没有结果",
-    "filters": {
-      "creator-contest-2019-12": "Creator Contest (Submission)",
-      "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "所有收藏",
-      "all_users": "全部用户",
-      "only_me": "只有我",
-      "newest": "最新",
-      "likes": "最喜欢",
-      "size": "尺寸",
-      "items": "项目",
-      "smart_items": "互动项目",
-      "name": "名称"
-    }
-  },
   "public_page": {
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",
@@ -1332,18 +1076,6 @@
     "confirm_delete_content": "您确定要删除项目\"{name}\"吗？ 此操作不可逆转！",
     "confirm_delete_header": "删除 \"{name}\""
   },
-  "project_fields": {
-    "description_field_label": "描述或说胆",
-    "description_field_placeholder": "没有说明",
-    "title_field_label": "名称",
-    "title_field_placeholder": "场景名称"
-  },
-  "project_layout_picker": {
-    "max_area_error": "您的场景不得超过 {area} 块地块",
-    "min_area_error": "您的场景太小了",
-    "decimals_error": "您的场景包裹尺寸不应具有小数为小数",
-    "empty_field_error": "您应该完成行和列的数量，以设置包裹尺寸"
-  },
   "quota_exceeded_modal": {
     "retry": {
       "description": "无法保存",
@@ -1360,7 +1092,6 @@
       "delete": "删除",
       "unpublish": "取消发布"
     },
-    "edit_scene": "编辑场景",
     "download_scene": "下载场景",
     "published_in": "出版于",
     "no_deployments": "这个场景尚未出版。",
@@ -1371,16 +1102,6 @@
     "location": "位置",
     "description": "描述",
     "url": "URL"
-  },
-  "template_detail_page": {
-    "select_template": "选择模板",
-    "download_scene": "下载场景",
-    "description": "描述",
-    "creator": "创造者",
-    "scene_details": "场景细节",
-    "built_for_world": "为世界建造",
-    "personalize_it_yourself": "自己个性化",
-    "parcels": "{rows} x {cols} 包裹"
   },
   "shortcuts": {
     "delete": "删除",
@@ -1415,37 +1136,6 @@
     "loading": "上传中...",
     "retry": "重试",
     "success": "所有场景成功保存！"
-  },
-  "create_modal": {
-    "title": "创建一个场景",
-    "name_subtitle": "为您的场景设置名称和描述",
-    "size_subtitle": "设置新场景的大小",
-    "sdk_title": "体验新的分散编辑",
-    "sdk_subtitle": "在没有任何代码的情况下利用SDK 7的功率。",
-    "sdk_description": "通过改进的视觉编辑器来增强场景构建过程。包括上一个场景构建器中的所有功能。",
-    "sdk_image_alt": "SDK 7",
-    "name_label": "名称",
-    "description_label": "描述",
-    "description_placeholder": "一些描述...",
-    "use_sdk7": "使用分散网络编辑器",
-    "use_sdk6": "使用传统场景建造者 (SDK 6)"
-  },
-  "clone_template_modal": {
-    "title": "为您的场景设置名称和描述",
-    "name_label": "姓名",
-    "name_max_length": "该名称最多可以是32个字符",
-    "description_label": "描述",
-    "description_placeholder": "一些描述..."
-  },
-  "templates": {
-    "big": "大 (2x3)",
-    "custom_layout": {
-      "title": "自定义",
-      "up_to": "最大 {max} 块地块"
-    },
-    "description": "{dimensions} - 最多 {amount} 个模型",
-    "medium": "中 (2x2)",
-    "small": "小 (1x1)"
   },
   "activity_page": {
     "latest_activity": "最新活动",
@@ -1508,37 +1198,6 @@
   "toasts": {
     "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
   },
-  "topbar": {
-    "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
-    "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
-    "publish": "发布",
-    "up_to_date": "已最新！{br}所有更改都已发布",
-    "update_scene": "更新场景"
-  },
-  "tutorial_modal": {
-    "slide0": {
-      "description": "这是 Decentraland 的新场景构建器。",
-      "title": "欢迎您的到来！"
-    },
-    "slide1": {
-      "description": "要移动对象，请单击并拖动对象。",
-      "title": "移动物体"
-    },
-    "slide2": {
-      "description": "从右侧边栏向场景添加对象。",
-      "title": "添加对象"
-    },
-    "slide3": {
-      "description": "通过单击\"旋转\"工具并拖动轨道来旋转对象。",
-      "title": "轨道和箭头"
-    },
-    "slide4": {
-      "description": "使用左键拖动可旋转相机。",
-      "title": "相机控制"
-    },
-    "subtitle": "内容编辑器非常容易使用，在您开始之前，这里有一些技巧和提示",
-    "title": "开始使用 the Builder"
-  },
   "unsupported_browser_page": {
     "back": "返回您的场景",
     "subtitle": "The Builder 不支持您的浏览器.{br}请使用 {chrome} 或 {firefox}",
@@ -1548,16 +1207,6 @@
     "guest": "客人",
     "sign_in": "登录",
     "sign_out": "注销"
-  },
-  "validation": {
-    "project": {
-      "description": {
-        "length": "描述长度必须是 {min} 到 {max} 个字符."
-      },
-      "title": {
-        "length": "名称长度必须是 {min} 到 {max} 个字符."
-      }
-    }
   },
   "validation_issues_panel": {
     "title_errors": "{count, plural, one {# 个验证错误} other {# 个验证错误}}",
@@ -2439,10 +2088,6 @@
     "synced": "同步",
     "unsynced": "未同步"
   },
-  "editor_preview": {
-    "loading_unity": "正在加载统一...",
-    "loading_unity_error": "请重新加载您的浏览器。 如果问题持续存在，请尝试使用更轻的场景或联系支持。"
-  },
   "approval_flow": {
     "loading": {
       "title": "加载中...",
@@ -2492,41 +2137,6 @@
     "description": "对编辑器进行了相应修改后，将手动可穿戴设备更新为编辑器中的新类别。请注意，手套类别用于手动配件或可穿戴设备，这些手工装饰品或可穿戴设备将手用其他功能相似的手动代替，而不是用于持有的物品。",
     "action": "了解更多"
   },
-  "migrate_to_sdk7_modal": {
-    "use_legacy_builder": "继续使用Legacy Scene Builder（SDK 6）",
-    "save_a_copy": "保存SDK 6中原始场景的副本.",
-    "saving_copy": "在SDK 6中保存副本6",
-    "migrating_scene": "迁移到SDK 7",
-    "image_alt": "迁移到SDK 7",
-    "info": {
-      "title": "将您的场景升级到SDK 7与新的分散网络编辑器",
-      "subtitle": "<b>目前，此场景是使用SDK 6构建的，该场景将在几个月内停止接收支持，但是它可以自动迁移到SDK7。</b>包括上一个场景构建器的所有功能，而智能项目将在即将进行的更新中添加。",
-      "action": "使用分散网络编辑器（SDK 7)"
-    },
-    "info_smart_items": {
-      "title": "将您的场景升级到SDK 7与新的分散网络编辑器",
-      "subtitle": "<b>此场景目前是使用SDK 6构建的，该场景将在几个月内停止获得支持，并包含智能项目</b>。如果您选择使用我们改进的视觉编辑器升级到SDK 7，则这些智能项目将被删除，因为它们尚未得到支持。",
-      "action": "使用分散网络编辑器（SDK 7)"
-    },
-    "migrate": {
-      "title": "自动迁移到SDK 7",
-      "subtitle": "该场景目前是使用SDK 6构建的，但可以自动迁移到SDK 7 </b>。这将通过我们的新的和改进的Web编辑器来增强您的场景建设体验。<br> </br> <br> </br> <b>准备升级？</b>",
-      "action": "迁移w"
-    },
-    "migrate_smart_items": {
-      "title": "场景的迁移选项",
-      "subtitle": "您的场景包含<b> {smartItemScount}智能项目</b>当前仅在SDK 6中支持。<br> </br>您可以选择通过删除这些项目来选择迁移到SDK 7，或继续使用传统场景构建器直到可用于SDK 7的智能物品（即将推出）。",
-      "action": "迁移并删除智能项目"
-    }
-  },
-  "inspector": {
-    "top_bar": {
-      "back": "回到你的现场",
-      "download": "下载",
-      "publish": "发布",
-      "preview": "预览"
-    }
-  },
   "worlds_your_storage_modal": {
     "your_storage": "您的存储",
     "total_available_storage": "总可用存储",
@@ -2543,13 +2153,6 @@
     "names_holdings": "由于持有 {owned} Decentraland NAMEs，您拥有 {mbs} Mb。",
     "names_buy": "购买 NAME",
     "proposal": "这些存储规则经过治理 DAO 提案的投票并获得通过。",
-    "learn_more": "了解更多"
-  },
-  "worlds_for_ens_owners_announcement_modal": {
-    "title": "为ENS持有者介绍世界与扩展的世界大小限制",
-    "description_ens": "ENS域名持有者现在将自动获得自己的Decentraland世界，场景大小限制为25 Mb。",
-    "description_dcl": "同时，来自Decentraland NAME的世界将具有动态的最大文件大小限制，具体取决于用户的Decentraland持有量。 <b>每个NAME、LAND和2,000个MANA代币的集合所拥有的</b>将在Worlds内容服务器上额外获得<b>100 Mb的存储空间</b>，可随意使用。",
-    "start_building": "开始建设",
     "learn_more": "了解更多"
   },
   "creator_hub_upgrade_modal": {

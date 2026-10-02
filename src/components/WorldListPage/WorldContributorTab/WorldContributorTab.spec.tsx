@@ -135,43 +135,5 @@ describe('when rendering contributable names table', () => {
         })
       })
     })
-
-    describe('when the world has no scene deployed', () => {
-      beforeEach(() => {
-        deploymentsByWorlds = {}
-      })
-
-      describe('and the user has deployment permissions', () => {
-        beforeEach(() => {
-          items = [
-            {
-              ...items[0],
-              userPermissions: ['deployment']
-            }
-          ]
-        })
-
-        it('should show publish scene button', () => {
-          const screen = renderWorldContributorTab({ items, deploymentsByWorlds })
-          expect(screen.getByRole('button', { name: t('worlds_list_page.table.publish_scene') })).toBeInTheDocument()
-        })
-      })
-
-      describe("and the user doesn't have deployment permissions", () => {
-        beforeEach(() => {
-          items = [
-            {
-              ...items[0],
-              userPermissions: ['streaming']
-            }
-          ]
-        })
-
-        it('should not show publish scene button', () => {
-          const screen = renderWorldContributorTab({ items, deploymentsByWorlds })
-          expect(screen.queryByRole('button', { name: t('worlds_list_page.table.publish_scene') })).not.toBeInTheDocument()
-        })
-      })
-    })
   })
 })

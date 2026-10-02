@@ -23,9 +23,6 @@ import { ENSState } from 'modules/ens/reducer'
 import { IdentityState } from 'modules/identity/reducer'
 import { ItemState } from 'modules/item/reducer'
 import { LandState } from 'modules/land/reducer'
-import { MediaState } from 'modules/media/reducer'
-import { PoolGroupState } from 'modules/poolGroup/reducer'
-import { PoolState } from 'modules/pool/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { StatsState } from 'modules/stats/reducer'
 import { SyncState } from 'modules/sync/types'
@@ -37,7 +34,6 @@ import { UndoableSceneState } from 'modules/scene/reducer'
 import { EntityState } from 'modules/entity/reducer'
 import { CollectionCurationState } from 'modules/curations/collectionCuration/reducer'
 import { ItemCurationState } from 'modules/curations/itemCuration/reducer'
-import { InspectorState } from 'modules/inspector/reducer'
 import { WorldsState } from 'modules/worlds/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
@@ -57,10 +53,7 @@ export type RootState = {
   identity: IdentityState
   item: ItemState
   land: LandState
-  media: MediaState
   modal: ModalState
-  pool: PoolState
-  poolGroup: PoolGroupState
   profile: ProfileState
   project: ProjectState
   scene: UndoableSceneState
@@ -77,7 +70,6 @@ export type RootState = {
   collectionCuration: CollectionCurationState
   itemCuration: ItemCurationState
   features: FeaturesState
-  inspector: InspectorState
   worlds: WorldsState
   gateway: GatewayState
   credits: CreditsState

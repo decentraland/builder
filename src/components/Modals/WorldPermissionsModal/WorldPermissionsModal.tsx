@@ -3,7 +3,7 @@ import { Button, ButtonProps, CheckboxProps, InputOnChangeData, ModalActions, Mo
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LoadingText from 'decentraland-ui/dist/components/Loader/LoadingText'
-import { isValid } from 'lib/address'
+import { includes, isValid } from 'lib/address'
 import { Props } from './WorldPermissionsModal.types'
 import { AllowListPermissionSetting, WorldPermissionNames, WorldPermissionType } from 'lib/api/worlds'
 import WorldPermissionsAccess from './ModelTabs/WorldPermissionsAccess/WorldPermissionsAccess'
@@ -102,8 +102,11 @@ const WorldPermissionsModal = (props: Props) => {
       if (!isValidAddress) {
         setErrorInvalidAddress(true)
       }
-      if (isValidAddress && metadata.worldName && newAddress && !collaboratorUserList.includes(newAddress)) {
-        setCollaboratorUserList(prev => [...prev, newAddress.toLowerCase()])
+      const address = newAddress.toLowerCase()
+      if (isValidAddress && metadata.worldName && address && !includes(collaboratorUserList, address)) {
+        setCollaboratorUserList(prev => [...prev, address])
+        // Collaborators only exist as allowlist entries, so grant deployment by default to persist them
+        onPutWorldPermissionsRequest(metadata.worldName, WorldPermissionNames.Deployment, WorldPermissionType.AllowList, address)
       }
       onGetProfile(newAddress)
     },

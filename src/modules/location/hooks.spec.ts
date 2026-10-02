@@ -10,7 +10,6 @@ import {
   getSelectedCollectionIdFromSearchParams,
   getSelectedItemIdFromSearchParams,
   getSortByFromSearchParams,
-  getTemplateIdFromPath,
   isReviewingFromSearchParams
 } from './url-parsers'
 import {
@@ -19,7 +18,6 @@ import {
   useGetIsReviewingFromCurrentUrl,
   useGetLandIdFromCurrentUrl,
   useGetProjectIdFromCurrentUrl,
-  useGetTemplateIdFromCurrentUrl,
   useGetCollectionIdFromCurrentUrl,
   useGetENSNameFromCurrentUrl,
   useGetItemIdFromCurrentUrl,
@@ -41,7 +39,6 @@ const mockGetSelectedCollectionIdFromSearchParams = getSelectedCollectionIdFromS
 const mockIsReviewingFromSearchParams = isReviewingFromSearchParams as jest.MockedFunction<typeof isReviewingFromSearchParams>
 const mockGetLandIdFromPath = getLandIdFromPath as jest.MockedFunction<typeof getLandIdFromPath>
 const mockGetProjectIdFromPath = getProjectIdFromPath as jest.MockedFunction<typeof getProjectIdFromPath>
-const mockGetTemplateIdFromPath = getTemplateIdFromPath as jest.MockedFunction<typeof getTemplateIdFromPath>
 const mockGetCollectionIdFromUrl = getCollectionIdFromUrl as jest.MockedFunction<typeof getCollectionIdFromUrl>
 const mockGetENSNameFromPath = getENSNameFromPath as jest.MockedFunction<typeof getENSNameFromPath>
 const mockGetItemIdFromPath = getItemIdFromPath as jest.MockedFunction<typeof getItemIdFromPath>
@@ -223,38 +220,6 @@ describe('when getting the project id from current url', () => {
 
       expect(result.current).toBeNull()
       expect(mockGetProjectIdFromPath).toHaveBeenCalledWith(mockLocationData.pathname)
-    })
-  })
-})
-
-describe('when getting the template id from current url', () => {
-  describe('when pathname contains a template ID', () => {
-    beforeEach(() => {
-      mockLocationData.pathname = '/templates/template-123'
-      mockUseLocation.mockReturnValueOnce(mockLocationData)
-      mockGetTemplateIdFromPath.mockReturnValueOnce('template-123')
-    })
-
-    it('should return template ID from pathname', () => {
-      const { result } = renderHook(() => useGetTemplateIdFromCurrentUrl())
-
-      expect(result.current).toBe('template-123')
-      expect(mockGetTemplateIdFromPath).toHaveBeenCalledWith(mockLocationData.pathname)
-    })
-  })
-
-  describe('when pathname does not contain a template ID', () => {
-    beforeEach(() => {
-      mockLocationData.pathname = '/home'
-      mockUseLocation.mockReturnValueOnce(mockLocationData)
-      mockGetTemplateIdFromPath.mockReturnValueOnce(null)
-    })
-
-    it('should return null', () => {
-      const { result } = renderHook(() => useGetTemplateIdFromCurrentUrl())
-
-      expect(result.current).toBeNull()
-      expect(mockGetTemplateIdFromPath).toHaveBeenCalledWith(mockLocationData.pathname)
     })
   })
 })

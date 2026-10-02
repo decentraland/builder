@@ -108,13 +108,6 @@ export const getIsCreditsPrimaryListingsEnabled = (state: RootState) => {
   return false
 }
 
-export const getIsSegmentAltIngestionEnabled = (state: RootState) => {
-  if (hasLoadedInitialFlags(state)) {
-    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.SEGMENT_ALT_INGESTION)
-  }
-  return false
-}
-
 export const getIsSocialEmotesEnabled = (state: RootState) => {
   if (hasLoadedInitialFlags(state)) {
     return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.SOCIAL_EMOTES)
