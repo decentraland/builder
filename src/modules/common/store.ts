@@ -142,7 +142,10 @@ const transactionMiddleware = createTransactionMiddleware()
 // analytics.js is served from a first party proxy where configured, ad blockers drop the requests to Segment's CDN
 const analyticsMiddleware = isTestEnv
   ? null
-  : createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'), { analyticsUrl: config.get('SEGMENT_ANALYTICS_URL', '') || undefined })
+  : createAnalyticsMiddleware(config.get('SEGMENT_API_KEY'), {
+      analyticsUrl: config.get('SEGMENT_ANALYTICS_URL', '') || undefined,
+      apiHost: config.get('SEGMENT_API_HOST', '') || undefined
+    })
 
 const middlewares = [sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware].filter(
   mdw => mdw !== null
