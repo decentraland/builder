@@ -1630,7 +1630,7 @@
         "subtitle": "You are about to send for review the collection \"{collection_name}\" that includes {count} {count, plural, one {item} other {items}}. In order to support the Curators Committee and the DAO treasure, there is a publication fee of {currency} {publication_fee} per collection (paid in MANA) only once."
       },
       "standard": {
-        "subtitle": "You are about to submit your {count} {count, plural, one {item} other {items}} collection \"{collection_name}\" for Curator review. Publication fee: 25 USD per item. For a limited time, the Decentraland Foundation covers 20 USD, so you pay only 5 USD per item — in MANA, with Credits, or by card. To continue, choose your payment method. {link}."
+        "subtitle": "You are about to submit your {count} {count, plural, one {item} other {items}} collection \"{collection_name}\" for Curator review. Publication fee: 25 USD per item. For a limited time, the Decentraland Foundation covers 20 USD, so you pay only 5 USD per item. To continue, choose your payment method. {link}."
       },
       "learn_more": "Learn about the publication fee",
       "pay_with": "Pay with:",
