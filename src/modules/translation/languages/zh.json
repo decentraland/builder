@@ -2225,5 +2225,22 @@
     "message": "{highlight} - 全新布局、全新穿搭，还可以认识创作者。",
     "cta": "去看看",
     "dismiss": "关闭公告"
+  },
+  "cancelled_item_orders": {
+    "banner": {
+      "title": "您的 {count} 个物品挂单已被取消",
+      "text": "Decentraland 升级了市场合约，在旧版本上签署的挂单已被取消。请重新上架这些物品，以便买家继续购买。",
+      "listings": "{count} 个挂单",
+      "review": "查看挂单",
+      "unknown_collection": "未知集合"
+    },
+    "notice": {
+      "title": "此集合中有 {count} 个挂单已被取消",
+      "text": "Decentraland 升级了市场合约，在旧版本上签署的挂单已被取消。请重新上架这些物品以继续销售。",
+      "previous_price": "原价：",
+      "credits": "{amount} 积分",
+      "put_for_sale_again": "重新上架",
+      "unknown_item": "未知物品"
+    }
   }
 }

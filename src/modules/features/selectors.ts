@@ -114,3 +114,10 @@ export const getIsSocialEmotesEnabled = (state: RootState) => {
   }
   return false
 }
+
+export const getIsCancelledItemOrdersNoticeEnabled = (state: RootState) => {
+  if (hasLoadedInitialFlags(state)) {
+    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CANCELLED_ITEM_ORDERS_NOTICE)
+  }
+  return false
+}

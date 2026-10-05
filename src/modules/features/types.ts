@@ -15,5 +15,6 @@ export enum FeatureName {
   SHOP_CREDITS_FOR_COLLECTIONS_FEE = 'shop-credits-for-collections-fee',
   UNITY_WEARABLE_PREVIEW = 'unity-wearable-preview',
   SOCIAL_EMOTES = 'social-emotes',
-  CREDITS_PRIMARY_LISTINGS = 'credits-primary-listings'
+  CREDITS_PRIMARY_LISTINGS = 'credits-primary-listings',
+  CANCELLED_ITEM_ORDERS_NOTICE = 'cancelled-item-orders-notice'
 }

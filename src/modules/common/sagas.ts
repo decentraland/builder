@@ -20,6 +20,7 @@ import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
 import { assetSaga } from 'modules/asset/sagas'
+import { cancelledTradesSaga } from 'modules/cancelledTrades/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
 import { committeeSaga } from 'modules/committee/sagas'
 import { deploymentSaga } from 'modules/deployment/sagas'
@@ -49,6 +50,7 @@ import { itemCurationSaga } from 'modules/curations/itemCuration/sagas'
 import { worldsSaga } from 'modules/worlds/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
+import { CancelledTradesAPI } from 'lib/api/cancelledTrades'
 import { ENSApi } from 'lib/api/ens'
 import { config } from 'config'
 import { getPeerWithNoGBCollectorURL } from './utils'
@@ -87,6 +89,10 @@ export function* rootSaga(
     assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
     authorizationSaga(),
+    cancelledTradesSaga(
+      builderAPI,
+      new CancelledTradesAPI('dcl:builder', config.get('MARKETPLACE_API'), { identity: getIdentity, retries: 0 })
+    ),
     collectionSaga(builderAPI, newBuilderClient, creditsService),
     committeeSaga(builderAPI),
     deploymentSaga(catalystClient),
