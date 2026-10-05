@@ -1610,7 +1610,7 @@
         "content_policy_first_condition": "I understand I wont be able to modify the name of the collection and I can attest that \"{collection_name}\" as a name doesn't violate any Intellectual Property rights.",
         "accept_terms_of_use": "I warrant that the submitted item(s) are in full compliance with the <terms_of_use_link>Terms of Use</terms_of_use_link> and <content_policy_link>Content Policy</content_policy_link>, which I acknowledge and accept.",
         "acknowledge_immutability": "I understand I won't be able to add or delete items after the collection is published.",
-        "acknowledge_dao_terms": "I acknowledge that the DAO may refuse to approve the item(s) based on infringements to the <terms_of_use_link>Terms of Use</terms_of_use_link> and <content_policy_link>Content Policy</content_policy_link>. I also acknowledge that the proposal fee won't be reimbursed in case of rejection since its purpose is to compensate curators for their time and work."
+        "acknowledge_dao_terms": "I acknowledge that the DAO may refuse to approve the item(s) based on infringements to the <terms_of_use_link>Terms of Use</terms_of_use_link> and <content_policy_link>Content Policy</content_policy_link>. I also acknowledge that the publication fee goes to the DAO treasury and won't be reimbursed in case of rejection."
       },
       "third_parties": {
         "first": "I confirm that the submitted item(s) are in full compliance with the <terms_of_use_link>Terms of Use</terms_of_use_link> and <content_policy_link>Content Policy</content_policy_link>, which I acknowledge and accept.",
