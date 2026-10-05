@@ -1,23 +1,33 @@
 import React, { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { RootState } from 'modules/common/types'
 import { useFetchCancelledItemOrders } from 'modules/cancelledTrades/hooks'
-import { getCancelledItemOrdersByContractAddress } from 'modules/cancelledTrades/selectors'
+import { getCancelledItemOrdersByContractAddress, isCancelledItemOrdersIncomplete } from 'modules/cancelledTrades/selectors'
 import CancelledItemOrdersNotice from './CancelledItemOrdersNotice'
 import { OwnProps } from './CancelledItemOrdersNotice.types'
 
 const CancelledItemOrdersNoticeContainer: React.FC<OwnProps> = ({ collection, items }) => {
   const dispatch = useDispatch()
   const isEnabled = useFetchCancelledItemOrders()
-  const orders = useSelector((state: RootState) => getCancelledItemOrdersByContractAddress(state, collection.contractAddress))
+  // The selector filters into a new array on every call
+  const orders = useSelector((state: RootState) => getCancelledItemOrdersByContractAddress(state, collection.contractAddress), shallowEqual)
+  const isIncomplete = useSelector(isCancelledItemOrdersIncomplete)
   const onOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
 
   if (!isEnabled) {
     return null
   }
 
-  return <CancelledItemOrdersNotice collection={collection} items={items} orders={orders} onOpenModal={onOpenModal} />
+  return (
+    <CancelledItemOrdersNotice
+      collection={collection}
+      items={items}
+      orders={orders}
+      isIncomplete={isIncomplete}
+      onOpenModal={onOpenModal}
+    />
+  )
 }
 
 export default CancelledItemOrdersNoticeContainer

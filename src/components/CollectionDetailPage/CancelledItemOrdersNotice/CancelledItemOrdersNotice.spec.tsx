@@ -28,6 +28,7 @@ beforeEach(() => {
     collection: { id: 'a-collection-id', contractAddress: '0xcollection' } as Collection,
     items: [item],
     orders: [],
+    isIncomplete: false,
     onOpenModal
   }
 })
@@ -105,6 +106,66 @@ describe('when rendering the cancelled item orders notice', () => {
         expect(renderResult.container).toBeEmptyDOMElement()
         expect(localStorage.getItem(getNoticeStorageKey('a-collection-id'))).not.toBeNull()
       })
+    })
+  })
+
+  describe('and the collection has many cancelled item orders', () => {
+    let items: Item[]
+
+    beforeEach(() => {
+      // 200 orders, only the last 100 of them matching a builder item
+      items = Array.from({ length: 100 }, (_, index) => ({ ...item, id: `builder-item-${index}`, tokenId: `${100 + index}` } as Item))
+      props = {
+        ...props,
+        items,
+        orders: Array.from({ length: 200 }, (_, index) =>
+          buildCancelledItemOrder({ id: `trade-${index}`, asset: { ...buildCancelledItemOrder().asset, itemId: `${index}` } })
+        )
+      }
+    })
+
+    describe('and the list was not expanded', () => {
+      beforeEach(() => {
+        renderWithProviders(<CancelledItemOrdersNotice {...props} />)
+      })
+
+      it('should render the count of every cancelled listing in the collection', () => {
+        expect(screen.getByText('200 listings in this collection were cancelled')).toBeInTheDocument()
+      })
+
+      it('should list only the first five listings, starting with the ones that can be put for sale again', () => {
+        expect(screen.getAllByRole('button', { name: t('cancelled_item_orders.notice.put_for_sale_again') })).toHaveLength(5)
+      })
+
+      it('should offer to show the remaining listings', () => {
+        expect(screen.getByRole('button', { name: 'Show 195 more listings' })).toHaveAttribute('aria-expanded', 'false')
+      })
+    })
+
+    describe('and the show more button is clicked', () => {
+      beforeEach(() => {
+        renderWithProviders(<CancelledItemOrdersNotice {...props} />)
+        act(() => userEvent.click(screen.getByRole('button', { name: 'Show 195 more listings' })))
+      })
+
+      it('should list every cancelled listing', () => {
+        expect(screen.getAllByRole('listitem')).toHaveLength(200)
+      })
+
+      it('should offer to put every matched item for sale again', () => {
+        expect(screen.getAllByRole('button', { name: t('cancelled_item_orders.notice.put_for_sale_again') })).toHaveLength(100)
+      })
+    })
+  })
+
+  describe('and some cancelled item orders could not be loaded', () => {
+    beforeEach(() => {
+      props = { ...props, orders: [buildCancelledItemOrder()], isIncomplete: true }
+      renderWithProviders(<CancelledItemOrdersNotice {...props} />)
+    })
+
+    it('should warn that the list may be incomplete', () => {
+      expect(screen.getByText(t('cancelled_item_orders.banner.incomplete'))).toBeInTheDocument()
     })
   })
 })

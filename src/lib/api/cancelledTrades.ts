@@ -41,13 +41,26 @@ export type CancelledTradesResponse = {
 
 export const CANCELLED_TRADES_PAGE_SIZE = 100
 
+export type FetchCancelledTradesParams = {
+  reason: CancelledTradeReason
+  types?: CancelledTradeType[]
+  first?: number
+  skip?: number
+}
+
 export class CancelledTradesAPI extends BaseClient {
   constructor(private readonly signer: string, url: string, config?: BaseClientConfig) {
     super(url, config)
   }
 
-  fetchCancelledTrades = (reason: CancelledTradeReason, first = CANCELLED_TRADES_PAGE_SIZE): Promise<CancelledTradesResponse> => {
-    const params = new URLSearchParams({ reason, first: first.toString() })
+  fetchCancelledTrades = ({
+    reason,
+    types = [],
+    first = CANCELLED_TRADES_PAGE_SIZE,
+    skip = 0
+  }: FetchCancelledTradesParams): Promise<CancelledTradesResponse> => {
+    const params = new URLSearchParams({ reason, first: first.toString(), skip: skip.toString() })
+    types.forEach(type => params.append('type', type))
     return this.fetch<CancelledTradesResponse>(`/v1/cancelled-trades?${params.toString()}`, {
       method: 'GET',
       metadata: { signer: this.signer }

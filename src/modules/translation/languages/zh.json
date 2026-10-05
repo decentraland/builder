@@ -2232,7 +2232,10 @@
       "text": "Decentraland 升级了市场合约，在旧版本上签署的挂单已被取消。请重新上架这些物品，以便买家继续购买。",
       "listings": "{count} 个挂单",
       "review": "查看挂单",
-      "unknown_collection": "未知集合"
+      "unknown_collection": "未知集合",
+      "show_all": "再显示 {count} 个集合",
+      "show_less": "收起集合",
+      "incomplete": "部分已取消的挂单未能加载，此列表可能不完整。请刷新页面重试。"
     },
     "notice": {
       "title": "此集合中有 {count} 个挂单已被取消",
@@ -2240,7 +2243,9 @@
       "previous_price": "原价：",
       "credits": "{amount} 积分",
       "put_for_sale_again": "重新上架",
-      "unknown_item": "未知物品"
+      "unknown_item": "未知物品",
+      "show_all": "再显示 {count} 个挂单",
+      "show_less": "收起挂单"
     }
   }
 }

@@ -7,6 +7,7 @@ export type Props = {
   collection: Collection
   items: Item[]
   orders: CancelledItemOrder[]
+  isIncomplete: boolean
   onOpenModal: ActionFunction<typeof openModal>
 }
 

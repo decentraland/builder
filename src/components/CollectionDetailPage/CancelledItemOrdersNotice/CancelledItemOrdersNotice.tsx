@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { ethers } from 'ethers'
 import { Network, TradeAssetType } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -6,7 +6,6 @@ import { Button, Icon, Mana } from 'decentraland-ui'
 import { formatCredits, usdWeiToCredits } from 'lib/credits'
 import { useDismissedNotice } from 'modules/cancelledTrades/hooks'
 import { CancelledItemOrder } from 'modules/cancelledTrades/types'
-import { Item } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import bannerStyles from 'components/CancelledItemOrdersBanner/CancelledItemOrdersBanner.module.css'
 import { Props } from './CancelledItemOrdersNotice.types'
@@ -31,9 +30,20 @@ function renderPrice(price: CancelledItemOrder['price']) {
   )
 }
 
-export default function CancelledItemOrdersNotice({ collection, items, orders, onOpenModal }: Props) {
+export const MAX_VISIBLE_ORDERS = 5
+const listId = 'cancelled-item-orders-listings'
+
+export default function CancelledItemOrdersNotice({ collection, items, orders, isIncomplete, onOpenModal }: Props) {
   const [isDismissed, dismiss] = useDismissedNotice(getNoticeStorageKey(collection.id))
+  const [isExpanded, setIsExpanded] = useState(false)
   const itemsByTokenId = useMemo(() => new Map(items.filter(item => item.tokenId).map(item => [item.tokenId!, item])), [items])
+  // Re-listable orders first
+  const rows = useMemo(() => {
+    const withItem = orders.map(order => ({ order, item: order.asset.itemId ? itemsByTokenId.get(order.asset.itemId) : undefined }))
+    return [...withItem.filter(row => row.item), ...withItem.filter(row => !row.item)]
+  }, [orders, itemsByTokenId])
+  const hiddenCount = Math.max(rows.length - MAX_VISIBLE_ORDERS, 0)
+  const visibleRows = isExpanded ? rows : rows.slice(0, MAX_VISIBLE_ORDERS)
 
   if (isDismissed || orders.length === 0) {
     return null
@@ -45,9 +55,9 @@ export default function CancelledItemOrdersNotice({ collection, items, orders, o
       <div className={bannerStyles.message}>
         <h4 className={bannerStyles.title}>{t('cancelled_item_orders.notice.title', { count: orders.length })}</h4>
         <p className={bannerStyles.text}>{t('cancelled_item_orders.notice.text')}</p>
-        <ul className={styles.orders}>
-          {orders.map(order => {
-            const item: Item | undefined = order.asset.itemId ? itemsByTokenId.get(order.asset.itemId) : undefined
+        {isIncomplete ? <p className={bannerStyles.warning}>{t('cancelled_item_orders.banner.incomplete')}</p> : null}
+        <ul id={listId} className={isExpanded ? `${styles.orders} ${styles.scrollable}` : styles.orders}>
+          {visibleRows.map(({ order, item }) => {
             const name = item?.name ?? order.asset.name ?? t('cancelled_item_orders.notice.unknown_item')
             const price = renderPrice(order.price)
             return (
@@ -81,6 +91,17 @@ export default function CancelledItemOrdersNotice({ collection, items, orders, o
             )
           })}
         </ul>
+        {hiddenCount > 0 ? (
+          <button
+            type="button"
+            className={bannerStyles.toggle}
+            aria-expanded={isExpanded}
+            aria-controls={listId}
+            onClick={() => setIsExpanded(expanded => !expanded)}
+          >
+            {isExpanded ? t('cancelled_item_orders.notice.show_less') : t('cancelled_item_orders.notice.show_all', { count: hiddenCount })}
+          </button>
+        ) : null}
       </div>
       <button type="button" className={bannerStyles.close} aria-label={t('global.close')} onClick={dismiss}>
         <Icon name="close" />

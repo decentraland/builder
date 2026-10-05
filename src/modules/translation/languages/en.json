@@ -2235,7 +2235,10 @@
       "text": "Decentraland upgraded its marketplace contracts, which cancelled listings signed on the previous versions. Put these items for sale again so buyers can keep purchasing them.",
       "listings": "{count, plural, one {# listing} other {# listings}}",
       "review": "Review listings",
-      "unknown_collection": "Unknown collection"
+      "unknown_collection": "Unknown collection",
+      "show_all": "{count, plural, one {Show # more collection} other {Show # more collections}}",
+      "show_less": "Show fewer collections",
+      "incomplete": "Some cancelled listings couldn't be loaded, so this list may be incomplete. Reload the page to try again."
     },
     "notice": {
       "title": "{count, plural, one {# listing in this collection was cancelled} other {# listings in this collection were cancelled}}",
@@ -2243,7 +2246,9 @@
       "previous_price": "Previous price:",
       "credits": "{amount} credits",
       "put_for_sale_again": "Put for sale again",
-      "unknown_item": "Unknown item"
+      "unknown_item": "Unknown item",
+      "show_all": "{count, plural, one {Show # more listing} other {Show # more listings}}",
+      "show_less": "Show fewer listings"
     }
   }
 }

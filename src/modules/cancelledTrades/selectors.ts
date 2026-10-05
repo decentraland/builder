@@ -14,6 +14,9 @@ export const getState = (state: RootState) => state.cancelledTrades
 export const getCancelledItemOrders = (state: RootState) => getState(state).data
 export const getCollectionsByContractAddress = (state: RootState) => getState(state).collectionsByContractAddress
 export const getFetchedFor = (state: RootState) => getState(state).fetchedFor
+export const getError = (state: RootState) => getState(state).error
+// A page failed after others loaded: what is shown may be missing orders
+export const isCancelledItemOrdersIncomplete = (state: RootState) => getError(state) !== null && getCancelledItemOrders(state).length > 0
 export const isLoadingCancelledItemOrders = (state: RootState) =>
   isLoadingType(getState(state).loading, FETCH_CANCELLED_ITEM_ORDERS_REQUEST)
 
@@ -42,6 +45,7 @@ export const getCancelledItemOrdersGroups = createSelector(
       group.count++
       groups.set(contractAddress, group)
     }
-    return Array.from(groups.values())
+    // Largest first, so a truncated list shows the collections with most cancellations
+    return Array.from(groups.values()).sort((a, b) => b.count - a.count)
   }
 )

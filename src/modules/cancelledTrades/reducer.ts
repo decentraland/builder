@@ -58,8 +58,10 @@ export function cancelledTradesReducer(
       }
     }
     case FETCH_CANCELLED_ITEM_ORDERS_FAILURE: {
+      const { partial } = action.payload
       return {
         ...state,
+        ...(partial ? { data: partial.orders, collectionsByContractAddress: partial.collectionsByContractAddress } : {}),
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }

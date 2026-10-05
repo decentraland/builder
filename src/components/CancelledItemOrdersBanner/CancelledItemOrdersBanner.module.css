@@ -43,6 +43,11 @@
   list-style: none;
 }
 
+.scrollable {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
 .collection {
   display: flex;
   align-items: center;
@@ -68,6 +73,32 @@
 .collectionLink {
   font-weight: 600;
   white-space: nowrap;
+}
+
+.warning {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--secondary-text);
+}
+
+.toggle {
+  margin: 8px 0 0;
+  padding: 8px 0 0;
+  border: none;
+  border-top: 1px solid var(--divider);
+  width: 100%;
+  background: none;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle:hover,
+.toggle:focus-visible {
+  text-decoration: underline;
 }
 
 .close {

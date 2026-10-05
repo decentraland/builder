@@ -6,6 +6,7 @@ import {
   getCancelledItemOrdersByContractAddress,
   getCancelledItemOrdersGroups,
   getFetchedFor,
+  isCancelledItemOrdersIncomplete,
   isLoadingCancelledItemOrders
 } from './selectors'
 import { CancelledItemOrder } from './types'
@@ -22,7 +23,7 @@ beforeEach(() => {
   state = {
     cancelledTrades: {
       ...INITIAL_STATE,
-      data: [firstOrder, secondOrder, unknownCollectionOrder],
+      data: [unknownCollectionOrder, firstOrder, secondOrder],
       collectionsByContractAddress: { '0xcollection': { id: 'a-collection-id', name: 'A collection' } },
       fetchedFor: '0xaddress',
       loading: [fetchCancelledItemOrdersRequest('0xaddress')]
@@ -67,10 +68,38 @@ describe('when getting the cancelled item orders of a contract address', () => {
 })
 
 describe('when getting the cancelled item orders grouped by collection', () => {
-  it('should return a group per contract with its collection, when known, and its order count', () => {
+  it('should return a group per contract with its collection, when known, and its order count, largest first', () => {
     expect(getCancelledItemOrdersGroups(state)).toEqual([
       { contractAddress: '0xcollection', collection: { id: 'a-collection-id', name: 'A collection' }, count: 2 },
       { contractAddress: '0xunknown', collection: null, count: 1 }
     ])
+  })
+})
+
+describe('when getting if the cancelled item orders are incomplete', () => {
+  describe('and the last fetch failed after loading some orders', () => {
+    beforeEach(() => {
+      state = { ...state, cancelledTrades: { ...state.cancelledTrades, error: 'a page failed' } } as RootState
+    })
+
+    it('should return true', () => {
+      expect(isCancelledItemOrdersIncomplete(state)).toBe(true)
+    })
+  })
+
+  describe('and the last fetch failed without loading any order', () => {
+    beforeEach(() => {
+      state = { ...state, cancelledTrades: { ...state.cancelledTrades, data: [], error: 'a page failed' } } as RootState
+    })
+
+    it('should return false', () => {
+      expect(isCancelledItemOrdersIncomplete(state)).toBe(false)
+    })
+  })
+
+  describe('and the last fetch did not fail', () => {
+    it('should return false', () => {
+      expect(isCancelledItemOrdersIncomplete(state)).toBe(false)
+    })
   })
 })
