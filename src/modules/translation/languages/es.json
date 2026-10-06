@@ -1627,7 +1627,7 @@
         "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por colección (pagado en MANA) una única vez."
       },
       "standard": {
-        "subtitle": "Estás a punto de enviar para revisión la colección \"{collection_name}\" que incluye {count, plural, one {item} other {items}}. Para apoyar al Comité de Curadores y al tesoro de la DAO, hay una tarifa de publicación de {currency} {publication_fee} por ítem (pagada en MANA). {link}."
+        "subtitle": "Estás a punto de enviar tu colección \"{collection_name}\" de {count} {count, plural, one {ítem} other {ítems}} a revisión de los Curadores. Tarifa de publicación: 25 USD por ítem. Por tiempo limitado, Decentraland Foundation cubre 20 USD, así que solo pagas 5 USD por ítem. Para continuar, elige tu método de pago. {link}."
       },
       "learn_more": "Aprender sobre la tarifa de publicación",
       "pay_with": "Pagar con:",
@@ -1643,7 +1643,7 @@
       "already_published": "Ya publicados",
       "quantity": "Cantidad",
       "items": "{count} {count, plural, one {item} other {items}}",
-      "fee_per_item": "Tarifa por item",
+      "fee_per_item": "Pagas por ítem",
       "total_in_usd": "Total en {currency}",
       "total_in_mana": "Total en MANA",
       "available_credits": "Créditos Disponibles",
