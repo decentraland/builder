@@ -15,7 +15,7 @@ import { creditsReducer as credits } from 'decentraland-dapps/dist/modules/credi
 import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
-import { cancelledTradesReducer as cancelledTrades } from 'modules/cancelledTrades/reducer'
+import { cancelledItemOrdersReducer as cancelledItemOrders } from 'modules/cancelledItemOrders/reducer'
 import { collectionReducer as collection } from 'modules/collection/reducer'
 import { committeeReducer as committee } from 'modules/committee/reducer'
 import { collectionCurationReducer as collectionCuration } from 'modules/curations/collectionCuration/reducer'
@@ -43,7 +43,7 @@ export function createRootReducer() {
       campaign,
       assetPack,
       authorization,
-      cancelledTrades,
+      cancelledItemOrders,
       collection,
       committee,
       collectionCuration,

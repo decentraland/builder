@@ -20,7 +20,7 @@ import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
 import { assetSaga } from 'modules/asset/sagas'
-import { cancelledTradesSaga } from 'modules/cancelledTrades/sagas'
+import { cancelledItemOrdersSaga } from 'modules/cancelledItemOrders/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
 import { committeeSaga } from 'modules/committee/sagas'
 import { deploymentSaga } from 'modules/deployment/sagas'
@@ -89,7 +89,7 @@ export function* rootSaga(
     assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
     authorizationSaga(),
-    cancelledTradesSaga(
+    cancelledItemOrdersSaga(
       builderAPI,
       new CancelledTradesAPI('dcl:builder', config.get('MARKETPLACE_API'), { identity: getIdentity, retries: 0 })
     ),

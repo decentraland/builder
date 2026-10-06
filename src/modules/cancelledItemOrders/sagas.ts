@@ -31,7 +31,7 @@ type PageResult = { page: CancelledTradesResponse } | { error: string }
 
 const getErrorMessage = (error: unknown) => (isErrorWithMessage(error) ? error.message : 'Unknown error')
 
-export function* cancelledTradesSaga(builderAPI: BuilderAPI, cancelledTradesAPI: CancelledTradesAPI) {
+export function* cancelledItemOrdersSaga(builderAPI: BuilderAPI, cancelledTradesAPI: CancelledTradesAPI) {
   yield takeLatest(FETCH_CANCELLED_ITEM_ORDERS_REQUEST, handleFetchCancelledItemOrdersRequest)
 
   // Settles instead of throwing so a failed page keeps the pages fetched alongside it

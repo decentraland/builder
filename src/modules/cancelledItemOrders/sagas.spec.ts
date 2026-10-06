@@ -4,9 +4,9 @@ import { throwError } from 'redux-saga-test-plan/providers'
 import { BuilderAPI } from 'lib/api/builder'
 import { CancelledTradeReason, CancelledTradesAPI, CancelledTradesResponse, CancelledTradeType } from 'lib/api/cancelledTrades'
 import { Collection } from 'modules/collection/types'
-import { buildCancelledItemOrder } from 'specs/cancelledTrades'
+import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
 import { fetchCancelledItemOrdersFailure, fetchCancelledItemOrdersRequest, fetchCancelledItemOrdersSuccess } from './actions'
-import { cancelledTradesSaga, getCancelledItemOrdersPageParams } from './sagas'
+import { cancelledItemOrdersSaga, getCancelledItemOrdersPageParams } from './sagas'
 import { CancelledItemOrder } from './types'
 
 let builderAPI: BuilderAPI
@@ -45,7 +45,7 @@ describe('when getting the params of a cancelled item orders page', () => {
 describe('when handling the fetch cancelled item orders request', () => {
   describe('and the first page fails', () => {
     it('should put the failure action with the error message and without fetching the collections', () => {
-      return expectSaga(cancelledTradesSaga, builderAPI, cancelledTradesAPI)
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([[pageCall(0), throwError(new Error('Request failed'))]])
         .put(fetchCancelledItemOrdersFailure('Request failed'))
         .not.call.fn(builderAPI.fetchCollections)
@@ -62,7 +62,7 @@ describe('when handling the fetch cancelled item orders request', () => {
     })
 
     it('should put the success action with no orders and without fetching the collections', () => {
-      return expectSaga(cancelledTradesSaga, builderAPI, cancelledTradesAPI)
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([[pageCall(0), response]])
         .put(fetchCancelledItemOrdersSuccess([], {}))
         .not.call.fn(builderAPI.fetchCollections)
@@ -82,7 +82,7 @@ describe('when handling the fetch cancelled item orders request', () => {
     })
 
     it('should put the success action with only the item orders and the collections they belong to', () => {
-      return expectSaga(cancelledTradesSaga, builderAPI, cancelledTradesAPI)
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
           [pageCall(0), response],
           [call([builderAPI, 'fetchCollections'], address), collections]
@@ -105,7 +105,7 @@ describe('when handling the fetch cancelled item orders request', () => {
     })
 
     it('should fetch every page and put the success action with the orders without duplicates', () => {
-      return expectSaga(cancelledTradesSaga, builderAPI, cancelledTradesAPI)
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
           [pageCall(0), pages[0]],
           [pageCall(100), pages[1]],
@@ -128,7 +128,7 @@ describe('when handling the fetch cancelled item orders request', () => {
     })
 
     it('should stop fetching and put the failure action with the orders that loaded and their collections', () => {
-      return expectSaga(cancelledTradesSaga, builderAPI, cancelledTradesAPI)
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
           [pageCall(0), { data: orders.slice(0, 100), total: 450 }],
           [pageCall(100), { data: orders.slice(100, 200), total: 450 }],
@@ -150,7 +150,7 @@ describe('when handling the fetch cancelled item orders request', () => {
 
   describe('and the collections fail to load', () => {
     it('should put the failure action with the error message', () => {
-      return expectSaga(cancelledTradesSaga, builderAPI, cancelledTradesAPI)
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
           [pageCall(0), { data: [buildCancelledItemOrder()], total: 1 }],
           [call([builderAPI, 'fetchCollections'], address), throwError(new Error('Collections failed'))]

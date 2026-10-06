@@ -1,5 +1,5 @@
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { CancelledItemOrder } from 'modules/cancelledTrades/types'
+import { CancelledItemOrder } from 'modules/cancelledItemOrders/types'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 

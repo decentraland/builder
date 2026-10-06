@@ -1,4 +1,4 @@
-import { CancelledItemOrdersGroup } from 'modules/cancelledTrades/selectors'
+import { CancelledItemOrdersGroup } from 'modules/cancelledItemOrders/selectors'
 
 export type Props = {
   address: string

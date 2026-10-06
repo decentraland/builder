@@ -1,12 +1,12 @@
 import { Trade, TradeAssetType } from '@dcl/schemas'
 import { createItemOrderTradeSuccess } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
-import { buildCancelledItemOrder } from 'specs/cancelledTrades'
+import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
 import { fetchCancelledItemOrdersFailure, fetchCancelledItemOrdersRequest, fetchCancelledItemOrdersSuccess } from './actions'
-import { CancelledTradesState, INITIAL_STATE, cancelledTradesReducer } from './reducer'
+import { CancelledItemOrdersState, INITIAL_STATE, cancelledItemOrdersReducer } from './reducer'
 import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
 
-let state: CancelledTradesState
+let state: CancelledItemOrdersState
 let order: CancelledItemOrder
 
 beforeEach(() => {
@@ -20,7 +20,7 @@ describe('when reducing the fetch cancelled item orders request action', () => {
     })
 
     it('should keep the orders and add the loading state', () => {
-      expect(cancelledTradesReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
+      expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
         ...state,
         loading: [fetchCancelledItemOrdersRequest('0xaddress')]
       })
@@ -33,7 +33,7 @@ describe('when reducing the fetch cancelled item orders request action', () => {
     })
 
     it('should drop the previous orders and record the new address', () => {
-      expect(cancelledTradesReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
+      expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
         ...state,
         data: [],
         fetchedFor: '0xaddress',
@@ -52,7 +52,7 @@ describe('when reducing the fetch cancelled item orders success action', () => {
   })
 
   it('should store the orders and the collections and clear the loading state', () => {
-    expect(cancelledTradesReducer(state, fetchCancelledItemOrdersSuccess([order], collectionsByContractAddress))).toEqual({
+    expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersSuccess([order], collectionsByContractAddress))).toEqual({
       ...state,
       data: [order],
       collectionsByContractAddress,
@@ -68,7 +68,7 @@ describe('when reducing the fetch cancelled item orders failure action', () => {
 
   describe('and nothing loaded before the failure', () => {
     it('should store the error and clear the loading state', () => {
-      expect(cancelledTradesReducer(state, fetchCancelledItemOrdersFailure('an error'))).toEqual({
+      expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersFailure('an error'))).toEqual({
         ...state,
         error: 'an error',
         loading: []
@@ -85,7 +85,7 @@ describe('when reducing the fetch cancelled item orders failure action', () => {
 
     it('should store the loaded orders and collections along with the error', () => {
       expect(
-        cancelledTradesReducer(state, fetchCancelledItemOrdersFailure('an error', { orders: [order], collectionsByContractAddress }))
+        cancelledItemOrdersReducer(state, fetchCancelledItemOrdersFailure('an error', { orders: [order], collectionsByContractAddress }))
       ).toEqual({
         ...state,
         data: [order],
@@ -118,7 +118,7 @@ describe('when reducing the create item order trade success action', () => {
 
   it('should drop only the cancelled order of the re-listed item', () => {
     expect(
-      cancelledTradesReducer(state, createItemOrderTradeSuccess(trade, { id: 'an-item-id' } as Item, '1', '0xbeneficiary', 0)).data
+      cancelledItemOrdersReducer(state, createItemOrderTradeSuccess(trade, { id: 'an-item-id' } as Item, '1', '0xbeneficiary', 0)).data
     ).toEqual([otherItemOrder, otherCollectionOrder])
   })
 })

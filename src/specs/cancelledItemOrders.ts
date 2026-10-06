@@ -1,6 +1,6 @@
 import { ChainId, Network, TradeAssetType } from '@dcl/schemas'
 import { CancelledTradeReason, CancelledTradeType } from 'lib/api/cancelledTrades'
-import { CancelledItemOrder } from 'modules/cancelledTrades/types'
+import { CancelledItemOrder } from 'modules/cancelledItemOrders/types'
 
 export function buildCancelledItemOrder(overrides: Partial<CancelledItemOrder> = {}): CancelledItemOrder {
   return {

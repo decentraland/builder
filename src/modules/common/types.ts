@@ -15,7 +15,7 @@ import { CreditsState } from 'decentraland-dapps/dist/modules/credits/reducer'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
-import { CancelledTradesState } from 'modules/cancelledTrades/reducer'
+import { CancelledItemOrdersState } from 'modules/cancelledItemOrders/reducer'
 import { CollectionState } from 'modules/collection/reducer'
 import { CommitteeState } from 'modules/committee/reducer'
 import { DeploymentState } from 'modules/deployment/reducer'
@@ -45,7 +45,7 @@ export type RootState = {
   campaign: CampaignState
   assetPack: AssetPackState
   authorization: AuthorizationState
-  cancelledTrades: CancelledTradesState
+  cancelledItemOrders: CancelledItemOrdersState
   collection: CollectionState
   committee: CommitteeState
   deployment: DeploymentState

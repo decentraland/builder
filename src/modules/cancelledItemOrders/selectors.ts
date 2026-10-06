@@ -10,7 +10,7 @@ export type CancelledItemOrdersGroup = {
   count: number
 }
 
-export const getState = (state: RootState) => state.cancelledTrades
+export const getState = (state: RootState) => state.cancelledItemOrders
 export const getCancelledItemOrders = (state: RootState) => getState(state).data
 export const getCollectionsByContractAddress = (state: RootState) => getState(state).collectionsByContractAddress
 export const getFetchedFor = (state: RootState) => getState(state).fetchedFor

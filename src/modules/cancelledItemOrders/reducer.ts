@@ -11,7 +11,7 @@ import {
 } from './actions'
 import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
 
-export type CancelledTradesState = {
+export type CancelledItemOrdersState = {
   data: CancelledItemOrder[]
   // Keyed by lowercased contract address
   collectionsByContractAddress: Record<string, CancelledItemOrdersCollection>
@@ -21,7 +21,7 @@ export type CancelledTradesState = {
   error: string | null
 }
 
-export const INITIAL_STATE: CancelledTradesState = {
+export const INITIAL_STATE: CancelledItemOrdersState = {
   data: [],
   collectionsByContractAddress: {},
   fetchedFor: null,
@@ -35,10 +35,10 @@ type CancelledTradesReducerAction =
   | FetchCancelledItemOrdersFailureAction
   | CreateItemOrderTradeSuccessAction
 
-export function cancelledTradesReducer(
-  state: CancelledTradesState = INITIAL_STATE,
+export function cancelledItemOrdersReducer(
+  state: CancelledItemOrdersState = INITIAL_STATE,
   action: CancelledTradesReducerAction
-): CancelledTradesState {
+): CancelledItemOrdersState {
   switch (action.type) {
     case FETCH_CANCELLED_ITEM_ORDERS_REQUEST: {
       return {

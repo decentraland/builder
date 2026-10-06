@@ -1,5 +1,5 @@
 import { RootState } from 'modules/common/types'
-import { buildCancelledItemOrder } from 'specs/cancelledTrades'
+import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
 import { fetchCancelledItemOrdersRequest } from './actions'
 import { INITIAL_STATE } from './reducer'
 import {
@@ -21,7 +21,7 @@ beforeEach(() => {
   secondOrder = buildCancelledItemOrder({ id: 'second', asset: { ...firstOrder.asset, itemId: '1' } })
   unknownCollectionOrder = buildCancelledItemOrder({ id: 'third', asset: { ...firstOrder.asset, contractAddress: '0xunknown' } })
   state = {
-    cancelledTrades: {
+    cancelledItemOrders: {
       ...INITIAL_STATE,
       data: [unknownCollectionOrder, firstOrder, secondOrder],
       collectionsByContractAddress: { '0xcollection': { id: 'a-collection-id', name: 'A collection' } },
@@ -79,7 +79,7 @@ describe('when getting the cancelled item orders grouped by collection', () => {
 describe('when getting if the cancelled item orders are incomplete', () => {
   describe('and the last fetch failed after loading some orders', () => {
     beforeEach(() => {
-      state = { ...state, cancelledTrades: { ...state.cancelledTrades, error: 'a page failed' } } as RootState
+      state = { ...state, cancelledItemOrders: { ...state.cancelledItemOrders, error: 'a page failed' } } as RootState
     })
 
     it('should return true', () => {
@@ -89,7 +89,7 @@ describe('when getting if the cancelled item orders are incomplete', () => {
 
   describe('and the last fetch failed without loading any order', () => {
     beforeEach(() => {
-      state = { ...state, cancelledTrades: { ...state.cancelledTrades, data: [], error: 'a page failed' } } as RootState
+      state = { ...state, cancelledItemOrders: { ...state.cancelledItemOrders, data: [], error: 'a page failed' } } as RootState
     })
 
     it('should return false', () => {
