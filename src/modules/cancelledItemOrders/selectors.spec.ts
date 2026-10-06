@@ -1,13 +1,11 @@
 import { RootState } from 'modules/common/types'
 import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
-import { fetchCancelledItemOrdersRequest } from './actions'
 import { INITIAL_STATE } from './reducer'
 import {
   getCancelledItemOrdersByContractAddress,
   getCancelledItemOrdersGroups,
   getFetchedFor,
-  isCancelledItemOrdersIncomplete,
-  isLoadingCancelledItemOrders
+  isCancelledItemOrdersIncomplete
 } from './selectors'
 import { CancelledItemOrder } from './types'
 
@@ -25,8 +23,7 @@ beforeEach(() => {
       ...INITIAL_STATE,
       data: [unknownCollectionOrder, firstOrder, secondOrder],
       collectionsByContractAddress: { '0xcollection': { id: 'a-collection-id', name: 'A collection' } },
-      fetchedFor: '0xaddress',
-      loading: [fetchCancelledItemOrdersRequest('0xaddress')]
+      fetchedFor: '0xaddress'
     }
   } as unknown as RootState
 })
@@ -34,12 +31,6 @@ beforeEach(() => {
 describe('when getting the address the cancelled item orders were fetched for', () => {
   it('should return the address', () => {
     expect(getFetchedFor(state)).toBe('0xaddress')
-  })
-})
-
-describe('when getting if the cancelled item orders are loading', () => {
-  it('should return true while the request is pending', () => {
-    expect(isLoadingCancelledItemOrders(state)).toBe(true)
   })
 })
 
@@ -77,9 +68,9 @@ describe('when getting the cancelled item orders grouped by collection', () => {
 })
 
 describe('when getting if the cancelled item orders are incomplete', () => {
-  describe('and the last fetch failed after loading some orders', () => {
+  describe('and a page failed after others loaded', () => {
     beforeEach(() => {
-      state = { ...state, cancelledItemOrders: { ...state.cancelledItemOrders, error: 'a page failed' } } as RootState
+      state = { ...state, cancelledItemOrders: { ...state.cancelledItemOrders, isIncomplete: true } } as RootState
     })
 
     it('should return true', () => {
@@ -87,17 +78,7 @@ describe('when getting if the cancelled item orders are incomplete', () => {
     })
   })
 
-  describe('and the last fetch failed without loading any order', () => {
-    beforeEach(() => {
-      state = { ...state, cancelledItemOrders: { ...state.cancelledItemOrders, data: [], error: 'a page failed' } } as RootState
-    })
-
-    it('should return false', () => {
-      expect(isCancelledItemOrdersIncomplete(state)).toBe(false)
-    })
-  })
-
-  describe('and the last fetch did not fail', () => {
+  describe('and every page loaded', () => {
     it('should return false', () => {
       expect(isCancelledItemOrdersIncomplete(state)).toBe(false)
     })

@@ -1,5 +1,4 @@
 import { CollectionItemTradeAsset, TradeAssetType } from '@dcl/schemas'
-import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { CREATE_ITEM_ORDER_TRADE_SUCCESS, CreateItemOrderTradeSuccessAction } from 'modules/item/actions'
 import {
   FETCH_CANCELLED_ITEM_ORDERS_FAILURE,
@@ -17,7 +16,7 @@ export type CancelledItemOrdersState = {
   collectionsByContractAddress: Record<string, CancelledItemOrdersCollection>
   // Address the last fetch was attempted for, so a failure isn't retried on every render
   fetchedFor: string | null
-  loading: LoadingState
+  isIncomplete: boolean
   error: string | null
 }
 
@@ -25,7 +24,7 @@ export const INITIAL_STATE: CancelledItemOrdersState = {
   data: [],
   collectionsByContractAddress: {},
   fetchedFor: null,
-  loading: [],
+  isIncomplete: false,
   error: null
 }
 
@@ -45,7 +44,7 @@ export function cancelledItemOrdersReducer(
         ...state,
         data: state.fetchedFor === action.payload.address ? state.data : [],
         fetchedFor: action.payload.address,
-        loading: loadingReducer(state.loading, action),
+        isIncomplete: false,
         error: null
       }
     }
@@ -54,15 +53,12 @@ export function cancelledItemOrdersReducer(
         ...state,
         data: action.payload.orders,
         collectionsByContractAddress: action.payload.collectionsByContractAddress,
-        loading: loadingReducer(state.loading, action)
+        isIncomplete: action.payload.isIncomplete
       }
     }
     case FETCH_CANCELLED_ITEM_ORDERS_FAILURE: {
-      const { partial } = action.payload
       return {
         ...state,
-        ...(partial ? { data: partial.orders, collectionsByContractAddress: partial.collectionsByContractAddress } : {}),
-        loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }
     }

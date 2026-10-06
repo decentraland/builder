@@ -16,13 +16,14 @@ beforeEach(() => {
 describe('when reducing the fetch cancelled item orders request action', () => {
   describe('and the orders were already fetched for the same address', () => {
     beforeEach(() => {
-      state = { ...INITIAL_STATE, data: [order], fetchedFor: '0xaddress' }
+      state = { ...INITIAL_STATE, data: [order], fetchedFor: '0xaddress', isIncomplete: true, error: 'an error' }
     })
 
-    it('should keep the orders and add the loading state', () => {
+    it('should keep the orders and clear the incomplete flag and the error', () => {
       expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
         ...state,
-        loading: [fetchCancelledItemOrdersRequest('0xaddress')]
+        isIncomplete: false,
+        error: null
       })
     })
   })
@@ -36,8 +37,7 @@ describe('when reducing the fetch cancelled item orders request action', () => {
       expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
         ...state,
         data: [],
-        fetchedFor: '0xaddress',
-        loading: [fetchCancelledItemOrdersRequest('0xaddress')]
+        fetchedFor: '0xaddress'
       })
     })
   })
@@ -48,51 +48,41 @@ describe('when reducing the fetch cancelled item orders success action', () => {
 
   beforeEach(() => {
     collectionsByContractAddress = { '0xcollection': { id: 'a-collection-id', name: 'A collection' } }
-    state = { ...INITIAL_STATE, fetchedFor: '0xaddress', loading: [fetchCancelledItemOrdersRequest('0xaddress')] }
+    state = { ...INITIAL_STATE, fetchedFor: '0xaddress' }
   })
 
-  it('should store the orders and the collections and clear the loading state', () => {
-    expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersSuccess([order], collectionsByContractAddress))).toEqual({
-      ...state,
-      data: [order],
-      collectionsByContractAddress,
-      loading: []
+  describe('and every page loaded', () => {
+    it('should store the orders and the collections', () => {
+      expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersSuccess([order], collectionsByContractAddress))).toEqual({
+        ...state,
+        data: [order],
+        collectionsByContractAddress,
+        isIncomplete: false
+      })
+    })
+  })
+
+  describe('and a later page failed', () => {
+    it('should store the orders that loaded and flag them as incomplete', () => {
+      expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersSuccess([order], collectionsByContractAddress, true))).toEqual({
+        ...state,
+        data: [order],
+        collectionsByContractAddress,
+        isIncomplete: true
+      })
     })
   })
 })
 
 describe('when reducing the fetch cancelled item orders failure action', () => {
   beforeEach(() => {
-    state = { ...INITIAL_STATE, fetchedFor: '0xaddress', loading: [fetchCancelledItemOrdersRequest('0xaddress')] }
+    state = { ...INITIAL_STATE, fetchedFor: '0xaddress' }
   })
 
-  describe('and nothing loaded before the failure', () => {
-    it('should store the error and clear the loading state', () => {
-      expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersFailure('an error'))).toEqual({
-        ...state,
-        error: 'an error',
-        loading: []
-      })
-    })
-  })
-
-  describe('and some orders loaded before the failure', () => {
-    let collectionsByContractAddress: Record<string, CancelledItemOrdersCollection>
-
-    beforeEach(() => {
-      collectionsByContractAddress = { '0xcollection': { id: 'a-collection-id', name: 'A collection' } }
-    })
-
-    it('should store the loaded orders and collections along with the error', () => {
-      expect(
-        cancelledItemOrdersReducer(state, fetchCancelledItemOrdersFailure('an error', { orders: [order], collectionsByContractAddress }))
-      ).toEqual({
-        ...state,
-        data: [order],
-        collectionsByContractAddress,
-        error: 'an error',
-        loading: []
-      })
+  it('should store the error', () => {
+    expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersFailure('an error'))).toEqual({
+      ...state,
+      error: 'an error'
     })
   })
 })

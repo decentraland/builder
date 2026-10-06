@@ -77,11 +77,10 @@ describe('when handling the fetch cancelled item orders request', () => {
 
     beforeEach(() => {
       itemOrder = buildCancelledItemOrder()
-      // The bid covers a server that ignores the type filter
-      response = { data: [itemOrder, buildCancelledItemOrder({ id: 'a-bid', type: CancelledTradeType.BID })], total: 1 }
+      response = { data: [itemOrder], total: 1 }
     })
 
-    it('should put the success action with only the item orders and the collections they belong to', () => {
+    it('should put the success action with the orders and the collections they belong to', () => {
       return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
           [pageCall(0), response],
@@ -127,35 +126,37 @@ describe('when handling the fetch cancelled item orders request', () => {
       orders = buildOrders(0, 450)
     })
 
-    it('should stop fetching and put the failure action with the orders that loaded and their collections', () => {
+    it('should stop fetching and put the success action with the orders that loaded, flagged as incomplete', () => {
       return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
           [pageCall(0), { data: orders.slice(0, 100), total: 450 }],
           [pageCall(100), { data: orders.slice(100, 200), total: 450 }],
           [pageCall(200), throwError(new Error('Page failed'))],
-          [pageCall(300), { data: orders.slice(300, 400), total: 450 }],
           [call([builderAPI, 'fetchCollections'], address), collections]
         ])
         .put(
-          fetchCancelledItemOrdersFailure('Page failed', {
-            orders: [...orders.slice(0, 200), ...orders.slice(300, 400)],
-            collectionsByContractAddress: { '0xcollection': { id: 'a-collection-id', name: 'A collection' } }
-          })
+          fetchCancelledItemOrdersSuccess(orders.slice(0, 200), { '0xcollection': { id: 'a-collection-id', name: 'A collection' } }, true)
         )
-        .not.call([cancelledTradesAPI, 'fetchCancelledTrades'], getCancelledItemOrdersPageParams(400))
+        .not.call([cancelledTradesAPI, 'fetchCancelledTrades'], getCancelledItemOrdersPageParams(300))
         .dispatch(fetchCancelledItemOrdersRequest(address))
         .silentRun()
     })
   })
 
   describe('and the collections fail to load', () => {
-    it('should put the failure action with the error message', () => {
+    let itemOrder: CancelledItemOrder
+
+    beforeEach(() => {
+      itemOrder = buildCancelledItemOrder()
+    })
+
+    it('should put the success action with the orders and no collections', () => {
       return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
         .provide([
-          [pageCall(0), { data: [buildCancelledItemOrder()], total: 1 }],
+          [pageCall(0), { data: [itemOrder], total: 1 }],
           [call([builderAPI, 'fetchCollections'], address), throwError(new Error('Collections failed'))]
         ])
-        .put(fetchCancelledItemOrdersFailure('Collections failed'))
+        .put(fetchCancelledItemOrdersSuccess([itemOrder], {}))
         .dispatch(fetchCancelledItemOrdersRequest(address))
         .silentRun()
     })

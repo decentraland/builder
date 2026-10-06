@@ -1,7 +1,5 @@
 import { createSelector } from 'reselect'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { FETCH_CANCELLED_ITEM_ORDERS_REQUEST } from './actions'
 import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
 
 export type CancelledItemOrdersGroup = {
@@ -14,11 +12,8 @@ export const getState = (state: RootState) => state.cancelledItemOrders
 export const getCancelledItemOrders = (state: RootState) => getState(state).data
 export const getCollectionsByContractAddress = (state: RootState) => getState(state).collectionsByContractAddress
 export const getFetchedFor = (state: RootState) => getState(state).fetchedFor
-export const getError = (state: RootState) => getState(state).error
 // A page failed after others loaded: what is shown may be missing orders
-export const isCancelledItemOrdersIncomplete = (state: RootState) => getError(state) !== null && getCancelledItemOrders(state).length > 0
-export const isLoadingCancelledItemOrders = (state: RootState) =>
-  isLoadingType(getState(state).loading, FETCH_CANCELLED_ITEM_ORDERS_REQUEST)
+export const isCancelledItemOrdersIncomplete = (state: RootState) => getState(state).isIncomplete
 
 export const getCancelledItemOrdersByContractAddress = (
   state: RootState,
