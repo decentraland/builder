@@ -1,53 +1,3 @@
-.banner {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  margin: 0 0 24px;
-  padding: 24px 56px 24px 30px;
-  border-radius: 8px;
-  background-color: var(--dark-two);
-}
-
-.alertIcon {
-  flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
-  background: url('../../icons/alert.svg') no-repeat;
-  background-size: contain;
-  filter: invert(64%) sepia(34%) saturate(797%) hue-rotate(331deg) brightness(160%) contrast(98%); /* #fc9965 */
-}
-
-.message {
-  flex: 1;
-  min-width: 0;
-}
-
-.title {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 24px;
-}
-
-.text {
-  margin: 0;
-  font-size: 15px;
-  line-height: 24px;
-  color: var(--secondary-text);
-}
-
-.collections {
-  margin: 16px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.scrollable {
-  max-height: 360px;
-  overflow-y: auto;
-}
-
 .collection {
   display: flex;
   align-items: center;
@@ -57,74 +7,20 @@
   font-size: 14px;
 }
 
-.collectionName {
+.name {
   overflow: hidden;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.collectionCount {
+.count {
   flex: 1;
   color: var(--secondary-text);
   white-space: nowrap;
 }
 
-.collectionLink {
+.link {
   font-weight: 600;
   white-space: nowrap;
-}
-
-.warning {
-  margin: 12px 0 0;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--secondary-text);
-}
-
-.toggle {
-  margin: 8px 0 0;
-  padding: 8px 0 0;
-  border: none;
-  border-top: 1px solid var(--divider);
-  width: 100%;
-  background: none;
-  color: var(--primary);
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-}
-
-.toggle:hover,
-.toggle:focus-visible {
-  text-decoration: underline;
-}
-
-.close {
-  position: absolute;
-  top: 24px;
-  right: 20px;
-  padding: 4px;
-  border: none;
-  background: none;
-  color: var(--secondary-text);
-  cursor: pointer;
-}
-
-.close:hover,
-.close:focus-visible {
-  color: var(--text);
-}
-
-.close i.icon {
-  margin: 0;
-}
-
-@media only screen and (max-width: 767px) {
-  .banner {
-    flex-direction: column;
-    gap: 12px;
-    padding: 20px 48px 20px 20px;
-  }
 }

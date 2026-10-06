@@ -1,14 +1,3 @@
-.orders {
-  margin: 16px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.scrollable {
-  max-height: 480px;
-  overflow-y: auto;
-}
-
 .order {
   display: flex;
   align-items: center;

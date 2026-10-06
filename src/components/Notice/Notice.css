@@ -14,7 +14,14 @@
   color: var(--secondary-text);
 }
 
+.Notice .close {
+  display: flex;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
 .Notice .Icon {
   filter: invert(65%);
-  cursor: pointer;
 }

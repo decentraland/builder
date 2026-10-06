@@ -4,6 +4,7 @@ import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
 export type Props = {
+  address: string
   collection: Collection
   items: Item[]
   orders: CancelledItemOrder[]

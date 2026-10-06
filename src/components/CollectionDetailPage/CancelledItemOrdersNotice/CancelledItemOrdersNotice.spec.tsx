@@ -16,6 +16,8 @@ jest.mock('components/ItemImage', () => ({
   default: () => <div data-testid="item-image" />
 }))
 
+const ADDRESS = '0xAddress'
+
 let props: Props
 let renderResult: RenderResult
 let onOpenModal: jest.Mock
@@ -25,6 +27,7 @@ beforeEach(() => {
   onOpenModal = jest.fn()
   item = { ...mockedItem, id: 'a-builder-item-id', name: 'Builder item name', tokenId: '0' } as Item
   props = {
+    address: ADDRESS,
     collection: { id: 'a-collection-id', contractAddress: '0xcollection' } as Collection,
     items: [item],
     orders: [],
@@ -102,9 +105,23 @@ describe('when rendering the cancelled item orders notice', () => {
         act(() => userEvent.click(screen.getByRole('button', { name: t('global.close') })))
       })
 
-      it('should hide the notice and remember the dismissal for the collection', () => {
+      it('should hide the notice', () => {
         expect(renderResult.container).toBeEmptyDOMElement()
-        expect(localStorage.getItem(getNoticeStorageKey('a-collection-id'))).not.toBeNull()
+      })
+
+      it('should remember the dismissal for the address and the collection', () => {
+        expect(localStorage.getItem(getNoticeStorageKey(ADDRESS, 'a-collection-id'))).not.toBeNull()
+      })
+    })
+
+    describe('and the notice was dismissed by another address', () => {
+      beforeEach(() => {
+        localStorage.setItem(getNoticeStorageKey('0xanother', 'a-collection-id'), '1')
+        renderWithProviders(<CancelledItemOrdersNotice {...props} />)
+      })
+
+      it('should render the notice', () => {
+        expect(screen.getByText('2 listings in this collection were cancelled')).toBeInTheDocument()
       })
     })
   })
