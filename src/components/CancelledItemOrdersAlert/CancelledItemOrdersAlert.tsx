@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Notice from 'components/Notice'
 import { Props } from './CancelledItemOrdersAlert.types'
 import styles from './CancelledItemOrdersAlert.module.css'
@@ -11,6 +10,7 @@ export default function CancelledItemOrdersAlert({
   title,
   text,
   isIncomplete,
+  incompleteText,
   listId,
   rows,
   showAllLabel,
@@ -26,7 +26,7 @@ export default function CancelledItemOrdersAlert({
         <div className={styles.message}>
           <h4 className={styles.title}>{title}</h4>
           <p className={styles.description}>{text}</p>
-          {isIncomplete ? <p className={styles.warning}>{t('cancelled_item_orders.banner.incomplete')}</p> : null}
+          {isIncomplete ? <p className={styles.warning}>{incompleteText}</p> : null}
           <ul id={listId} className={isExpanded ? `${styles.list} ${styles.scrollable}` : styles.list}>
             {isExpanded ? rows : rows.slice(0, MAX_VISIBLE_ROWS)}
           </ul>

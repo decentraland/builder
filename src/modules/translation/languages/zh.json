@@ -2245,7 +2245,8 @@
       "put_for_sale_again": "重新上架",
       "unknown_item": "未知物品",
       "show_all": "再显示 {count} 个挂单",
-      "show_less": "收起挂单"
+      "show_less": "收起挂单",
+      "incomplete": "此集合中部分已取消的挂单未能加载，此列表可能不完整。请刷新页面重试。"
     }
   }
 }

@@ -3,6 +3,7 @@ import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   CANCELLED_TRADES_PAGE_SIZE,
+  CancelledTrade,
   CancelledTradeReason,
   CancelledTradesAPI,
   CancelledTradesResponse,
@@ -16,7 +17,7 @@ import {
   fetchCancelledItemOrdersFailure,
   fetchCancelledItemOrdersSuccess
 } from './actions'
-import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
+import { CancelledItemOrdersCollection } from './types'
 
 export const getCancelledItemOrdersPageParams = (skip: number): FetchCancelledTradesParams => ({
   reason: CancelledTradeReason.CONTRACT_SIGNATURE_INDEX_BUMP,
@@ -28,7 +29,7 @@ export const getCancelledItemOrdersPageParams = (skip: number): FetchCancelledTr
 export function* cancelledItemOrdersSaga(builderAPI: BuilderAPI, cancelledTradesAPI: CancelledTradesAPI) {
   yield takeLatest(FETCH_CANCELLED_ITEM_ORDERS_REQUEST, handleFetchCancelledItemOrdersRequest)
 
-  function* fetchCollectionsByContractAddress(address: string, orders: CancelledItemOrder[]) {
+  function* fetchCollectionsByContractAddress(address: string, orders: CancelledTrade[]) {
     const collectionsByContractAddress: Record<string, CancelledItemOrdersCollection> = {}
     if (orders.length === 0) {
       return collectionsByContractAddress
@@ -52,7 +53,7 @@ export function* cancelledItemOrdersSaga(builderAPI: BuilderAPI, cancelledTrades
   function* handleFetchCancelledItemOrdersRequest(action: FetchCancelledItemOrdersRequestAction) {
     const { address } = action.payload
     // Keyed by id: pages can shift between requests
-    const ordersById = new Map<string, CancelledItemOrder>()
+    const ordersById = new Map<string, CancelledTrade>()
     let isIncomplete = false
     let total = 0
     let skip = 0
@@ -63,6 +64,10 @@ export function* cancelledItemOrdersSaga(builderAPI: BuilderAPI, cancelledTrades
           [cancelledTradesAPI, 'fetchCancelledTrades'],
           getCancelledItemOrdersPageParams(skip)
         )
+        // An empty page ends the loop even if the total is inflated
+        if (page.data.length === 0) {
+          break
+        }
         page.data.forEach(order => ordersById.set(order.id, order))
         total = page.total
       } catch (error) {

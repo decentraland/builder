@@ -8,10 +8,11 @@ import {
   FetchCancelledItemOrdersRequestAction,
   FetchCancelledItemOrdersSuccessAction
 } from './actions'
-import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
+import { CancelledItemOrdersCollection } from './types'
 
 export type CancelledItemOrdersState = {
-  data: CancelledItemOrder[]
+  data: CancelledTrade[]
   // Keyed by lowercased contract address
   collectionsByContractAddress: Record<string, CancelledItemOrdersCollection>
   // Address the last fetch was attempted for, so a failure isn't retried on every render
@@ -28,7 +29,7 @@ export const INITIAL_STATE: CancelledItemOrdersState = {
   error: null
 }
 
-type CancelledTradesReducerAction =
+type CancelledItemOrdersReducerAction =
   | FetchCancelledItemOrdersRequestAction
   | FetchCancelledItemOrdersSuccessAction
   | FetchCancelledItemOrdersFailureAction
@@ -36,13 +37,15 @@ type CancelledTradesReducerAction =
 
 export function cancelledItemOrdersReducer(
   state: CancelledItemOrdersState = INITIAL_STATE,
-  action: CancelledTradesReducerAction
+  action: CancelledItemOrdersReducerAction
 ): CancelledItemOrdersState {
   switch (action.type) {
     case FETCH_CANCELLED_ITEM_ORDERS_REQUEST: {
+      const isSameAddress = state.fetchedFor === action.payload.address
       return {
         ...state,
-        data: state.fetchedFor === action.payload.address ? state.data : [],
+        data: isSameAddress ? state.data : [],
+        collectionsByContractAddress: isSameAddress ? state.collectionsByContractAddress : {},
         fetchedFor: action.payload.address,
         isIncomplete: false,
         error: null

@@ -20,6 +20,7 @@ export default function CancelledItemOrdersBanner({ address, groups, isIncomplet
       title={t('cancelled_item_orders.banner.title', { count })}
       text={t('cancelled_item_orders.banner.text')}
       isIncomplete={isIncomplete}
+      incompleteText={t('cancelled_item_orders.banner.incomplete')}
       listId="cancelled-item-orders-collections"
       rows={groups.map(group => (
         <li key={group.contractAddress} className={styles.collection}>

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
-import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
+import { CancelledItemOrdersCollection } from './types'
 
 export type CancelledItemOrdersGroup = {
   contractAddress: string
@@ -15,10 +16,7 @@ export const getFetchedFor = (state: RootState) => getState(state).fetchedFor
 // A page failed after others loaded: what is shown may be missing orders
 export const isCancelledItemOrdersIncomplete = (state: RootState) => getState(state).isIncomplete
 
-export const getCancelledItemOrdersByContractAddress = (
-  state: RootState,
-  contractAddress: string | null | undefined
-): CancelledItemOrder[] => {
+export const getCancelledItemOrdersByContractAddress = (state: RootState, contractAddress: string | null | undefined): CancelledTrade[] => {
   if (!contractAddress) {
     return []
   }

@@ -2248,7 +2248,8 @@
       "put_for_sale_again": "Put for sale again",
       "unknown_item": "Unknown item",
       "show_all": "{count, plural, one {Show # more listing} other {Show # more listings}}",
-      "show_less": "Show fewer listings"
+      "show_less": "Show fewer listings",
+      "incomplete": "Some cancelled listings of this collection couldn't be loaded, so this list may be incomplete. Reload the page to try again."
     }
   }
 }

@@ -1,5 +1,5 @@
 import { RootState } from 'modules/common/types'
-import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
+import { buildCancelledTrade } from 'specs/cancelledItemOrders'
 import { INITIAL_STATE } from './reducer'
 import {
   getCancelledItemOrdersByContractAddress,
@@ -7,17 +7,17 @@ import {
   getFetchedFor,
   isCancelledItemOrdersIncomplete
 } from './selectors'
-import { CancelledItemOrder } from './types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
 
 let state: RootState
-let firstOrder: CancelledItemOrder
-let secondOrder: CancelledItemOrder
-let unknownCollectionOrder: CancelledItemOrder
+let firstOrder: CancelledTrade
+let secondOrder: CancelledTrade
+let unknownCollectionOrder: CancelledTrade
 
 beforeEach(() => {
-  firstOrder = buildCancelledItemOrder({ id: 'first' })
-  secondOrder = buildCancelledItemOrder({ id: 'second', asset: { ...firstOrder.asset, itemId: '1' } })
-  unknownCollectionOrder = buildCancelledItemOrder({ id: 'third', asset: { ...firstOrder.asset, contractAddress: '0xunknown' } })
+  firstOrder = buildCancelledTrade({ id: 'first' })
+  secondOrder = buildCancelledTrade({ id: 'second', asset: { ...firstOrder.asset, itemId: '1' } })
+  unknownCollectionOrder = buildCancelledTrade({ id: 'third', asset: { ...firstOrder.asset, contractAddress: '0xunknown' } })
   state = {
     cancelledItemOrders: {
       ...INITIAL_STATE,

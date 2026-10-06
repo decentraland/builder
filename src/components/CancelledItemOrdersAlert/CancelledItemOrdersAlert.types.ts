@@ -5,6 +5,7 @@ export type Props = {
   title: string
   text: string
   isIncomplete: boolean
+  incompleteText: string
   listId: string
   // One <li> per row
   rows: React.ReactNode[]

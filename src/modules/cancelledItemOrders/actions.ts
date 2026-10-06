@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
-import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
+import { CancelledItemOrdersCollection } from './types'
 
 export const FETCH_CANCELLED_ITEM_ORDERS_REQUEST = '[Request] Fetch Cancelled Item Orders'
 export const FETCH_CANCELLED_ITEM_ORDERS_SUCCESS = '[Success] Fetch Cancelled Item Orders'
@@ -8,7 +9,7 @@ export const FETCH_CANCELLED_ITEM_ORDERS_FAILURE = '[Failure] Fetch Cancelled It
 export const fetchCancelledItemOrdersRequest = (address: string) => action(FETCH_CANCELLED_ITEM_ORDERS_REQUEST, { address })
 // `isIncomplete`: a later page failed, so some orders may be missing
 export const fetchCancelledItemOrdersSuccess = (
-  orders: CancelledItemOrder[],
+  orders: CancelledTrade[],
   collectionsByContractAddress: Record<string, CancelledItemOrdersCollection>,
   isIncomplete = false
 ) => action(FETCH_CANCELLED_ITEM_ORDERS_SUCCESS, { orders, collectionsByContractAddress, isIncomplete })

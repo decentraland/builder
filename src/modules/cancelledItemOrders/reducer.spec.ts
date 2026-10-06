@@ -1,16 +1,17 @@
 import { Trade, TradeAssetType } from '@dcl/schemas'
 import { createItemOrderTradeSuccess } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
-import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
+import { buildCancelledTrade } from 'specs/cancelledItemOrders'
 import { fetchCancelledItemOrdersFailure, fetchCancelledItemOrdersRequest, fetchCancelledItemOrdersSuccess } from './actions'
 import { CancelledItemOrdersState, INITIAL_STATE, cancelledItemOrdersReducer } from './reducer'
-import { CancelledItemOrder, CancelledItemOrdersCollection } from './types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
+import { CancelledItemOrdersCollection } from './types'
 
 let state: CancelledItemOrdersState
-let order: CancelledItemOrder
+let order: CancelledTrade
 
 beforeEach(() => {
-  order = buildCancelledItemOrder()
+  order = buildCancelledTrade()
 })
 
 describe('when reducing the fetch cancelled item orders request action', () => {
@@ -30,13 +31,19 @@ describe('when reducing the fetch cancelled item orders request action', () => {
 
   describe('and the orders were fetched for another address', () => {
     beforeEach(() => {
-      state = { ...INITIAL_STATE, data: [order], fetchedFor: '0xanother' }
+      state = {
+        ...INITIAL_STATE,
+        data: [order],
+        collectionsByContractAddress: { '0xcollection': { id: 'a-collection-id', name: 'A collection' } },
+        fetchedFor: '0xanother'
+      }
     })
 
-    it('should drop the previous orders and record the new address', () => {
+    it('should drop the previous orders and collections and record the new address', () => {
       expect(cancelledItemOrdersReducer(state, fetchCancelledItemOrdersRequest('0xaddress'))).toEqual({
         ...state,
         data: [],
+        collectionsByContractAddress: {},
         fetchedFor: '0xaddress'
       })
     })
@@ -88,13 +95,13 @@ describe('when reducing the fetch cancelled item orders failure action', () => {
 })
 
 describe('when reducing the create item order trade success action', () => {
-  let otherItemOrder: CancelledItemOrder
-  let otherCollectionOrder: CancelledItemOrder
+  let otherItemOrder: CancelledTrade
+  let otherCollectionOrder: CancelledTrade
   let trade: Trade
 
   beforeEach(() => {
-    otherItemOrder = buildCancelledItemOrder({ id: 'another-item-trade', asset: { ...order.asset, itemId: '1' } })
-    otherCollectionOrder = buildCancelledItemOrder({
+    otherItemOrder = buildCancelledTrade({ id: 'another-item-trade', asset: { ...order.asset, itemId: '1' } })
+    otherCollectionOrder = buildCancelledTrade({
       id: 'another-collection-trade',
       asset: { ...order.asset, contractAddress: '0xother' }
     })

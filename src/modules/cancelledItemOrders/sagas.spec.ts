@@ -2,12 +2,17 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { call } from 'redux-saga/effects'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { BuilderAPI } from 'lib/api/builder'
-import { CancelledTradeReason, CancelledTradesAPI, CancelledTradesResponse, CancelledTradeType } from 'lib/api/cancelledTrades'
+import {
+  CancelledTrade,
+  CancelledTradeReason,
+  CancelledTradesAPI,
+  CancelledTradesResponse,
+  CancelledTradeType
+} from 'lib/api/cancelledTrades'
 import { Collection } from 'modules/collection/types'
-import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
+import { buildCancelledTrade } from 'specs/cancelledItemOrders'
 import { fetchCancelledItemOrdersFailure, fetchCancelledItemOrdersRequest, fetchCancelledItemOrdersSuccess } from './actions'
 import { cancelledItemOrdersSaga, getCancelledItemOrdersPageParams } from './sagas'
-import { CancelledItemOrder } from './types'
 
 let builderAPI: BuilderAPI
 let cancelledTradesAPI: CancelledTradesAPI
@@ -15,9 +20,9 @@ let address: string
 let collections: Collection[]
 
 const pageCall = (skip: number) => call([cancelledTradesAPI, 'fetchCancelledTrades'], getCancelledItemOrdersPageParams(skip))
-const buildOrders = (from: number, to: number): CancelledItemOrder[] =>
+const buildOrders = (from: number, to: number): CancelledTrade[] =>
   Array.from({ length: to - from }, (_, index) =>
-    buildCancelledItemOrder({ id: `trade-${from + index}`, asset: { ...buildCancelledItemOrder().asset, itemId: `${from + index}` } })
+    buildCancelledTrade({ id: `trade-${from + index}`, asset: { ...buildCancelledTrade().asset, itemId: `${from + index}` } })
   )
 
 beforeEach(() => {
@@ -72,11 +77,11 @@ describe('when handling the fetch cancelled item orders request', () => {
   })
 
   describe('and every cancelled item order fits in one page', () => {
-    let itemOrder: CancelledItemOrder
+    let itemOrder: CancelledTrade
     let response: CancelledTradesResponse
 
     beforeEach(() => {
-      itemOrder = buildCancelledItemOrder()
+      itemOrder = buildCancelledTrade()
       response = { data: [itemOrder], total: 1 }
     })
 
@@ -93,7 +98,7 @@ describe('when handling the fetch cancelled item orders request', () => {
   })
 
   describe('and the cancelled item orders span several pages', () => {
-    let orders: CancelledItemOrder[]
+    let orders: CancelledTrade[]
     let pages: CancelledTradesResponse[]
 
     beforeEach(() => {
@@ -119,8 +124,29 @@ describe('when handling the fetch cancelled item orders request', () => {
     })
   })
 
+  describe('and a page returns no orders before reaching the total', () => {
+    let orders: CancelledTrade[]
+
+    beforeEach(() => {
+      orders = buildOrders(0, 100)
+    })
+
+    it('should stop fetching and put the success action with the orders that loaded', () => {
+      return expectSaga(cancelledItemOrdersSaga, builderAPI, cancelledTradesAPI)
+        .provide([
+          [pageCall(0), { data: orders, total: 450 }],
+          [pageCall(100), { data: [], total: 450 }],
+          [call([builderAPI, 'fetchCollections'], address), collections]
+        ])
+        .put(fetchCancelledItemOrdersSuccess(orders, { '0xcollection': { id: 'a-collection-id', name: 'A collection' } }))
+        .not.call([cancelledTradesAPI, 'fetchCancelledTrades'], getCancelledItemOrdersPageParams(200))
+        .dispatch(fetchCancelledItemOrdersRequest(address))
+        .silentRun()
+    })
+  })
+
   describe('and a page fails after others loaded', () => {
-    let orders: CancelledItemOrder[]
+    let orders: CancelledTrade[]
 
     beforeEach(() => {
       orders = buildOrders(0, 450)
@@ -144,10 +170,10 @@ describe('when handling the fetch cancelled item orders request', () => {
   })
 
   describe('and the collections fail to load', () => {
-    let itemOrder: CancelledItemOrder
+    let itemOrder: CancelledTrade
 
     beforeEach(() => {
-      itemOrder = buildCancelledItemOrder()
+      itemOrder = buildCancelledTrade()
     })
 
     it('should put the success action with the orders and no collections', () => {

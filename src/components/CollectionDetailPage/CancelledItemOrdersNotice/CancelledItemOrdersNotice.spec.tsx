@@ -2,10 +2,10 @@ import { RenderResult, act, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TradeAssetType } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { CancelledItemOrder } from 'modules/cancelledItemOrders/types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
-import { buildCancelledItemOrder } from 'specs/cancelledItemOrders'
+import { buildCancelledTrade } from 'specs/cancelledItemOrders'
 import { mockedItem } from 'specs/item'
 import { renderWithProviders } from 'specs/utils'
 import CancelledItemOrdersNotice, { getNoticeStorageKey } from './CancelledItemOrdersNotice'
@@ -53,12 +53,12 @@ describe('when rendering the cancelled item orders notice', () => {
   })
 
   describe('and the collection has cancelled item orders', () => {
-    let matchedOrder: CancelledItemOrder
-    let unmatchedOrder: CancelledItemOrder
+    let matchedOrder: CancelledTrade
+    let unmatchedOrder: CancelledTrade
 
     beforeEach(() => {
-      matchedOrder = buildCancelledItemOrder()
-      unmatchedOrder = buildCancelledItemOrder({
+      matchedOrder = buildCancelledTrade()
+      unmatchedOrder = buildCancelledTrade({
         id: 'unmatched',
         asset: { ...matchedOrder.asset, itemId: '9', name: 'Removed item' },
         price: { assetType: TradeAssetType.USD_PEGGED_MANA, amount: '500000000000000000' }
@@ -136,7 +136,7 @@ describe('when rendering the cancelled item orders notice', () => {
         ...props,
         items,
         orders: Array.from({ length: 200 }, (_, index) =>
-          buildCancelledItemOrder({ id: `trade-${index}`, asset: { ...buildCancelledItemOrder().asset, itemId: `${index}` } })
+          buildCancelledTrade({ id: `trade-${index}`, asset: { ...buildCancelledTrade().asset, itemId: `${index}` } })
         )
       }
     })
@@ -177,12 +177,12 @@ describe('when rendering the cancelled item orders notice', () => {
 
   describe('and some cancelled item orders could not be loaded', () => {
     beforeEach(() => {
-      props = { ...props, orders: [buildCancelledItemOrder()], isIncomplete: true }
+      props = { ...props, orders: [buildCancelledTrade()], isIncomplete: true }
       renderWithProviders(<CancelledItemOrdersNotice {...props} />)
     })
 
     it('should warn that the list may be incomplete', () => {
-      expect(screen.getByText(t('cancelled_item_orders.banner.incomplete'))).toBeInTheDocument()
+      expect(screen.getByText(t('cancelled_item_orders.notice.incomplete'))).toBeInTheDocument()
     })
   })
 })

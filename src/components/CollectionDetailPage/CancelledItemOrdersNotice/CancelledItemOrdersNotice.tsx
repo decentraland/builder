@@ -4,7 +4,7 @@ import { Network, TradeAssetType } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Mana } from 'decentraland-ui'
 import { formatCredits, usdWeiToCredits } from 'lib/credits'
-import { CancelledItemOrder } from 'modules/cancelledItemOrders/types'
+import { CancelledTrade } from 'lib/api/cancelledTrades'
 import ItemImage from 'components/ItemImage'
 import CancelledItemOrdersAlert from 'components/CancelledItemOrdersAlert'
 import { Props } from './CancelledItemOrdersNotice.types'
@@ -13,7 +13,7 @@ import styles from './CancelledItemOrdersNotice.module.css'
 export const getNoticeStorageKey = (address: string, collectionId: string) =>
   `builder-cancelled-item-orders-notice-${address.toLowerCase()}-${collectionId}`
 
-function renderPrice(price: CancelledItemOrder['price']) {
+function renderPrice(price: CancelledTrade['price']) {
   if (!price) {
     return null
   }
@@ -48,6 +48,7 @@ export default function CancelledItemOrdersNotice({ address, collection, items, 
       title={t('cancelled_item_orders.notice.title', { count: orders.length })}
       text={t('cancelled_item_orders.notice.text')}
       isIncomplete={isIncomplete}
+      incompleteText={t('cancelled_item_orders.notice.incomplete')}
       listId="cancelled-item-orders-listings"
       rows={rows.map(({ order, item }) => {
         const name = item?.name ?? order.asset.name ?? t('cancelled_item_orders.notice.unknown_item')
