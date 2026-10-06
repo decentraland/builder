@@ -1601,7 +1601,7 @@
         "content_policy_first_condition": "我了解我将无法修改收藏的名称，并且我可以证明“{collection_name}”作为名称不违反任何知识产权。",
         "accept_terms_of_use": "我保证所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
         "acknowledge_immutability": "我了解一旦收藏发布后，我将无法添加或删除项目。",
-        "acknowledge_dao_terms": "我承认，DAO 可能会因违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准该项目。我还承认，如果提案被拒绝，提案费将​​不予退还，因为提案费的目的是补偿策展人的时间和工作。"
+        "acknowledge_dao_terms": "我承认，DAO 可能会因违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准该项目。我还承认，出版费将进入 DAO 金库，如果项目被拒绝，将不予退还。"
       },
       "third_parties": {
         "first": "我确认所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",

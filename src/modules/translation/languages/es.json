@@ -1607,7 +1607,7 @@
         "content_policy_first_condition": "Entiendo que no podré modificar el nombre de la colección y puedo afirmar que \"{collection_name}\" como nombre no viola ningún derecho de Propiedad Intelectual.",
         "accept_terms_of_use": "Garantizo que los artículos enviados cumplen plenamente con los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>, que reconozco y acepto.",
         "acknowledge_immutability": "Entiendo que no podré añadir o eliminar ítems después de que la colección sea publicada.",
-        "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>. También reconozco que la tarifa de publicación no se reembolsará en caso de rechazo ya que su finalidad es compensar a los curadores por su tiempo y trabajo."
+        "acknowledge_dao_terms": "Reconozco que la DAO puede negarse a aceptar los artículos basándose en infracciones a los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>. También reconozco que la tarifa de publicación va al tesoro de la DAO y no se reembolsará en caso de rechazo."
       },
       "third_parties": {
         "first": "Garantizo que los artículos enviados cumplen plenamente con los <terms_of_use_link>Términos de uso</terms_of_use_link> y las <content_policy_link>Políticas de contenido</content_policy_link>, que reconozco y acepto.",
