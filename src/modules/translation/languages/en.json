@@ -2230,6 +2230,7 @@
     "dismiss": "Dismiss announcement"
   },
   "cancelled_item_orders": {
+    "learn_more": "Learn more",
     "banner": {
       "title": "{count, plural, one {# of your item listings was cancelled} other {# of your item listings were cancelled}}",
       "text": "Decentraland upgraded its marketplace contracts, which cancelled listings signed on the previous versions. Put these items for sale again so buyers can keep purchasing them.",

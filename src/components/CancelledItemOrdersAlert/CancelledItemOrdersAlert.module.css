@@ -51,6 +51,16 @@
   color: var(--secondary-text);
 }
 
+.learnMore {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.learnMore:hover,
+.learnMore:focus-visible {
+  text-decoration: underline;
+}
+
 .warning {
   margin: 12px 0 0;
   font-size: 14px;

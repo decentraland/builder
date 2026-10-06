@@ -2,6 +2,7 @@ import { RenderResult, act, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { renderWithProviders } from 'specs/utils'
+import { CANCELLED_ITEM_ORDERS_POST_MORTEM_URL } from 'components/CancelledItemOrdersAlert/CancelledItemOrdersAlert'
 import CancelledItemOrdersBanner, { getBannerStorageKey } from './CancelledItemOrdersBanner'
 import { Props } from './CancelledItemOrdersBanner.types'
 
@@ -66,6 +67,13 @@ describe('when rendering the cancelled item orders banner', () => {
 
       it('should not warn that the list may be incomplete', () => {
         expect(screen.queryByText(t('cancelled_item_orders.banner.incomplete'))).not.toBeInTheDocument()
+      })
+
+      it('should link to the post-mortem in a new tab', () => {
+        const link = screen.getByRole('link', { name: t('cancelled_item_orders.learn_more') })
+        expect(link).toHaveAttribute('href', CANCELLED_ITEM_ORDERS_POST_MORTEM_URL)
+        expect(link).toHaveAttribute('target', '_blank')
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       })
     })
 

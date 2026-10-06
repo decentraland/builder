@@ -2,6 +2,7 @@ import { RenderResult, act, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TradeAssetType } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { CANCELLED_ITEM_ORDERS_POST_MORTEM_URL } from 'components/CancelledItemOrdersAlert/CancelledItemOrdersAlert'
 import { CancelledTrade } from 'lib/api/cancelledTrades'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
@@ -85,6 +86,13 @@ describe('when rendering the cancelled item orders notice', () => {
 
       it('should offer to put only the matched item for sale again', () => {
         expect(screen.getAllByRole('button', { name: t('cancelled_item_orders.notice.put_for_sale_again') })).toHaveLength(1)
+      })
+
+      it('should link to the post-mortem in a new tab', () => {
+        const link = screen.getByRole('link', { name: t('cancelled_item_orders.learn_more') })
+        expect(link).toHaveAttribute('href', CANCELLED_ITEM_ORDERS_POST_MORTEM_URL)
+        expect(link).toHaveAttribute('target', '_blank')
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       })
     })
 

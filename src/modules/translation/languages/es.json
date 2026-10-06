@@ -2233,6 +2233,7 @@
     "dismiss": "Cerrar anuncio"
   },
   "cancelled_item_orders": {
+    "learn_more": "Más información",
     "banner": {
       "title": "{count, plural, one {Se canceló # de tus publicaciones de items} other {Se cancelaron # de tus publicaciones de items}}",
       "text": "Decentraland actualizó sus contratos del marketplace, lo que canceló las publicaciones firmadas en las versiones anteriores. Vuelve a poner estos items en venta para que los compradores puedan seguir adquiriéndolos.",
