@@ -16,5 +16,5 @@ export enum FeatureName {
   UNITY_WEARABLE_PREVIEW = 'unity-wearable-preview',
   SOCIAL_EMOTES = 'social-emotes',
   CREDITS_PRIMARY_LISTINGS = 'credits-primary-listings',
-  CANCELLED_ITEM_ORDERS_NOTICE = 'cancelled-item-orders-notice'
+  CANCELLED_ORDERS_BANNER = 'cancelled-orders-banner'
 }

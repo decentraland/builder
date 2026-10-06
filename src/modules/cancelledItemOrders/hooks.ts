@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getIsCancelledItemOrdersNoticeEnabled } from 'modules/features/selectors'
+import { getIsCancelledOrdersBannerEnabled } from 'modules/features/selectors'
 import { fetchCancelledItemOrdersRequest } from './actions'
 import { getFetchedFor } from './selectors'
 
 /** Fetches the connected wallet's cancelled item orders once, when the feature is on. Returns whether it is. */
 export function useFetchCancelledItemOrders(): boolean {
   const dispatch = useDispatch()
-  const isEnabled = useSelector(getIsCancelledItemOrdersNoticeEnabled)
+  const isEnabled = useSelector(getIsCancelledOrdersBannerEnabled)
   const address = useSelector(getAddress)
   const fetchedFor = useSelector(getFetchedFor)
 

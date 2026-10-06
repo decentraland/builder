@@ -115,9 +115,10 @@ export const getIsSocialEmotesEnabled = (state: RootState) => {
   return false
 }
 
-export const getIsCancelledItemOrdersNoticeEnabled = (state: RootState) => {
+// Shared with the marketplace and the Shop, so one switch turns the banner on everywhere.
+export const getIsCancelledOrdersBannerEnabled = (state: RootState) => {
   if (hasLoadedInitialFlags(state)) {
-    return getIsFeatureEnabled(state, ApplicationName.BUILDER, FeatureName.CANCELLED_ITEM_ORDERS_NOTICE)
+    return getIsFeatureEnabled(state, ApplicationName.DAPPS, FeatureName.CANCELLED_ORDERS_BANNER)
   }
   return false
 }

@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getIsCancelledItemOrdersNoticeEnabled } from 'modules/features/selectors'
+import { getIsCancelledOrdersBannerEnabled } from 'modules/features/selectors'
 import { fetchCancelledItemOrdersRequest } from './actions'
 import { useFetchCancelledItemOrders } from './hooks'
 import { getFetchedFor } from './selectors'
@@ -18,7 +18,7 @@ jest.mock('./selectors')
 const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>
 const mockGetAddress = getAddress as jest.MockedFunction<typeof getAddress>
-const mockGetIsEnabled = getIsCancelledItemOrdersNoticeEnabled as jest.MockedFunction<typeof getIsCancelledItemOrdersNoticeEnabled>
+const mockGetIsEnabled = getIsCancelledOrdersBannerEnabled as jest.MockedFunction<typeof getIsCancelledOrdersBannerEnabled>
 const mockGetFetchedFor = getFetchedFor as jest.MockedFunction<typeof getFetchedFor>
 
 let dispatch: jest.Mock
