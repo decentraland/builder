@@ -3,6 +3,7 @@ import { ApplicationName } from 'decentraland-dapps/dist/modules/features/types'
 import { RootState } from 'modules/common/types'
 import {
   getIsCampaignEnabled,
+  getIsCancelledOrdersBannerEnabled,
   getIsCreateSceneOnlySDK7Enabled,
   getIsLinkedWearablesPaymentsEnabled,
   getIsLinkedWearablesV2Enabled,
@@ -83,7 +84,8 @@ const ffSelectors = [
   { selector: getIsUnityWearablePreviewEnabled, app: ApplicationName.DAPPS, feature: FeatureName.UNITY_WEARABLE_PREVIEW },
   { selector: getIsCreditsForCollectionsFeeEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_FOR_COLLECTIONS_FEE },
   { selector: getIsSocialEmotesEnabled, app: ApplicationName.DAPPS, feature: FeatureName.SOCIAL_EMOTES },
-  { selector: getIsCreditsPrimaryListingsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_PRIMARY_LISTINGS }
+  { selector: getIsCreditsPrimaryListingsEnabled, app: ApplicationName.BUILDER, feature: FeatureName.CREDITS_PRIMARY_LISTINGS },
+  { selector: getIsCancelledOrdersBannerEnabled, app: ApplicationName.DAPPS, feature: FeatureName.CANCELLED_ORDERS_BANNER }
 ]
 
 ffSelectors.forEach(({ selector, app, feature }) => {

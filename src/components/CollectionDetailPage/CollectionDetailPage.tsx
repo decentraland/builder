@@ -31,6 +31,7 @@ import CollectionPublishButton from './CollectionPublishButton'
 import CollectionContextMenu from './CollectionContextMenu'
 import { Props } from './CollectionDetailPage.types'
 import CollectionItem from './CollectionItem'
+import CancelledItemOrdersNotice from './CancelledItemOrdersNotice'
 
 import './CollectionDetailPage.css'
 
@@ -337,6 +338,7 @@ export default function CollectionDetailPage({
           </Section>
           <Narrow>
             {renderUnsyncedCollectionNoticeStatus()}
+            {collection.isPublished ? <CancelledItemOrdersNotice collection={collection} items={items} /> : null}
             {showShowTabs ? (
               <Tabs isFullscreen>
                 <Tabs.Tab active={tab === ItemType.WEARABLE} onClick={() => handleTabChange(ItemType.WEARABLE)}>

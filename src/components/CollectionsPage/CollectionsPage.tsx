@@ -22,6 +22,7 @@ import {
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import CampaignBanner from 'components/CampaignBanner'
+import CancelledItemOrdersBanner from 'components/CancelledItemOrdersBanner'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Icon from 'components/Icon'
 import Chip from 'components/Chip'
@@ -298,6 +299,9 @@ export default function CollectionsPage(props: Props) {
     return (
       <>
         <CampaignBanner id={BUILDER_BANNER_ID} />
+        <Container>
+          <CancelledItemOrdersBanner />
+        </Container>
         <div className="filters">
           <Container>
             {(hasUserOrphanItems || isThirdPartyManager || isLinkedWearablesPaymentsEnabled) && (

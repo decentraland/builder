@@ -1,0 +1,26 @@
+.collection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--divider);
+  font-size: 14px;
+}
+
+.name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  flex: 1;
+  color: var(--secondary-text);
+  white-space: nowrap;
+}
+
+.link {
+  font-weight: 600;
+  white-space: nowrap;
+}

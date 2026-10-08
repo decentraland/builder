@@ -2231,5 +2231,29 @@
     "message": "{highlight} - Nuevo diseño, nuevos looks y conoce a los creadores.",
     "cta": "Pruébalo",
     "dismiss": "Cerrar anuncio"
+  },
+  "cancelled_item_orders": {
+    "learn_more": "Más información",
+    "banner": {
+      "title": "{count, plural, one {Se canceló # de tus publicaciones de items} other {Se cancelaron # de tus publicaciones de items}}",
+      "text": "Decentraland actualizó sus contratos del marketplace, lo que canceló las publicaciones firmadas en las versiones anteriores. Vuelve a poner estos items en venta para que los compradores puedan seguir adquiriéndolos.",
+      "listings": "{count, plural, one {# publicación} other {# publicaciones}}",
+      "review": "Revisar publicaciones",
+      "unknown_collection": "Colección desconocida",
+      "show_all": "{count, plural, one {Mostrar # colección más} other {Mostrar # colecciones más}}",
+      "show_less": "Mostrar menos colecciones",
+      "incomplete": "No se pudieron cargar algunas publicaciones canceladas, por lo que esta lista puede estar incompleta. Recarga la página para volver a intentarlo."
+    },
+    "notice": {
+      "title": "{count, plural, one {Se canceló # publicación de esta colección} other {Se cancelaron # publicaciones de esta colección}}",
+      "text": "Decentraland actualizó sus contratos del marketplace, lo que canceló las publicaciones firmadas en las versiones anteriores. Vuelve a poner estos items en venta para seguir vendiéndolos.",
+      "previous_price": "Precio anterior:",
+      "credits": "{amount} créditos",
+      "put_for_sale_again": "Volver a poner en venta",
+      "unknown_item": "Item desconocido",
+      "show_all": "{count, plural, one {Mostrar # publicación más} other {Mostrar # publicaciones más}}",
+      "show_less": "Mostrar menos publicaciones",
+      "incomplete": "No se pudieron cargar algunas publicaciones canceladas de esta colección, por lo que esta lista puede estar incompleta. Recarga la página para volver a intentarlo."
+    }
   }
 }

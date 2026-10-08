@@ -1,0 +1,66 @@
+.order {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--divider);
+}
+
+.image {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background-color: var(--dark-three, var(--card));
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.price {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--secondary-text);
+}
+
+.mana,
+.credits {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.action {
+  flex: 0 0 auto;
+}
+
+@media only screen and (max-width: 767px) {
+  .order {
+    flex-wrap: wrap;
+  }
+
+  .action {
+    width: 100%;
+  }
+}

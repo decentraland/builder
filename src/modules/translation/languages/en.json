@@ -2228,5 +2228,29 @@
     "message": "{highlight} - New Layout, New Outfits, and Meet the creators.",
     "cta": "Try it out",
     "dismiss": "Dismiss announcement"
+  },
+  "cancelled_item_orders": {
+    "learn_more": "Learn more",
+    "banner": {
+      "title": "{count, plural, one {# of your item listings was cancelled} other {# of your item listings were cancelled}}",
+      "text": "Decentraland upgraded its marketplace contracts, which cancelled listings signed on the previous versions. Put these items for sale again so buyers can keep purchasing them.",
+      "listings": "{count, plural, one {# listing} other {# listings}}",
+      "review": "Review listings",
+      "unknown_collection": "Unknown collection",
+      "show_all": "{count, plural, one {Show # more collection} other {Show # more collections}}",
+      "show_less": "Show fewer collections",
+      "incomplete": "Some cancelled listings couldn't be loaded, so this list may be incomplete. Reload the page to try again."
+    },
+    "notice": {
+      "title": "{count, plural, one {# listing in this collection was cancelled} other {# listings in this collection were cancelled}}",
+      "text": "Decentraland upgraded its marketplace contracts, which cancelled listings signed on the previous versions. Put these items for sale again to keep selling them.",
+      "previous_price": "Previous price:",
+      "credits": "{amount} credits",
+      "put_for_sale_again": "Put for sale again",
+      "unknown_item": "Unknown item",
+      "show_all": "{count, plural, one {Show # more listing} other {Show # more listings}}",
+      "show_less": "Show fewer listings",
+      "incomplete": "Some cancelled listings of this collection couldn't be loaded, so this list may be incomplete. Reload the page to try again."
+    }
   }
 }

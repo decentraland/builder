@@ -1,43 +1,44 @@
-import * as React from 'react'
-
-import { Props } from './Notice.types'
+import { useCallback, useEffect, useState } from 'react'
+import classNames from 'classnames'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Icon from 'components/Icon'
+import { Props } from './Notice.types'
 import './Notice.css'
 
-export default class Notice extends React.PureComponent<Props> {
-  state = {
-    isNoticeClosed: false
+function isStoredAsClosed(storageKey: string): boolean {
+  try {
+    return localStorage.getItem(storageKey) !== null
+  } catch {
+    return false
   }
+}
 
-  constructor(props: Props) {
-    super(props)
-    const { storageKey } = props
+export default function Notice({ storageKey, className, children }: Props) {
+  const [isClosed, setIsClosed] = useState(() => isStoredAsClosed(storageKey))
 
-    this.state = {
-      isNoticeClosed: localStorage.getItem(storageKey) !== null
+  useEffect(() => {
+    setIsClosed(isStoredAsClosed(storageKey))
+  }, [storageKey])
+
+  const handleClose = useCallback(() => {
+    setIsClosed(true)
+    try {
+      localStorage.setItem(storageKey, '1')
+    } catch {
+      // Storage unavailable: closed until the next mount
     }
+  }, [storageKey])
+
+  if (isClosed) {
+    return null
   }
 
-  handleCloseNotice = () => {
-    const { storageKey } = this.props
-
-    this.setState({ isNoticeClosed: true })
-    localStorage.setItem(storageKey, '1')
-  }
-
-  render() {
-    const { children } = this.props
-    const { isNoticeClosed } = this.state
-
-    if (isNoticeClosed) {
-      return null
-    }
-
-    return (
-      <div className="Notice">
-        <div className="text">{children}</div>
-        <Icon name="close" onClick={this.handleCloseNotice} />
-      </div>
-    )
-  }
+  return (
+    <div className={classNames('Notice', className)}>
+      <div className="text">{children}</div>
+      <button type="button" className="close" aria-label={t('global.close')} onClick={handleClose}>
+        <Icon name="close" />
+      </button>
+    </div>
+  )
 }
