@@ -4,6 +4,7 @@ import { ModalNavigation, Row, Button, Loader } from 'decentraland-ui'
 import { AnimationControls, EmoteControls, TranslationControls, WearablePreview, ZoomControls } from 'decentraland-ui2'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { ignoreSceneDisposed } from 'lib/wearablePreview'
 import { Props, State } from './EditThumbnailStep.types'
 import { EmoteDataADR74 } from '@dcl/schemas/dist/platform/item/emote'
 import './EditThumbnailStep.css'
@@ -73,7 +74,7 @@ export default class EditThumbnailStep extends React.PureComponent<Props, State>
               zoom={100}
               wheelZoom={2}
               socialEmote={socialEmote || _socialEmote}
-              onLoad={this.handleFileLoad}
+              onLoad={() => void ignoreSceneDisposed(this.handleFileLoad())}
               onUpdate={() => this.setState({ hasBeenUpdated: true })}
             />
             {hasBeenUpdated ? (
