@@ -350,7 +350,7 @@
         "message": "The max file size is 3MB for Emotes."
       },
       "smart_wearable_too_big": {
-        "title": "The file is too large and can't be uploaded",
+        "title": "The uncompressed Smart Wearable content exceeds the size limit",
         "message": "The total filesize sum of the uncompressed files from the Smart Wearable .zip file must be under 3MB."
       },
       "unknown_required_permissions": {
