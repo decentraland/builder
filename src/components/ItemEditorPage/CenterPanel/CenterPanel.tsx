@@ -464,7 +464,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
 
-    const unity = isUnityWearablePreviewEnabled && !socialEmote && !_socialEmote
+    const unity = isUnityWearablePreviewEnabled
 
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
@@ -538,14 +538,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               this.renderEmoteSelector()
             )}
             <div className="right-container">
-              {!isUnityWearablePreviewEnabled && (
-                <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
-                  <BuilderIcon
-                    name="cylinder"
-                    onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
-                  />
-                </div>
-              )}
+              <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
+                <BuilderIcon
+                  name="cylinder"
+                  onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
+                />
+              </div>
               {selectedItem && !isEmote(selectedItem) ? (
                 <FacialExpressionsBadge contents={selectedItem.contents} className="option facial-expressions-status" />
               ) : null}
