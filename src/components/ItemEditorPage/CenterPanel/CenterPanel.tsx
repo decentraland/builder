@@ -37,6 +37,10 @@ import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
 
+// TEMPORARY, DO NOT MERGE: the wearable-preview PR preview that serves the Unity renderer parity build
+// (decentraland/wearable-preview#219), until it ships.
+const WEARABLE_PREVIEW_URL = 'https://wearable-preview-git-temp-unity-parity-dev-decentraland1.vercel.app'
+
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state: State = {
     showSceneBoundaries: false,
@@ -497,6 +501,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           socialEmote={socialEmote || _socialEmote}
           unity={unity}
           unityMode={PreviewUnityMode.BUILDER}
+          baseUrl={WEARABLE_PREVIEW_URL}
         />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
           <ZoomControls
