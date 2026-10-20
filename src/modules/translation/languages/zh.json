@@ -2189,6 +2189,11 @@
       "footer_note": "您随时可以下载 Creator Hub。"
     }
   },
+  "creators_website_banner": {
+    "title": "全新创作者网站{br}现已上线！",
+    "text": "我们搬家了！探索全新的创作者网站，{br}享受更好的创作体验。",
+    "cta": "立即探索"
+  },
   "item_status": {
     "unpublished": "准备发布",
     "under_review": "审查中",

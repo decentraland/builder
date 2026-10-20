@@ -2189,6 +2189,11 @@
       "footer_note": "You can always download Creator Hub later."
     }
   },
+  "creators_website_banner": {
+    "title": "The new Creators Website {br}is live!",
+    "text": "We've moved to a new home! Explore the new Creators Website {br}and enjoy an improved creation experience.",
+    "cta": "Explore now"
+  },
   "item_status": {
     "unpublished": "Ready to publish",
     "under_review": "Under Review",
