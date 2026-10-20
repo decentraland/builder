@@ -2195,6 +2195,11 @@
       "footer_note": "Siempre puedes descargar Creator Hub más tarde."
     }
   },
+  "creators_website_banner": {
+    "title": "¡El nuevo sitio de Creadores {br}ya está disponible!",
+    "text": "¡Nos mudamos! Explora el nuevo sitio de Creadores {br}y disfruta de una experiencia de creación mejorada.",
+    "cta": "Explorar ahora"
+  },
   "item_status": {
     "unpublished": "Listos para publicar",
     "under_review": "Bajo revisión",

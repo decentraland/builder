@@ -4,14 +4,13 @@ import classNames from 'classnames'
 import { Button, Card, Container, Page } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import CampaignBanner from 'components/CampaignBanner'
+import CreatorsWebsiteBanner from 'components/CreatorsWebsiteBanner'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import { BUILDER_BANNER_ID } from 'modules/common/banners'
 import { locations } from 'routing/locations'
 import { Props } from './HomePage.types'
 import './HomePage.css'
@@ -80,7 +79,7 @@ export const HomePage: React.FC<Props> = props => {
         <Navigation activeTab={NavigationTab.OVERVIEW}>
           <SyncToast />
         </Navigation>
-        <CampaignBanner id={BUILDER_BANNER_ID} />
+        <CreatorsWebsiteBanner />
         <Container>
           <h1 className="title">{t('home_page.title')}</h1>
           <Card.Group itemsPerRow={4} centered>
