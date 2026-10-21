@@ -37,6 +37,10 @@ import AvatarWearableDropdown from './AvatarWearableDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
 
+// TEMPORARY, DO NOT MERGE: the wearable-preview PR preview that serves the Unity renderer parity build
+// (decentraland/wearable-preview#219), until it ships.
+const WEARABLE_PREVIEW_URL = 'https://wearable-preview-git-temp-unity-parity-dev-decentraland1.vercel.app'
+
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state: State = {
     showSceneBoundaries: false,
@@ -464,7 +468,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
 
-    const unity = isUnityWearablePreviewEnabled && !socialEmote && !_socialEmote
+    const unity = isUnityWearablePreviewEnabled
 
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
@@ -497,6 +501,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           socialEmote={socialEmote || _socialEmote}
           unity={unity}
           unityMode={PreviewUnityMode.BUILDER}
+          baseUrl={WEARABLE_PREVIEW_URL}
         />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
           <ZoomControls
@@ -538,14 +543,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               this.renderEmoteSelector()
             )}
             <div className="right-container">
-              {!isUnityWearablePreviewEnabled && (
-                <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
-                  <BuilderIcon
-                    name="cylinder"
-                    onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
-                  />
-                </div>
-              )}
+              <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
+                <BuilderIcon
+                  name="cylinder"
+                  onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
+                />
+              </div>
               {selectedItem && !isEmote(selectedItem) ? (
                 <FacialExpressionsBadge contents={selectedItem.contents} className="option facial-expressions-status" />
               ) : null}
