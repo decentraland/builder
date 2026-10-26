@@ -69,7 +69,7 @@ import {
 } from './actions'
 import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
-import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
+import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName, resolveAddress } from './utils'
 
 const DEFAULT_ENS_PAGE_SIZE = 12
 
@@ -80,6 +80,24 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const ethereumChainId: number = yield call(getChainIdByNetwork, Network.ETHEREUM)
     const networkProvider: Provider = yield call(getNetworkProvider, ethereumChainId)
     return new ethers.providers.Web3Provider(networkProvider)
+  }
+
+  /** Get the ETH address record of a name from its current resolver, or an empty string if it has none or the lookup fails. */
+  async function getENSAddressRecord(ethereumProvider: ethers.providers.Provider, subdomain: string): Promise<string> {
+    try {
+      return (await resolveAddress(ethereumProvider, subdomain)) ?? ''
+    } catch (error) {
+      console.error('Failed to fetch ens address record', error)
+      return ''
+    }
+  }
+
+  /** Get the resolver the ENS registry has for the name, falling back to the default resolver when it has none.
+   * Records must be written there, as it is the resolver ENS uses for the name. */
+  function* getResolverAddressToWrite(signer: ethers.Signer, nodehash: string): Generator<any, string, any> {
+    const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
+    const currentResolverAddress: string = yield call([ensContract, 'resolver'], nodehash)
+    return currentResolverAddress && currentResolverAddress !== ethers.constants.AddressZero ? currentResolverAddress : ENS_RESOLVER_ADDRESS
   }
 
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -128,9 +146,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         throw new Error('Name unavailable')
       }
 
-      const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
-      const resolvedAddress: string = yield call([ensResolverContract, 'addr(bytes32)'], nodehash)
-      const ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
+      const ensAddressRecord: string = yield call(getENSAddressRecord, ethereumProvider, subdomain)
 
       if (resolverAddress.toString() === ethers.constants.AddressZero) {
         yield put(
@@ -303,8 +319,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, land } = action.payload
     try {
       yield call(changeToEthereumNetwork)
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
 
       let content = ''
@@ -327,9 +343,10 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       }
 
       const nodehash = namehash(ens.subdomain)
-      const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+      const resolverAddress: string = yield call(getResolverAddressToWrite, signer, nodehash)
+      const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
-      const transaction: ethers.ContractTransaction = yield call(() => resolverContract.setContenthash(nodehash, content))
+      const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setContenthash'], nodehash, content)
       yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, transaction.hash))
 
       if (!land) {
@@ -352,7 +369,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = namehash(ens.subdomain)
-      const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+      const resolverAddress: string = yield call(getResolverAddressToWrite, signer, nodehash)
+      const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
       const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setAddr(bytes32,address)'], nodehash, address)
 
@@ -411,7 +429,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           let landId: string | undefined = undefined
           let content = ''
           let worldStatus: { healthy: boolean; scene: { urn: string; entityId: string } } | null = null
-          let ensAddressRecord = ''
 
           const nodehash = namehash(subdomain)
           const [resolverAddress, ensOwner, tokenIdBN]: [string, string, ethers.BigNumber] = await Promise.all([
@@ -426,13 +443,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const nftOwner = await dclRegistrarContract.ownerOf(tokenIdBN)
           const nftOwnerAddress = nftOwner.toLowerCase()
 
-          try {
-            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
-            const resolvedAddress = await resolverContract['addr(bytes32)'](nodehash)
-            ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
-          } catch (e) {
-            console.error('Failed to fetch ens address record')
-          }
+          const ensAddressRecord = await getENSAddressRecord(ethereumProvider, subdomain)
 
           if (resolver !== ethers.constants.AddressZero) {
             try {
