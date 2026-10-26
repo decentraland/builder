@@ -442,6 +442,7 @@ describe('when executing the approval flow', () => {
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
           [call(buildItemEntity, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
+          [select(getCurationsByCollectionId), {}],
           [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -485,6 +486,39 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(approveCollectionSuccess({ ...collection, isApproved: true }, ChainId.MATIC_MAINNET, '0xhash2'))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.SUCCESS,
+            collection
+          } as ApprovalFlowModalMetadata)
+        )
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when a collection has not been approved yet and it has a pending curation', () => {
+    const collection = getCollectionMock()
+    const item = getItemMock(collection)
+    const entity = getEntityMock(item)
+    const curation = getCollectionCuration(collection)
+
+    it('should approve the curation after the collection is approved', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
+        .provide([
+          [select(getItems), [item]],
+          [select(getEntityByItemId), { [item.id]: entity }],
+          [select(getCurationsByCollectionId), { [collection.id]: curation }]
+        ])
+        .dispatch(initiateApprovalFlow(collection))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.APPROVE,
+            collection
+          } as ApprovalFlowModalMetadata)
+        )
+        .dispatch(approveCollectionSuccess({ ...collection, isApproved: true }, ChainId.MATIC_MAINNET, '0xhash'))
+        .put(approveCollectionCurationRequest(collection.id))
+        .dispatch(approveCollectionCurationSuccess(collection.id))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.SUCCESS,

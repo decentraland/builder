@@ -1244,30 +1244,31 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         } else if (cancel) {
           return
         }
-      } else {
-        // 7. If the collection was approved but it had a pending curation, approve the curation
-        const curationsByCollectionId: Record<string, CollectionCuration> = yield select(getCurationsByCollectionId)
-        const curation = curationsByCollectionId[collection.id]
-        if (curation && curation.status === CurationStatus.PENDING) {
-          yield put(approveCollectionCurationRequest(collection.id))
+      }
 
-          // wait for actions
-          const { failure }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } =
-            yield race({
-              success: take(APPROVE_COLLECTION_CURATION_SUCCESS),
-              failure: take(APPROVE_COLLECTION_CURATION_FAILURE)
-            })
+      // 7. If the collection has a pending curation, approve it. This also runs after a first approval,
+      // where the curator was assigned (opening the curation) right before starting the flow.
+      const curationsByCollectionId: Record<string, CollectionCuration> = yield select(getCurationsByCollectionId)
+      const curation = curationsByCollectionId[collection.id]
+      if (curation && curation.status === CurationStatus.PENDING) {
+        yield put(approveCollectionCurationRequest(collection.id))
 
-          // if failure show error
-          if (failure) {
-            const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
-              view: ApprovalFlowModalView.ERROR,
-              collection,
-              error: failure.payload.error
-            }
-            yield put(openModal('ApprovalFlowModal', modalMetadata))
-            return
+        // wait for actions
+        const { failure }: { success: ApproveCollectionCurationSuccessAction; failure: ApproveCollectionCurationFailureAction } =
+          yield race({
+            success: take(APPROVE_COLLECTION_CURATION_SUCCESS),
+            failure: take(APPROVE_COLLECTION_CURATION_FAILURE)
+          })
+
+        // if failure show error
+        if (failure) {
+          const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
+            view: ApprovalFlowModalView.ERROR,
+            collection,
+            error: failure.payload.error
           }
+          yield put(openModal('ApprovalFlowModal', modalMetadata))
+          return
         }
       }
 
