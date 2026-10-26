@@ -15,6 +15,7 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { getTransactionHashFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
@@ -120,6 +121,7 @@ import { BuilderAPI, FetchCollectionsParams, TermsOfServiceEvent } from 'lib/api
 import { getArrayOfPagesFromTotal, PaginatedResource } from 'lib/api/pagination'
 import { extractThirdPartyId } from 'lib/urn'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { waitForTx } from 'modules/transaction/utils'
 import { EntityHashingType, isEmoteItemType, Item, ItemApprovalData } from 'modules/item/types'
 import { Slot } from 'modules/thirdParty/types'
 import {
@@ -1228,6 +1230,7 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
 
         // Wait for actions...
         const {
+          success,
           failure,
           cancel
         }: { success: ApproveCollectionSuccessAction; failure: ApproveCollectionFailureAction; cancel: CloseModalAction } = yield race({
@@ -1244,6 +1247,9 @@ export function* collectionSaga(legacyBuilderClient: BuilderAPI, client: Builder
         } else if (cancel) {
           return
         }
+
+        // The curation below is closed only once the approval is on chain, so a dropped tx leaves it pending
+        yield waitForTx(getTransactionHashFromAction(success))
       }
 
       // 7. If the collection has a pending curation, approve it. This also runs after a first approval,
