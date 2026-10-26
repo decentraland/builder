@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import { retry, race, take, call, put, select, delay, getContext } from 'redux-saga/effects'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
+import { AnyAction } from 'redux'
 import { generateTree } from '@dcl/content-hash-tree'
 import { BuilderClient } from '@dcl/builder-client'
 import { ChainId, Network, WearableCategory, WearableRepresentation, Entity, EntityType } from '@dcl/schemas'
@@ -31,7 +32,9 @@ import { getName } from 'modules/profile/selectors'
 import { buildItemEntity, buildStandardWearableContentHash } from 'modules/item/export'
 import { getCollection } from 'modules/collection/selectors'
 import { EntityHashingType, Item, ItemApprovalData, ItemType, BlockchainRarity } from 'modules/item/types'
-import { openModal, closeModal, CLOSE_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
+import { openModal, closeModal, CLOSE_MODAL, OPEN_MODAL } from 'decentraland-dapps/dist/modules/modal/actions'
+import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { mockedItem } from 'specs/item'
 import {
   fetchCollectionItemsRequest,
@@ -54,6 +57,7 @@ import {
 import { deployEntitiesFailure, deployEntitiesSuccess } from 'modules/entity/actions'
 import {
   approveCollectionCurationFailure,
+  APPROVE_COLLECTION_CURATION_REQUEST,
   approveCollectionCurationRequest,
   approveCollectionCurationSuccess
 } from 'modules/curations/collectionCuration/actions'
@@ -442,6 +446,7 @@ describe('when executing the approval flow', () => {
           [select(getItemsById), { [syncedItem.id]: syncedItem, [updatedItem.id]: updatedItem }],
           [select(getEntityByItemId), { [syncedItem.id]: syncedEntity, [updatedItem.id]: unsyncedEntity }],
           [call(buildItemEntity, mockBuilder, collection, unsyncedItem, undefined, undefined), deployData],
+          [select(getCurationsByCollectionId), {}],
           [select(getCollection, collection.id), { collection }]
         ])
         .dispatch(initiateApprovalFlow(collection))
@@ -485,6 +490,87 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .dispatch(approveCollectionSuccess({ ...collection, isApproved: true }, ChainId.MATIC_MAINNET, '0xhash2'))
+        .dispatch(fetchTransactionSuccess({ hash: '0xhash2' } as Transaction))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.SUCCESS,
+            collection
+          } as ApprovalFlowModalMetadata)
+        )
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when a collection has not been approved yet and it has a pending curation', () => {
+    const collection = getCollectionMock()
+    const item = getItemMock(collection)
+    const entity = getEntityMock(item)
+    const curation = getCollectionCuration(collection)
+    const txHash = '0xapproveTx'
+
+    const approveOnChain = () =>
+      expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
+        .provide([
+          [select(getItems), [item]],
+          [select(getEntityByItemId), { [item.id]: entity }],
+          [select(getCurationsByCollectionId), { [collection.id]: curation }]
+        ])
+        .dispatch(initiateApprovalFlow(collection))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.APPROVE,
+            collection
+          } as ApprovalFlowModalMetadata)
+        )
+        .dispatch(approveCollectionSuccess({ ...collection, isApproved: true }, ChainId.MATIC_MAINNET, txHash))
+        .dispatch(fetchTransactionSuccess({ hash: txHash } as Transaction))
+        .put(approveCollectionCurationRequest(collection.id))
+
+    it('should approve the curation once the approval transaction is mined', async () => {
+      const { allEffects } = await approveOnChain()
+        .dispatch(approveCollectionCurationSuccess(collection.id))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.SUCCESS,
+            collection
+          } as ApprovalFlowModalMetadata)
+        )
+        .run({ silenceTimeout: true })
+
+      const putActions = allEffects
+        .filter(effect => effect.type === 'PUT')
+        .map((effect): AnyAction => effect.payload.action as AnyAction)
+      const approveStep = putActions.findIndex(
+        action => action.type === OPEN_MODAL && action.payload.metadata.view === ApprovalFlowModalView.APPROVE
+      )
+      const curationStep = putActions.findIndex(action => action.type === APPROVE_COLLECTION_CURATION_REQUEST)
+      expect(curationStep).toBeGreaterThan(approveStep)
+    })
+
+    it('should open the modal in an error state when approving the curation fails', () => {
+      return approveOnChain()
+        .dispatch(approveCollectionCurationFailure(collection.id, 'CollectionCuration Error'))
+        .put(
+          openModal('ApprovalFlowModal', {
+            view: ApprovalFlowModalView.ERROR,
+            collection,
+            error: 'CollectionCuration Error'
+          } as ApprovalFlowModalMetadata)
+        )
+        .run({ silenceTimeout: true })
+    })
+
+    it('should leave the curation alone when it was already decided', () => {
+      return expectSaga(collectionSaga, mockBuilder, mockBuilderClient, mockCreditsService)
+        .provide([
+          [select(getItems), [item]],
+          [select(getEntityByItemId), { [item.id]: entity }],
+          [select(getCurationsByCollectionId), { [collection.id]: { ...curation, status: CurationStatus.REJECTED } }]
+        ])
+        .dispatch(initiateApprovalFlow(collection))
+        .dispatch(approveCollectionSuccess({ ...collection, isApproved: true }, ChainId.MATIC_MAINNET, txHash))
+        .dispatch(fetchTransactionSuccess({ hash: txHash } as Transaction))
+        .not.put(approveCollectionCurationRequest(collection.id))
         .put(
           openModal('ApprovalFlowModal', {
             view: ApprovalFlowModalView.SUCCESS,
