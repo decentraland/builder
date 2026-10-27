@@ -4,7 +4,6 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { isResolverEmpty, isContentEmpty, isEqualContent } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
 import { Props } from './LandAssignENSForm.types'
@@ -39,7 +38,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
     const { ens, land, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, isWaitingTxReclaim, error } = this.props
 
     const needsReclaiming = ens.ensOwnerAddress !== ens.nftOwnerAddress
-    const hasResolver = !isResolverEmpty(ens) && ens.resolver.toLowerCase() === ENS_RESOLVER_ADDRESS.toLowerCase()
+    const hasResolver = !isResolverEmpty(ens)
     const hasContent = !isContentEmpty(ens) && isEqualContent(ens, land)
     const hasData = hasResolver || hasContent
 

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
+    "@adraffy/ens-normalize": "^1.11.1",
     "@babylonjs/core": "^4.2.0",
     "@babylonjs/loaders": "^4.2.0",
     "@contentful/rich-text-react-renderer": "16.2.2",

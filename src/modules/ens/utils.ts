@@ -1,3 +1,4 @@
+import { ens_normalize } from '@adraffy/ens-normalize'
 import { ethers } from 'ethers'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
@@ -31,11 +32,11 @@ export function isEmpty(ens: ENS) {
 }
 
 export function isResolverEmpty(ens: ENS) {
-  return ens.resolver === ethers.constants.AddressZero
+  return !ens.resolver || ens.resolver === ethers.constants.AddressZero
 }
 
 export function isContentEmpty(ens: ENS) {
-  return ens.content === ethers.constants.AddressZero
+  return !ens.content || ens.content === '0x' || ens.content === ethers.constants.AddressZero
 }
 
 export function isEqualContent(ens: ENS, land: Land) {
@@ -128,6 +129,7 @@ const universalResolverInterface = new ethers.utils.Interface([
 
 const resolverInterface = new ethers.utils.Interface([
   'function addr(bytes32 node) view returns (address)',
+  'function contenthash(bytes32 node) view returns (bytes)',
   'function resolve(bytes name, bytes data) view returns (bytes)'
 ])
 
@@ -148,8 +150,27 @@ function isNameWithoutResolver(result: string) {
  * and throws when the lookup itself fails, so an RPC or gateway error is not mistaken for a missing name.
  * Ported from decentraland-dapps' AddressField (decentraland/decentraland-dapps#833).
  */
-export async function resolveAddress(provider: ethers.providers.Provider, name: string): Promise<string | undefined> {
-  const dnsEncodedName = ethers.utils.dnsEncode(name)
+/** Normalize once using ENSIP-15, then encode the same UTF-8 labels for DNS and namehash. */
+export function encodeENSName(name: string): { name: string; dnsName: string; node: string } {
+  const normalizedName = ens_normalize(name)
+  const labels = normalizedName ? normalizedName.split('.').map(label => ethers.utils.toUtf8Bytes(label)) : []
+  if (labels.some(label => label.length > 255)) {
+    throw new Error('ENS labels cannot exceed 255 bytes')
+  }
+  const dnsName = ethers.utils.hexConcat([...labels.flatMap(label => [Uint8Array.of(label.length), label]), '0x00'])
+  const node = labels.reduceRight(
+    (node, label) => ethers.utils.keccak256(ethers.utils.concat([node, ethers.utils.keccak256(label)])),
+    ethers.constants.HashZero
+  )
+  return { name: normalizedName, dnsName, node }
+}
+
+async function resolveRecord(
+  provider: ethers.providers.Provider,
+  name: string,
+  record: 'addr' | 'contenthash'
+): Promise<string | undefined> {
+  const { dnsName: dnsEncodedName, node } = encodeENSName(name)
   const requireResolverResult = await provider.call({
     to: UNIVERSAL_RESOLVER_ADDRESS,
     data: universalResolverInterface.encodeFunctionData('requireResolver', [dnsEncodedName])
@@ -159,7 +180,7 @@ export async function resolveAddress(provider: ethers.providers.Provider, name: 
   }
 
   const [{ resolver, extended }] = universalResolverInterface.decodeFunctionResult('requireResolver', requireResolverResult)
-  const addrData = resolverInterface.encodeFunctionData('addr', [ethers.utils.namehash(name)])
+  const addrData = resolverInterface.encodeFunctionData(record, [node])
 
   let addrResult: string
   if (extended) {
@@ -171,13 +192,21 @@ export async function resolveAddress(provider: ethers.providers.Provider, name: 
     })
     ;[addrResult] = resolverInterface.decodeFunctionResult('resolve', resolveResult)
   } else {
-    addrResult = await provider.call({ to: resolver, data: addrData })
+    addrResult = await provider.call({ to: resolver, data: addrData, ccipReadEnabled: true })
   }
 
   if (ethers.utils.hexDataLength(addrResult) === 0) {
     return undefined
   }
 
-  const [address] = resolverInterface.decodeFunctionResult('addr', addrResult) as unknown as [string]
-  return address === ethers.constants.AddressZero ? undefined : address
+  const [value] = resolverInterface.decodeFunctionResult(record, addrResult) as unknown as [string]
+  return value === ethers.constants.AddressZero || value === '0x' ? undefined : value
+}
+
+export function resolveAddress(provider: ethers.providers.Provider, name: string): Promise<string | undefined> {
+  return resolveRecord(provider, name, 'addr')
+}
+
+export function resolveContenthash(provider: ethers.providers.Provider, name: string): Promise<string | undefined> {
+  return resolveRecord(provider, name, 'contenthash')
 }

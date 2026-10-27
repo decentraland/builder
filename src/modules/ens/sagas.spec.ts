@@ -16,14 +16,17 @@ import { lists } from 'lib/api/lists'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { ENSApi } from 'lib/api/ens'
 import { getWallet } from 'modules/wallet/utils'
+import { getLands } from 'modules/land/selectors'
 import { changeToEthereumNetwork } from 'modules/wallet/sagas'
-import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import {
   fetchContributableNamesFailure,
   fetchENSRequest,
   fetchENSSuccess,
   setENSContentRequest,
   setENSContentSuccess,
+  setENSContentFailure,
+  setENSResolverRequest,
+  setENSResolverFailure,
   fetchContributableNamesRequest,
   fetchContributableNamesSuccess,
   fetchENSWorldStatusFailure,
@@ -39,17 +42,19 @@ import {
 import { ensSaga } from './sagas'
 import { ContributableDomain, ENS, ENSError, ENSOrigin, WorldStatus } from './types'
 import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
-import { addWorldStatusToEachENS, resolveAddress } from './utils'
+import { addWorldStatusToEachENS, resolveAddress, resolveContenthash } from './utils'
 import { Authorization } from 'lib/api/auth'
 import { marketplace } from 'lib/api/marketplace'
 
 jest.mock('@dcl/builder-client')
 jest.mock('./utils', () => ({
   ...jest.requireActual<Record<string, unknown>>('./utils'),
-  resolveAddress: jest.fn()
+  resolveAddress: jest.fn(),
+  resolveContenthash: jest.fn()
 }))
 
 const mockResolveAddress = resolveAddress as jest.MockedFunction<typeof resolveAddress>
+const mockResolveContenthash = resolveContenthash as jest.MockedFunction<typeof resolveContenthash>
 
 const MockBuilderClient = BuilderClient as jest.MockedClass<typeof BuilderClient>
 const MockWorldsAPI = WorldsAPI as jest.MockedClass<typeof WorldsAPI>
@@ -330,7 +335,7 @@ describe('when handling the set ens address request', () => {
   })
 
   describe('and the name has no resolver set in the ENS registry', () => {
-    it('should set the address on the default resolver', async () => {
+    it('should fail without sending an ineffective transaction', async () => {
       await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
         .provide([
           [call(changeToEthereumNetwork), undefined],
@@ -343,11 +348,17 @@ describe('when handling the set ens address request', () => {
           ],
           [call(waitForTx, hash), true]
         ])
-        .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_SEPOLIA, hash))
+        .put(
+          setENSAddressFailure(ens, address, {
+            message: 'Set a resolver before editing ENS records',
+            code: undefined,
+            origin: ENSOrigin.ADDRESS
+          })
+        )
         .dispatch(setENSAddressRequest(ens, address))
         .silentRun()
 
-      expect(ENSResolver__factory.connect).toHaveBeenCalledWith(ENS_RESOLVER_ADDRESS, signer)
+      expect(ENSResolver__factory.connect).not.toHaveBeenCalled()
     })
   })
 
@@ -402,12 +413,9 @@ describe('when handling the set ens content request to unset the content', () =>
           [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
           [call(getSigner), signer],
           [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolverAddress],
-          [
-            call([resolverContract, 'setContenthash'], namehash(ens.subdomain), ethers.constants.AddressZero),
-            { hash } as ethers.ContractTransaction
-          ]
+          [call([resolverContract, 'setContenthash'], namehash(ens.subdomain), '0x'), { hash } as ethers.ContractTransaction]
         ])
-        .put(setENSContentSuccess(ens, ethers.constants.AddressZero, undefined, 'address', ChainId.ETHEREUM_SEPOLIA, hash))
+        .put(setENSContentSuccess(ens, '0x', undefined, 'address', ChainId.ETHEREUM_SEPOLIA, hash))
         .put(closeModal('UnsetENSContentModal'))
         .dispatch(setENSContentRequest(ens))
         .silentRun()
@@ -417,23 +425,26 @@ describe('when handling the set ens content request to unset the content', () =>
   })
 
   describe('and the name has no resolver set in the ENS registry', () => {
-    it('should clear the content on the default resolver', async () => {
+    it('should fail without writing content to an unused resolver', async () => {
       await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
         .provide([
           [call(changeToEthereumNetwork), undefined],
           [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
           [call(getSigner), signer],
           [call([ensContract, 'resolver'], namehash(ens.subdomain)), ethers.constants.AddressZero],
-          [
-            call([resolverContract, 'setContenthash'], namehash(ens.subdomain), ethers.constants.AddressZero),
-            { hash } as ethers.ContractTransaction
-          ]
+          [call([resolverContract, 'setContenthash'], namehash(ens.subdomain), '0x'), { hash } as ethers.ContractTransaction]
         ])
-        .put(setENSContentSuccess(ens, ethers.constants.AddressZero, undefined, 'address', ChainId.ETHEREUM_SEPOLIA, hash))
+        .put(
+          setENSContentFailure(ens, undefined, {
+            message: 'Set a resolver before editing ENS records',
+            code: undefined,
+            origin: ENSOrigin.CONTENT
+          })
+        )
         .dispatch(setENSContentRequest(ens))
         .silentRun()
 
-      expect(ENSResolver__factory.connect).toHaveBeenCalledWith(ENS_RESOLVER_ADDRESS, signer)
+      expect(ENSResolver__factory.connect).not.toHaveBeenCalled()
     })
   })
 })
@@ -445,8 +456,10 @@ describe('when handling the fetch ens request', () => {
   let ensContract: ENSContract
   let dclRegistrarContract: DCLRegistrar
   let tokenId: ethers.BigNumber
+  let currentResolver: string
 
   beforeEach(() => {
+    currentResolver = ethers.constants.AddressZero
     tokenId = ethers.BigNumber.from(1)
     ensContract = { resolver: jest.fn(), owner: jest.fn() } as unknown as ENSContract
     dclRegistrarContract = { getTokenId: jest.fn(), ownerOf: jest.fn() } as unknown as DCLRegistrar
@@ -458,6 +471,7 @@ describe('when handling the fetch ens request', () => {
   afterEach(() => {
     jest.restoreAllMocks()
     mockResolveAddress.mockReset()
+    mockResolveContenthash.mockReset()
   })
 
   function runFetchENSSaga() {
@@ -466,10 +480,11 @@ describe('when handling the fetch ens request', () => {
         [call(getWallet), { address: walletAddress }],
         [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
         [call(getNetworkProvider, ChainId.ETHEREUM_SEPOLIA), { request: jest.fn().mockResolvedValue('0xaa36a7') }],
-        [call([ensContract, 'resolver'], namehash(subdomain)), ethers.constants.AddressZero],
+        [call([ensContract, 'resolver'], namehash(subdomain)), currentResolver],
         [call([ensContract, 'owner'], namehash(subdomain)), walletAddress],
         [call([dclRegistrarContract, 'getTokenId'], name), tokenId],
-        [call([dclRegistrarContract, 'ownerOf'], tokenId), walletAddress]
+        [call([dclRegistrarContract, 'ownerOf'], tokenId), walletAddress],
+        [select(getLands), []]
       ])
       .dispatch(fetchENSRequest(name))
   }
@@ -481,11 +496,38 @@ describe('when handling the fetch ens request', () => {
       ensOwnerAddress: walletAddress,
       nftOwnerAddress: walletAddress,
       subdomain,
-      resolver: ethers.constants.AddressZero,
+      resolver: currentResolver,
       content: ethers.constants.AddressZero,
       ensAddressRecord
     }
   }
+
+  describe('and the name has a custom registry resolver', () => {
+    beforeEach(() => {
+      currentResolver = '0x00000000000000000000000000000000000000aa'
+      mockResolveAddress.mockResolvedValue(undefined)
+      mockResolveContenthash.mockResolvedValue('0xe301')
+    })
+
+    it('should preserve the resolver identity and the resolved content', () => {
+      return runFetchENSSaga()
+        .put(fetchENSSuccess({ ...buildExpectedENS(''), content: '0xe301', landId: '' }))
+        .silentRun()
+    })
+  })
+
+  describe('and a parent resolver supplies content without a direct registry resolver', () => {
+    beforeEach(() => {
+      mockResolveAddress.mockResolvedValue(undefined)
+      mockResolveContenthash.mockResolvedValue('0xe301')
+    })
+
+    it('should preserve the content resolved through the parent', () => {
+      return runFetchENSSaga()
+        .put(fetchENSSuccess({ ...buildExpectedENS(''), content: '0xe301' }))
+        .silentRun()
+    })
+  })
 
   describe("and the name's current resolver has an address for it", () => {
     beforeEach(() => {
@@ -633,5 +675,44 @@ describe('when handling the fetching of contributable names', () => {
           .silentRun()
       })
     })
+  })
+})
+
+describe('when setting the default resolver after a custom resolver was installed', () => {
+  let signer: Signer
+  let ens: ENS
+  let ensContract: ENSContract
+  let setResolver: jest.Mock
+
+  beforeEach(() => {
+    signer = {} as Signer
+    ens = { name: 'test', subdomain: 'test.dcl.eth' } as ENS
+    setResolver = jest.fn()
+    ensContract = { resolver: jest.fn(), setResolver } as unknown as ENSContract
+    jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should reject the stale request without replacing the current resolver', async () => {
+    await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+      .provide([
+        [call(changeToEthereumNetwork), undefined],
+        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
+        [call(getSigner), signer],
+        [call([ensContract, 'resolver'], namehash(ens.subdomain)), '0x00000000000000000000000000000000000000aa']
+      ])
+      .put(
+        setENSResolverFailure(ens, {
+          message: 'This name already has a resolver. Manage it in ENS to change it.',
+          code: undefined,
+          origin: ENSOrigin.RESOLVER
+        })
+      )
+      .dispatch(setENSResolverRequest(ens))
+      .silentRun()
+    expect(setResolver).not.toHaveBeenCalled()
   })
 })

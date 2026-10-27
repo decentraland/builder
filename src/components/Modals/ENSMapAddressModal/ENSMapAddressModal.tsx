@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Close, Field, Icon, Loader, Message } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { isResolverEmpty } from 'modules/ens/utils'
 import ethereumImg from '../../../icons/ethereum.svg'
 import { Props } from './ENSMapAddressModal.types'
@@ -12,7 +11,7 @@ export default function EnsMapAddressModal(props: Props) {
   const { isLoading, error, ens, isLoadingSetResolver, isWaitingTxSetResolver, onUnmount, onClose, onSave, onSetENSResolver } = props
   const [address, setAddress] = useState<string>(ens.ensAddressRecord || '')
 
-  const hasResolver = !isResolverEmpty(ens) && ens.resolver.toLowerCase() === ENS_RESOLVER_ADDRESS.toLowerCase()
+  const hasResolver = !isResolverEmpty(ens)
 
   const handleSave = useCallback(() => {
     onSave(address)

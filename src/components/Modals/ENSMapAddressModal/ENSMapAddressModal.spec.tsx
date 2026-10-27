@@ -138,3 +138,21 @@ describe('when there is no resolver for the ens', () => {
     expect(screen.getByText(t('ens_map_address_modal.processing'))).toBeInTheDocument()
   })
 })
+
+describe('when the name uses a custom resolver', () => {
+  let ens: ENS
+
+  beforeEach(() => {
+    ens = { name: 'test', subdomain: 'test.dcl.eth', resolver: '0x00000000000000000000000000000000000000aa' } as ENS
+    screen = renderENSMapAddressModal({ ens })
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should offer address editing without replacing the resolver', () => {
+    expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toBeInTheDocument()
+    expect(screen.queryByText(t('ens_map_address_modal.set_resolver.title'))).not.toBeInTheDocument()
+  })
+})

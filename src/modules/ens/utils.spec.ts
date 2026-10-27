@@ -2,7 +2,14 @@ import { ethers } from 'ethers'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { extractEntityId } from 'lib/urn'
 import { ENS } from './types'
-import { UNIVERSAL_RESOLVER_ADDRESS, addWorldStatusToEachENS, isExternalName, resolveAddress } from './utils'
+import {
+  UNIVERSAL_RESOLVER_ADDRESS,
+  addWorldStatusToEachENS,
+  isExternalName,
+  resolveAddress,
+  resolveContenthash,
+  encodeENSName
+} from './utils'
 
 describe('when checking if a subdomain is an external subdomain', () => {
   let subdomain: string
@@ -108,6 +115,7 @@ describe('when resolving the address of an ENS name', () => {
   ])
   const resolverInterface = new ethers.utils.Interface([
     'function addr(bytes32 node) view returns (address)',
+    'function contenthash(bytes32 node) view returns (bytes)',
     'function resolve(bytes name, bytes data) view returns (bytes)'
   ])
   const name = 'someone.dcl.eth'
@@ -155,7 +163,8 @@ describe('when resolving the address of an ENS name', () => {
 
       expect(call).toHaveBeenNthCalledWith(2, {
         to: resolverAddress,
-        data: resolverInterface.encodeFunctionData('addr', [ethers.utils.namehash(name)])
+        data: resolverInterface.encodeFunctionData('addr', [ethers.utils.namehash(name)]),
+        ccipReadEnabled: true
       })
     })
 
@@ -256,5 +265,81 @@ describe('when resolving the address of an ENS name', () => {
 
       await expect(resolveAddress(provider, name)).rejects.toThrow('RPC unavailable')
     })
+  })
+})
+
+describe('when encoding normalized ENS names', () => {
+  let name: string
+
+  beforeEach(() => {
+    name = 'ALICE.eth'
+  })
+
+  it('should use the same normalized name for DNS and namehash', () => {
+    expect(encodeENSName(name)).toEqual({
+      name: 'alice.eth',
+      dnsName: ethers.utils.dnsEncode('alice.eth'),
+      node: ethers.utils.namehash('alice.eth')
+    })
+  })
+
+  describe('and the name contains a valid long UTF-8 label', () => {
+    beforeEach(() => {
+      name = '😎'.repeat(20) + '.eth'
+    })
+
+    it('should accept labels exceeding the legacy 63-byte DNS limit', () => {
+      expect(encodeENSName(name).dnsName.slice(0, 4)).toBe('0x50')
+    })
+  })
+
+  describe('and the label exceeds the ENS wire format limit', () => {
+    beforeEach(() => {
+      name = '😎'.repeat(64) + '.eth'
+    })
+
+    it('should reject the name before attempting resolution', () => {
+      expect(() => encodeENSName(name)).toThrow('255 bytes')
+    })
+  })
+})
+
+describe('when resolving content through an extended ENS resolver', () => {
+  let provider: ethers.providers.Provider
+  let call: jest.Mock
+  let name: string
+  let content: string
+  let universalInterface: ethers.utils.Interface
+  let resolverInterface: ethers.utils.Interface
+
+  beforeEach(() => {
+    name = 'alice.eth'
+    content = '0xe30101701220' + '11'.repeat(32)
+    universalInterface = new ethers.utils.Interface([
+      'function requireResolver(bytes name) view returns ((bytes name, uint256 offset, bytes32 node, address resolver, bool extended) info)'
+    ])
+    resolverInterface = new ethers.utils.Interface([
+      'function contenthash(bytes32 node) view returns (bytes)',
+      'function resolve(bytes name, bytes data) view returns (bytes)'
+    ])
+    call = jest
+      .fn()
+      .mockResolvedValueOnce(
+        universalInterface.encodeFunctionResult('requireResolver', [
+          [ethers.utils.dnsEncode(name), 0, ethers.utils.namehash(name), '0x00000000000000000000000000000000000000aa', true]
+        ])
+      )
+      .mockResolvedValueOnce(
+        resolverInterface.encodeFunctionResult('resolve', [resolverInterface.encodeFunctionResult('contenthash', [content])])
+      )
+    provider = { call } as unknown as ethers.providers.Provider
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should unwrap the contenthash record returned by resolve', async () => {
+    await expect(resolveContenthash(provider, name)).resolves.toBe(content)
   })
 })
