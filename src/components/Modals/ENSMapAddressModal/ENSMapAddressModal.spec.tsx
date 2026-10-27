@@ -141,18 +141,38 @@ describe('when there is no resolver for the ens', () => {
 
 describe('when the name uses a custom resolver', () => {
   let ens: ENS
+  let onSetENSResolver: jest.Mock
+  let confirm: jest.SpyInstance
 
   beforeEach(() => {
     ens = { name: 'test', subdomain: 'test.dcl.eth', resolver: '0x00000000000000000000000000000000000000aa' } as ENS
-    screen = renderENSMapAddressModal({ ens })
+    onSetENSResolver = jest.fn()
+    confirm = jest.spyOn(window, 'confirm').mockReturnValue(false)
+    screen = renderENSMapAddressModal({ ens, onSetENSResolver })
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    jest.restoreAllMocks()
   })
 
-  it('should offer address editing without replacing the resolver', () => {
-    expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toBeInTheDocument()
-    expect(screen.queryByText(t('ens_map_address_modal.set_resolver.title'))).not.toBeInTheDocument()
+  it('should show a replacement warning without offering unsupported address editing', () => {
+    expect(screen.getByText(t('ens_map_address_modal.replace_resolver.info'))).toBeInTheDocument()
+    expect(screen.queryByLabelText(t('ens_map_address_modal.address.label'))).not.toBeInTheDocument()
+  })
+
+  it('should preserve the existing resolver when confirmation is cancelled', () => {
+    userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+    expect(onSetENSResolver).not.toHaveBeenCalled()
+  })
+
+  describe('and the user confirms replacement', () => {
+    beforeEach(() => {
+      confirm.mockReturnValueOnce(true)
+    })
+
+    it('should include the exact resolver that was confirmed', () => {
+      userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+      expect(onSetENSResolver).toHaveBeenCalledWith(ens, ens.resolver)
+    })
   })
 })

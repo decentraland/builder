@@ -1,5 +1,6 @@
 import { ens_normalize } from '@adraffy/ens-normalize'
 import { ethers } from 'ethers'
+import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
@@ -29,6 +30,15 @@ export function findBySubdomain(ensList: ENS[], subdomain: string) {
 
 export function isEmpty(ens: ENS) {
   return isResolverEmpty(ens) && isContentEmpty(ens)
+}
+
+/** Only the configured, chain-specific DCL deployment is trusted for Builder's legacy setters. */
+export function isSupportedENSResolver(resolver: string): boolean {
+  return (
+    /^0x[0-9a-fA-F]{40}$/.test(ENS_RESOLVER_ADDRESS) &&
+    ENS_RESOLVER_ADDRESS !== ethers.constants.AddressZero &&
+    resolver.toLowerCase() === ENS_RESOLVER_ADDRESS.toLowerCase()
+  )
 }
 
 export function isResolverEmpty(ens: ENS) {
@@ -144,12 +154,6 @@ function isNameWithoutResolver(result: string) {
   }
 }
 
-/**
- * Resolves the ETH address of an ENS name through the name's current resolver, found by the ENS Universal Resolver.
- * Offchain (CCIP-Read) resolvers are supported. Returns undefined when the name has no resolver or no address,
- * and throws when the lookup itself fails, so an RPC or gateway error is not mistaken for a missing name.
- * Ported from decentraland-dapps' AddressField (decentraland/decentraland-dapps#833).
- */
 /** Normalize once using ENSIP-15, then encode the same UTF-8 labels for DNS and namehash. */
 export function encodeENSName(name: string): { name: string; dnsName: string; node: string } {
   const normalizedName = ens_normalize(name)
@@ -180,29 +184,35 @@ async function resolveRecord(
   }
 
   const [{ resolver, extended }] = universalResolverInterface.decodeFunctionResult('requireResolver', requireResolverResult)
-  const addrData = resolverInterface.encodeFunctionData(record, [node])
+  const recordData = resolverInterface.encodeFunctionData(record, [node])
 
-  let addrResult: string
+  let recordResult: string
   if (extended) {
     // ENSIP-10 wildcard or offchain resolver: the address is requested through resolve(), which may use CCIP-Read
     const resolveResult = await provider.call({
       to: resolver,
-      data: resolverInterface.encodeFunctionData('resolve', [dnsEncodedName, addrData]),
+      data: resolverInterface.encodeFunctionData('resolve', [dnsEncodedName, recordData]),
       ccipReadEnabled: true
     })
-    ;[addrResult] = resolverInterface.decodeFunctionResult('resolve', resolveResult)
+    ;[recordResult] = resolverInterface.decodeFunctionResult('resolve', resolveResult)
   } else {
-    addrResult = await provider.call({ to: resolver, data: addrData, ccipReadEnabled: true })
+    recordResult = await provider.call({ to: resolver, data: recordData, ccipReadEnabled: true })
   }
 
-  if (ethers.utils.hexDataLength(addrResult) === 0) {
+  if (ethers.utils.hexDataLength(recordResult) === 0) {
     return undefined
   }
 
-  const [value] = resolverInterface.decodeFunctionResult(record, addrResult) as unknown as [string]
+  const [value] = resolverInterface.decodeFunctionResult(record, recordResult) as unknown as [string]
   return value === ethers.constants.AddressZero || value === '0x' ? undefined : value
 }
 
+/**
+ * Resolves the ETH address of an ENS name through the name's current resolver, found by the ENS Universal Resolver.
+ * Offchain (CCIP-Read) resolvers are supported. Returns undefined when the name has no resolver or no address,
+ * and throws when the lookup itself fails, so an RPC or gateway error is not mistaken for a missing name.
+ * Ported from decentraland-dapps' AddressField (decentraland/decentraland-dapps#833).
+ */
 export function resolveAddress(provider: ethers.providers.Provider, name: string): Promise<string | undefined> {
   return resolveRecord(provider, name, 'addr')
 }

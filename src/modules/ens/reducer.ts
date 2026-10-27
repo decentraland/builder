@@ -306,7 +306,11 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
               ...state.data,
               [subdomain]: {
                 ...state.data[subdomain],
-                resolver
+                resolver,
+                // Records from the previous resolver must not remain displayed as effective.
+                content: '0x',
+                ensAddressRecord: '',
+                landId: undefined
               }
             }
           }

@@ -4,7 +4,7 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { isResolverEmpty, isContentEmpty, isEqualContent } from 'modules/ens/utils'
+import { isResolverEmpty, isContentEmpty, isEqualContent, isSupportedENSResolver } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
 import { Props } from './LandAssignENSForm.types'
 import './LandAssignENSForm.css'
@@ -17,7 +17,13 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
 
   handleSetResolver = () => {
     const { onSetENSResolver, ens } = this.props
-    onSetENSResolver(ens)
+    if (!isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord) {
+      if (window.confirm(t('ens_map_address_modal.replace_resolver.confirm'))) {
+        onSetENSResolver(ens, ens.resolver)
+      }
+    } else {
+      onSetENSResolver(ens)
+    }
   }
 
   handleReclaim = () => {
@@ -38,7 +44,8 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
     const { ens, land, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, isWaitingTxReclaim, error } = this.props
 
     const needsReclaiming = ens.ensOwnerAddress !== ens.nftOwnerAddress
-    const hasResolver = !isResolverEmpty(ens)
+    const hasResolver = isSupportedENSResolver(ens.resolver)
+    const needsReplacementConfirmation = !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord
     const hasContent = !isContentEmpty(ens) && isEqualContent(ens, land)
     const hasData = hasResolver || hasContent
 
@@ -51,7 +58,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
     const setResolverButtonClassName = hasResolver && !isWaitingTxSetResolver && !hasResolverError ? 'grey-button' : ''
     const setContentButtonClassName = hasContent && !isWaitingTxSetContent && !hasContentError ? 'grey-button' : ''
 
-    const isSetResolverButtonDisabled = hasResolverError || hasData || needsReclaiming || isWaitingTxSetResolver || isWaitingTxReclaim
+    const isSetResolverButtonDisabled = hasResolverError || hasResolver || needsReclaiming || isWaitingTxSetResolver || isWaitingTxReclaim
     const isSetContentButtonDisabled =
       hasContentError ||
       hasResolverError ||
@@ -72,9 +79,21 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
         </Row>
         <Row>
           <div className={isSetResolverButtonDisabled ? 'box box-disabled' : 'box'}>
-            <h3>{t('land_assign_ens_page.set_resolver')}</h3>
+            <h3>
+              {t(
+                needsReplacementConfirmation && !hasResolver
+                  ? 'ens_map_address_modal.replace_resolver.action'
+                  : 'land_assign_ens_page.set_resolver'
+              )}
+            </h3>
             <div className="message-box">
-              <p>{t('land_assign_ens_page.set_resolver_explanation')}</p>
+              <p>
+                {t(
+                  needsReplacementConfirmation && !hasResolver
+                    ? 'ens_map_address_modal.replace_resolver.info'
+                    : 'land_assign_ens_page.set_resolver_explanation'
+                )}
+              </p>
               <NetworkButton
                 type="submit"
                 disabled={isSetResolverButtonDisabled}
@@ -92,7 +111,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                     {!isWaitingTxSetResolver ? <Icon name="check" /> : null}
                   </>
                 ) : (
-                  t('global.submit')
+                  t(needsReplacementConfirmation ? 'ens_map_address_modal.replace_resolver.action' : 'global.submit')
                 )}
               </NetworkButton>
             </div>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Close, Field, Icon, Loader, Message } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { isResolverEmpty } from 'modules/ens/utils'
+import { isResolverEmpty, isContentEmpty, isSupportedENSResolver } from 'modules/ens/utils'
 import ethereumImg from '../../../icons/ethereum.svg'
 import { Props } from './ENSMapAddressModal.types'
 import styles from './ENSMapAddressModal.module.css'
@@ -11,7 +11,12 @@ export default function EnsMapAddressModal(props: Props) {
   const { isLoading, error, ens, isLoadingSetResolver, isWaitingTxSetResolver, onUnmount, onClose, onSave, onSetENSResolver } = props
   const [address, setAddress] = useState<string>(ens.ensAddressRecord || '')
 
-  const hasResolver = !isResolverEmpty(ens)
+  useEffect(() => {
+    setAddress(ens.ensAddressRecord || '')
+  }, [ens.resolver, ens.ensAddressRecord])
+
+  const hasResolver = isSupportedENSResolver(ens.resolver)
+  const needsReplacementConfirmation = !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord
 
   const handleSave = useCallback(() => {
     onSave(address)
@@ -25,8 +30,14 @@ export default function EnsMapAddressModal(props: Props) {
   )
 
   const handleSetENSResolver = useCallback(() => {
-    onSetENSResolver(ens)
-  }, [ens, onSetENSResolver])
+    if (needsReplacementConfirmation) {
+      if (window.confirm(t('ens_map_address_modal.replace_resolver.confirm'))) {
+        onSetENSResolver(ens, ens.resolver)
+      }
+    } else {
+      onSetENSResolver(ens)
+    }
+  }, [ens, onSetENSResolver, needsReplacementConfirmation])
 
   useEffect(() => {
     document.getElementById('address-input')?.focus()
@@ -68,10 +79,16 @@ export default function EnsMapAddressModal(props: Props) {
       <Modal closeIcon={disableActions ? undefined : <Close />} onClose={disableActions ? undefined : onClose} size="tiny">
         <div className={styles.main}>
           <h1>{t('ens_map_address_modal.set_resolver.title')}</h1>
-          <span className={styles.setResolverInfo}>{t('ens_map_address_modal.set_resolver.info', { br: () => <br /> })}</span>
+          <span className={styles.setResolverInfo}>
+            {needsReplacementConfirmation
+              ? t('ens_map_address_modal.replace_resolver.info')
+              : t('ens_map_address_modal.set_resolver.info', { br: () => <br /> })}
+          </span>
           <div className={styles.setResolverActions}>
             <Button primary onClick={handleSetENSResolver} disabled={disableActions}>
-              {t('ens_map_address_modal.set_resolver.action')}
+              {t(
+                needsReplacementConfirmation ? 'ens_map_address_modal.replace_resolver.action' : 'ens_map_address_modal.set_resolver.action'
+              )}
             </Button>
             {setResolverMessage}
           </div>

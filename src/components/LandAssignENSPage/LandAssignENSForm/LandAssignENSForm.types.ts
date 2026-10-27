@@ -9,7 +9,7 @@ export type Props = {
   isWaitingTxSetResolver: boolean
   isWaitingTxReclaim: boolean
   error: ENSError | null
-  onSetENSResolver: (ens: ENS) => void
+  onSetENSResolver: (ens: ENS, expectedResolver?: string) => void
   onSetENSContent: (ens: ENS, land: Land) => void
   onReclaimName: (ens: ENS) => void
   onBack: () => void

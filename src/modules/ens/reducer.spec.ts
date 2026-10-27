@@ -2,6 +2,7 @@ import { ChainId } from '@dcl/schemas'
 import {
   FETCH_EXTERNAL_NAMES_REQUEST,
   SET_ENS_ADDRESS_SUCCESS,
+  SET_ENS_RESOLVER_SUCCESS,
   clearENSErrors,
   fetchContributableNamesFailure,
   fetchContributableNamesRequest,
@@ -351,6 +352,39 @@ describe('when handling fetch contributable names actions', () => {
           loading: []
         })
       )
+    })
+  })
+})
+
+describe('when a resolver replacement is mined', () => {
+  let action: ReturnType<typeof fetchTransactionSuccess>
+  let previousENS: ENS
+  let replacement: string
+
+  beforeEach(() => {
+    replacement = '0x00000000000000000000000000000000000000bb'
+    previousENS = {
+      name: 'test',
+      subdomain: 'test.dcl.eth',
+      resolver: '0x00000000000000000000000000000000000000aa',
+      content: '0xe301',
+      ensAddressRecord: 'old-address',
+      landId: 'old-land'
+    } as ENS
+    state = { ...INITIAL_STATE, data: { [previousENS.subdomain]: previousENS } }
+    action = fetchTransactionSuccess({
+      actionType: SET_ENS_RESOLVER_SUCCESS,
+      payload: { ens: previousENS, resolver: replacement }
+    } as Transaction)
+  })
+
+  it('should discard old resolver records while the effective records are refreshed', () => {
+    expect(ensReducer(state, action).data[previousENS.subdomain]).toEqual({
+      ...previousENS,
+      resolver: replacement,
+      content: '0x',
+      ensAddressRecord: '',
+      landId: undefined
     })
   })
 })

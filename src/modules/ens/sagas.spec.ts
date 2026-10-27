@@ -17,6 +17,7 @@ import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { ENSApi } from 'lib/api/ens'
 import { getWallet } from 'modules/wallet/utils'
 import { getLands } from 'modules/land/selectors'
+import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { changeToEthereumNetwork } from 'modules/wallet/sagas'
 import {
   fetchContributableNamesFailure,
@@ -27,6 +28,7 @@ import {
   setENSContentFailure,
   setENSResolverRequest,
   setENSResolverFailure,
+  setENSResolverSuccess,
   fetchContributableNamesRequest,
   fetchContributableNamesSuccess,
   fetchENSWorldStatusFailure,
@@ -301,7 +303,7 @@ describe('when handling the set ens address request', () => {
     signer = {} as Signer
     address = '0xtest'
     hash = 'tx-hash'
-    currentResolverAddress = '0x00000000000000000000000000000000000000Aa'
+    currentResolverAddress = ENS_RESOLVER_ADDRESS
     ensContract = { resolver: jest.fn() } as unknown as ENSContract
     jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
     jest.spyOn(ENSResolver__factory, 'connect').mockReturnValue(ensResolverContract)
@@ -331,6 +333,32 @@ describe('when handling the set ens address request', () => {
         .silentRun()
 
       expect(ENSResolver__factory.connect).toHaveBeenCalledWith(currentResolverAddress, signer)
+    })
+  })
+
+  describe('and the name has an unknown resolver', () => {
+    beforeEach(() => {
+      currentResolverAddress = '0x00000000000000000000000000000000000000aa'
+    })
+
+    it('should reject writes before connecting to the unknown contract', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        .provide([
+          [call(changeToEthereumNetwork), undefined],
+          [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
+          [call(getSigner), signer],
+          [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolverAddress]
+        ])
+        .put(
+          setENSAddressFailure(ens, address, {
+            message: 'This resolver is not supported for editing. Replace it with the Decentraland resolver first.',
+            code: undefined,
+            origin: ENSOrigin.ADDRESS
+          })
+        )
+        .dispatch(setENSAddressRequest(ens, address))
+        .silentRun()
+      expect(ENSResolver__factory.connect).not.toHaveBeenCalled()
     })
   })
 
@@ -394,7 +422,7 @@ describe('when handling the set ens content request to unset the content', () =>
     } as ENS
     signer = {} as Signer
     hash = 'tx-hash'
-    currentResolverAddress = '0x00000000000000000000000000000000000000Aa'
+    currentResolverAddress = ENS_RESOLVER_ADDRESS
     ensContract = { resolver: jest.fn() } as unknown as ENSContract
     resolverContract = { setContenthash: jest.fn() } as unknown as ENSResolver
     jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
@@ -497,7 +525,7 @@ describe('when handling the fetch ens request', () => {
       nftOwnerAddress: walletAddress,
       subdomain,
       resolver: currentResolver,
-      content: ethers.constants.AddressZero,
+      content: '0x',
       ensAddressRecord
     }
   }
@@ -541,6 +569,32 @@ describe('when handling the fetch ens request', () => {
 
       expect(mockResolveAddress).toHaveBeenCalledWith(expect.any(ethers.providers.Web3Provider), subdomain)
       expect(ENSResolver__factory.connect).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('and the contenthash lookup fails', () => {
+    beforeEach(() => {
+      mockResolveAddress.mockResolvedValue('0x000000000000000000000000000000000000000C')
+      mockResolveContenthash.mockRejectedValue(new Error('Content profile unavailable'))
+      jest.spyOn(console, 'error').mockImplementation(() => undefined)
+    })
+
+    it('should load the name and address even without a direct registry resolver', () => {
+      return runFetchENSSaga()
+        .put(fetchENSSuccess(buildExpectedENS('0x000000000000000000000000000000000000000C')))
+        .silentRun()
+    })
+
+    describe('and a resolver is configured directly', () => {
+      beforeEach(() => {
+        currentResolver = ENS_RESOLVER_ADDRESS
+      })
+
+      it('should preserve the resolver and allow address editing', () => {
+        return runFetchENSSaga()
+          .put(fetchENSSuccess({ ...buildExpectedENS('0x000000000000000000000000000000000000000C'), landId: '' }))
+          .silentRun()
+      })
     })
   })
 
@@ -706,7 +760,7 @@ describe('when setting the default resolver after a custom resolver was installe
       ])
       .put(
         setENSResolverFailure(ens, {
-          message: 'This name already has a resolver. Manage it in ENS to change it.',
+          message: 'This name already has a resolver. Confirm replacement before changing it.',
           code: undefined,
           origin: ENSOrigin.RESOLVER
         })
@@ -714,5 +768,69 @@ describe('when setting the default resolver after a custom resolver was installe
       .dispatch(setENSResolverRequest(ens))
       .silentRun()
     expect(setResolver).not.toHaveBeenCalled()
+  })
+})
+
+describe('when explicitly confirming replacement of an unsupported resolver', () => {
+  let signer: Signer
+  let ens: ENS
+  let ensContract: ENSContract
+  let currentResolver: string
+  let setResolver: jest.Mock
+  let hash: string
+
+  beforeEach(() => {
+    signer = {} as Signer
+    ens = { name: 'test', subdomain: 'test.dcl.eth', resolver: '0x00000000000000000000000000000000000000aa' } as ENS
+    currentResolver = ens.resolver
+    hash = 'replacement-hash'
+    setResolver = jest.fn().mockResolvedValueOnce({ hash })
+    ensContract = { resolver: jest.fn(), setResolver } as unknown as ENSContract
+    jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  function runReplacement() {
+    return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+      .provide([
+        [call(changeToEthereumNetwork), undefined],
+        [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
+        [call(getSigner), signer],
+        [call(waitForTx, hash), true],
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
+        [call(getNetworkProvider, ChainId.ETHEREUM_SEPOLIA), { request: jest.fn().mockResolvedValue('0xaa36a7') }],
+        [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolver]
+      ])
+      .dispatch(setENSResolverRequest(ens, ens.resolver))
+  }
+
+  it('should replace the resolver that the user confirmed', async () => {
+    await runReplacement()
+      .put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, 'address', ChainId.ETHEREUM_SEPOLIA, hash))
+      .put(fetchENSRequest(ens.name))
+      .silentRun()
+    expect(setResolver).toHaveBeenCalledWith(namehash(ens.subdomain), ENS_RESOLVER_ADDRESS)
+  })
+
+  describe('and the resolver changed after confirmation', () => {
+    beforeEach(() => {
+      currentResolver = '0x00000000000000000000000000000000000000bb'
+    })
+
+    it('should reject the stale confirmation without sending a transaction', async () => {
+      await runReplacement()
+        .put(
+          setENSResolverFailure(ens, {
+            message: 'The resolver changed after confirmation. Refresh the name and try again.',
+            code: undefined,
+            origin: ENSOrigin.RESOLVER
+          })
+        )
+        .silentRun()
+      expect(setResolver).not.toHaveBeenCalled()
+    })
   })
 })
