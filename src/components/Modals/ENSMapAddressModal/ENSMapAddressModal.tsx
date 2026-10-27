@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Close, Field, Icon, Loader, Message } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { isResolverEmpty, isContentEmpty, isSupportedENSResolver } from 'modules/ens/utils'
+import { needsResolverReplacementConfirmation, isSupportedENSResolver } from 'modules/ens/utils'
 import ethereumImg from '../../../icons/ethereum.svg'
 import { Props } from './ENSMapAddressModal.types'
 import styles from './ENSMapAddressModal.module.css'
@@ -26,8 +26,7 @@ export default function EnsMapAddressModal(props: Props) {
   }, [ens.subdomain, ens.resolver, ens.ensAddressRecord])
 
   const hasResolver = isSupportedENSResolver(ens.resolver)
-  const needsReplacementConfirmation =
-    !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed || !!ens.addressLookupFailed
+  const needsReplacementConfirmation = needsResolverReplacementConfirmation(ens)
 
   const handleSave = useCallback(() => {
     onSave(address)

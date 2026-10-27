@@ -142,9 +142,27 @@ describe('when assigning a name with no direct resolver or known content', () =>
   })
 
   it('should install a resolver normally when absence of content was verified', () => {
-    userEvent.click(screen.getByRole('button', { name: t('land_assign_ens_page.set_resolver') }))
+    userEvent.click(screen.getByRole('button', { name: t('global.submit'), description: t('land_assign_ens_page.set_resolver') }))
     expect(props.onSetENSResolver).toHaveBeenCalledWith(props.ens)
     expect(confirm).not.toHaveBeenCalled()
+  })
+
+  describe('and the name uses the supported Sepolia Public Resolver', () => {
+    beforeEach(() => {
+      props.ens = { ...props.ens, resolver: '0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5' }
+      view.rerender(<LandAssignENSForm {...props} />)
+    })
+
+    it('should announce the approved resolver using its visible text without offering replacement', () => {
+      expect(screen.getByRole('button', { name: t('global.approved_tx') })).toBeDisabled()
+      expect(screen.queryByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') })).not.toBeInTheDocument()
+    })
+
+    it('should allow setting content without replacing the resolver', () => {
+      userEvent.click(screen.getByRole('button', { name: t('global.submit') }))
+      expect(props.onSetENSContent).toHaveBeenCalledWith(props.ens, props.land)
+      expect(confirm).not.toHaveBeenCalled()
+    })
   })
 
   describe('and the address lookup failed', () => {

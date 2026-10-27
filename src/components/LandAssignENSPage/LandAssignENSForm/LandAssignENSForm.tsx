@@ -4,7 +4,7 @@ import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { isResolverEmpty, isContentEmpty, isEqualContent, isSupportedENSResolver } from 'modules/ens/utils'
+import { needsResolverReplacementConfirmation, isContentEmpty, isEqualContent, isSupportedENSResolver } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
 import { Props } from './LandAssignENSForm.types'
 import './LandAssignENSForm.css'
@@ -17,7 +17,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
 
   handleSetResolver = () => {
     const { onSetENSResolver, ens } = this.props
-    if (!isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed || !!ens.addressLookupFailed) {
+    if (needsResolverReplacementConfirmation(ens)) {
       if (window.confirm(t('ens_map_address_modal.replace_resolver.confirm'))) {
         onSetENSResolver(ens, ens.resolver)
       }
@@ -45,8 +45,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
 
     const needsReclaiming = ens.ensOwnerAddress !== ens.nftOwnerAddress
     const hasResolver = isSupportedENSResolver(ens.resolver)
-    const needsReplacementConfirmation =
-      !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed || !!ens.addressLookupFailed
+    const needsReplacementConfirmation = needsResolverReplacementConfirmation(ens)
     const hasContent = !isContentEmpty(ens) && isEqualContent(ens, land)
     const hasData = hasResolver || hasContent
 
@@ -80,7 +79,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
         </Row>
         <Row>
           <div className={isSetResolverButtonDisabled ? 'box box-disabled' : 'box'}>
-            <h3>
+            <h3 id="ens-resolver-heading">
               {t(
                 needsReplacementConfirmation && !hasResolver
                   ? 'ens_map_address_modal.replace_resolver.action'
@@ -96,14 +95,10 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                 )}
               </p>
               <NetworkButton
+                aria-describedby="ens-resolver-heading"
                 type="submit"
                 disabled={isSetResolverButtonDisabled}
                 onClick={this.handleSetResolver}
-                aria-label={t(
-                  needsReplacementConfirmation && !hasResolver
-                    ? 'ens_map_address_modal.replace_resolver.action'
-                    : 'land_assign_ens_page.set_resolver'
-                )}
                 className={setResolverButtonClassName}
                 loading={isWaitingTxSetResolver}
                 primary

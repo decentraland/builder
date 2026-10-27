@@ -22,6 +22,8 @@ import { changeToEthereumNetwork } from 'modules/wallet/sagas'
 import {
   fetchContributableNamesFailure,
   fetchENSRequest,
+  fetchENSListRequest,
+  fetchENSListSuccess,
   fetchENSSuccess,
   setENSContentRequest,
   setENSContentSuccess,
@@ -300,7 +302,7 @@ describe('when handling the set ens address request', () => {
       subdomain: 'test.dcl.eth',
       name: 'test'
     } as ENS
-    signer = {} as Signer
+    signer = { getChainId: jest.fn().mockResolvedValue(ChainId.ETHEREUM_SEPOLIA) } as unknown as Signer
     address = '0xtest'
     hash = 'tx-hash'
     currentResolverAddress = ENS_RESOLVER_ADDRESS
@@ -360,6 +362,35 @@ describe('when handling the set ens address request', () => {
       expect(ENSResolver__factory.connect).toHaveBeenCalledWith(currentResolverAddress, signer)
     })
   })
+
+  describe.each(['0x231b0ee14048e9dccd1d247744d114a4eb5e8e63', '0xf29100983e058b709f3d539b0c765937b804ac15'])(
+    'and the signer is on mainnet using %s despite stale wallet state',
+    resolver => {
+      beforeEach(() => {
+        currentResolverAddress = resolver
+        jest.mocked(signer.getChainId).mockResolvedValue(ChainId.ETHEREUM_MAINNET)
+      })
+
+      it('should edit that resolver without replacing it', async () => {
+        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          .provide([
+            [call(changeToEthereumNetwork), undefined],
+            [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
+            [call(getSigner), signer],
+            [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolverAddress],
+            [
+              call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address),
+              { hash } as ethers.ContractTransaction
+            ],
+            [call(waitForTx, hash), true]
+          ])
+          .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_SEPOLIA, hash))
+          .dispatch(setENSAddressRequest(ens, address))
+          .silentRun()
+        expect(ENSResolver__factory.connect).toHaveBeenCalledWith(currentResolverAddress, signer)
+      })
+    }
+  )
 
   describe('and the name has an unknown resolver', () => {
     beforeEach(() => {
@@ -445,7 +476,7 @@ describe('when handling the set ens content request to unset the content', () =>
       subdomain: 'test.dcl.eth',
       name: 'test'
     } as ENS
-    signer = {} as Signer
+    signer = { getChainId: jest.fn().mockResolvedValue(ChainId.ETHEREUM_SEPOLIA) } as unknown as Signer
     hash = 'tx-hash'
     currentResolverAddress = ENS_RESOLVER_ADDRESS
     ensContract = { resolver: jest.fn() } as unknown as ENSContract
@@ -796,7 +827,7 @@ describe('when setting the default resolver after a custom resolver was installe
   let setResolver: jest.Mock
 
   beforeEach(() => {
-    signer = {} as Signer
+    signer = { getChainId: jest.fn().mockResolvedValue(ChainId.ETHEREUM_SEPOLIA) } as unknown as Signer
     ens = { name: 'test', subdomain: 'test.dcl.eth' } as ENS
     setResolver = jest.fn()
     ensContract = { resolver: jest.fn(), setResolver } as unknown as ENSContract
@@ -841,7 +872,7 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
   let miningError: Error | undefined
 
   beforeEach(() => {
-    signer = {} as Signer
+    signer = { getChainId: jest.fn().mockResolvedValue(ChainId.ETHEREUM_SEPOLIA) } as unknown as Signer
     ens = { name: 'test', subdomain: 'test.dcl.eth', resolver: '0x00000000000000000000000000000000000000aa' } as ENS
     currentResolver = ens.resolver
     hash = 'replacement-hash'
@@ -908,5 +939,64 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
         .silentRun()
       expect(setResolver).not.toHaveBeenCalled()
     })
+  })
+})
+
+describe('when list address and content lookups fail independently', () => {
+  let ensContract: ENSContract
+  let registrar: DCLRegistrar
+  let expected: ENS
+
+  beforeEach(() => {
+    ensContract = {
+      resolver: jest.fn().mockResolvedValue(ethers.constants.AddressZero),
+      owner: jest.fn().mockResolvedValue('owner')
+    } as unknown as ENSContract
+    registrar = {
+      getTokenId: jest.fn().mockResolvedValue(ethers.BigNumber.from(1)),
+      ownerOf: jest.fn().mockResolvedValue('owner')
+    } as unknown as DCLRegistrar
+    jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
+    jest.spyOn(DCLRegistrar__factory, 'connect').mockReturnValue(registrar)
+    jest.spyOn(worldsAPIContent, 'fetchWorld').mockResolvedValue(null)
+    mockResolveAddress.mockRejectedValueOnce(new Error('address unavailable'))
+    mockResolveContenthash.mockRejectedValueOnce(new Error('content unavailable'))
+    expected = {
+      name: 'test',
+      subdomain: 'test.dcl.eth',
+      tokenId: '1',
+      ensOwnerAddress: 'owner',
+      nftOwnerAddress: 'owner',
+      resolver: ethers.constants.AddressZero,
+      content: '0x',
+      ensAddressRecord: '',
+      landId: undefined,
+      worldStatus: null,
+      addressLookupFailed: true,
+      contentLookupFailed: true
+    }
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+    mockResolveAddress.mockReset()
+    mockResolveContenthash.mockReset()
+  })
+
+  it('should keep the listed name and mark both records as unknown', async () => {
+    await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+      .provide([
+        [select(getLands), []],
+        [call(getLandRedirectionHashes, builderClient, []), []],
+        [call(getWallet), { address: 'owner' }],
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
+        [call(getNetworkProvider, ChainId.ETHEREUM_SEPOLIA), { request: jest.fn().mockResolvedValue('0xaa36a7') }],
+        [call([marketplace, 'fetchENSList'], 'owner', 1, 0), ['test']],
+        [call([marketplace, 'fetchENSListCount'], 'owner'), 1],
+        [call([lists, 'fetchBannedNames']), []]
+      ])
+      .put(fetchENSListSuccess([expected], 1))
+      .dispatch(fetchENSListRequest(1, 0))
+      .silentRun()
   })
 })
