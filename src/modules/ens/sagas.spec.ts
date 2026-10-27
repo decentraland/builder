@@ -336,6 +336,31 @@ describe('when handling the set ens address request', () => {
     })
   })
 
+  describe('and the name uses the verified Sepolia Public Resolver', () => {
+    beforeEach(() => {
+      currentResolverAddress = '0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5'
+    })
+
+    it('should edit that resolver without replacing it', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        .provide([
+          [call(changeToEthereumNetwork), undefined],
+          [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
+          [call(getSigner), signer],
+          [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolverAddress],
+          [
+            call([ensResolverContract, 'setAddr(bytes32,address)'], namehash(ens.subdomain), address),
+            { hash } as ethers.ContractTransaction
+          ],
+          [call(waitForTx, hash), true]
+        ])
+        .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_SEPOLIA, hash))
+        .dispatch(setENSAddressRequest(ens, address))
+        .silentRun()
+      expect(ENSResolver__factory.connect).toHaveBeenCalledWith(currentResolverAddress, signer)
+    })
+  })
+
   describe('and the name has an unknown resolver', () => {
     beforeEach(() => {
       currentResolverAddress = '0x00000000000000000000000000000000000000aa'
@@ -650,7 +675,7 @@ describe('when handling the fetch ens request', () => {
 
     it('should put the success action with an empty address record', () => {
       return runFetchENSSaga()
-        .put(fetchENSSuccess(buildExpectedENS('')))
+        .put(fetchENSSuccess({ ...buildExpectedENS(''), addressLookupFailed: true }))
         .silentRun()
     })
   })
@@ -788,6 +813,8 @@ describe('when setting the default resolver after a custom resolver was installe
         [call(changeToEthereumNetwork), undefined],
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
         [call(getSigner), signer],
+        [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
+        [call(getNetworkProvider, ChainId.ETHEREUM_SEPOLIA), { request: jest.fn().mockResolvedValue('0xaa36a7') }],
         [call([ensContract, 'resolver'], namehash(ens.subdomain)), '0x00000000000000000000000000000000000000aa']
       ])
       .put(
@@ -797,6 +824,7 @@ describe('when setting the default resolver after a custom resolver was installe
           origin: ENSOrigin.RESOLVER
         })
       )
+      .put(fetchENSRequest(ens.name))
       .dispatch(setENSResolverRequest(ens))
       .silentRun()
     expect(setResolver).not.toHaveBeenCalled()
@@ -876,6 +904,7 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
             origin: ENSOrigin.RESOLVER
           })
         )
+        .put(fetchENSRequest(ens.name))
         .silentRun()
       expect(setResolver).not.toHaveBeenCalled()
     })

@@ -12,10 +12,10 @@ export default function EnsMapAddressModal(props: Props) {
   const [address, setAddress] = useState<string>(ens.ensAddressRecord || '')
 
   const isAddressEdited = useRef(false)
-  const previousRecordKey = useRef(`${ens.subdomain}:${ens.resolver}`)
+  const previousRecordKey = useRef(`${ens.subdomain}:${ens.resolver.toLowerCase()}`)
 
   useEffect(() => {
-    const recordKey = `${ens.subdomain}:${ens.resolver}`
+    const recordKey = `${ens.subdomain}:${ens.resolver.toLowerCase()}`
     if (recordKey !== previousRecordKey.current) {
       previousRecordKey.current = recordKey
       isAddressEdited.current = false
@@ -26,7 +26,8 @@ export default function EnsMapAddressModal(props: Props) {
   }, [ens.subdomain, ens.resolver, ens.ensAddressRecord])
 
   const hasResolver = isSupportedENSResolver(ens.resolver)
-  const needsReplacementConfirmation = !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed
+  const needsReplacementConfirmation =
+    !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed || !!ens.addressLookupFailed
 
   const handleSave = useCallback(() => {
     onSave(address)

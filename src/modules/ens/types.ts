@@ -13,6 +13,8 @@ export type ENS = {
   content: string
   /** True when content is unknown because resolution failed. */
   contentLookupFailed?: boolean
+  /** True when the address is unknown because resolution failed. */
+  addressLookupFailed?: boolean
 
   ipfsHash?: string
 

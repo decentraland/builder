@@ -614,7 +614,7 @@
   },
   "ens_map_address_modal": {
     "replace_resolver": {
-      "info": "Builder solo puede editar registros en el resolver de Decentraland. Reemplazar el resolver puede ocultar registros existentes o heredados de dirección y contenido; no se copiarán.",
+      "info": "Builder puede editar registros en el resolver de Decentraland y los resolvers públicos de ENS compatibles. Reemplazar el resolver puede ocultar registros existentes o heredados de dirección y contenido; no se copiarán.",
       "action": "Reemplazar con el resolver de Decentraland",
       "confirm": "¿Reemplazar el resolver actual o heredado con el de Decentraland? Los registros de dirección y contenido existentes dejarán de aplicarse y no se copiarán. El resolver de Decentraland puede tener registros guardados; revísalos después del cambio."
     },

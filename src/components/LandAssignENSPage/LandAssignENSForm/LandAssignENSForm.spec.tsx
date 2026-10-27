@@ -9,8 +9,8 @@ import LandAssignENSForm from './LandAssignENSForm'
 import { Props } from './LandAssignENSForm.types'
 
 jest.mock('decentraland-dapps/dist/containers', () => ({
-  NetworkButton: ({ children, onClick, disabled }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-    <button type="button" onClick={onClick} disabled={disabled}>
+  NetworkButton: ({ children, onClick, disabled, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+    <button type="button" onClick={onClick} disabled={disabled} {...props}>
       {children}
     </button>
   )
@@ -142,9 +142,21 @@ describe('when assigning a name with no direct resolver or known content', () =>
   })
 
   it('should install a resolver normally when absence of content was verified', () => {
-    userEvent.click(screen.getAllByRole('button', { name: t('global.submit') })[0])
+    userEvent.click(screen.getByRole('button', { name: t('land_assign_ens_page.set_resolver') }))
     expect(props.onSetENSResolver).toHaveBeenCalledWith(props.ens)
     expect(confirm).not.toHaveBeenCalled()
+  })
+
+  describe('and the address lookup failed', () => {
+    beforeEach(() => {
+      view.rerender(<LandAssignENSForm {...props} ens={{ ...props.ens, addressLookupFailed: true }} />)
+    })
+
+    it('should warn before masking possibly inherited records', () => {
+      userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+      expect(confirm).toHaveBeenCalledWith(t('ens_map_address_modal.replace_resolver.confirm'))
+      expect(props.onSetENSResolver).not.toHaveBeenCalled()
+    })
   })
 
   describe('and the content lookup failed', () => {

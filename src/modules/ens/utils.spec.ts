@@ -6,6 +6,7 @@ import {
   UNIVERSAL_RESOLVER_ADDRESS,
   addWorldStatusToEachENS,
   isExternalName,
+  isSupportedENSResolver,
   resolveAddress,
   resolveContenthash,
   encodeENSName
@@ -341,5 +342,26 @@ describe('when resolving content through an extended ENS resolver', () => {
 
   it('should unwrap the contenthash record returned by resolve', async () => {
     await expect(resolveContenthash(provider, name)).resolves.toBe(content)
+  })
+})
+
+describe('when checking supported ENS resolver deployments', () => {
+  it.each([
+    ['0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63', 1],
+    ['0xF29100983E058B709F3D539b0c765937B804AC15', 1],
+    ['0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5', 11155111]
+  ])('should accept verified deployment %s on chain %s', (address, chainId) => {
+    expect(isSupportedENSResolver(String(address), Number(chainId))).toBe(true)
+  })
+
+  it.each([
+    ['0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63', 11155111],
+    ['0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5', 1],
+    ['0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63', 137],
+    ['0x0000000000000000000000000000000000000000', 1],
+    ['0x00000000000000000000000000000000000000aa', 1],
+    ['', 1]
+  ])('should reject unsupported deployment %s on chain %s', (address, chainId) => {
+    expect(isSupportedENSResolver(String(address), Number(chainId))).toBe(false)
   })
 })
