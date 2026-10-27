@@ -105,3 +105,57 @@ describe('when LAND content is inherited from a parent resolver', () => {
     expect(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') })).toBeEnabled()
   })
 })
+
+describe('when assigning a name with no direct resolver or known content', () => {
+  let props: Props
+  let view: ReturnType<typeof render>
+  let confirm: jest.SpyInstance
+
+  beforeEach(() => {
+    props = {
+      ens: {
+        name: 'test',
+        subdomain: 'test.dcl.eth',
+        resolver: ethers.constants.AddressZero,
+        content: '0x',
+        ensOwnerAddress: 'owner',
+        nftOwnerAddress: 'owner'
+      } as ENS,
+      land: { id: 'land' } as Land,
+      isLoading: false,
+      isWaitingTxSetContent: false,
+      isWaitingTxSetResolver: false,
+      isWaitingTxReclaim: false,
+      error: null,
+      onSetENSResolver: jest.fn(),
+      onSetENSContent: jest.fn(),
+      onReclaimName: jest.fn(),
+      onBack: jest.fn(),
+      onNavigate: jest.fn()
+    }
+    confirm = jest.spyOn(window, 'confirm').mockReturnValueOnce(false)
+    view = render(<LandAssignENSForm {...props} />)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should install a resolver normally when absence of content was verified', () => {
+    userEvent.click(screen.getAllByRole('button', { name: t('global.submit') })[0])
+    expect(props.onSetENSResolver).toHaveBeenCalledWith(props.ens)
+    expect(confirm).not.toHaveBeenCalled()
+  })
+
+  describe('and the content lookup failed', () => {
+    beforeEach(() => {
+      view.rerender(<LandAssignENSForm {...props} ens={{ ...props.ens, contentLookupFailed: true }} />)
+    })
+
+    it('should warn before masking possibly inherited records', () => {
+      userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+      expect(confirm).toHaveBeenCalledWith(t('ens_map_address_modal.replace_resolver.confirm'))
+      expect(props.onSetENSResolver).not.toHaveBeenCalled()
+    })
+  })
+})

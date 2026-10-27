@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Close, Field, Icon, Loader, Message } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -11,12 +11,22 @@ export default function EnsMapAddressModal(props: Props) {
   const { isLoading, error, ens, isLoadingSetResolver, isWaitingTxSetResolver, onUnmount, onClose, onSave, onSetENSResolver } = props
   const [address, setAddress] = useState<string>(ens.ensAddressRecord || '')
 
+  const isAddressEdited = useRef(false)
+  const previousRecordKey = useRef(`${ens.subdomain}:${ens.resolver}`)
+
   useEffect(() => {
-    setAddress(ens.ensAddressRecord || '')
-  }, [ens.resolver, ens.ensAddressRecord])
+    const recordKey = `${ens.subdomain}:${ens.resolver}`
+    if (recordKey !== previousRecordKey.current) {
+      previousRecordKey.current = recordKey
+      isAddressEdited.current = false
+    }
+    if (!isAddressEdited.current) {
+      setAddress(ens.ensAddressRecord || '')
+    }
+  }, [ens.subdomain, ens.resolver, ens.ensAddressRecord])
 
   const hasResolver = isSupportedENSResolver(ens.resolver)
-  const needsReplacementConfirmation = !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord
+  const needsReplacementConfirmation = !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed
 
   const handleSave = useCallback(() => {
     onSave(address)
@@ -24,6 +34,7 @@ export default function EnsMapAddressModal(props: Props) {
 
   const handleAddressChange = useCallback(
     (_evt: unknown, { value }: { value: string }) => {
+      isAddressEdited.current = true
       setAddress(value)
     },
     [setAddress]

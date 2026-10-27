@@ -100,12 +100,23 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     }
   }
 
-  async function getENSContentRecord(ethereumProvider: ethers.providers.Provider, subdomain: string): Promise<string> {
+  async function getENSContentRecord(ethereumProvider: ethers.providers.Provider, subdomain: string): Promise<string | undefined> {
     try {
       return (await resolveContenthash(ethereumProvider, subdomain)) ?? '0x'
     } catch (error) {
       console.error('Failed to fetch ENS content record', error)
-      return '0x'
+      return undefined
+    }
+  }
+
+  function* getOptionalLandRedirectionHashes(
+    lands: Land[]
+  ): Generator<unknown, { id: string; hash: string }[], { id: string; hash: string }[]> {
+    try {
+      return yield call(getLandRedirectionHashes, builderClient, lands)
+    } catch (error) {
+      console.error('Failed to match ENS content to LAND', error)
+      return []
     }
   }
 
@@ -170,13 +181,15 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
       const ensAddressRecord: string = yield call(getENSAddressRecord, ethereumProvider, subdomain)
 
-      const currentContent: string = yield call(getENSContentRecord, ethereumProvider, subdomain)
+      const resolvedContent: string | undefined = yield call(getENSContentRecord, ethereumProvider, subdomain)
+      const currentContent = resolvedContent ?? '0x'
+      const contentLookupFailed = resolvedContent === undefined
 
       if (resolverAddress.toString() === ethers.constants.AddressZero) {
         let inheritedLandId: string | undefined
         if (currentContent !== '0x') {
           const lands: Land[] = yield select(getLands)
-          const hashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
+          const hashes: { id: string; hash: string }[] = yield call(getOptionalLandRedirectionHashes, lands)
           inheritedLandId = hashes.find(({ hash }) => hash === currentContent)?.id
         }
         yield put(
@@ -189,7 +202,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             resolver: ethers.constants.AddressZero,
             content: currentContent,
             ...(inheritedLandId ? { landId: inheritedLandId } : {}),
-            ensAddressRecord
+            ensAddressRecord,
+            ...(contentLookupFailed ? { contentLookupFailed: true } : {})
           })
         )
         return
@@ -215,7 +229,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
               resolver: resolverAddress.toString(),
               content: '0x',
               ipfsHash,
-              ensAddressRecord
+              ensAddressRecord,
+              ...(contentLookupFailed ? { contentLookupFailed: true } : {})
             })
           )
           return
@@ -233,7 +248,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
               content: contentHash,
               ipfsHash,
               landId: land.id,
-              ensAddressRecord
+              ensAddressRecord,
+              ...(contentLookupFailed ? { contentLookupFailed: true } : {})
             })
           )
           return
@@ -241,7 +257,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       }
 
       const lands: Land[] = yield select(getLands)
-      const redirectionHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
+      const redirectionHashes: { id: string; hash: string }[] = yield call(getOptionalLandRedirectionHashes, lands)
       const redirectionLand = redirectionHashes.find(lh => lh.hash === currentContent)
       yield put(
         fetchENSSuccess({
@@ -253,7 +269,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           resolver: resolverAddress.toString(),
           content: currentContent,
           landId: redirectionLand?.id || '',
-          ensAddressRecord
+          ensAddressRecord,
+          ...(contentLookupFailed ? { contentLookupFailed: true } : {})
         })
       )
     } catch (error) {
@@ -322,6 +339,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
   function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     const { ens, expectedResolver } = action.payload
+    let shouldRefreshAfterFailure = false
     try {
       yield call(changeToEthereumNetwork)
       const wallet: Wallet = yield call(getWallet)
@@ -333,6 +351,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const currentResolver: string = yield call([ensContract, 'resolver'], nodehash)
       if (expectedResolver !== undefined) {
         if (currentResolver.toLowerCase() !== expectedResolver.toLowerCase()) {
+          shouldRefreshAfterFailure = true
           throw new Error('The resolver changed after confirmation. Refresh the name and try again.')
         }
       } else if (currentResolver !== ethers.constants.AddressZero) {
@@ -341,6 +360,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const transaction: ethers.ContractTransaction = yield call(() => ensContract.setResolver(nodehash, ENS_RESOLVER_ADDRESS))
 
       yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
+      shouldRefreshAfterFailure = true
       yield call(waitForTx, transaction.hash)
       // The target resolver may already contain records; refresh instead of assuming they are empty.
       yield put(fetchENSRequest(ens.name))
@@ -351,6 +371,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         origin: ENSOrigin.RESOLVER
       }
       yield put(setENSResolverFailure(ens, ensError))
+      if (shouldRefreshAfterFailure) {
+        yield put(fetchENSRequest(ens.name))
+      }
     }
   }
 
@@ -439,7 +462,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleFetchENSListRequest(action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
-      const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
+      const landHashes: { id: string; hash: string }[] = yield call(getOptionalLandRedirectionHashes, lands)
       const wallet: Wallet = yield call(getWallet)
       const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
       const address = wallet.address
@@ -467,6 +490,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const subdomain = `${data.toLowerCase()}.dcl.eth`
           let landId: string | undefined = undefined
           let content = '0x'
+          let contentLookupFailed = false
           let worldStatus: { healthy: boolean; scene: { urn: string; entityId: string } } | null = null
 
           const nodehash = encodeENSName(subdomain).node
@@ -485,7 +509,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const ensAddressRecord = await getENSAddressRecord(ethereumProvider, subdomain)
 
           try {
-            content = await getENSContentRecord(ethereumProvider, subdomain)
+            const resolvedContent = await getENSContentRecord(ethereumProvider, subdomain)
+            content = resolvedContent ?? '0x'
+            contentLookupFailed = resolvedContent === undefined
             const land = landHashes.find(lh => lh.hash === content)
             if (land) {
               landId = land.id
@@ -520,6 +546,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             subdomain,
             resolver,
             content,
+            ...(contentLookupFailed ? { contentLookupFailed: true } : {}),
             ensAddressRecord,
             landId,
             worldStatus

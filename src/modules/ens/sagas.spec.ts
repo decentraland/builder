@@ -44,7 +44,7 @@ import {
 import { ensSaga } from './sagas'
 import { ContributableDomain, ENS, ENSError, ENSOrigin, WorldStatus } from './types'
 import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
-import { addWorldStatusToEachENS, resolveAddress, resolveContenthash } from './utils'
+import { addWorldStatusToEachENS, resolveAddress, resolveContenthash, getLandRedirectionHashes } from './utils'
 import { Authorization } from 'lib/api/auth'
 import { marketplace } from 'lib/api/marketplace'
 
@@ -485,9 +485,13 @@ describe('when handling the fetch ens request', () => {
   let dclRegistrarContract: DCLRegistrar
   let tokenId: ethers.BigNumber
   let currentResolver: string
+  let landHashes: { id: string; hash: string }[]
+  let landLookupError: Error | undefined
 
   beforeEach(() => {
     currentResolver = ethers.constants.AddressZero
+    landHashes = []
+    landLookupError = undefined
     tokenId = ethers.BigNumber.from(1)
     ensContract = { resolver: jest.fn(), owner: jest.fn() } as unknown as ENSContract
     dclRegistrarContract = { getTokenId: jest.fn(), ownerOf: jest.fn() } as unknown as DCLRegistrar
@@ -512,7 +516,8 @@ describe('when handling the fetch ens request', () => {
         [call([ensContract, 'owner'], namehash(subdomain)), walletAddress],
         [call([dclRegistrarContract, 'getTokenId'], name), tokenId],
         [call([dclRegistrarContract, 'ownerOf'], tokenId), walletAddress],
-        [select(getLands), []]
+        [select(getLands), []],
+        [call(getLandRedirectionHashes, builderClient, []), landLookupError ? throwError(landLookupError) : landHashes]
       ])
       .dispatch(fetchENSRequest(name))
   }
@@ -555,6 +560,31 @@ describe('when handling the fetch ens request', () => {
         .put(fetchENSSuccess({ ...buildExpectedENS(''), content: '0xe301' }))
         .silentRun()
     })
+
+    describe('and the inherited content matches a LAND redirect', () => {
+      beforeEach(() => {
+        landHashes = [{ id: 'inherited-land', hash: '0xe301' }]
+      })
+
+      it('should associate the inherited content with the LAND', () => {
+        return runFetchENSSaga()
+          .put(fetchENSSuccess({ ...buildExpectedENS(''), content: '0xe301', landId: 'inherited-land' }))
+          .silentRun()
+      })
+    })
+
+    describe('and the Builder API cannot load LAND redirects', () => {
+      beforeEach(() => {
+        landLookupError = new Error('Builder unavailable')
+        jest.spyOn(console, 'error').mockImplementation(() => undefined)
+      })
+
+      it('should preserve ENS records without a LAND association', () => {
+        return runFetchENSSaga()
+          .put(fetchENSSuccess({ ...buildExpectedENS(''), content: '0xe301' }))
+          .silentRun()
+      })
+    })
   })
 
   describe("and the name's current resolver has an address for it", () => {
@@ -581,7 +611,7 @@ describe('when handling the fetch ens request', () => {
 
     it('should load the name and address even without a direct registry resolver', () => {
       return runFetchENSSaga()
-        .put(fetchENSSuccess(buildExpectedENS('0x000000000000000000000000000000000000000C')))
+        .put(fetchENSSuccess({ ...buildExpectedENS('0x000000000000000000000000000000000000000C'), contentLookupFailed: true }))
         .silentRun()
     })
 
@@ -592,7 +622,9 @@ describe('when handling the fetch ens request', () => {
 
       it('should preserve the resolver and allow address editing', () => {
         return runFetchENSSaga()
-          .put(fetchENSSuccess({ ...buildExpectedENS('0x000000000000000000000000000000000000000C'), landId: '' }))
+          .put(
+            fetchENSSuccess({ ...buildExpectedENS('0x000000000000000000000000000000000000000C'), landId: '', contentLookupFailed: true })
+          )
           .silentRun()
       })
     })
@@ -778,12 +810,14 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
   let currentResolver: string
   let setResolver: jest.Mock
   let hash: string
+  let miningError: Error | undefined
 
   beforeEach(() => {
     signer = {} as Signer
     ens = { name: 'test', subdomain: 'test.dcl.eth', resolver: '0x00000000000000000000000000000000000000aa' } as ENS
     currentResolver = ens.resolver
     hash = 'replacement-hash'
+    miningError = undefined
     setResolver = jest.fn().mockResolvedValueOnce({ hash })
     ensContract = { resolver: jest.fn(), setResolver } as unknown as ENSContract
     jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
@@ -799,7 +833,7 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
         [call(changeToEthereumNetwork), undefined],
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
         [call(getSigner), signer],
-        [call(waitForTx, hash), true],
+        [call(waitForTx, hash), miningError ? throwError(miningError) : true],
         [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
         [call(getNetworkProvider, ChainId.ETHEREUM_SEPOLIA), { request: jest.fn().mockResolvedValue('0xaa36a7') }],
         [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolver]
@@ -813,6 +847,19 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
       .put(fetchENSRequest(ens.name))
       .silentRun()
     expect(setResolver).toHaveBeenCalledWith(namehash(ens.subdomain), ENS_RESOLVER_ADDRESS)
+  })
+
+  describe('and the transaction fails after submission', () => {
+    beforeEach(() => {
+      miningError = new Error('Transaction reverted')
+    })
+
+    it('should report failure and refresh the actual resolver state', () => {
+      return runReplacement()
+        .put(setENSResolverFailure(ens, { message: 'Transaction reverted', code: undefined, origin: ENSOrigin.RESOLVER }))
+        .put(fetchENSRequest(ens.name))
+        .silentRun()
+    })
   })
 
   describe('and the resolver changed after confirmation', () => {

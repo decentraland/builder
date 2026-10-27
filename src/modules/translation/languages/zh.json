@@ -618,7 +618,7 @@
   },
   "ens_map_address_modal": {
     "replace_resolver": {
-      "info": "此名称使用其他解析器或继承记录。Builder 只能编辑 Decentraland 解析器上的记录。替换后将不再使用现有地址和内容记录，也不会复制这些记录。",
+      "info": "Builder 只能编辑 Decentraland 解析器上的记录。替换解析器可能会使现有或继承的地址和内容记录不再生效，也不会复制这些记录。",
       "action": "替换为 Decentraland 解析器",
       "confirm": "是否将当前或继承的解析器替换为 Decentraland 解析器？现有地址和内容记录将不再生效，也不会被复制。Decentraland 解析器可能已存有记录；替换后请检查这些记录。"
     },

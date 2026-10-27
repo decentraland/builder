@@ -176,3 +176,71 @@ describe('when the name uses a custom resolver', () => {
     })
   })
 })
+
+describe('when a resolved address refreshes while the modal is open', () => {
+  let props: Props
+
+  beforeEach(() => {
+    props = {
+      ens: { name: 'test', subdomain: 'test.dcl.eth', resolver: ENS_RESOLVER_ADDRESS, ensAddressRecord: '' } as ENS,
+      isLoading: false,
+      isLoadingSetResolver: false,
+      isWaitingTxSetResolver: false,
+      error: null,
+      onSave: jest.fn(),
+      onUnmount: jest.fn(),
+      onClose: jest.fn(),
+      onSetENSResolver: jest.fn()
+    }
+    screen = renderENSMapAddressModal(props)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should populate an untouched field with the refreshed record', () => {
+    screen.rerender(<EnsMapAddressModal {...props} ens={{ ...props.ens, ensAddressRecord: 'refreshed-address' }} />)
+    expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toHaveValue('refreshed-address')
+  })
+
+  describe('and the user has started editing the address', () => {
+    beforeEach(() => {
+      userEvent.type(screen.getByLabelText(t('ens_map_address_modal.address.label')), 'my-new-address')
+    })
+
+    it('should preserve the user input when the same resolver refreshes', () => {
+      screen.rerender(<EnsMapAddressModal {...props} ens={{ ...props.ens, ensAddressRecord: 'refreshed-address' }} />)
+      expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toHaveValue('my-new-address')
+    })
+  })
+})
+
+describe('when a name has no direct resolver and its content lookup failed', () => {
+  let ens: ENS
+  let onSetENSResolver: jest.Mock
+  let confirm: jest.SpyInstance
+
+  beforeEach(() => {
+    ens = {
+      name: 'test',
+      subdomain: 'test.dcl.eth',
+      resolver: '0x0000000000000000000000000000000000000000',
+      content: '0x',
+      contentLookupFailed: true
+    } as ENS
+    onSetENSResolver = jest.fn()
+    confirm = jest.spyOn(window, 'confirm').mockReturnValueOnce(false)
+    screen = renderENSMapAddressModal({ ens, onSetENSResolver })
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should require confirmation because inherited records might exist', () => {
+    userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+    expect(confirm).toHaveBeenCalledWith(t('ens_map_address_modal.replace_resolver.confirm'))
+    expect(onSetENSResolver).not.toHaveBeenCalled()
+  })
+})

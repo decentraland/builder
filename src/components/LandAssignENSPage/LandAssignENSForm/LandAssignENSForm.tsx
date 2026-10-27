@@ -17,7 +17,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
 
   handleSetResolver = () => {
     const { onSetENSResolver, ens } = this.props
-    if (!isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord) {
+    if (!isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed) {
       if (window.confirm(t('ens_map_address_modal.replace_resolver.confirm'))) {
         onSetENSResolver(ens, ens.resolver)
       }
@@ -45,7 +45,8 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
 
     const needsReclaiming = ens.ensOwnerAddress !== ens.nftOwnerAddress
     const hasResolver = isSupportedENSResolver(ens.resolver)
-    const needsReplacementConfirmation = !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord
+    const needsReplacementConfirmation =
+      !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed
     const hasContent = !isContentEmpty(ens) && isEqualContent(ens, land)
     const hasData = hasResolver || hasContent
 

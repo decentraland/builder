@@ -11,6 +11,8 @@ export type ENS = {
   tokenId: string
   resolver: string
   content: string
+  /** True when content is unknown because resolution failed. */
+  contentLookupFailed?: boolean
 
   ipfsHash?: string
 
