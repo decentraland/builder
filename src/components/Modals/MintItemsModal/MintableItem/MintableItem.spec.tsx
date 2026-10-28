@@ -73,9 +73,10 @@ describe('when editing a mint recipient with the real AddressField', () => {
         })
       })
 
-      it('should default the amount and request a blur only after a recipient is resolved', () => {
+      it('should default the amount and leave the input blurred after a recipient is resolved', () => {
         expect(onChange).toHaveBeenLastCalledWith(mockedItem, [{ item: mockedItem, address: recipient, amount: 1 }])
         expect(blur).toHaveBeenCalledTimes(1)
+        expect(input).not.toHaveFocus()
       })
     })
   })
