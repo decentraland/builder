@@ -45,7 +45,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetENSResolver: ens => dispatch(setENSResolverRequest(ens)),
+  onSetENSResolver: (ens, expectedResolver) => dispatch(setENSResolverRequest(ens, expectedResolver)),
   onSetENSContent: (ens, land) => dispatch(setENSContentRequest(ens, land)),
   onReclaimName: ens => dispatch(reclaimNameRequest(ens))
 })

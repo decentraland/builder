@@ -167,6 +167,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         data: {
           ...state.data,
           [ens.subdomain]: {
+            worldStatus: state.data[ens.subdomain]?.worldStatus,
             ...ens
           }
         }
@@ -306,7 +307,13 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
               ...state.data,
               [subdomain]: {
                 ...state.data[subdomain],
-                resolver
+                resolver,
+                // Records from the previous resolver must not remain displayed as effective.
+                content: '0x',
+                ensAddressRecord: '',
+                landId: undefined,
+                contentLookupFailed: undefined,
+                addressLookupFailed: undefined
               }
             }
           }
@@ -321,7 +328,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
               ...state.data,
               [ens.subdomain]: {
                 ...state.data[ens.subdomain],
-                ensAddressRecord: address
+                ensAddressRecord: address,
+                addressLookupFailed: undefined
               }
             }
           }
@@ -337,7 +345,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
               [subdomain]: {
                 ...state.data[subdomain],
                 content,
-                landId: land ? land.id : ''
+                landId: land ? land.id : '',
+                contentLookupFailed: undefined
               }
             }
           }

@@ -1,13 +1,13 @@
+import { FETCH_TRANSACTION_SUCCESS, FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { BigNumber, ethers } from 'ethers'
-import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
-import { Network } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
-import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getCurrentLocale, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
@@ -31,6 +31,7 @@ import { ENSApi } from 'lib/api/ens'
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
+  fetchENSRequest,
   fetchENSSuccess,
   fetchENSFailure,
   SET_ENS_CONTENT_REQUEST,
@@ -38,6 +39,7 @@ import {
   setENSContentSuccess,
   setENSContentFailure,
   SET_ENS_RESOLVER_REQUEST,
+  SET_ENS_RESOLVER_SUCCESS,
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
@@ -69,7 +71,15 @@ import {
 } from './actions'
 import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
-import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
+import {
+  addWorldStatusToEachENS,
+  getLandRedirectionHashes,
+  isExternalName,
+  resolveAddress,
+  resolveContenthash,
+  encodeENSName,
+  isSupportedENSResolver
+} from './utils'
 
 const DEFAULT_ENS_PAGE_SIZE = 12
 
@@ -82,6 +92,58 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     return new ethers.providers.Web3Provider(networkProvider)
   }
 
+  function getRecordLookupFailures(contentLookupFailed: boolean, addressLookupFailed: boolean): Partial<ENS> {
+    return {
+      ...(contentLookupFailed ? { contentLookupFailed: true } : {}),
+      ...(addressLookupFailed ? { addressLookupFailed: true } : {})
+    }
+  }
+
+  /** Get the ETH address record, an empty string if absent, or undefined if the lookup fails. */
+  async function getENSAddressRecord(ethereumProvider: ethers.providers.Provider, subdomain: string): Promise<string | undefined> {
+    try {
+      return (await resolveAddress(ethereumProvider, subdomain)) ?? ''
+    } catch (error) {
+      console.error('Failed to fetch ens address record', error)
+      return undefined
+    }
+  }
+
+  async function getENSContentRecord(ethereumProvider: ethers.providers.Provider, subdomain: string): Promise<string | undefined> {
+    try {
+      return (await resolveContenthash(ethereumProvider, subdomain)) ?? '0x'
+    } catch (error) {
+      console.error('Failed to fetch ENS content record', error)
+      return undefined
+    }
+  }
+
+  function* getOptionalLandRedirectionHashes(
+    lands: Land[]
+  ): Generator<unknown, { id: string; hash: string }[], { id: string; hash: string }[]> {
+    try {
+      return yield call(getLandRedirectionHashes, builderClient, lands)
+    } catch (error) {
+      console.error('Failed to match ENS content to LAND', error)
+      return []
+    }
+  }
+
+  /** Writes require a configured resolver. Never report success for records stored on an unused fallback. */
+  function* getResolverToWrite(signer: ethers.Signer, nodehash: string): Generator<any, { address: string; chainId: ChainId }, any> {
+    const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
+    const currentResolverAddress: string = yield call([ensContract, 'resolver'], nodehash)
+    if (!currentResolverAddress || currentResolverAddress === ethers.constants.AddressZero) {
+      throw new Error(t('ens_errors.missing_resolver'))
+    }
+    const chainId: ChainId = yield call([signer, 'getChainId'])
+    if (!isSupportedENSResolver(currentResolverAddress, chainId)) {
+      throw new Error(t('ens_errors.unsupported_resolver'))
+    }
+    return { address: currentResolverAddress, chainId }
+  }
+
+  yield takeEvery(FETCH_TRANSACTION_SUCCESS, handleResolverTransactionSuccess)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -94,6 +156,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   yield takeEvery(SET_ENS_ADDRESS_REQUEST, handleSetENSAddressRequest)
   yield takeEvery(FETCH_CONTRIBUTABLE_NAMES_REQUEST, handleFetchContributableNamesRequest)
 
+  function* handleResolverTransactionSuccess(action: FetchTransactionSuccessAction) {
+    const { transaction } = action.payload
+    if (transaction.actionType === SET_ENS_RESOLVER_SUCCESS) {
+      // Also runs when transaction tracking resumes after a page reload.
+      yield put(fetchENSRequest(transaction.payload.ens.name))
+    }
+  }
+
   function* handleFetchLandsSuccess() {
     yield put(fetchENSListRequest())
   }
@@ -104,7 +174,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     try {
       const wallet: Wallet = yield call(getWallet)
       const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
-      const nodehash = namehash(subdomain)
+      const nodehash = encodeENSName(subdomain).node
       const ensContract = ENS__factory.connect(ENS_ADDRESS, ethereumProvider)
       const dclRegistrarContract = DCLRegistrar__factory.connect(REGISTRAR_ADDRESS, ethereumProvider)
       const [resolverAddress, ownerAddress, nftTokenId]: [string, string, BigNumber] = yield all([
@@ -128,11 +198,21 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         throw new Error('Name unavailable')
       }
 
-      const ensResolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
-      const resolvedAddress: string = yield call([ensResolverContract, 'addr(bytes32)'], nodehash)
-      const ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
+      const resolvedAddress: string | undefined = yield call(getENSAddressRecord, ethereumProvider, subdomain)
+      const ensAddressRecord = resolvedAddress ?? ''
+      const addressLookupFailed = resolvedAddress === undefined
+
+      const resolvedContent: string | undefined = yield call(getENSContentRecord, ethereumProvider, subdomain)
+      const currentContent = resolvedContent ?? '0x'
+      const contentLookupFailed = resolvedContent === undefined
 
       if (resolverAddress.toString() === ethers.constants.AddressZero) {
+        let inheritedLandId: string | undefined
+        if (currentContent !== '0x') {
+          const lands: Land[] = yield select(getLands)
+          const hashes: { id: string; hash: string }[] = yield call(getOptionalLandRedirectionHashes, lands)
+          inheritedLandId = hashes.find(({ hash }) => hash === currentContent)?.id
+        }
         yield put(
           fetchENSSuccess({
             name,
@@ -141,15 +221,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             nftOwnerAddress,
             subdomain,
             resolver: ethers.constants.AddressZero,
-            content: ethers.constants.AddressZero,
-            ensAddressRecord
+            content: currentContent,
+            ...(inheritedLandId ? { landId: inheritedLandId } : {}),
+            ensAddressRecord,
+            ...getRecordLookupFailures(contentLookupFailed, addressLookupFailed)
           })
         )
         return
       }
-
-      const resolverContract = ENSResolver__factory.connect(resolverAddress, ethereumProvider)
-      const currentContent: string = yield call([resolverContract, 'contenthash'], nodehash)
 
       if (land) {
         const [x, y] = getCenter(getSelection(land))
@@ -160,7 +239,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           getCurrentLocale().locale
         )
 
-        if (currentContent === ethers.constants.AddressZero) {
+        if (currentContent === '0x') {
           yield put(
             fetchENSSuccess({
               name,
@@ -169,9 +248,10 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
               nftOwnerAddress,
               subdomain,
               resolver: resolverAddress.toString(),
-              content: ethers.constants.AddressZero,
+              content: '0x',
               ipfsHash,
-              ensAddressRecord
+              ensAddressRecord,
+              ...getRecordLookupFailures(contentLookupFailed, addressLookupFailed)
             })
           )
           return
@@ -185,11 +265,12 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
               ensOwnerAddress,
               nftOwnerAddress,
               subdomain,
-              resolver: ENS_RESOLVER_ADDRESS,
+              resolver: resolverAddress.toString(),
               content: contentHash,
               ipfsHash,
               landId: land.id,
-              ensAddressRecord
+              ensAddressRecord,
+              ...getRecordLookupFailures(contentLookupFailed, addressLookupFailed)
             })
           )
           return
@@ -197,7 +278,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       }
 
       const lands: Land[] = yield select(getLands)
-      const redirectionHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
+      const redirectionHashes: { id: string; hash: string }[] = yield call(getOptionalLandRedirectionHashes, lands)
       const redirectionLand = redirectionHashes.find(lh => lh.hash === currentContent)
       yield put(
         fetchENSSuccess({
@@ -206,10 +287,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           ensOwnerAddress,
           nftOwnerAddress,
           subdomain,
-          resolver: ENS_RESOLVER_ADDRESS,
-          content: currentContent ?? ethers.constants.AddressZero,
+          resolver: resolverAddress.toString(),
+          content: currentContent,
           landId: redirectionLand?.id || '',
-          ensAddressRecord
+          ensAddressRecord,
+          ...getRecordLookupFailures(contentLookupFailed, addressLookupFailed)
         })
       )
     } catch (error) {
@@ -277,18 +359,33 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   }
 
   function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
-    const { ens } = action.payload
+    const { ens, expectedResolver } = action.payload
+    let shouldRefreshAfterFailure = false
     try {
       yield call(changeToEthereumNetwork)
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
-      const nodehash = namehash(ens.subdomain)
+      const nodehash = encodeENSName(ens.subdomain).node
       const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
 
+      const currentResolver: string = yield call([ensContract, 'resolver'], nodehash)
+      if (expectedResolver !== undefined) {
+        if (currentResolver.toLowerCase() !== expectedResolver.toLowerCase()) {
+          shouldRefreshAfterFailure = true
+          throw new Error(t('ens_errors.resolver_changed'))
+        }
+      } else if (currentResolver !== ethers.constants.AddressZero) {
+        shouldRefreshAfterFailure = true
+        throw new Error(t('ens_errors.replacement_required'))
+      }
       const transaction: ethers.ContractTransaction = yield call(() => ensContract.setResolver(nodehash, ENS_RESOLVER_ADDRESS))
 
       yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
+      shouldRefreshAfterFailure = true
+      yield call(waitForTx, transaction.hash)
+      // FETCH_TRANSACTION_SUCCESS refreshes effective records after the reducer
+      // updates the resolver, for both live writes and persisted transactions.
     } catch (error) {
       const ensError: ENSError = {
         message: isErrorWithMessage(error) ? error.message : 'Unknown error',
@@ -296,6 +393,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
         origin: ENSOrigin.RESOLVER
       }
       yield put(setENSResolverFailure(ens, ensError))
+      if (shouldRefreshAfterFailure) {
+        yield put(fetchENSRequest(ens.name))
+      }
     }
   }
 
@@ -303,8 +403,8 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, land } = action.payload
     try {
       yield call(changeToEthereumNetwork)
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
 
       let content = ''
@@ -323,14 +423,15 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
 
         content = `0x${contentHash}`
       } else {
-        content = ethers.constants.AddressZero
+        content = '0x'
       }
 
-      const nodehash = namehash(ens.subdomain)
-      const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+      const nodehash = encodeENSName(ens.subdomain).node
+      const { address: resolverAddress, chainId }: { address: string; chainId: ChainId } = yield call(getResolverToWrite, signer, nodehash)
+      const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
-      const transaction: ethers.ContractTransaction = yield call(() => resolverContract.setContenthash(nodehash, content))
-      yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, transaction.hash))
+      const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setContenthash'], nodehash, content)
+      yield put(setENSContentSuccess(ens, content, land, from.toString(), chainId, transaction.hash))
 
       if (!land) {
         yield put(closeModal('UnsetENSContentModal'))
@@ -349,14 +450,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, address } = action.payload
     try {
       yield call(changeToEthereumNetwork)
-      const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
-      const nodehash = namehash(ens.subdomain)
-      const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
+      const nodehash = encodeENSName(ens.subdomain).node
+      const { address: resolverAddress, chainId }: { address: string; chainId: ChainId } = yield call(getResolverToWrite, signer, nodehash)
+      const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
       const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setAddr(bytes32,address)'], nodehash, address)
 
-      yield put(setENSAddressSuccess(ens, address, wallet.chainId, transaction.hash))
+      yield put(setENSAddressSuccess(ens, address, chainId, transaction.hash))
       yield call(waitForTx, transaction.hash)
       yield put(closeModal('EnsMapAddressModal'))
     } catch (error) {
@@ -382,7 +483,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleFetchENSListRequest(action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
-      const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
+      const landHashes: { id: string; hash: string }[] = yield call(getOptionalLandRedirectionHashes, lands)
       const wallet: Wallet = yield call(getWallet)
       const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
       const address = wallet.address
@@ -409,11 +510,9 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const name = data
           const subdomain = `${data.toLowerCase()}.dcl.eth`
           let landId: string | undefined = undefined
-          let content = ''
           let worldStatus: { healthy: boolean; scene: { urn: string; entityId: string } } | null = null
-          let ensAddressRecord = ''
 
-          const nodehash = namehash(subdomain)
+          const nodehash = encodeENSName(subdomain).node
           const [resolverAddress, ensOwner, tokenIdBN]: [string, string, ethers.BigNumber] = await Promise.all([
             ensContract.resolver(nodehash),
             ensContract.owner(nodehash).then(owner => owner.toLowerCase()),
@@ -426,26 +525,16 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           const nftOwner = await dclRegistrarContract.ownerOf(tokenIdBN)
           const nftOwnerAddress = nftOwner.toLowerCase()
 
-          try {
-            const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, ethereumProvider)
-            const resolvedAddress = await resolverContract['addr(bytes32)'](nodehash)
-            ensAddressRecord = resolvedAddress !== ethers.constants.AddressZero ? resolvedAddress : ''
-          } catch (e) {
-            console.error('Failed to fetch ens address record')
-          }
+          const resolvedAddress = await getENSAddressRecord(ethereumProvider, subdomain)
+          const ensAddressRecord = resolvedAddress ?? ''
+          const addressLookupFailed = resolvedAddress === undefined
 
-          if (resolver !== ethers.constants.AddressZero) {
-            try {
-              const resolverContract = ENSResolver__factory.connect(resolverAddress, ethereumProvider)
-              content = await resolverContract.contenthash(nodehash)
-
-              const land = landHashes.find(lh => lh.hash === content)
-              if (land) {
-                landId = land.id
-              }
-            } catch (error) {
-              console.error('Failed to load ens resolver', error)
-            }
+          const resolvedContent = await getENSContentRecord(ethereumProvider, subdomain)
+          const content = resolvedContent ?? '0x'
+          const contentLookupFailed = resolvedContent === undefined
+          const land = landHashes.find(lh => lh.hash === content)
+          if (land) {
+            landId = land.id
           }
 
           try {
@@ -474,6 +563,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             subdomain,
             resolver,
             content,
+            ...getRecordLookupFailures(contentLookupFailed, addressLookupFailed),
             ensAddressRecord,
             landId,
             worldStatus

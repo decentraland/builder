@@ -1,4 +1,10 @@
 {
+  "ens_errors": {
+    "missing_resolver": "Set a resolver before editing ENS records",
+    "unsupported_resolver": "This resolver is not supported for editing. Replace it with the Decentraland resolver first.",
+    "resolver_changed": "The resolver changed after confirmation. Refresh the name and try again.",
+    "replacement_required": "This name already has a resolver. Confirm replacement before changing it."
+  },
   "atlas": {
     "locate_land": "Locate next LAND",
     "zoom_in": "Zoom in",
@@ -616,6 +622,11 @@
     "reclaim_for_address": "Reclaim to assign address"
   },
   "ens_map_address_modal": {
+    "replace_resolver": {
+      "info": "Builder can edit records on the Decentraland resolver and supported ENS Public Resolvers. Replacing the resolver can hide existing or inherited address and content records; they are not copied.",
+      "action": "Replace with Decentraland resolver",
+      "confirm": "Replace the current or inherited resolver with the Decentraland resolver? Existing address and content records will no longer apply and will not be copied. The Decentraland resolver may already contain records; review them after replacing."
+    },
     "title": "Assigned Address",
     "description": "Enable others to reference your account by assigning an Ethereum address to your Decentraland NAME. This allows you to receive assets simply by providing your NAME.",
     "address": {

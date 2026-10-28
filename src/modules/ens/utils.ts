@@ -1,4 +1,6 @@
 import { ethers } from 'ethers'
+import { config } from 'config'
+import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
@@ -6,6 +8,7 @@ import { chunk } from 'lib/array'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { Land, LandType } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
+import { PUBLIC_RESOLVERS_BY_CHAIN } from './constants'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -30,12 +33,29 @@ export function isEmpty(ens: ENS) {
   return isResolverEmpty(ens) && isContentEmpty(ens)
 }
 
+const CONFIGURED_CHAIN_ID = Number(config.get('CHAIN_ID'))
+
+export function isSupportedENSResolver(resolver: string, chainId = CONFIGURED_CHAIN_ID): boolean {
+  if (!/^0x[0-9a-fA-F]{40}$/.test(resolver) || resolver === ethers.constants.AddressZero) return false
+  const normalized = resolver.toLowerCase()
+  const isConfiguredResolver =
+    typeof ENS_RESOLVER_ADDRESS === 'string' &&
+    /^0x[0-9a-fA-F]{40}$/.test(ENS_RESOLVER_ADDRESS) &&
+    chainId === CONFIGURED_CHAIN_ID &&
+    normalized === ENS_RESOLVER_ADDRESS.toLowerCase()
+  return isConfiguredResolver || (PUBLIC_RESOLVERS_BY_CHAIN[chainId]?.includes(normalized) ?? false)
+}
+
 export function isResolverEmpty(ens: ENS) {
-  return ens.resolver === ethers.constants.AddressZero
+  return !ens.resolver || ens.resolver === ethers.constants.AddressZero
 }
 
 export function isContentEmpty(ens: ENS) {
-  return ens.content === ethers.constants.AddressZero
+  return !ens.content || ens.content === '0x' || ens.content === ethers.constants.AddressZero
+}
+
+export function needsResolverReplacementConfirmation(ens: ENS): boolean {
+  return !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed || !!ens.addressLookupFailed
 }
 
 export function isEqualContent(ens: ENS, land: Land) {
@@ -116,3 +136,6 @@ export async function getLandRedirectionHashes(builderClient: BuilderClient, lan
 
   return landHashes
 }
+
+// Shared protocol reads; Builder keeps its write policy and application state locally.
+export { UNIVERSAL_RESOLVER_ADDRESS, encodeENSName, resolveAddress, resolveContenthash } from 'decentraland-dapps/dist/lib/ens'
