@@ -26,7 +26,7 @@ const mapState = (state: RootState, ownProps: OwnProps) => {
 const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProps => ({
   onSave: ((address: string) => dispatch(setENSAddressRequest(ownProps.metadata.ens, address))) as any,
   onUnmount: () => dispatch(clearENSErrors()),
-  onSetENSResolver: ens => dispatch(setENSResolverRequest(ens))
+  onSetENSResolver: (ens, expectedResolver) => dispatch(setENSResolverRequest(ens, expectedResolver))
 })
 
 export default connect(mapState, mapDispatch)(EnsMapAddressModal)

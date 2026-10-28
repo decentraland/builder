@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import userEvent from '@testing-library/user-event'
 import { RenderResult } from '@testing-library/react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -136,5 +137,154 @@ describe('when there is no resolver for the ens', () => {
   it('should show processing message when set resolver tx is loading', () => {
     const screen = renderENSMapAddressModal({ ens, isWaitingTxSetResolver: true })
     expect(screen.getByText(t('ens_map_address_modal.processing'))).toBeInTheDocument()
+  })
+})
+
+describe('when the name uses a custom resolver', () => {
+  let ens: ENS
+  let onSetENSResolver: jest.Mock
+  let confirm: jest.SpyInstance
+
+  beforeEach(() => {
+    ens = { name: 'test', subdomain: 'test.dcl.eth', resolver: '0x00000000000000000000000000000000000000aa' } as ENS
+    onSetENSResolver = jest.fn()
+    confirm = jest.spyOn(window, 'confirm').mockReturnValue(false)
+    screen = renderENSMapAddressModal({ ens, onSetENSResolver })
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should show a replacement warning without offering unsupported address editing', () => {
+    expect(screen.getByText(t('ens_map_address_modal.replace_resolver.info'))).toBeInTheDocument()
+    expect(screen.queryByLabelText(t('ens_map_address_modal.address.label'))).not.toBeInTheDocument()
+  })
+
+  it('should preserve the existing resolver when confirmation is cancelled', () => {
+    userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+    expect(onSetENSResolver).not.toHaveBeenCalled()
+  })
+
+  describe('and the user confirms replacement', () => {
+    beforeEach(() => {
+      confirm.mockReturnValueOnce(true)
+    })
+
+    it('should include the exact resolver that was confirmed', () => {
+      userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+      expect(onSetENSResolver).toHaveBeenCalledWith(ens, ens.resolver)
+    })
+  })
+})
+
+describe('when a resolved address refreshes while the modal is open', () => {
+  let props: Props
+
+  beforeEach(() => {
+    props = {
+      ens: { name: 'test', subdomain: 'test.dcl.eth', resolver: ENS_RESOLVER_ADDRESS.toLowerCase(), ensAddressRecord: '' } as ENS,
+      isLoading: false,
+      isLoadingSetResolver: false,
+      isWaitingTxSetResolver: false,
+      error: null,
+      onSave: jest.fn(),
+      onUnmount: jest.fn(),
+      onClose: jest.fn(),
+      onSetENSResolver: jest.fn()
+    }
+    screen = renderENSMapAddressModal(props)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should populate an untouched field with the refreshed record', () => {
+    screen.rerender(<EnsMapAddressModal {...props} ens={{ ...props.ens, ensAddressRecord: 'refreshed-address' }} />)
+    expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toHaveValue('refreshed-address')
+  })
+
+  describe('and the user has started editing the address', () => {
+    beforeEach(() => {
+      userEvent.type(screen.getByLabelText(t('ens_map_address_modal.address.label')), 'my-new-address')
+    })
+
+    it('should preserve the user input when the same resolver refreshes', () => {
+      screen.rerender(<EnsMapAddressModal {...props} ens={{ ...props.ens, ensAddressRecord: 'refreshed-address' }} />)
+      expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toHaveValue('my-new-address')
+    })
+
+    it('should preserve the user input when the registry returns the same resolver with checksum casing', () => {
+      screen.rerender(
+        <EnsMapAddressModal
+          {...props}
+          ens={{
+            ...props.ens,
+            resolver: ethers.utils.getAddress(ENS_RESOLVER_ADDRESS.toLowerCase()),
+            ensAddressRecord: 'refreshed-address'
+          }}
+        />
+      )
+      expect(screen.getByLabelText(t('ens_map_address_modal.address.label'))).toHaveValue('my-new-address')
+    })
+  })
+})
+
+describe('when a name has no direct resolver and its content lookup failed', () => {
+  let ens: ENS
+  let onSetENSResolver: jest.Mock
+  let confirm: jest.SpyInstance
+
+  beforeEach(() => {
+    ens = {
+      name: 'test',
+      subdomain: 'test.dcl.eth',
+      resolver: '0x0000000000000000000000000000000000000000',
+      content: '0x',
+      contentLookupFailed: true
+    } as ENS
+    onSetENSResolver = jest.fn()
+    confirm = jest.spyOn(window, 'confirm').mockReturnValueOnce(false)
+    screen = renderENSMapAddressModal({ ens, onSetENSResolver })
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should require confirmation because inherited records might exist', () => {
+    userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+    expect(confirm).toHaveBeenCalledWith(t('ens_map_address_modal.replace_resolver.confirm'))
+    expect(onSetENSResolver).not.toHaveBeenCalled()
+  })
+})
+
+describe('when a name has no direct resolver and its address lookup failed', () => {
+  let ens: ENS
+  let onSetENSResolver: jest.Mock
+  let confirm: jest.SpyInstance
+
+  beforeEach(() => {
+    ens = {
+      name: 'test',
+      subdomain: 'test.dcl.eth',
+      resolver: '0x0000000000000000000000000000000000000000',
+      content: '0x',
+      addressLookupFailed: true
+    } as ENS
+    onSetENSResolver = jest.fn()
+    confirm = jest.spyOn(window, 'confirm').mockReturnValueOnce(false)
+    screen = renderENSMapAddressModal({ ens, onSetENSResolver })
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should require confirmation because inherited records might exist', () => {
+    userEvent.click(screen.getByRole('button', { name: t('ens_map_address_modal.replace_resolver.action') }))
+    expect(confirm).toHaveBeenCalledWith(t('ens_map_address_modal.replace_resolver.confirm'))
+    expect(onSetENSResolver).not.toHaveBeenCalled()
   })
 })

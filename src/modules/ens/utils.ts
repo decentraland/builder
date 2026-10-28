@@ -1,4 +1,6 @@
 import { ethers } from 'ethers'
+import { config } from 'config'
+import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
@@ -6,6 +8,7 @@ import { chunk } from 'lib/array'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { Land, LandType } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
+import { PUBLIC_RESOLVERS_BY_CHAIN } from './constants'
 import { getCenter, getSelection } from 'modules/land/utils'
 import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
 import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -30,12 +33,29 @@ export function isEmpty(ens: ENS) {
   return isResolverEmpty(ens) && isContentEmpty(ens)
 }
 
+const CONFIGURED_CHAIN_ID = Number(config.get('CHAIN_ID'))
+
+export function isSupportedENSResolver(resolver: string, chainId = CONFIGURED_CHAIN_ID): boolean {
+  if (!/^0x[0-9a-fA-F]{40}$/.test(resolver) || resolver === ethers.constants.AddressZero) return false
+  const normalized = resolver.toLowerCase()
+  const isConfiguredResolver =
+    typeof ENS_RESOLVER_ADDRESS === 'string' &&
+    /^0x[0-9a-fA-F]{40}$/.test(ENS_RESOLVER_ADDRESS) &&
+    chainId === CONFIGURED_CHAIN_ID &&
+    normalized === ENS_RESOLVER_ADDRESS.toLowerCase()
+  return isConfiguredResolver || (PUBLIC_RESOLVERS_BY_CHAIN[chainId]?.includes(normalized) ?? false)
+}
+
 export function isResolverEmpty(ens: ENS) {
-  return ens.resolver === ethers.constants.AddressZero
+  return !ens.resolver || ens.resolver === ethers.constants.AddressZero
 }
 
 export function isContentEmpty(ens: ENS) {
-  return ens.content === ethers.constants.AddressZero
+  return !ens.content || ens.content === '0x' || ens.content === ethers.constants.AddressZero
+}
+
+export function needsResolverReplacementConfirmation(ens: ENS): boolean {
+  return !isResolverEmpty(ens) || !isContentEmpty(ens) || !!ens.ensAddressRecord || !!ens.contentLookupFailed || !!ens.addressLookupFailed
 }
 
 export function isEqualContent(ens: ENS, land: Land) {
@@ -117,67 +137,5 @@ export async function getLandRedirectionHashes(builderClient: BuilderClient, lan
   return landHashes
 }
 
-// ENS Universal Resolver proxy, deployed at the same address on Ethereum mainnet and Sepolia
-export const UNIVERSAL_RESOLVER_ADDRESS = '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe'
-
-const universalResolverInterface = new ethers.utils.Interface([
-  'function requireResolver(bytes name) view returns ((bytes name, uint256 offset, bytes32 node, address resolver, bool extended) info)',
-  'error ResolverNotFound(bytes name)',
-  'error ResolverNotContract(bytes name, address resolver)'
-])
-
-const resolverInterface = new ethers.utils.Interface([
-  'function addr(bytes32 node) view returns (address)',
-  'function resolve(bytes name, bytes data) view returns (bytes)'
-])
-
-// Universal Resolver errors that mean the name has no resolver, as opposed to a failure while resolving it
-const NAME_WITHOUT_RESOLVER_ERRORS = ['ResolverNotFound', 'ResolverNotContract']
-
-function isNameWithoutResolver(result: string) {
-  try {
-    return NAME_WITHOUT_RESOLVER_ERRORS.includes(universalResolverInterface.parseError(result).name)
-  } catch {
-    return false
-  }
-}
-
-/**
- * Resolves the ETH address of an ENS name through the name's current resolver, found by the ENS Universal Resolver.
- * Offchain (CCIP-Read) resolvers are supported. Returns undefined when the name has no resolver or no address,
- * and throws when the lookup itself fails, so an RPC or gateway error is not mistaken for a missing name.
- * Ported from decentraland-dapps' AddressField (decentraland/decentraland-dapps#833).
- */
-export async function resolveAddress(provider: ethers.providers.Provider, name: string): Promise<string | undefined> {
-  const dnsEncodedName = ethers.utils.dnsEncode(name)
-  const requireResolverResult = await provider.call({
-    to: UNIVERSAL_RESOLVER_ADDRESS,
-    data: universalResolverInterface.encodeFunctionData('requireResolver', [dnsEncodedName])
-  })
-  if (isNameWithoutResolver(requireResolverResult)) {
-    return undefined
-  }
-
-  const [{ resolver, extended }] = universalResolverInterface.decodeFunctionResult('requireResolver', requireResolverResult)
-  const addrData = resolverInterface.encodeFunctionData('addr', [ethers.utils.namehash(name)])
-
-  let addrResult: string
-  if (extended) {
-    // ENSIP-10 wildcard or offchain resolver: the address is requested through resolve(), which may use CCIP-Read
-    const resolveResult = await provider.call({
-      to: resolver,
-      data: resolverInterface.encodeFunctionData('resolve', [dnsEncodedName, addrData]),
-      ccipReadEnabled: true
-    })
-    ;[addrResult] = resolverInterface.decodeFunctionResult('resolve', resolveResult)
-  } else {
-    addrResult = await provider.call({ to: resolver, data: addrData })
-  }
-
-  if (ethers.utils.hexDataLength(addrResult) === 0) {
-    return undefined
-  }
-
-  const [address] = resolverInterface.decodeFunctionResult('addr', addrResult) as unknown as [string]
-  return address === ethers.constants.AddressZero ? undefined : address
-}
+// Shared protocol reads; Builder keeps its write policy and application state locally.
+export { UNIVERSAL_RESOLVER_ADDRESS, encodeENSName, resolveAddress, resolveContenthash } from 'decentraland-dapps/dist/lib/ens'

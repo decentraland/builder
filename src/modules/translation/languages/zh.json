@@ -617,6 +617,11 @@
     "reclaim_for_address": "收回分配地址"
   },
   "ens_map_address_modal": {
+    "replace_resolver": {
+      "info": "Builder 可以编辑 Decentraland 解析器及支持的 ENS 公共解析器上的记录。替换解析器可能会使现有或继承的地址和内容记录不再生效，也不会复制这些记录。",
+      "action": "替换为 Decentraland 解析器",
+      "confirm": "是否将当前或继承的解析器替换为 Decentraland 解析器？现有地址和内容记录将不再生效，也不会被复制。Decentraland 解析器可能已存有记录；替换后请检查这些记录。"
+    },
     "title": "分配的地址",
     "description": "通过将以太坊地址分配给您的分散名称，使其他人可以参考您的帐户。这使您只需提供姓名即可获得资产。",
     "address": {

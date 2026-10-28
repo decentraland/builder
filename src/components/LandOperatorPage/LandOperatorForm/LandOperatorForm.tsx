@@ -36,6 +36,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
   handleSetOperator = () => {
     const { land, onSetOperator } = this.props
     const { address, revoked } = this.state
+    if (!revoked && !isValid(address)) return
     onSetOperator(land, revoked ? null : address)
   }
 
@@ -58,7 +59,10 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
     const isRevokable = editing && isEqual(address, initial)
     const hasError = !loading && !!address && !isValid(address)
     const isDisabled =
-      loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || !hasAnyRole(land, [RoleType.OWNER, RoleType.TENANT])
+      loading ||
+      !dirty ||
+      ((!address || isEqual(address, initial) || hasError) && !revoked) ||
+      !hasAnyRole(land, [RoleType.OWNER, RoleType.TENANT])
 
     const classes: string[] = []
     if (revoked) {

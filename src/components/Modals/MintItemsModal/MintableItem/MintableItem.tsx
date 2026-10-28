@@ -28,11 +28,12 @@ export default class MintableItem extends React.PureComponent<Props> {
   getChangeAddressHandler(index: number) {
     const { item, mints, onChange } = this.props
     return (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      if (!data.error) event.target.blur() // Remove the focus on the input after entering a valid address
+      const hasRecipient = !data.error && !data.pending && !!data.value
+      if (hasRecipient) event.target.blur() // Remove the focus on the input after entering a valid address
       const mint: Partial<Mint> = {
         ...mints[index],
         address: data.value ? data.value : undefined,
-        amount: !data.error && !mints[index].amount ? 1 : mints[index].amount
+        amount: hasRecipient && !mints[index].amount ? 1 : mints[index].amount
       }
       const newMints = [...mints.slice(0, index), mint, ...mints.slice(index + 1)]
       onChange(item, newMints)
