@@ -1,4 +1,10 @@
 {
+  "ens_errors": {
+    "missing_resolver": "Set a resolver before editing ENS records",
+    "unsupported_resolver": "This resolver is not supported for editing. Replace it with the Decentraland resolver first.",
+    "resolver_changed": "The resolver changed after confirmation. Refresh the name and try again.",
+    "replacement_required": "This name already has a resolver. Confirm replacement before changing it."
+  },
   "atlas": {
     "locate_land": "Locate next LAND",
     "zoom_in": "Zoom in",

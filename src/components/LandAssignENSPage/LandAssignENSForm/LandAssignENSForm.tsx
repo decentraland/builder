@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Row, Button, Icon } from 'decentraland-ui'
+import { Form, Row, Button, Icon, Message } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -47,28 +47,17 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
     const hasResolver = isSupportedENSResolver(ens.resolver)
     const needsReplacementConfirmation = needsResolverReplacementConfirmation(ens)
     const hasContent = !isContentEmpty(ens) && isEqualContent(ens, land)
-    const hasData = hasResolver || hasContent
 
-    const hasError = error && error.code === 4001
+    const hasError = !!error
     const hasResolverError = hasError && error.origin === ENSOrigin.RESOLVER
     const hasContentError = hasError && error.origin === ENSOrigin.CONTENT
-    // Set reclaim error
-    const hasReclaimError = hasError
 
     const setResolverButtonClassName = hasResolver && !isWaitingTxSetResolver && !hasResolverError ? 'grey-button' : ''
     const setContentButtonClassName = hasContent && !isWaitingTxSetContent && !hasContentError ? 'grey-button' : ''
 
-    const isSetResolverButtonDisabled = hasResolverError || hasResolver || needsReclaiming || isWaitingTxSetResolver || isWaitingTxReclaim
+    const isSetResolverButtonDisabled = hasResolver || needsReclaiming || isWaitingTxSetResolver || isWaitingTxReclaim
     const isSetContentButtonDisabled =
-      hasContentError ||
-      hasResolverError ||
-      hasReclaimError ||
-      !hasResolver ||
-      needsReclaiming ||
-      hasContent ||
-      isWaitingTxSetResolver ||
-      isWaitingTxSetContent ||
-      isWaitingTxReclaim
+      !hasResolver || needsReclaiming || hasContent || isWaitingTxSetResolver || isWaitingTxSetContent || isWaitingTxReclaim
 
     return (
       <Form className="LandAssignENSForm">
@@ -146,8 +135,9 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
             </div>
           </div>
         </Row>
+        {error && <Message error role="alert" content={error.message} />}
         <Row className="confirmation-buttons">
-          <Button onClick={this.handleBack} disabled={hasData}>
+          <Button onClick={this.handleBack} disabled={isWaitingTxSetResolver || isWaitingTxSetContent || isWaitingTxReclaim}>
             {t('global.back')}
           </Button>
           <Button

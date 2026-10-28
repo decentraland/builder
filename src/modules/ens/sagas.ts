@@ -1,3 +1,4 @@
+import { FETCH_TRANSACTION_SUCCESS, FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { BigNumber, ethers } from 'ethers'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
@@ -6,7 +7,7 @@ import { ChainId, Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
-import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getCurrentLocale, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
@@ -38,6 +39,7 @@ import {
   setENSContentSuccess,
   setENSContentFailure,
   SET_ENS_RESOLVER_REQUEST,
+  SET_ENS_RESOLVER_SUCCESS,
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
@@ -132,15 +134,16 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
     const currentResolverAddress: string = yield call([ensContract, 'resolver'], nodehash)
     if (!currentResolverAddress || currentResolverAddress === ethers.constants.AddressZero) {
-      throw new Error('Set a resolver before editing ENS records')
+      throw new Error(t('ens_errors.missing_resolver'))
     }
     const chainId: ChainId = yield call([signer, 'getChainId'])
     if (!isSupportedENSResolver(currentResolverAddress, chainId)) {
-      throw new Error('This resolver is not supported for editing. Replace it with the Decentraland resolver first.')
+      throw new Error(t('ens_errors.unsupported_resolver'))
     }
     return { address: currentResolverAddress, chainId }
   }
 
+  yield takeEvery(FETCH_TRANSACTION_SUCCESS, handleResolverTransactionSuccess)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(FETCH_ENS_WORLD_STATUS_REQUEST, handleFetchENSWorldStatusRequest)
@@ -152,6 +155,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeEvery(SET_ENS_ADDRESS_REQUEST, handleSetENSAddressRequest)
   yield takeEvery(FETCH_CONTRIBUTABLE_NAMES_REQUEST, handleFetchContributableNamesRequest)
+
+  function* handleResolverTransactionSuccess(action: FetchTransactionSuccessAction) {
+    const { transaction } = action.payload
+    if (transaction.actionType === SET_ENS_RESOLVER_SUCCESS) {
+      // Also runs when transaction tracking resumes after a page reload.
+      yield put(fetchENSRequest(transaction.payload.ens.name))
+    }
+  }
 
   function* handleFetchLandsSuccess() {
     yield put(fetchENSListRequest())
@@ -362,19 +373,19 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       if (expectedResolver !== undefined) {
         if (currentResolver.toLowerCase() !== expectedResolver.toLowerCase()) {
           shouldRefreshAfterFailure = true
-          throw new Error('The resolver changed after confirmation. Refresh the name and try again.')
+          throw new Error(t('ens_errors.resolver_changed'))
         }
       } else if (currentResolver !== ethers.constants.AddressZero) {
         shouldRefreshAfterFailure = true
-        throw new Error('This name already has a resolver. Confirm replacement before changing it.')
+        throw new Error(t('ens_errors.replacement_required'))
       }
       const transaction: ethers.ContractTransaction = yield call(() => ensContract.setResolver(nodehash, ENS_RESOLVER_ADDRESS))
 
       yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from, wallet.chainId, transaction.hash))
       shouldRefreshAfterFailure = true
       yield call(waitForTx, transaction.hash)
-      // The target resolver may already contain records; refresh instead of assuming they are empty.
-      yield put(fetchENSRequest(ens.name))
+      // FETCH_TRANSACTION_SUCCESS refreshes effective records after the reducer
+      // updates the resolver, for both live writes and persisted transactions.
     } catch (error) {
       const ensError: ENSError = {
         message: isErrorWithMessage(error) ? error.message : 'Unknown error',

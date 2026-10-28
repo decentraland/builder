@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Network } from '@dcl/schemas'
-import { Form, Row, Button, InputOnChangeData } from 'decentraland-ui'
+import { Form, Row, Button, AddressFieldChangeData } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
@@ -40,7 +40,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
     onSetOperator(land, revoked ? null : address)
   }
 
-  handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+  handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: AddressFieldChangeData) => {
     this.setState({ address: data.value, dirty: true, revoked: false })
   }
 

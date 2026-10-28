@@ -1,4 +1,10 @@
 {
+  "ens_errors": {
+    "missing_resolver": "编辑 ENS 记录前，请先设置解析器",
+    "unsupported_resolver": "此解析器不支持在此编辑。请先将其替换为 Decentraland 解析器。",
+    "resolver_changed": "确认后解析器已更改。请刷新名称后重试。",
+    "replacement_required": "此名称已有解析器。更改前请确认替换。"
+  },
   "atlas": {
     "locate_land": "定位下一地块",
     "zoom_in": "放大",

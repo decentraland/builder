@@ -1,3 +1,5 @@
+import { fetchTransactionSuccess } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { expectSaga } from 'redux-saga-test-plan'
 import { namehash } from '@ethersproject/hash'
@@ -20,6 +22,7 @@ import { getLands } from 'modules/land/selectors'
 import { ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { changeToEthereumNetwork } from 'modules/wallet/sagas'
 import {
+  SET_ENS_RESOLVER_SUCCESS,
   fetchContributableNamesFailure,
   fetchENSRequest,
   fetchENSListRequest,
@@ -924,7 +927,7 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
   it('should replace the resolver that the user confirmed', async () => {
     await runReplacement()
       .put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, 'address', ChainId.ETHEREUM_SEPOLIA, hash))
-      .put(fetchENSRequest(ens.name))
+      .not.put(fetchENSRequest(ens.name))
       .silentRun()
     expect(setResolver).toHaveBeenCalledWith(namehash(ens.subdomain), ENS_RESOLVER_ADDRESS)
   })
@@ -1024,6 +1027,24 @@ describe.each([
       ])
       .put(fetchENSListSuccess([expected], 1))
       .dispatch(fetchENSListRequest(1, 0))
+      .silentRun()
+  })
+})
+
+describe('when a persisted resolver transaction completes after reload', () => {
+  let transaction: Transaction
+  beforeEach(() => {
+    transaction = { actionType: SET_ENS_RESOLVER_SUCCESS, payload: { ens: { name: 'test' } } } as Transaction
+  })
+  it('should request fresh effective records without the original write saga', () => {
+    return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+      .provide({
+        put(effect, next) {
+          return effect.action.type === fetchENSRequest('test').type ? undefined : next()
+        }
+      })
+      .put(fetchENSRequest('test'))
+      .dispatch(fetchTransactionSuccess(transaction))
       .silentRun()
   })
 })

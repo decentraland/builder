@@ -9,6 +9,7 @@ import {
   fetchContributableNamesRequest,
   fetchContributableNamesSuccess,
   fetchENSFailure,
+  fetchENSSuccess,
   fetchENSListRequest,
   fetchENSRequest,
   fetchExternalNamesFailure,
@@ -419,5 +420,19 @@ describe('when a successful write makes a previously unknown record known', () =
     it('should clear the address failure marker', () => {
       expect(ensReducer(state, action).data[ens.subdomain].addressLookupFailed).toBeUndefined()
     })
+  })
+})
+
+describe('when refreshed ENS records omit Worlds status', () => {
+  let ens: ENS
+  beforeEach(() => {
+    ens = { name: 'test', subdomain: 'test.dcl.eth', content: '0x' } as ENS
+    state = {
+      ...INITIAL_STATE,
+      data: { [ens.subdomain]: { ...ens, worldStatus: { healthy: true, scene: { urn: 'urn:scene', entityId: 'entity' } } } }
+    }
+  })
+  it('should preserve the existing Worlds status while updating records', () => {
+    expect(ensReducer(state, fetchENSSuccess(ens)).data[ens.subdomain].worldStatus).toEqual(state.data[ens.subdomain].worldStatus)
   })
 })

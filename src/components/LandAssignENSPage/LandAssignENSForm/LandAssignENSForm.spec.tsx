@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { ethers } from 'ethers'
-import { ENS } from 'modules/ens/types'
+import { ENS, ENSOrigin } from 'modules/ens/types'
 import { Land } from 'modules/land/types'
 import LandAssignENSForm from './LandAssignENSForm'
 import { Props } from './LandAssignENSForm.types'
@@ -209,5 +209,41 @@ describe('when assigning a name with no direct resolver or known content', () =>
       expect(confirm).toHaveBeenCalledWith(t('ens_map_address_modal.replace_resolver.confirm'))
       expect(props.onSetENSResolver).not.toHaveBeenCalled()
     })
+  })
+})
+
+describe('when inherited content already points to this LAND', () => {
+  let props: Props
+  beforeEach(() => {
+    props = {
+      ens: {
+        name: 'test',
+        subdomain: 'test.dcl.eth',
+        resolver: ethers.constants.AddressZero,
+        content: '0x1234',
+        landId: 'land',
+        ensOwnerAddress: 'owner',
+        nftOwnerAddress: 'owner'
+      } as ENS,
+      land: { id: 'land' } as Land,
+      isLoading: false,
+      isWaitingTxSetContent: false,
+      isWaitingTxSetResolver: false,
+      isWaitingTxReclaim: false,
+      error: { message: t('ens_errors.resolver_changed'), origin: ENSOrigin.RESOLVER },
+      onSetENSResolver: jest.fn(),
+      onSetENSContent: jest.fn(),
+      onReclaimName: jest.fn(),
+      onBack: jest.fn(),
+      onNavigate: jest.fn()
+    }
+    render(<LandAssignENSForm {...props} />)
+  })
+  it('should let the user go back without replacing the inherited resolver', () => {
+    userEvent.click(screen.getByRole('button', { name: t('global.back') }))
+    expect(props.onBack).toHaveBeenCalledTimes(1)
+  })
+  it('should display resolver errors without a wallet rejection code', () => {
+    expect(screen.getByRole('alert')).toHaveTextContent(t('ens_errors.resolver_changed'))
   })
 })
