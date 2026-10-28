@@ -87,7 +87,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
               )}
             </h3>
             <div className="message-box">
-              <p>
+              <p id="ens-resolver-description">
                 {t(
                   needsReplacementConfirmation && !hasResolver
                     ? 'ens_map_address_modal.replace_resolver.info'
@@ -95,7 +95,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                 )}
               </p>
               <NetworkButton
-                aria-describedby="ens-resolver-heading"
+                aria-describedby="ens-resolver-description"
                 type="submit"
                 disabled={isSetResolverButtonDisabled}
                 onClick={this.handleSetResolver}

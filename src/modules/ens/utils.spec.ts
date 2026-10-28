@@ -7,6 +7,7 @@ import {
   addWorldStatusToEachENS,
   isExternalName,
   isSupportedENSResolver,
+  needsResolverReplacementConfirmation,
   resolveAddress,
   resolveContenthash,
   encodeENSName
@@ -363,5 +364,39 @@ describe('when checking supported ENS resolver deployments', () => {
     ['', 1]
   ])('should reject unsupported deployment %s on chain %s', (address, chainId) => {
     expect(isSupportedENSResolver(String(address), Number(chainId))).toBe(false)
+  })
+})
+
+describe('when deciding whether resolver replacement needs confirmation', () => {
+  describe.each<[string, Partial<ENS>, boolean]>([
+    ['verified empty records', {}, false],
+    ['empty content bytes', { content: '0x' }, false],
+    ['zero content sentinel', { content: ethers.constants.AddressZero }, false],
+    ['explicitly successful empty lookups', { contentLookupFailed: false, addressLookupFailed: false }, false],
+    ['an existing resolver', { resolver: '0x0000000000000000000000000000000000000001' }, true],
+    ['inherited content without a direct resolver', { content: '0xe3010170' }, true],
+    ['an inherited address without a direct resolver', { ensAddressRecord: '0x0000000000000000000000000000000000000002' }, true],
+    ['a failed content lookup', { contentLookupFailed: true }, true],
+    ['a failed address lookup', { addressLookupFailed: true }, true]
+  ])('and the name has %s', (_description, records, expected) => {
+    let ens: ENS
+
+    beforeEach(() => {
+      ens = {
+        name: 'test',
+        subdomain: 'test.dcl.eth',
+        tokenId: '1',
+        ensOwnerAddress: 'owner',
+        nftOwnerAddress: 'owner',
+        resolver: ethers.constants.AddressZero,
+        content: '',
+        ensAddressRecord: '',
+        ...records
+      }
+    })
+
+    it('should require confirmation only when records may be replaced or hidden', () => {
+      expect(needsResolverReplacementConfirmation(ens)).toBe(expected)
+    })
   })
 })

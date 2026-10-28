@@ -384,7 +384,7 @@ describe('when handling the set ens address request', () => {
             ],
             [call(waitForTx, hash), true]
           ])
-          .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_SEPOLIA, hash))
+          .put(setENSAddressSuccess(ens, address, ChainId.ETHEREUM_MAINNET, hash))
           .dispatch(setENSAddressRequest(ens, address))
           .silentRun()
         expect(ENSResolver__factory.connect).toHaveBeenCalledWith(currentResolverAddress, signer)
@@ -505,6 +505,27 @@ describe('when handling the set ens content request to unset the content', () =>
         .silentRun()
 
       expect(ENSResolver__factory.connect).toHaveBeenCalledWith(currentResolverAddress, signer)
+    })
+  })
+
+  describe('and the signer is on mainnet despite stale wallet state', () => {
+    beforeEach(() => {
+      currentResolverAddress = '0x231b0ee14048e9dccd1d247744d114a4eb5e8e63'
+      jest.mocked(signer.getChainId).mockResolvedValue(ChainId.ETHEREUM_MAINNET)
+    })
+
+    it('should record the content transaction on the same chain used to validate the resolver', async () => {
+      await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        .provide([
+          [call(changeToEthereumNetwork), undefined],
+          [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
+          [call(getSigner), signer],
+          [call([ensContract, 'resolver'], namehash(ens.subdomain)), currentResolverAddress],
+          [call([resolverContract, 'setContenthash'], namehash(ens.subdomain), '0x'), { hash } as ethers.ContractTransaction]
+        ])
+        .put(setENSContentSuccess(ens, '0x', undefined, 'address', ChainId.ETHEREUM_MAINNET, hash))
+        .dispatch(setENSContentRequest(ens))
+        .silentRun()
     })
   })
 
@@ -942,7 +963,11 @@ describe('when explicitly confirming replacement of an unsupported resolver', ()
   })
 })
 
-describe('when list address and content lookups fail independently', () => {
+describe.each([
+  { addressFails: true, contentFails: false },
+  { addressFails: false, contentFails: true },
+  { addressFails: true, contentFails: true }
+])('when list record lookups fail (address: $addressFails, content: $contentFails)', ({ addressFails, contentFails }) => {
   let ensContract: ENSContract
   let registrar: DCLRegistrar
   let expected: ENS
@@ -959,8 +984,10 @@ describe('when list address and content lookups fail independently', () => {
     jest.spyOn(ENS__factory, 'connect').mockReturnValue(ensContract)
     jest.spyOn(DCLRegistrar__factory, 'connect').mockReturnValue(registrar)
     jest.spyOn(worldsAPIContent, 'fetchWorld').mockResolvedValue(null)
-    mockResolveAddress.mockRejectedValueOnce(new Error('address unavailable'))
-    mockResolveContenthash.mockRejectedValueOnce(new Error('content unavailable'))
+    if (addressFails) mockResolveAddress.mockRejectedValueOnce(new Error('address unavailable'))
+    else mockResolveAddress.mockResolvedValueOnce('0x0000000000000000000000000000000000000011')
+    if (contentFails) mockResolveContenthash.mockRejectedValueOnce(new Error('content unavailable'))
+    else mockResolveContenthash.mockResolvedValueOnce('0x1234')
     expected = {
       name: 'test',
       subdomain: 'test.dcl.eth',
@@ -968,12 +995,12 @@ describe('when list address and content lookups fail independently', () => {
       ensOwnerAddress: 'owner',
       nftOwnerAddress: 'owner',
       resolver: ethers.constants.AddressZero,
-      content: '0x',
-      ensAddressRecord: '',
+      content: contentFails ? '0x' : '0x1234',
+      ensAddressRecord: addressFails ? '' : '0x0000000000000000000000000000000000000011',
       landId: undefined,
       worldStatus: null,
-      addressLookupFailed: true,
-      contentLookupFailed: true
+      ...(addressFails ? { addressLookupFailed: true } : {}),
+      ...(contentFails ? { contentLookupFailed: true } : {})
     }
   })
 
@@ -983,7 +1010,7 @@ describe('when list address and content lookups fail independently', () => {
     mockResolveContenthash.mockReset()
   })
 
-  it('should keep the listed name and mark both records as unknown', async () => {
+  it('should preserve successful records and mark only failed lookups as unknown', async () => {
     await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
       .provide([
         [select(getLands), []],

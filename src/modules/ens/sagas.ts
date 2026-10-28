@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { BuilderClient, LandHashes } from '@dcl/builder-client'
-import { Network } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -128,17 +128,17 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   }
 
   /** Writes require a configured resolver. Never report success for records stored on an unused fallback. */
-  function* getResolverAddressToWrite(signer: ethers.Signer, nodehash: string): Generator<any, string, any> {
+  function* getResolverToWrite(signer: ethers.Signer, nodehash: string): Generator<any, { address: string; chainId: ChainId }, any> {
     const ensContract = ENS__factory.connect(ENS_ADDRESS, signer)
     const currentResolverAddress: string = yield call([ensContract, 'resolver'], nodehash)
     if (!currentResolverAddress || currentResolverAddress === ethers.constants.AddressZero) {
       throw new Error('Set a resolver before editing ENS records')
     }
-    const chainId: number = yield call([signer, 'getChainId'])
+    const chainId: ChainId = yield call([signer, 'getChainId'])
     if (!isSupportedENSResolver(currentResolverAddress, chainId)) {
       throw new Error('This resolver is not supported for editing. Replace it with the Decentraland resolver first.')
     }
-    return currentResolverAddress
+    return { address: currentResolverAddress, chainId }
   }
 
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
@@ -416,11 +416,11 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       }
 
       const nodehash = encodeENSName(ens.subdomain).node
-      const resolverAddress: string = yield call(getResolverAddressToWrite, signer, nodehash)
+      const { address: resolverAddress, chainId }: { address: string; chainId: ChainId } = yield call(getResolverToWrite, signer, nodehash)
       const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
       const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setContenthash'], nodehash, content)
-      yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, transaction.hash))
+      yield put(setENSContentSuccess(ens, content, land, from.toString(), chainId, transaction.hash))
 
       if (!land) {
         yield put(closeModal('UnsetENSContentModal'))
@@ -439,15 +439,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, address } = action.payload
     try {
       yield call(changeToEthereumNetwork)
-      const wallet: Wallet = yield call(getWallet)
       const signer: ethers.Signer = yield call(getSigner)
       const nodehash = encodeENSName(ens.subdomain).node
-      const resolverAddress: string = yield call(getResolverAddressToWrite, signer, nodehash)
+      const { address: resolverAddress, chainId }: { address: string; chainId: ChainId } = yield call(getResolverToWrite, signer, nodehash)
       const resolverContract = ENSResolver__factory.connect(resolverAddress, signer)
 
       const transaction: ethers.ContractTransaction = yield call([resolverContract, 'setAddr(bytes32,address)'], nodehash, address)
 
-      yield put(setENSAddressSuccess(ens, address, wallet.chainId, transaction.hash))
+      yield put(setENSAddressSuccess(ens, address, chainId, transaction.hash))
       yield call(waitForTx, transaction.hash)
       yield put(closeModal('EnsMapAddressModal'))
     } catch (error) {

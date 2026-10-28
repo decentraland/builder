@@ -8,6 +8,17 @@ import { Land } from 'modules/land/types'
 import LandAssignENSForm from './LandAssignENSForm'
 import { Props } from './LandAssignENSForm.types'
 
+// Resolver support defaults to the configured chain at module initialization.
+// Keep this suite explicitly on Sepolia regardless of the developer's environment.
+jest.mock('config', () => {
+  const actual = jest.requireActual<typeof import('config')>('config')
+  const config = {
+    ...actual.config,
+    get: (key: string, fallback?: string) => (key === 'CHAIN_ID' ? '11155111' : actual.config.get(key, fallback))
+  }
+  return { ...actual, config }
+})
+
 jest.mock('decentraland-dapps/dist/containers', () => ({
   NetworkButton: ({ children, onClick, disabled, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button type="button" onClick={onClick} disabled={disabled} {...props}>
@@ -48,6 +59,15 @@ describe('when assigning LAND through an unsupported resolver', () => {
 
   afterEach(() => {
     jest.restoreAllMocks()
+  })
+
+  it('should describe replacement with its explanation rather than repeating the button label', () => {
+    expect(
+      screen.getByRole('button', {
+        name: t('ens_map_address_modal.replace_resolver.action'),
+        description: t('ens_map_address_modal.replace_resolver.info')
+      })
+    ).toBeEnabled()
   })
 
   it('should disable content writes to the unsupported contract', () => {
@@ -142,7 +162,9 @@ describe('when assigning a name with no direct resolver or known content', () =>
   })
 
   it('should install a resolver normally when absence of content was verified', () => {
-    userEvent.click(screen.getByRole('button', { name: t('global.submit'), description: t('land_assign_ens_page.set_resolver') }))
+    userEvent.click(
+      screen.getByRole('button', { name: t('global.submit'), description: t('land_assign_ens_page.set_resolver_explanation') })
+    )
     expect(props.onSetENSResolver).toHaveBeenCalledWith(props.ens)
     expect(confirm).not.toHaveBeenCalled()
   })
