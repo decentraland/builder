@@ -300,7 +300,7 @@ describe('when encoding normalized ENS names', () => {
     })
 
     it('should reject the name before attempting resolution', () => {
-      expect(() => encodeENSName(name)).toThrow('255 bytes')
+      expect(() => encodeENSName(name)).toThrow('255 UTF-8 bytes')
     })
   })
 })
