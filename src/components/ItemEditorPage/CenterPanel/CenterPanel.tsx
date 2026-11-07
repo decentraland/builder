@@ -464,8 +464,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       _socialEmote = { title: 'Start Animation', ...(selectedItem.data as unknown as EmoteData).startAnimation, loop: true }
     }
 
-    const unity = isUnityWearablePreviewEnabled && !socialEmote && !_socialEmote
-
     return (
       <div className={`CenterPanel ${isImportFilesModalOpen ? 'import-files-modal-is-open' : ''}`}>
         <WearablePreview
@@ -495,7 +493,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
           disableDefaultEmotes={isRenderingAnEmote}
           showSceneBoundaries={showSceneBoundaries}
           socialEmote={socialEmote || _socialEmote}
-          unity={unity}
+          unity={isUnityWearablePreviewEnabled}
           unityMode={PreviewUnityMode.BUILDER}
         />
         {isRenderingAnEmote && !isUnityWearablePreviewEnabled && !isLoading && wearableController ? (
@@ -538,14 +536,12 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               this.renderEmoteSelector()
             )}
             <div className="right-container">
-              {!isUnityWearablePreviewEnabled && (
-                <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
-                  <BuilderIcon
-                    name="cylinder"
-                    onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
-                  />
-                </div>
-              )}
+              <div className={`option scene-boundaries ${showSceneBoundaries ? 'active' : ''}`}>
+                <BuilderIcon
+                  name="cylinder"
+                  onClick={() => this.setState(prevState => ({ showSceneBoundaries: !prevState.showSceneBoundaries }))}
+                />
+              </div>
               {selectedItem && !isEmote(selectedItem) ? (
                 <FacialExpressionsBadge contents={selectedItem.contents} className="option facial-expressions-status" />
               ) : null}
