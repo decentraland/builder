@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Network } from '@dcl/schemas'
-import { Form, Row, Button, InputOnChangeData } from 'decentraland-ui'
+import { Form, Row, Button, AddressFieldChangeData } from 'decentraland-ui'
 import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
@@ -36,10 +36,11 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
   handleSetOperator = () => {
     const { land, onSetOperator } = this.props
     const { address, revoked } = this.state
+    if (!revoked && !isValid(address)) return
     onSetOperator(land, revoked ? null : address)
   }
 
-  handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+  handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: AddressFieldChangeData) => {
     this.setState({ address: data.value, dirty: true, revoked: false })
   }
 
@@ -58,7 +59,10 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
     const isRevokable = editing && isEqual(address, initial)
     const hasError = !loading && !!address && !isValid(address)
     const isDisabled =
-      loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || !hasAnyRole(land, [RoleType.OWNER, RoleType.TENANT])
+      loading ||
+      !dirty ||
+      ((!address || isEqual(address, initial) || hasError) && !revoked) ||
+      !hasAnyRole(land, [RoleType.OWNER, RoleType.TENANT])
 
     const classes: string[] = []
     if (revoked) {

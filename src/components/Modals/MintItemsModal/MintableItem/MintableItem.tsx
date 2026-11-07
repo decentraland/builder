@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Column, Field, Section, InputOnChangeData, Popup } from 'decentraland-ui'
+import { Row, Column, Field, Section, InputOnChangeData, AddressFieldChangeData, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AddressField } from 'decentraland-dapps/dist/components/AddressField'
 
@@ -27,12 +27,13 @@ export default class MintableItem extends React.PureComponent<Props> {
 
   getChangeAddressHandler(index: number) {
     const { item, mints, onChange } = this.props
-    return (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      if (!data.error) event.target.blur() // Remove the focus on the input after entering a valid address
+    return (event: React.ChangeEvent<HTMLInputElement>, data: AddressFieldChangeData) => {
+      const hasRecipient = !data.error && !data.pending && !!data.value
+      if (hasRecipient) event.target.blur() // Remove the focus on the input after entering a valid address
       const mint: Partial<Mint> = {
         ...mints[index],
         address: data.value ? data.value : undefined,
-        amount: !data.error && !mints[index].amount ? 1 : mints[index].amount
+        amount: hasRecipient && !mints[index].amount ? 1 : mints[index].amount
       }
       const newMints = [...mints.slice(0, index), mint, ...mints.slice(index + 1)]
       onChange(item, newMints)

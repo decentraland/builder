@@ -2,11 +2,14 @@ import { ChainId } from '@dcl/schemas'
 import {
   FETCH_EXTERNAL_NAMES_REQUEST,
   SET_ENS_ADDRESS_SUCCESS,
+  SET_ENS_RESOLVER_SUCCESS,
+  SET_ENS_CONTENT_SUCCESS,
   clearENSErrors,
   fetchContributableNamesFailure,
   fetchContributableNamesRequest,
   fetchContributableNamesSuccess,
   fetchENSFailure,
+  fetchENSSuccess,
   fetchENSListRequest,
   fetchENSRequest,
   fetchExternalNamesFailure,
@@ -352,5 +355,84 @@ describe('when handling fetch contributable names actions', () => {
         })
       )
     })
+  })
+})
+
+describe('when a resolver replacement is mined', () => {
+  let action: ReturnType<typeof fetchTransactionSuccess>
+  let previousENS: ENS
+  let replacement: string
+
+  beforeEach(() => {
+    replacement = '0x00000000000000000000000000000000000000bb'
+    previousENS = {
+      name: 'test',
+      subdomain: 'test.dcl.eth',
+      resolver: '0x00000000000000000000000000000000000000aa',
+      content: '0xe301',
+      ensAddressRecord: 'old-address',
+      contentLookupFailed: true,
+      addressLookupFailed: true,
+      landId: 'old-land'
+    } as ENS
+    state = { ...INITIAL_STATE, data: { [previousENS.subdomain]: previousENS } }
+    action = fetchTransactionSuccess({
+      actionType: SET_ENS_RESOLVER_SUCCESS,
+      payload: { ens: previousENS, resolver: replacement }
+    } as Transaction)
+  })
+
+  it('should discard old resolver records while the effective records are refreshed', () => {
+    expect(ensReducer(state, action).data[previousENS.subdomain]).toEqual({
+      ...previousENS,
+      resolver: replacement,
+      content: '0x',
+      ensAddressRecord: '',
+      landId: undefined,
+      contentLookupFailed: undefined,
+      addressLookupFailed: undefined
+    })
+  })
+})
+
+describe('when a successful write makes a previously unknown record known', () => {
+  let ens: ENS
+  let action: ReturnType<typeof fetchTransactionSuccess>
+
+  beforeEach(() => {
+    ens = { name: 'test', subdomain: 'test.dcl.eth', contentLookupFailed: true, addressLookupFailed: true } as ENS
+    state = { ...INITIAL_STATE, data: { [ens.subdomain]: ens } }
+    action = fetchTransactionSuccess({ actionType: SET_ENS_CONTENT_SUCCESS, payload: { ens, content: '0xe301' } } as Transaction)
+  })
+
+  it('should clear the content failure marker after a content write', () => {
+    expect(ensReducer(state, action).data[ens.subdomain].contentLookupFailed).toBeUndefined()
+  })
+
+  describe('and the confirmed write updates the address', () => {
+    beforeEach(() => {
+      action = fetchTransactionSuccess({
+        actionType: SET_ENS_ADDRESS_SUCCESS,
+        payload: { ens, address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA, hash: 'hash' }
+      } as Transaction)
+    })
+
+    it('should clear the address failure marker', () => {
+      expect(ensReducer(state, action).data[ens.subdomain].addressLookupFailed).toBeUndefined()
+    })
+  })
+})
+
+describe('when refreshed ENS records omit Worlds status', () => {
+  let ens: ENS
+  beforeEach(() => {
+    ens = { name: 'test', subdomain: 'test.dcl.eth', content: '0x' } as ENS
+    state = {
+      ...INITIAL_STATE,
+      data: { [ens.subdomain]: { ...ens, worldStatus: { healthy: true, scene: { urn: 'urn:scene', entityId: 'entity' } } } }
+    }
+  })
+  it('should preserve the existing Worlds status while updating records', () => {
+    expect(ensReducer(state, fetchENSSuccess(ens)).data[ens.subdomain].worldStatus).toEqual(state.data[ens.subdomain].worldStatus)
   })
 })

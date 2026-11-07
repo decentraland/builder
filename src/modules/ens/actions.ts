@@ -36,7 +36,8 @@ export const SET_ENS_RESOLVER_REQUEST = '[Request] Set ENS Resolver'
 export const SET_ENS_RESOLVER_SUCCESS = '[Success] Set ENS Resolver'
 export const SET_ENS_RESOLVER_FAILURE = '[Failure] Set ENS Resolver'
 
-export const setENSResolverRequest = (ens: ENS) => action(SET_ENS_RESOLVER_REQUEST, { ens })
+export const setENSResolverRequest = (ens: ENS, expectedResolver?: string) =>
+  action(SET_ENS_RESOLVER_REQUEST, { ens, ...(expectedResolver !== undefined ? { expectedResolver } : {}) })
 export const setENSResolverSuccess = (ens: ENS, resolver: string, address: string, chainId: ChainId, txHash: string) =>
   action(SET_ENS_RESOLVER_SUCCESS, {
     ...buildTransactionPayload(chainId, txHash, { ens, resolver, address }),
