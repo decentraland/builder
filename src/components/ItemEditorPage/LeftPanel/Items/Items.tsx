@@ -16,6 +16,7 @@ import {
   Popup
 } from 'decentraland-ui'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
+import { ignoreSceneDisposed } from 'lib/wearablePreview'
 import { Item, ItemType } from 'modules/item/types'
 import { hasBodyShape, isEmote, isWearable } from 'modules/item/utils'
 import { getTPThresholdToReview } from 'modules/collection/utils'
@@ -77,9 +78,9 @@ export default class Items extends React.PureComponent<Props, State> {
     if (isEmote(item)) {
       if (this.isVisible(item)) {
         if (isPlayingEmote) {
-          wearableController?.emote.pause() as void
+          void ignoreSceneDisposed(wearableController?.emote.pause())
         } else {
-          wearableController?.emote.play() as void
+          void ignoreSceneDisposed(wearableController?.emote.play())
         }
 
         return
