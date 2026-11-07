@@ -1,0 +1,81 @@
+.banner {
+  /* The gutter both host pages indent their content by: the banner reaches past it to the window edges,
+     and the copy steps back onto it. */
+  --page-gutter: 24px;
+
+  display: flex;
+  align-items: center;
+  margin-inline: calc(-1 * var(--page-gutter));
+  margin-bottom: 40px;
+  /* The frame's own ratio, since the banner is as wide as the window. Below ~1240px that gets too short for
+     the copy, so it stops shrinking and `cover` crops the empty pattern on the left instead of the cards.
+     Not `aspect-ratio`: combined with a minimum height it widens the box past the window. */
+  min-height: max(220px, calc(100vw * 340 / 1920));
+  background: #6d22b3 url('../../images/creators-website-banner.webp') right center / cover no-repeat;
+  color: #fff;
+  text-decoration: none;
+  transition: filter 0.2s ease;
+}
+
+.banner:hover {
+  color: #fff;
+  filter: brightness(1.08);
+}
+
+.banner:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Same rule as the page content: the gutter, until the window is wide enough to centre a 1360px column. */
+  padding-inline: max(var(--page-gutter), calc((100% - 1360px) / 2));
+}
+
+/* Sizes and weight match ui2's <Banner>, so it reads like the campaign banners it replaces. */
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.text {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+/* ui2's <Banner> button: its spacing above and its minimum width. Two classes deep, because MUI's own
+   class on the button is injected after this stylesheet and would win a tie. */
+.copy .cta {
+  align-self: flex-start;
+  margin-top: 8px;
+  min-width: 300px;
+}
+
+/* The Builder only renders above 1024px, but near that width the cards reach to ~410px from the left, so the
+   copy shrinks and wraps into a column that ends before them. */
+@media (max-width: 1279px) {
+  .copy {
+    max-width: 400px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .text {
+    font-size: 16px;
+  }
+
+  .title br,
+  .text br {
+    display: none;
+  }
+}

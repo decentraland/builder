@@ -697,12 +697,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   renderModelDetails(item: Item) {
-    const { isDownloading } = this.props
+    const { isDownloading, canEditSelectedItem, isCommitteeMember } = this.props
     const { thumbnail } = this.state
 
     const canEditItemMetadata = this.canEditItemMetadata(item)
 
-    const downloadButton = isDownloading ? (
+    // Only the people behind the collection and curators get the source files; anyone else could re-upload them as their own.
+    const downloadButton = !(canEditSelectedItem || isCommitteeMember) ? null : isDownloading ? (
       <Loader active size="tiny" className="donwload-item-loader" />
     ) : (
       <Icon name="export" className={'download-item-button'} onClick={this.handleDownloadItem} />

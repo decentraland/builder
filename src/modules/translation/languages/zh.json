@@ -1599,9 +1599,9 @@
       "subtitle": "请确认您的确认。",
       "standard": {
         "content_policy_first_condition": "我了解我将无法修改收藏的名称，并且我可以证明“{collection_name}”作为名称不违反任何知识产权。",
-        "accept_terms_of_use": "我保证所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
+        "accept_terms_of_use": "我保证所提交的作品是我的原创作品，并完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
         "acknowledge_immutability": "我了解一旦收藏发布后，我将无法添加或删除项目。",
-        "acknowledge_dao_terms": "我承认，DAO 可能会因违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准该项目。我还承认，出版费将进入 DAO 金库，如果项目被拒绝，将不予退还。"
+        "acknowledge_dao_terms": "我承认，DAO 可能会因抄袭他人作品或违反<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>而拒绝批准该项目。我还承认，出版费将进入 DAO 金库，如果项目被拒绝，将不予退还。"
       },
       "third_parties": {
         "first": "我确认所提交的作品完全符合<terms_of_use_link>使用条款</terms_of_use_link>和<content_policy_link>内容政策</content_policy_link>，我对此予以确认并接受。",
@@ -2188,6 +2188,11 @@
       },
       "footer_note": "您随时可以下载 Creator Hub。"
     }
+  },
+  "creators_website_banner": {
+    "title": "全新创作者网站{br}现已上线！",
+    "text": "我们搬家了！探索全新的创作者网站，{br}享受更好的创作体验。",
+    "cta": "立即探索"
   },
   "item_status": {
     "unpublished": "准备发布",
