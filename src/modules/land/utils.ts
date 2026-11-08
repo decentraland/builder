@@ -165,15 +165,20 @@ export const buildMetadata = (name: string, description = '') => {
   return `0,"${name.replace(/"/g, '\\"')}","${description.replace(/"/g, '\\"')}",`
 }
 
-export function locateNextLand(landTiles: Record<string, LandTile>, currentLandId: string) {
+/**
+ * Returns the land that follows the current one in the given tiles, wrapping around at the end.
+ * With no current land (or one that isn't in the tiles) it returns the first land, and with no tiles it returns undefined.
+ */
+export function locateNextLand(landTiles: Record<string, LandTile>, currentLandId?: string): Land | undefined {
   const landIds = Object.keys(landTiles)
+  if (landIds.length === 0) {
+    return undefined
+  }
 
-  const landIndex = landIds.indexOf(currentLandId)
-  const index = landIndex === -1 ? 0 : landIndex
-  const nextIndex = (((index + 1) % landIds.length) + landIds.length) % landIds.length
+  const landIndex = currentLandId ? landIds.indexOf(currentLandId) : -1
+  const nextIndex = landIndex === -1 ? 0 : (landIndex + 1) % landIds.length
 
-  const nextLandId = landIds[nextIndex]
-  return landTiles[nextLandId].land
+  return landTiles[landIds[nextIndex]].land
 }
 
 export function getExplorerURL(x: string | number, y: string | number) {
