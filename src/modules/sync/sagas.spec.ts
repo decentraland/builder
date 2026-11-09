@@ -5,7 +5,7 @@ import { AnyAction } from 'redux'
 import { BuilderAPI } from 'lib/api/builder'
 import { loginSuccess } from 'modules/identity/actions'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { createProject, setProject } from 'modules/project/actions'
+import { setProject } from 'modules/project/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { provisionScene, updateScene } from 'modules/scene/actions'
@@ -16,7 +16,6 @@ type Trigger = [string, (project: Project) => AnyAction]
 
 const TRIGGERS: Trigger[] = [
   ['logging in', () => loginSuccess({ address: '0xa' } as Wallet, {} as AuthIdentity)],
-  ['creating a project', project => createProject(project)],
   ['changing a project', project => setProject(project)],
   ['editing an SDK6 scene', () => provisionScene({ id: 'scene-id' } as SceneSDK6)],
   ['editing an SDK7 scene', () => updateScene({ id: 'scene-id' } as SceneSDK7)]

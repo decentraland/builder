@@ -9,8 +9,6 @@ import {
   LoadProjectsRequestAction,
   SetProjectAction,
   SET_PROJECT,
-  CREATE_PROJECT,
-  CreateProjectAction,
   LOAD_MANIFEST_REQUEST,
   LoadProjectsFailureAction,
   LOAD_PROJECTS_FAILURE,
@@ -36,7 +34,6 @@ export const INITIAL_STATE: ProjectState = {
 
 export type ProjectReducerAction =
   | SetProjectAction
-  | CreateProjectAction
   | DeleteProjectAction
   | LoadProjectsRequestAction
   | LoadProjectsSuccessAction
@@ -47,7 +44,6 @@ export type ProjectReducerAction =
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
-    case CREATE_PROJECT:
     case SET_PROJECT: {
       const { project } = action.payload
 

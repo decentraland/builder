@@ -10,8 +10,6 @@ export const PAGE_SIZE = 12
 
 export const getState = (state: RootState) => state.ui.dashboard
 
-export const didCreate = (state: RootState) => getState(state).didCreate
-
 export const getTotalPages = createSelector<RootState, DataByKey<Project>, number>(getUserProjects, projects =>
   Math.max(Math.ceil(Object.keys(projects).length / PAGE_SIZE), 1)
 )

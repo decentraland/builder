@@ -17,7 +17,7 @@ import {
   RESET_CAMERA
 } from 'modules/editor/actions'
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
-import { SET_PROJECT, EXPORT_PROJECT_REQUEST, CREATE_PROJECT } from 'modules/project/actions'
+import { SET_PROJECT, EXPORT_PROJECT_REQUEST } from 'modules/project/actions'
 import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'
 import {
   TRANSFER_LAND_SUCCESS,
@@ -133,7 +133,6 @@ addPayload(RESET_ITEM, 'Reset item')
 addPayload(DUPLICATE_ITEM, 'Duplicate item')
 
 // editor actions
-addPayload(CREATE_PROJECT, 'Create project', trimProject)
 addPayload(SET_PROJECT, 'Set project', trimProject)
 addPayload(EDITOR_UNDO, 'Editor undo')
 addPayload(EDITOR_REDO, 'Editor redo')

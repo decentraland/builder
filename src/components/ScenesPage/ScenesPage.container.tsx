@@ -6,7 +6,7 @@ import { useGetProjectCurrentPage, useGetProjects } from 'modules/ui/dashboard/h
 import { RootState } from '../../modules/common/types'
 import { isFetching } from '../../modules/project/selectors'
 import { isLoggingIn } from '../../modules/identity/selectors'
-import { getTotalPages, didCreate } from '../../modules/ui/dashboard/selectors'
+import { getTotalPages } from '../../modules/ui/dashboard/selectors'
 import ScenesPage from './ScenesPage'
 import { useGetSortByFromCurrentUrl } from 'modules/location/hooks'
 import { SortBy } from 'modules/ui/dashboard/types'
@@ -20,7 +20,6 @@ const ScenesPageContainer: React.FC = () => {
   const isLoggingInState = useSelector((state: RootState) => isLoggingIn(state) || isConnecting(state))
   const isFetchingState = useSelector(isFetching)
   const totalPages = useSelector(getTotalPages)
-  const didCreateState = useSelector(didCreate)
 
   const handleOpenModal: ActionFunction<typeof openModal> = useCallback((name, metadata) => dispatch(openModal(name, metadata)), [dispatch])
 
@@ -32,7 +31,6 @@ const ScenesPageContainer: React.FC = () => {
       page={page}
       sortBy={sortBy}
       totalPages={totalPages}
-      didCreate={didCreateState}
       onOpenModal={handleOpenModal}
     />
   )

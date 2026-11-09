@@ -9,7 +9,6 @@ export type DefaultProps = {
 export type Props = DefaultProps & {
   isFetching: boolean
   isLoggingIn: boolean
-  didCreate: boolean
   page: number
   sortBy: SortBy
   totalPages: number
