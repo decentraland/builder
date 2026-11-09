@@ -94,7 +94,7 @@ export function* rootSaga(
     committeeSaga(builderAPI),
     deploymentSaga(catalystClient),
     editorSaga(),
-    ensSaga(newBuilderClient, ensApi, worldsApi),
+    ensSaga(ensApi, worldsApi),
     entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),

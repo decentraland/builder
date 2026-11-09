@@ -2,12 +2,10 @@ import { BigNumber, ethers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import PQueue from 'p-queue'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
-import { BuilderClient, LandHashes } from '@dcl/builder-client'
 import { Network } from '@dcl/schemas'
 import { getSigner, getNetworkProvider, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { CONNECT_WALLET_SUCCESS, ConnectWalletSuccessAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
-import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 import { waitForTx } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { isErrorWithMessage } from 'decentraland-dapps/dist/lib/error'
 import { ENS__factory } from 'contracts/factories/ENS__factory'
@@ -16,7 +14,6 @@ import { DCLRegistrar__factory } from 'contracts/factories/DCLRegistrar__factory
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { getWallet } from 'modules/wallet/utils'
 import { changeToEthereumNetwork } from 'modules/wallet/sagas'
-import { getCenter, getSelection } from 'modules/land/utils'
 import { fetchWorldDeploymentsRequest } from 'modules/deployment/actions'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
@@ -69,11 +66,11 @@ import {
 } from './actions'
 import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
 import { ENS, ENSOrigin, ENSError, ContributableDomain } from './types'
-import { addWorldStatusToEachENS, getLandRedirectionHashes, isExternalName } from './utils'
+import { addWorldStatusToEachENS, encodeLandRedirect, getRedirectedLandId, isExternalName } from './utils'
 
 const DEFAULT_ENS_PAGE_SIZE = 12
 
-export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
+export function* ensSaga(ensApi: ENSApi, worldsAPIContent: WorldsAPI) {
   /** Get a provider for reading ENS data from Ethereum network.
    * This allows ENS reads to work regardless of which network the user is connected to. */
   function* getEthereumReadProvider(): Generator<any, ethers.providers.Web3Provider, any> {
@@ -152,14 +149,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       const currentContent: string = yield call([resolverContract, 'contenthash'], nodehash)
 
       if (land) {
-        const [x, y] = getCenter(getSelection(land))
-
-        const { ipfsHash, contentHash }: LandHashes = yield call(
-          [builderClient, 'createLandRedirectionFile'],
-          { x, y },
-          getCurrentLocale().locale
-        )
-
         if (currentContent === ethers.constants.AddressZero) {
           yield put(
             fetchENSSuccess({
@@ -170,14 +159,14 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
               subdomain,
               resolver: resolverAddress.toString(),
               content: ethers.constants.AddressZero,
-              ipfsHash,
               ensAddressRecord
             })
           )
           return
         }
 
-        if (`0x${contentHash}` === currentContent) {
+        const contentHash = encodeLandRedirect(land)
+        if (contentHash === currentContent) {
           yield put(
             fetchENSSuccess({
               name,
@@ -187,7 +176,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
               subdomain,
               resolver: ENS_RESOLVER_ADDRESS,
               content: contentHash,
-              ipfsHash,
               landId: land.id,
               ensAddressRecord
             })
@@ -197,8 +185,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
       }
 
       const lands: Land[] = yield select(getLands)
-      const redirectionHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
-      const redirectionLand = redirectionHashes.find(lh => lh.hash === currentContent)
       yield put(
         fetchENSSuccess({
           name,
@@ -208,7 +194,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent ?? ethers.constants.AddressZero,
-          landId: redirectionLand?.id || '',
+          landId: getRedirectedLandId(currentContent ?? '', lands) ?? '',
           ensAddressRecord
         })
       )
@@ -303,28 +289,10 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
     const { ens, land } = action.payload
     try {
       yield call(changeToEthereumNetwork)
-      const wallet: Wallet = yield getWallet()
-      const signer: ethers.Signer = yield getSigner()
+      const wallet: Wallet = yield call(getWallet)
+      const signer: ethers.Signer = yield call(getSigner)
       const from = wallet.address
-
-      let content = ''
-
-      if (land) {
-        const [x, y] = getCenter(getSelection(land))
-
-        const { contentHash }: LandHashes = yield call(
-          [builderClient, 'createLandRedirectionFile'],
-          {
-            x,
-            y
-          },
-          getCurrentLocale().locale
-        )
-
-        content = `0x${contentHash}`
-      } else {
-        content = ethers.constants.AddressZero
-      }
+      const content = land ? encodeLandRedirect(land) : ethers.constants.AddressZero
 
       const nodehash = namehash(ens.subdomain)
       const resolverContract = ENSResolver__factory.connect(ENS_RESOLVER_ADDRESS, signer)
@@ -382,7 +350,6 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
   function* handleFetchENSListRequest(action: FetchENSListRequestAction) {
     try {
       const lands: Land[] = yield select(getLands)
-      const landHashes: { id: string; hash: string }[] = yield call(getLandRedirectionHashes, builderClient, lands)
       const wallet: Wallet = yield call(getWallet)
       const ethereumProvider: ethers.providers.Web3Provider = yield call(getEthereumReadProvider)
       const address = wallet.address
@@ -438,11 +405,7 @@ export function* ensSaga(builderClient: BuilderClient, ensApi: ENSApi, worldsAPI
             try {
               const resolverContract = ENSResolver__factory.connect(resolverAddress, ethereumProvider)
               content = await resolverContract.contenthash(nodehash)
-
-              const land = landHashes.find(lh => lh.hash === content)
-              if (land) {
-                landId = land.id
-              }
+              landId = getRedirectedLandId(content, lands)
             } catch (error) {
               console.error('Failed to load ens resolver', error)
             }

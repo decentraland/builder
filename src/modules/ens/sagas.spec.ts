@@ -3,7 +3,6 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { namehash } from '@ethersproject/hash'
 import { call, select } from 'redux-saga/effects'
 import { Signer, ethers } from 'ethers'
-import { BuilderClient } from '@dcl/builder-client'
 import { ChainId, Network } from '@dcl/schemas'
 import { ENSResolver__factory, ENSResolver } from 'contracts'
 import { getSigner, getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -16,6 +15,8 @@ import { lists } from 'lib/api/lists'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { ENSApi } from 'lib/api/ens'
 import { getWallet } from 'modules/wallet/utils'
+import { changeToEthereumNetwork } from 'modules/wallet/sagas'
+import { Land, LandType } from 'modules/land/types'
 import {
   fetchContributableNamesFailure,
   fetchContributableNamesRequest,
@@ -28,37 +29,25 @@ import {
   fetchExternalNamesSuccess,
   setENSAddressFailure,
   setENSAddressRequest,
-  setENSAddressSuccess
+  setENSAddressSuccess,
+  setENSContentRequest,
+  setENSContentSuccess
 } from './actions'
 import { ensSaga } from './sagas'
 import { ContributableDomain, ENS, ENSError, ENSOrigin, WorldStatus } from './types'
 import { getContributableNamesList, getENSBySubdomain, getExternalNames } from './selectors'
-import { addWorldStatusToEachENS } from './utils'
+import { addWorldStatusToEachENS, encodeLandRedirect } from './utils'
 import { Authorization } from 'lib/api/auth'
 import { marketplace } from 'lib/api/marketplace'
 
-jest.mock('@dcl/builder-client')
-
-const MockBuilderClient = BuilderClient as jest.MockedClass<typeof BuilderClient>
 const MockWorldsAPI = WorldsAPI as jest.MockedClass<typeof WorldsAPI>
 const mockAuthorization: Authorization = new Authorization(() => 'mockAddress')
 
-let builderClient: BuilderClient
 let ensApi: ENSApi
 let ensResolverContract: ENSResolver
 let worldsAPIContent: WorldsAPI
 
 beforeEach(() => {
-  builderClient = new MockBuilderClient(
-    'url',
-    {
-      authChain: [],
-      ephemeralIdentity: { address: 'address', privateKey: 'prikey', publicKey: 'pubkey' },
-      expiration: new Date()
-    },
-    'address'
-  )
-
   ensApi = new ENSApi('https://ens-subgraph.com')
 
   ensResolverContract = {
@@ -87,7 +76,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
       })
 
       it('should dispatch an error action with the owner and the error', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        await expectSaga(ensSaga, ensApi, worldsAPIContent)
           .provide([[call([ensApi, ensApi.fetchExternalNames], owner), throwError(error)]])
           .put(fetchExternalNamesFailure(owner, ensError))
           .dispatch(fetchExternalNamesRequest(owner))
@@ -127,7 +116,7 @@ describe('when handling the fetching of external ens names for an owner', () => 
             worldStatus: {} as WorldStatus
           }))
 
-          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          await expectSaga(ensSaga, ensApi, worldsAPIContent)
             .provide([
               [call([ensApi, ensApi.fetchExternalNames], owner), names],
               [call([lists, lists.fetchBannedNames]), bannedNames],
@@ -167,7 +156,7 @@ describe('when handling the fetch ens world status request', () => {
         })
 
         it('should put an action signaling the success of the fetch ens world status request', async () => {
-          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          await expectSaga(ensSaga, ensApi, worldsAPIContent)
             .provide([
               [select(getENSBySubdomain, subdomain), getENSBySubdomainResult],
               [select(getContributableNamesList), []],
@@ -208,7 +197,7 @@ describe('when handling the fetch ens world status request', () => {
         })
 
         it('should put an action signaling the success of the fetch ens world status request', async () => {
-          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          await expectSaga(ensSaga, ensApi, worldsAPIContent)
             .provide([
               [select(getExternalNames), getExternalNamesResult],
               [select(getContributableNamesList), []],
@@ -239,7 +228,7 @@ describe('when handling the fetch ens world status request', () => {
         })
 
         it('should put an action signaling the failure of the fetch ens world status request', async () => {
-          await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+          await expectSaga(ensSaga, ensApi, worldsAPIContent)
             .provide([
               [select(getExternalNames), getExternalNamesResult],
               [select(getContributableNamesList), []],
@@ -261,7 +250,7 @@ describe('when handling the fetch ens world status request', () => {
 describe('when handling the wallet connection', () => {
   it('should put the request action to fetch external names', async () => {
     const address = '0x123'
-    await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+    await expectSaga(ensSaga, ensApi, worldsAPIContent)
       .put(fetchExternalNamesRequest(address))
       .dispatch(connectWalletSuccess({ address } as Wallet))
       .silentRun()
@@ -286,7 +275,7 @@ describe('when handling the set ens address request', () => {
   })
 
   it('should call resolver contract with the ens domain and address', () => {
-    return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+    return expectSaga(ensSaga, ensApi, worldsAPIContent)
       .provide([
         [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
@@ -302,7 +291,7 @@ describe('when handling the set ens address request', () => {
 
   it('should put the failure action when something goes wrong', () => {
     const error = { message: 'an error message', code: 1, name: 'error' }
-    return expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+    return expectSaga(ensSaga, ensApi, worldsAPIContent)
       .provide([
         [call(getChainIdByNetwork, Network.ETHEREUM), ChainId.ETHEREUM_SEPOLIA],
         [call(getWallet), { address: 'address', chainId: ChainId.ETHEREUM_SEPOLIA }],
@@ -313,6 +302,37 @@ describe('when handling the set ens address request', () => {
       .put(setENSAddressFailure(ens, address, { message: error.message, code: error.code, origin: ENSOrigin.ADDRESS }))
       .dispatch(setENSAddressRequest(ens, address))
       .silentRun()
+  })
+})
+
+describe('when handling the set ens content request for a LAND', () => {
+  let ens: ENS
+  let land: Land
+  let signer: Signer
+  let wallet: Wallet
+  let setContenthash: jest.Mock
+
+  beforeEach(() => {
+    ens = { subdomain: 'test.dcl.eth', name: 'test' } as ENS
+    land = { id: '15,2', type: LandType.PARCEL, x: 15, y: 2 } as Land
+    signer = {} as Signer
+    wallet = { address: '0xaddress', chainId: ChainId.ETHEREUM_SEPOLIA } as Wallet
+    setContenthash = jest.fn().mockResolvedValue({ hash: 'tx-hash' })
+    ENSResolver__factory.connect = jest.fn().mockReturnValue({ setContenthash })
+  })
+
+  it('should point the name to the redirect of the LAND', async () => {
+    await expectSaga(ensSaga, ensApi, worldsAPIContent)
+      .provide([
+        [call(changeToEthereumNetwork), undefined],
+        [call(getWallet), wallet],
+        [call(getSigner), signer]
+      ])
+      .put(setENSContentSuccess(ens, encodeLandRedirect(land), land, wallet.address, wallet.chainId, 'tx-hash'))
+      .dispatch(setENSContentRequest(ens, land))
+      .silentRun()
+
+    expect(setContenthash).toHaveBeenCalledWith(namehash(ens.subdomain), encodeLandRedirect(land))
   })
 })
 
@@ -327,7 +347,7 @@ describe('when handling the fetching of contributable names', () => {
     })
 
     it('should dispatch an error action with the error', async () => {
-      await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+      await expectSaga(ensSaga, ensApi, worldsAPIContent)
         .provide([[call([worldsAPIContent, 'fetchContributableDomains']), throwError(error)]])
         .put(fetchContributableNamesFailure(ensError))
         .dispatch(fetchContributableNamesRequest())
@@ -361,7 +381,7 @@ describe('when handling the fetching of contributable names', () => {
 
     describe('and there are no banned names', () => {
       it('should dispatch a success action with the contributable names', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        await expectSaga(ensSaga, ensApi, worldsAPIContent)
           .provide([
             [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
             [call([lists, 'fetchBannedNames']), []],
@@ -386,7 +406,7 @@ describe('when handling the fetching of contributable names', () => {
       })
 
       it('should dispatch an error action with the error', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        await expectSaga(ensSaga, ensApi, worldsAPIContent)
           .provide([
             [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
             [call([lists, 'fetchBannedNames']), []],
@@ -409,7 +429,7 @@ describe('when handling the fetching of contributable names', () => {
       })
 
       it('should dispatch an error action with the error', async () => {
-        await expectSaga(ensSaga, builderClient, ensApi, worldsAPIContent)
+        await expectSaga(ensSaga, ensApi, worldsAPIContent)
           .provide([
             [call([worldsAPIContent, 'fetchContributableDomains']), [contributableName]],
             [call([lists, 'fetchBannedNames']), []],
