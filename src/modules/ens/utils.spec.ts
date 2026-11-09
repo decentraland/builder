@@ -118,20 +118,41 @@ describe('when encoding the redirect of a LAND', () => {
     })
   })
 
-  describe('and the LAND is an estate', () => {
+  describe('and the LAND is an estate whose center is one of its parcels', () => {
     beforeEach(() => {
       land = {
         id: '1',
         type: LandType.ESTATE,
         parcels: [
           { x: 10, y: 20, id: '10,20' },
-          { x: 11, y: 20, id: '11,20' }
+          { x: 11, y: 20, id: '11,20' },
+          { x: 12, y: 20, id: '12,20' }
+        ]
+      } as Land
+    })
+
+    it('should jump to the center of the estate', () => {
+      expect(encodeLandRedirect(land)).toBe(toRedirectContent(`${config.get('JUMP_URL')}?position=11,20`))
+    })
+  })
+
+  describe('and the LAND is an estate whose center is outside of it', () => {
+    beforeEach(() => {
+      land = {
+        id: '1',
+        type: LandType.ESTATE,
+        parcels: [
+          { x: 0, y: 0, id: '0,0' },
+          { x: 1, y: 0, id: '1,0' },
+          { x: 2, y: 0, id: '2,0' },
+          { x: 2, y: 1, id: '2,1' },
+          { x: 2, y: 2, id: '2,2' }
         ]
       } as Land
     })
 
     it('should jump to the first parcel of the estate', () => {
-      expect(encodeLandRedirect(land)).toBe(toRedirectContent(`${config.get('JUMP_URL')}?position=10,20`))
+      expect(encodeLandRedirect(land)).toBe(toRedirectContent(`${config.get('JUMP_URL')}?position=0,0`))
     })
   })
 })
@@ -156,7 +177,7 @@ describe('when getting the LAND a content hash redirects to', () => {
 
   describe('and the content redirects to a parcel of an estate', () => {
     beforeEach(() => {
-      content = toRedirectContent('https://decentraland.org/jump?position=11,20')
+      content = toRedirectContent(`${config.get('JUMP_URL')}?position=11,20`)
     })
 
     it('should return the id of the estate', () => {
@@ -166,7 +187,7 @@ describe('when getting the LAND a content hash redirects to', () => {
 
   describe('and the content redirects to a parcel', () => {
     beforeEach(() => {
-      content = toRedirectContent('https://decentraland.zone/jump?position=15,2')
+      content = toRedirectContent(`${config.get('JUMP_URL')}/?position=15,2`)
     })
 
     it('should return the id of the parcel', () => {
@@ -176,7 +197,27 @@ describe('when getting the LAND a content hash redirects to', () => {
 
   describe('and the content redirects to a parcel that is not in the list', () => {
     beforeEach(() => {
-      content = toRedirectContent('https://decentraland.org/jump?position=0,0')
+      content = toRedirectContent(`${config.get('JUMP_URL')}?position=0,0`)
+    })
+
+    it('should return undefined', () => {
+      expect(getRedirectedLandId(content, lands)).toBeUndefined()
+    })
+  })
+
+  describe('and the content redirects to a parcel of an estate on another site', () => {
+    beforeEach(() => {
+      content = toRedirectContent('https://example.com/jump?position=11,20')
+    })
+
+    it('should return undefined', () => {
+      expect(getRedirectedLandId(content, lands)).toBeUndefined()
+    })
+  })
+
+  describe('and the content redirects to a parcel of an estate on another path of the jump site', () => {
+    beforeEach(() => {
+      content = toRedirectContent(`${new URL(config.get('JUMP_URL')).origin}/other?position=11,20`)
     })
 
     it('should return undefined', () => {

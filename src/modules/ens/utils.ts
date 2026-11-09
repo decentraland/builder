@@ -6,7 +6,7 @@ import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
 import { config } from 'config'
 import { Land } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
-import { getCoords, getSelection } from 'modules/land/utils'
+import { getCenter, getSelection } from 'modules/land/utils'
 
 export function setProfileFromEntity(entity: Entity): Entity {
   entity.metadata.avatars[0].avatar.snapshots.face = getCatalystContentUrl(entity.metadata.avatars[0].avatar.snapshots.face)
@@ -89,8 +89,16 @@ export async function addWorldStatusToEachENS(enss: ENS[]) {
 
 const REDIRECT_PROTO_CODE = '0x3000f2'
 
+function getRedirectParcel(land: Land) {
+  const selection = getSelection(land)
+  const [x, y] = getCenter(selection)
+  return selection.find(parcel => parcel.x === x && parcel.y === y) ?? selection[0]
+}
+
+const withoutTrailingSlash = (path: string) => path.replace(/\/$/, '')
+
 export function encodeLandRedirect(land: Land): string {
-  const { x, y } = getCoords(land)
+  const { x, y } = getRedirectParcel(land)
   return ethers.utils.hexConcat([REDIRECT_PROTO_CODE, ethers.utils.toUtf8Bytes(`${config.get('JUMP_URL')}?position=${x},${y}`)])
 }
 
@@ -98,6 +106,7 @@ export function getRedirectedLandId(content: string, lands: Land[]): string | un
   if (!content.toLowerCase().startsWith(REDIRECT_PROTO_CODE)) return undefined
   try {
     const url = new URL(ethers.utils.toUtf8String(ethers.utils.hexDataSlice(content, 3)))
+    if (withoutTrailingSlash(`${url.origin}${url.pathname}`) !== withoutTrailingSlash(config.get('JUMP_URL'))) return undefined
     const [x, y] = (url.searchParams.get('position') ?? '').split(',').map(Number)
     return lands.find(land => getSelection(land).some(parcel => parcel.x === x && parcel.y === y))?.id
   } catch {
