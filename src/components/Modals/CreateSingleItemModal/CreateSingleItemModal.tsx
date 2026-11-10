@@ -54,6 +54,7 @@ import {
 } from 'modules/item/utils'
 import { getItemData } from 'lib/getModelData'
 import { toMB } from 'lib/file'
+import { ignoreSceneDisposed } from 'lib/wearablePreview'
 import {
   getDefaultThirdPartyUrnSuffix,
   buildThirdPartyURN,
@@ -853,7 +854,8 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           queueMicrotask(() => dispatch(createItemActions.setWearablePreviewUpdated(true)))
         }}
         onLoad={() => {
-          queueMicrotask(() => handleFileLoad())
+          // A newer render fires onLoad again, so a superseded one has nothing left to do.
+          queueMicrotask(() => void ignoreSceneDisposed(handleFileLoad()))
         }}
       />
     )

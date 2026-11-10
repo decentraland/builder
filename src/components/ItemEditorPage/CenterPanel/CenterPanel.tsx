@@ -23,6 +23,7 @@ import { isDevelopment } from 'lib/environment'
 import { extractThirdPartyTokenId, extractTokenId, isThirdParty } from 'lib/urn'
 import { loadAndValidateModel, EngineType } from 'lib/getModelData'
 import { ValidationSeverity } from 'lib/glbValidation/types'
+import { ignoreSceneDisposed } from 'lib/wearablePreview'
 // Validation uses content storage URLs instead of blob URLs
 import { isTPCollection } from 'modules/collection/utils'
 import { EmoteData, ItemType, Item } from 'modules/item/types'
@@ -289,7 +290,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
       onSetAvatarAnimation(PreviewEmote.IDLE)
       onSetItems(newVisibleItems)
     } else {
-      wearableController?.emote.play() as void
+      void ignoreSceneDisposed(wearableController?.emote.play())
       // Push spring bone params immediately on emote play start via saga
       onPushSpringBoneParams()
     }
