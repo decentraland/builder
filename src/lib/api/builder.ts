@@ -1,4 +1,4 @@
-import { ContractAddress, ContractNetwork, Entity, Mapping, Rarity } from '@dcl/schemas'
+import { ContractAddress, ContractNetwork, Mapping, Rarity } from '@dcl/schemas'
 import { BaseAPI, APIParam, RetryParams } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { config } from 'config'
@@ -7,11 +7,6 @@ import { getSafeExternalUrl } from 'lib/url'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest, TemplateStatus } from 'modules/project/types'
-import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
-import { Scene } from 'modules/scene/types'
-import { FullAssetPack } from 'modules/assetPack/types'
-import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
-import { createManifest } from 'modules/project/export'
 import { Item, ItemType, WearableData, BlockchainRarity, ItemApprovalData } from 'modules/item/types'
 import { Account } from 'modules/committee/types'
 import { retryParams } from 'modules/common/utils'
@@ -32,8 +27,6 @@ export const BUILDER_SERVER_URL = config.get('BUILDER_SERVER_URL', '')
 export const FORUM_URL = config.get('FORUM_URL', '')
 
 export const getContentsStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
-export const getAssetPackStorageUrl = (hash = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
-export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
 export const getEmptySceneUrl = () => `${PUBLIC_URL}/images/empty-ground.webp`
 
 export type FetchCollectionsParams = {
@@ -134,33 +127,6 @@ export type RemoteProject = {
   template_status: TemplateStatus | null
 }
 
-export type RemoteAssetPack = {
-  id: string
-  title: string
-  url?: string
-  thumbnail?: string
-  eth_address: string
-  assets: RemoteAsset[]
-  created_at?: string
-  updated_at?: string
-}
-
-export type RemoteAsset = {
-  id: string
-  legacy_id: string | null
-  asset_pack_id: string
-  name: string
-  model: string
-  script: string | null
-  thumbnail: string
-  tags: string[]
-  category: string
-  contents: Record<string, string>
-  metrics: ModelMetrics
-  parameters: AssetParameter[]
-  actions: AssetAction[]
-}
-
 export type RemoteWeeklyStats = {
   week: string
   title: string
@@ -199,28 +165,6 @@ export type RemoteItemCuration = {
   content_hash: string
 } & BaseCuration
 
-/**
- * Transforms a Project into a RemoteProject for saving purposes only.
- * The `thumbnail` is omitted.
- */
-function toRemoteProject(project: Project): Omit<RemoteProject, 'thumbnail'> {
-  return {
-    id: project.id,
-    title: project.title,
-    description: project.description,
-    is_public: project.isPublic,
-    scene_id: project.sceneId,
-    eth_address: project.ethAddress!,
-    rows: project.layout.rows,
-    cols: project.layout.cols,
-    created_at: project.createdAt,
-    updated_at: project.updatedAt,
-    is_template: project.isTemplate,
-    video: project.video,
-    template_status: project.templateStatus
-  }
-}
-
 function fromRemoteProject(remoteProject: RemoteProject): Project {
   return {
     id: remoteProject.id,
@@ -241,63 +185,6 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     isTemplate: !!remoteProject.is_template,
     video: remoteProject.is_template && remoteProject?.video ? `${PUBLIC_URL}${remoteProject.video}` : null,
     templateStatus: remoteProject?.template_status
-  }
-}
-
-function toRemoteAssetPack(assetPack: FullAssetPack): RemoteAssetPack {
-  return {
-    id: assetPack.id,
-    title: assetPack.title,
-    eth_address: assetPack.ethAddress!,
-    assets: assetPack.assets.map(asset => toRemoteAsset(asset))
-  }
-}
-
-function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
-  return {
-    id: remoteAssetPack.id,
-    title: remoteAssetPack.title,
-    thumbnail: getAssetPackStorageUrl(remoteAssetPack.thumbnail),
-    ethAddress: remoteAssetPack.eth_address,
-    assets: remoteAssetPack.assets.map(asset => fromRemoteAsset(asset)),
-    createdAt: remoteAssetPack.created_at,
-    updatedAt: remoteAssetPack.updated_at
-  }
-}
-
-function toRemoteAsset(asset: Asset): RemoteAsset {
-  return {
-    id: asset.id,
-    legacy_id: asset.legacyId || null,
-    asset_pack_id: asset.assetPackId,
-    name: asset.name,
-    model: asset.model.replace(`${asset.assetPackId}/`, ''),
-    script: asset.script,
-    thumbnail: asset.thumbnail.replace(getContentsStorageUrl(), ''),
-    tags: asset.tags,
-    category: asset.category,
-    contents: asset.contents,
-    metrics: asset.metrics,
-    parameters: asset.parameters,
-    actions: asset.actions
-  }
-}
-
-function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
-  return {
-    id: remoteAsset.id,
-    legacyId: remoteAsset.legacy_id,
-    assetPackId: remoteAsset.asset_pack_id,
-    name: remoteAsset.name,
-    model: remoteAsset.model,
-    script: remoteAsset.script,
-    thumbnail: getContentsStorageUrl(remoteAsset.thumbnail),
-    tags: remoteAsset.tags,
-    category: remoteAsset.category,
-    contents: remoteAsset.contents,
-    metrics: remoteAsset.metrics,
-    parameters: remoteAsset.parameters,
-    actions: remoteAsset.actions
   }
 }
 
@@ -643,46 +530,6 @@ export class BuilderAPI extends BaseAPI {
     return hasEnvelope ? parsed.data : parsed
   }
 
-  async uploadMedia(projectId: string, preview: Blob, shots: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
-    const formData = new FormData()
-    formData.append('preview', preview)
-    formData.append('north', shots.north)
-    formData.append('east', shots.east)
-    formData.append('south', shots.south)
-    formData.append('west', shots.west)
-
-    await this.request('post', `/projects/${projectId}/media`, {
-      params: formData,
-      onUploadProgress
-    })
-  }
-
-  async uploadFile(file: Blob) {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const { hash }: { hash: string } = await this.request('post', `/storage/upload`, {
-      params: formData
-    })
-    return { hash }
-  }
-
-  async fetchMain(projectId: string): Promise<Blob> {
-    const request = async (path: string) => fetch(this.url + path, { headers: this.authorization.createAuthHeaders('get', path) })
-    const about: { configurations: { scenesUrn: string[] } } = await request(`/projects/${projectId}/about`).then(resp => resp.json())
-    const urn = about.configurations.scenesUrn[0]
-    const hash = urn.split('urn:decentraland:entity:').pop()!.split('?')[0]
-    const entity: Entity = await request(`/projects/${projectId}/contents/${hash}`).then(resp => resp.json())
-    const main = entity.content?.find(content => content.file === 'bin/index.js')
-
-    if (!main) {
-      throw new Error('Main file not found')
-    }
-
-    const file: string = await request(`/projects/${projectId}/contents/${main.hash}`).then(resp => resp.text())
-    return new Blob([file])
-  }
-
   async fetchCrdt(projectId: string): Promise<Blob> {
     const path = `/projects/${projectId}/crdt`
     const headers = this.authorization.createAuthHeaders('get', path)
@@ -694,20 +541,6 @@ export class BuilderAPI extends BaseAPI {
   async fetchProjects() {
     const { items }: { items: RemoteProject[]; total: number } = await this.request('get', '/projects', { retry: retryParams })
     return items.map(fromRemoteProject)
-  }
-
-  async saveProject(project: Project, scene: Scene) {
-    const manifest = createManifest(toRemoteProject(project), scene)
-    await this.request('put', `/projects/${project.id}/manifest`, { params: { manifest } })
-  }
-
-  async saveProjectThumbnail(project: Project) {
-    const blob = dataURLToBlob(project.thumbnail)
-    const formData = new FormData()
-    if (blob) {
-      formData.append('thumbnail', blob)
-      await this.request('post', `/projects/${project.id}/media`, { params: formData })
-    }
   }
 
   async deleteProject(id: string) {
@@ -730,58 +563,6 @@ export class BuilderAPI extends BaseAPI {
     }
 
     return runMigrations(manifest, migrations)
-  }
-
-  async saveAssetPack(assetPack: FullAssetPack) {
-    const remotePack = toRemoteAssetPack(assetPack)
-    await this.request('put', `/assetPacks/${remotePack.id}`, { params: { assetPack: remotePack } })
-  }
-
-  async saveAssetContents(asset: Asset, contents: Record<string, Blob>, onUploadProgress?: UploadProgressHandler) {
-    const formData = new FormData()
-
-    for (const path in contents) {
-      formData.append(path, contents[path])
-    }
-
-    await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, {
-      params: formData,
-      onUploadProgress
-    })
-  }
-
-  async saveAssetPackThumbnail(assetPack: FullAssetPack) {
-    let blob: Blob | null = null
-
-    if (isDataUrl(assetPack.thumbnail)) {
-      blob = dataURLToBlob(assetPack.thumbnail)
-    } else {
-      blob = await objectURLToBlob(assetPack.thumbnail)
-    }
-
-    if (!blob) throw new Error('Invalid thumbnail')
-
-    const formData = new FormData()
-    if (blob) {
-      formData.append('thumbnail', blob)
-      await this.request('post', `/assetPacks/${assetPack.id}/thumbnail`, { params: formData })
-    }
-  }
-
-  async fetchAssetPacks(address?: string): Promise<FullAssetPack[]> {
-    const promisesOfRemoteAssetPacks: Array<Promise<RemoteAssetPack[]>> = [
-      this.request('get', '/assetPacks', { params: { owner: 'default' } })
-    ]
-    if (address) {
-      promisesOfRemoteAssetPacks.push(this.request('get', '/assetPacks', { params: { owner: address } }))
-    }
-
-    const assetPacks: RemoteAssetPack[][] = await Promise.all(promisesOfRemoteAssetPacks)
-    return assetPacks.reduce((acc, curr) => acc.concat(curr), []).map(fromRemoteAssetPack)
-  }
-
-  async deleteAssetPack(assetPack: FullAssetPack) {
-    await this.request('delete', `/assetPacks/${assetPack.id}`)
   }
 
   async fetchItems(address?: string, params: { collectionId?: string; page?: number; limit?: number } = {}) {

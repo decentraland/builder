@@ -48,8 +48,6 @@ export type SetENSResolverRequestAction = ReturnType<typeof setENSResolverReques
 export type SetENSResolverSuccessAction = ReturnType<typeof setENSResolverSuccess>
 export type SetENSResolverFailureAction = ReturnType<typeof setENSResolverFailure>
 
-// Set the Content on the ENS resolver contract.
-// The Content is a IPFS hash refering a file. This file is an HTML file with a Redirection to a LAND url.
 export const SET_ENS_CONTENT_REQUEST = '[Request] Set ENS Content'
 export const SET_ENS_CONTENT_SUCCESS = '[Success] Set ENS Content'
 export const SET_ENS_CONTENT_FAILURE = '[Failure] Set ENS Content'

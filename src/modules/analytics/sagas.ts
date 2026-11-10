@@ -20,8 +20,6 @@ import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
 import { trimAsset } from './track'
-import { SyncAction, SYNC } from 'modules/sync/actions'
-import { getLocalProjectIds } from 'modules/sync/selectors'
 import {
   SaveAssetPackSuccessAction,
   SAVE_ASSET_PACK_SUCCESS,
@@ -46,7 +44,6 @@ function* builderAnalyticsSaga() {
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(SEARCH_ASSETS, handleSearchAssets)
-  yield takeLatest(SYNC, handleSync)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SAVE_ASSET_PACK_SUCCESS, handleSaveAssetPackSuccess)
   yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
@@ -130,13 +127,6 @@ function* handleSearchAssets(action: SearchAssetsAction) {
   const categories: ReturnType<typeof getSideBarCategories> = yield select(getSideBarCategories)
   const hits = categories.reduce<number>((hits, category) => hits + category.assets.length, 0)
   track('Search assets', { ...action.payload, hits })
-}
-
-function* handleSync(_: SyncAction) {
-  const localProjectIds: string[] = yield select(getLocalProjectIds)
-  if (localProjectIds.length > 0) {
-    track('Sync projects', { count: localProjectIds.length })
-  }
 }
 
 function handleLoginSuccess(action: LoginSuccessAction) {

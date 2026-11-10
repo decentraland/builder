@@ -12,8 +12,6 @@ export type ENS = {
   resolver: string
   content: string
 
-  ipfsHash?: string
-
   // We'll need to change `landId` eventually so it can handle different content types. We could use:
   //   contentId?: string
   //   contentType?: ENSContent {LAND = 'land', (...)}

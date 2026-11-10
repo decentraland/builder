@@ -8,7 +8,6 @@ import CreatorsWebsiteBanner from 'components/CreatorsWebsiteBanner'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
-import SyncToast from 'components/SyncToast'
 import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
@@ -76,9 +75,7 @@ export const HomePage: React.FC<Props> = props => {
     <>
       <Navbar />
       <Page isFullscreen className="HomePage">
-        <Navigation activeTab={NavigationTab.OVERVIEW}>
-          <SyncToast />
-        </Navigation>
+        <Navigation activeTab={NavigationTab.OVERVIEW} />
         <CreatorsWebsiteBanner />
         <Container>
           <h1 className="title">{t('home_page.title')}</h1>

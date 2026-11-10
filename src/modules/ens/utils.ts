@@ -2,13 +2,11 @@ import { ethers } from 'ethers'
 import { Entity } from '@dcl/schemas'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { extractEntityId } from 'lib/urn'
-import { chunk } from 'lib/array'
 import { WorldInfo, WorldsAPI } from 'lib/api/worlds'
-import { Land, LandType } from 'modules/land/types'
+import { config } from 'config'
+import { Land } from 'modules/land/types'
 import { ENS, WorldStatus } from './types'
 import { getCenter, getSelection } from 'modules/land/utils'
-import { BuilderClient, LandCoords, LandHashes } from '@dcl/builder-client'
-import { getCurrentLocale } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export function setProfileFromEntity(entity: Entity): Entity {
   entity.metadata.avatars[0].avatar.snapshots.face = getCatalystContentUrl(entity.metadata.avatars[0].avatar.snapshots.face)
@@ -89,30 +87,29 @@ export async function addWorldStatusToEachENS(enss: ENS[]) {
   return enssWithWorldStatus
 }
 
-export async function getLandRedirectionHashes(builderClient: BuilderClient, lands: Land[]) {
-  const coordsList = lands.map(land => getCenter(getSelection(land))).map(coords => ({ x: coords[0], y: coords[1] }))
-  let coordsWithHashesList: (LandCoords & LandHashes)[] = []
-  if (coordsList.length > 0) {
-    for (const coordsBatch of chunk(coordsList, 145)) {
-      coordsWithHashesList = coordsWithHashesList.concat(
-        await builderClient.getLandRedirectionHashes(coordsBatch, getCurrentLocale().locale)
-      )
-    }
+const REDIRECT_PROTO_CODE = '0x3000f2'
+
+function getRedirectParcel(land: Land) {
+  const selection = getSelection(land)
+  const [x, y] = getCenter(selection)
+  return selection.find(parcel => parcel.x === x && parcel.y === y) ?? selection[0]
+}
+
+const withoutTrailingSlash = (path: string) => path.replace(/\/$/, '')
+
+export function encodeLandRedirect(land: Land): string {
+  const { x, y } = getRedirectParcel(land)
+  return ethers.utils.hexConcat([REDIRECT_PROTO_CODE, ethers.utils.toUtf8Bytes(`${config.get('JUMP_URL')}?position=${x},${y}`)])
+}
+
+export function getRedirectedLandId(content: string, lands: Land[]): string | undefined {
+  if (!content.toLowerCase().startsWith(REDIRECT_PROTO_CODE)) return undefined
+  try {
+    const url = new URL(ethers.utils.toUtf8String(ethers.utils.hexDataSlice(content, 3)))
+    if (withoutTrailingSlash(`${url.origin}${url.pathname}`) !== withoutTrailingSlash(config.get('JUMP_URL'))) return undefined
+    const [x, y] = (url.searchParams.get('position') ?? '').split(',').map(Number)
+    return lands.find(land => getSelection(land).some(parcel => parcel.x === x && parcel.y === y))?.id
+  } catch {
+    return undefined
   }
-  const landHashes: { id: string; hash: string }[] = []
-
-  for (const { x, y, contentHash } of coordsWithHashesList) {
-    const land = lands.find(land => {
-      if (land.type === LandType.ESTATE) {
-        return land.parcels!.some(parcel => parcel.x === x && parcel.y === y)
-      }
-      return land.x === x && land.y === y
-    })
-
-    if (land) {
-      landHashes.push({ hash: `0x${contentHash}`, id: land.id })
-    }
-  }
-
-  return landHashes
 }

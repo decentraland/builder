@@ -18,7 +18,6 @@ import { creditsSaga } from 'decentraland-dapps/dist/modules/credits/sagas'
 import { CreditsService } from 'decentraland-dapps/dist/lib/credits'
 
 import { analyticsSaga } from 'modules/analytics/sagas'
-import { assetPackSaga } from 'modules/assetPack/sagas'
 import { assetSaga } from 'modules/asset/sagas'
 import { cancelledItemOrdersSaga } from 'modules/cancelledItemOrders/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
@@ -40,7 +39,6 @@ import { syncSaga } from 'modules/sync/sagas'
 import { thirdPartySaga } from 'modules/thirdParty/sagas'
 import { tileSaga } from 'modules/tile/sagas'
 import { translationSaga } from 'modules/translation/sagas'
-import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
 import { entitySaga } from 'modules/entity/sagas'
 import { loginSaga } from 'modules/login/sagas'
@@ -86,7 +84,6 @@ export function* rootSaga(
       environment: config.get('CONTENTFUL_ENVIRONMENT'),
       id: config.get('CONTENTFUL_ADMIN_ENTITY_ID')
     }),
-    assetPackSaga(builderAPI),
     assetSaga(newBuilderClient),
     authorizationSaga(),
     cancelledItemOrdersSaga(
@@ -97,7 +94,7 @@ export function* rootSaga(
     committeeSaga(builderAPI),
     deploymentSaga(catalystClient),
     editorSaga(),
-    ensSaga(newBuilderClient, ensApi, worldsApi),
+    ensSaga(ensApi, worldsApi),
     entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),
@@ -117,7 +114,6 @@ export function* rootSaga(
     toastSaga(),
     transactionSaga(),
     translationSaga(),
-    uiSaga(),
     walletSaga(),
     collectionCurationSaga(builderAPI),
     itemCurationSaga(builderAPI),

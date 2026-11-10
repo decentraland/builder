@@ -155,10 +155,6 @@
   right: 0px;
 }
 
-.ScenesPage .SyncToast {
-  top: 77px;
-}
-
 .ScenesPage .ui.button.import-scene,
 .ScenesPage .ui.button.create-scene {
   display: flex;

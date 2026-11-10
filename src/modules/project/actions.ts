@@ -2,16 +2,8 @@ import { action } from 'typesafe-actions'
 
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project, Manifest } from 'modules/project/types'
-import { SDKVersion, Scene } from 'modules/scene/types'
+import { Scene } from 'modules/scene/types'
 import { PreviewType } from 'modules/editor/types'
-
-// Create project (like SET_PROJECT but only called on creation)
-
-export const CREATE_PROJECT = 'Create project'
-
-export const createProject = (project: Project, sdkVersion: SDKVersion = SDKVersion.SDK6) => action(CREATE_PROJECT, { project, sdkVersion })
-
-export type CreateProjectAction = ReturnType<typeof createProject>
 
 // Set project
 

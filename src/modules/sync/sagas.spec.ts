@@ -1,52 +1,56 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { select } from 'redux-saga/effects'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { AuthIdentity } from '@dcl/crypto'
+import { AnyAction } from 'redux'
 import { BuilderAPI } from 'lib/api/builder'
-import { getData as getProjects } from 'modules/project/selectors'
+import { loginSuccess } from 'modules/identity/actions'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { setProject } from 'modules/project/actions'
+import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { saveProjectSuccess } from './actions'
+import { provisionScene, updateScene } from 'modules/scene/actions'
+import { SceneSDK6, SceneSDK7 } from 'modules/scene/types'
 import { syncSaga } from './sagas'
-import { saveThumbnail } from './utils'
 
-jest.mock('./utils', () => ({ ...jest.requireActual<object>('./utils'), saveThumbnail: jest.fn() }))
+type Trigger = [string, (project: Project) => AnyAction]
 
-const builderAPI = {} as unknown as BuilderAPI
+const TRIGGERS: Trigger[] = [
+  ['logging in', () => loginSuccess({ address: '0xa' } as Wallet, {} as AuthIdentity)],
+  ['changing a project', project => setProject(project)],
+  ['editing an SDK6 scene', () => provisionScene({ id: 'scene-id' } as SceneSDK6)],
+  ['editing an SDK7 scene', () => updateScene({ id: 'scene-id' } as SceneSDK7)]
+]
 
-describe('when handling the saveProjectSuccess action', () => {
+describe('when a signed in user has projects stored in the browser', () => {
+  let builderAPI: BuilderAPI
   let project: Project
+  let state: Record<string, unknown>
 
-  afterEach(() => {
-    jest.resetAllMocks()
+  beforeEach(() => {
+    builderAPI = {} as unknown as BuilderAPI
+    project = { id: 'project-id', sceneId: 'scene-id', thumbnail: '' } as Project
+    state = {
+      project: { data: { [project.id]: project } },
+      scene: { present: { data: {} } },
+      sync: { project: { localIds: [project.id], loadingIds: [], errorsById: {} } }
+    }
   })
 
-  describe('and the project has no thumbnail', () => {
-    beforeEach(() => {
-      project = { id: 'project-id', thumbnail: '' } as Project
-    })
-
-    it('should not save a thumbnail', () => {
-      return expectSaga(syncSaga, builderAPI)
-        .provide([[select(getProjects), { [project.id]: project }]])
-        .dispatch(saveProjectSuccess(project))
-        .run({ silenceTimeout: true })
-        .then(() => {
-          expect(saveThumbnail).not.toHaveBeenCalled()
+  describe.each(TRIGGERS)('and %s', (_, buildAction) => {
+    it('should not queue any action to upload the projects to the builder server', async () => {
+      const { effects } = await expectSaga(syncSaga, builderAPI)
+        .withState(state)
+        .provide({
+          select({ selector }, next) {
+            if (selector === isLoggedIn) return true
+            if (selector === getCurrentProject) return project
+            return next()
+          }
         })
-    })
-  })
-
-  describe('and the project has a thumbnail', () => {
-    beforeEach(() => {
-      project = { id: 'project-id', thumbnail: 'https://thumbnail.com/thumb.png' } as Project
-    })
-
-    it('should save the thumbnail of the project', () => {
-      return expectSaga(syncSaga, builderAPI)
-        .provide([[select(getProjects), { [project.id]: project }]])
-        .dispatch(saveProjectSuccess(project))
+        .dispatch(buildAction(project))
         .run({ silenceTimeout: true })
-        .then(() => {
-          expect(saveThumbnail).toHaveBeenCalledWith(project.id, project, builderAPI)
-        })
+
+      expect(effects.put).toBeUndefined()
     })
   })
 })
