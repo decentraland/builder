@@ -26,19 +26,19 @@ export default function ENSSelectLandPage(props: Props) {
 
     let land: Land | undefined
     for (const tile of tiles) {
-      if (tile.land.id !== ens!.landId) {
+      if (tile.land.id !== ens?.landId) {
         land = tile.land
         break
       }
     }
     return land
-  }, [landTiles])
+  }, [landTiles, ens])
 
   useEffect(() => {
     if (!selectedLand && !isLoading && ens) {
       setSelectedLand(firstAvailableLand)
     }
-  }, [firstAvailableLand])
+  }, [firstAvailableLand, isLoading, ens])
 
   const getOwnedLand = useCallback(
     (x: number, y: number) => {
@@ -48,16 +48,22 @@ export default function ENSSelectLandPage(props: Props) {
     [landTiles]
   )
 
-  const handleSelectLand = useCallback((x: number, y: number) => {
-    const land = getOwnedLand(x, y)
-    if (land) {
-      setSelectedLand(land)
-    }
-  }, [])
+  const handleSelectLand = useCallback(
+    (x: number, y: number) => {
+      const land = getOwnedLand(x, y)
+      if (land) {
+        setSelectedLand(land)
+      }
+    },
+    [getOwnedLand]
+  )
 
   const handleLocateLand = useCallback(() => {
-    const nextLand = locateNextLand(landTiles!, selectedLand!.id)
-    setSelectedLand(nextLand)
+    // With no owned LAND there is nothing to locate, and with nothing selected yet the first LAND is the one to show
+    const nextLand = landTiles ? locateNextLand(landTiles, selectedLand?.id) : undefined
+    if (nextLand) {
+      setSelectedLand(nextLand)
+    }
   }, [selectedLand, landTiles])
 
   const handleReassignENS = useCallback(() => {

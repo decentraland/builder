@@ -1,5 +1,5 @@
-import { LandType, Rental } from './types'
-import { hasRentalPeriodEnded } from './utils'
+import { Land, LandTile, LandType, Rental, RoleType } from './types'
+import { hasRentalPeriodEnded, locateNextLand } from './utils'
 
 describe('when checking if the rental period has ended', () => {
   let rental: Rental
@@ -46,6 +46,65 @@ describe('when checking if the rental period has ended', () => {
 
     it('should return false', () => {
       expect(hasRentalPeriodEnded(rental)).toBe(false)
+    })
+  })
+})
+
+describe('when locating the next land', () => {
+  let landTiles: Record<string, LandTile>
+  let firstLand: Land
+  let secondLand: Land
+
+  function buildLand(id: string): Land {
+    return {
+      id,
+      tokenId: id,
+      type: LandType.PARCEL,
+      roles: [RoleType.OWNER],
+      role: RoleType.OWNER,
+      name: id,
+      description: null,
+      owner: '0xanOwner',
+      operators: []
+    }
+  }
+
+  beforeEach(() => {
+    firstLand = buildLand('0,0')
+    secondLand = buildLand('1,0')
+    landTiles = {
+      '0,0': { color: '', land: firstLand },
+      '1,0': { color: '', land: secondLand }
+    }
+  })
+
+  describe('and there are no land tiles', () => {
+    it('should return undefined', () => {
+      expect(locateNextLand({}, '0,0')).toBeUndefined()
+    })
+  })
+
+  describe('and there is no current land', () => {
+    it('should return the first land', () => {
+      expect(locateNextLand(landTiles)).toBe(firstLand)
+    })
+  })
+
+  describe('and the current land is not in the tiles', () => {
+    it('should return the first land', () => {
+      expect(locateNextLand(landTiles, '5,5')).toBe(firstLand)
+    })
+  })
+
+  describe('and the current land is not the last one', () => {
+    it('should return the land that follows it', () => {
+      expect(locateNextLand(landTiles, '0,0')).toBe(secondLand)
+    })
+  })
+
+  describe('and the current land is the last one', () => {
+    it('should wrap around to the first land', () => {
+      expect(locateNextLand(landTiles, '1,0')).toBe(firstLand)
     })
   })
 })
