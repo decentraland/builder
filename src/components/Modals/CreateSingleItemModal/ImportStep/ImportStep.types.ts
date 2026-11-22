@@ -15,6 +15,8 @@ export type Props = {
   title: string
   wearablePreviewComponent?: React.ReactNode
   isLoading: boolean
+  /** An error raised after the file was accepted, while the preview loads it and takes its thumbnail. */
+  loadError?: string
   isRepresentation?: boolean
   onDropAccepted: (acceptedFileProps: AcceptedFileProps) => void
   onDropRejected?: (files: File[]) => Promise<void>

@@ -712,6 +712,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     (acceptedFileProps: AcceptedFileProps) => {
       const { bodyShape, ...acceptedProps } = acceptedFileProps
       dispatch(createItemActions.setLoading(true))
+      dispatch(createItemActions.setError(undefined))
       dispatch(createItemActions.setBodyShape(bodyShape || state.bodyShape))
       dispatch(createItemActions.setAcceptedProps(acceptedProps))
     },
@@ -853,7 +854,14 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           queueMicrotask(() => dispatch(createItemActions.setWearablePreviewUpdated(true)))
         }}
         onLoad={() => {
-          queueMicrotask(() => handleFileLoad())
+          queueMicrotask(() => {
+            // The preview can fail to answer (e.g. its getScreenshot request times out). Without this
+            // catch the rejection went unhandled and the import stayed on its loading state for good.
+            handleFileLoad().catch(error => {
+              dispatch(createItemActions.setLoading(false))
+              dispatch(createItemActions.setError(isErrorWithMessage(error) ? error.message : 'Unknown error'))
+            })
+          })
         }}
       />
     )
