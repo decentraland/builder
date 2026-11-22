@@ -81,6 +81,16 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     }
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const { loadError } = this.props
+    if (loadError && loadError !== prevProps.loadError) {
+      this.handleErrorsOnFile(new Error(loadError))
+    } else if (!loadError && prevProps.loadError) {
+      // A new file was accepted: the previous load's error no longer applies.
+      this.setState({ error: undefined })
+    }
+  }
+
   // For a zip that came with male/ and/or female/ subfolders:
   //   - empty entries (folder markers) are dropped
   //   - model and image files are flattened to the root when uploading for a single body shape

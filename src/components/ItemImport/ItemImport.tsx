@@ -26,6 +26,10 @@ export default class ItemImport extends React.PureComponent<Props, State> {
       }, ITEM_LOADED_CHECK_DELAY)
       this.setState({ itemLoaded: true })
     }
+    // A load that ended in an error did not import anything: drop the "loaded" confirmation.
+    if (this.props.error && !prevProps.error && this.state.itemLoaded) {
+      this.setState({ itemLoaded: false })
+    }
   }
 
   componentWillUnmount() {

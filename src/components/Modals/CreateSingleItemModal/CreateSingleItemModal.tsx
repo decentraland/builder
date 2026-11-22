@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useCallback, useMemo } from 'react'
+import React, { useReducer, useRef, useCallback, useMemo, useState } from 'react'
 import { ethers } from 'ethers'
 import { AnimationClip } from 'three'
 import {
@@ -177,6 +177,12 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
   }, [collection, metadata, isThirdPartyV2Enabled])
 
   const [state, dispatch] = useReducer(createItemReducer, getInitialState())
+  // Bumped on every accepted file so the preview remounts and fires onLoad again, even when the same
+  // file is dropped again after a failed load (its options compare equal, so it would not reload).
+  const [previewAttempt, setPreviewAttempt] = useState(0)
+  // The current view, for async callbacks that outlive the render that created them.
+  const viewRef = useRef(state.view)
+  viewRef.current = state.view
 
   const isAddingRepresentation = useMemo(() => {
     return !!(metadata && metadata.item && !metadata.changeItemFile)
@@ -712,6 +718,11 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     (acceptedFileProps: AcceptedFileProps) => {
       const { bodyShape, ...acceptedProps } = acceptedFileProps
       dispatch(createItemActions.setLoading(true))
+      dispatch(createItemActions.setError(undefined))
+      // The remounted preview reports onUpdate again once it has the new file; until then its onLoad
+      // must not take the screenshot of an empty preview.
+      dispatch(createItemActions.setWearablePreviewUpdated(false))
+      setPreviewAttempt(attempt => attempt + 1)
       dispatch(createItemActions.setBodyShape(bodyShape || state.bodyShape))
       dispatch(createItemActions.setAcceptedProps(acceptedProps))
     },
@@ -838,7 +849,7 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
     // Use model + contents keys as the key to force remount when content changes.
     // This ensures WearablePreview.createController returns a fresh controller
     // connected to the new instance, not a stale one from a previous upload.
-    const previewKey = model ? `${model}-${Object.keys(contents || {}).join('-')}` : 'preview'
+    const previewKey = `${model ? `${model}-${Object.keys(contents || {}).join('-')}` : 'preview'}-${previewAttempt}`
 
     return (
       <WearablePreview
@@ -853,11 +864,22 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
           queueMicrotask(() => dispatch(createItemActions.setWearablePreviewUpdated(true)))
         }}
         onLoad={() => {
-          queueMicrotask(() => handleFileLoad())
+          queueMicrotask(() => {
+            // The preview can fail to answer (e.g. its getScreenshot request times out). Without this
+            // catch the rejection went unhandled and the import stayed on its loading state for good.
+            handleFileLoad().catch(error => {
+              // A load that fails after another one already moved past the import step is stale.
+              if (viewRef.current !== CreateItemView.IMPORT) {
+                return
+              }
+              dispatch(createItemActions.setLoading(false))
+              dispatch(createItemActions.setError(isErrorWithMessage(error) ? error.message : 'Unknown error'))
+            })
+          })
         }}
       />
     )
-  }, [state, handleFileLoad, dispatch])
+  }, [state, handleFileLoad, dispatch, previewAttempt])
 
   const contextValue = {
     // State
