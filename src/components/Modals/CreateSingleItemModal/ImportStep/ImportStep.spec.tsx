@@ -47,6 +47,16 @@ describe('when the preview fails after the file was accepted', () => {
     expect(screen.getByText(t('create_single_item_modal.error.unexpected_error.title'))).toBeInTheDocument()
     expect(screen.getByText('Request timeout for getScreenshot', { exact: false })).toBeInTheDocument()
   })
+
+  describe('and a new file is accepted', () => {
+    beforeEach(() => {
+      rerender(<ImportStep collection={null} title="New Item" isLoading={true} onDropAccepted={jest.fn()} onClose={jest.fn()} />)
+    })
+
+    it('should clear the previous error', () => {
+      expect(screen.queryByText(t('create_single_item_modal.error.unexpected_error.title'))).not.toBeInTheDocument()
+    })
+  })
 })
 
 describe('when there is no load error', () => {

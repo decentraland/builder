@@ -85,6 +85,9 @@ export default class ImportStep extends React.PureComponent<Props, State> {
     const { loadError } = this.props
     if (loadError && loadError !== prevProps.loadError) {
       this.handleErrorsOnFile(new Error(loadError))
+    } else if (!loadError && prevProps.loadError) {
+      // A new file was accepted: the previous load's error no longer applies.
+      this.setState({ error: undefined })
     }
   }
 
