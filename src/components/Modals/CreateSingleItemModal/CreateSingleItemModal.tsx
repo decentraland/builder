@@ -719,6 +719,9 @@ export const CreateSingleItemModal: React.FC<Props> = props => {
       const { bodyShape, ...acceptedProps } = acceptedFileProps
       dispatch(createItemActions.setLoading(true))
       dispatch(createItemActions.setError(undefined))
+      // The remounted preview reports onUpdate again once it has the new file; until then its onLoad
+      // must not take the screenshot of an empty preview.
+      dispatch(createItemActions.setWearablePreviewUpdated(false))
       setPreviewAttempt(attempt => attempt + 1)
       dispatch(createItemActions.setBodyShape(bodyShape || state.bodyShape))
       dispatch(createItemActions.setAcceptedProps(acceptedProps))
